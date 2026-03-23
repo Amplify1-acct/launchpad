@@ -179,12 +179,12 @@ export default function Demo() {
 
     setPhase("blog");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setBlogProgress(i); }
-    for (let i = 1; i <= data.blogs.length; i++) { await new Promise(r => setTimeout(r, 380)); setVisibleBlogs(i); }
+    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 380)); setVisibleBlogs(i); }
     await new Promise(r => setTimeout(r, 400));
 
     setPhase("social");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setSocialProgress(i); }
-    for (let i = 1; i <= data.posts.length; i++) { await new Promise(r => setTimeout(r, 320)); setVisibleSocial(i); }
+    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 320)); setVisibleSocial(i); }
     await new Promise(r => setTimeout(r, 400));
     setPhase("done");
   };

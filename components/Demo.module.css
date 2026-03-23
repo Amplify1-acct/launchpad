@@ -57,7 +57,7 @@
 
 /* DEMO AREA */
 .demoArea { display: flex; flex-direction: column; gap: 16px; }
-.demoGrid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+.demoGrid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; overflow: visible; }
 
 /* STEP CARDS */
 .step {
@@ -65,6 +65,7 @@
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 16px; padding: 1.25rem;
   animation: slideUp 0.35s ease;
+  overflow: visible;
 }
 .websiteWrap {
   background: rgba(255,255,255,0.03);
@@ -72,7 +73,7 @@
   border-radius: 16px; padding: 1.25rem;
   animation: slideUp 0.35s ease;
 }
-.rightCol { display: flex; flex-direction: column; gap: 16px; }
+.rightCol { display: flex; flex-direction: column; gap: 16px; overflow: visible; }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(10px); }
