@@ -263,18 +263,123 @@
 .blogTitle { font-size: 12px; font-weight: 500; color: #e2e8f0; margin-bottom: 2px; }
 .blogMeta { font-size: 10px; color: #475569; }
 
-/* SOCIAL */
-.socialList { display: flex; flex-direction: column; gap: 8px; }
-.socialPost { display: flex; gap: 10px; animation: slideUp 0.3s ease; }
-.socialAvatar {
-  width: 30px; height: 30px; border-radius: 50%;
-  font-size: 12px; font-weight: 700;
+/* SOCIAL PLATFORM CARDS */
+.socialList { display: flex; flex-direction: column; gap: 10px; }
+
+/* SHARED PLATFORM HEADER */
+.fbHeader, .igHeader, .liHeader {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.fbLogo {
+  width: 18px; height: 18px; border-radius: 4px;
+  background: #1877f2; color: white;
+  font-size: 11px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.igLogo {
+  width: 18px; height: 18px; border-radius: 5px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  display: flex; align-items: center; justify-content: center;
+}
+.liLogo {
+  width: 18px; height: 18px; border-radius: 3px;
+  background: #0a66c2; color: white;
+  font-size: 10px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.fbPlatform, .igPlatform, .liPlatform {
+  font-size: 10px; font-weight: 600; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* FACEBOOK */
+.fbCard {
+  background: #18191a; border: 1px solid #3a3b3c;
+  border-radius: 10px; overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+.fbPost { padding: 10px; display: flex; gap: 8px; }
+.fbAvatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  color: white; font-size: 13px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.socialContent { flex: 1; }
-.socialName { font-size: 11px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
-.socialText { font-size: 11px; color: #94a3b8; line-height: 1.5; margin-bottom: 5px; }
-.socialActions { display: flex; gap: 10px; font-size: 10px; color: #475569; }
+.fbBody { flex: 1; min-width: 0; }
+.fbName { font-size: 12px; font-weight: 700; color: #e4e6ea; display: flex; align-items: center; gap: 4px; }
+.fbBadge { color: #1877f2; font-size: 10px; }
+.fbTime { font-size: 10px; color: #8a8d91; margin-bottom: 6px; }
+.fbText { font-size: 12px; color: #e4e6ea; line-height: 1.5; margin-bottom: 8px; }
+.fbImage {
+  width: 100%; height: 90px; border-radius: 6px;
+  margin-bottom: 8px; background-color: #3a3b3c;
+}
+.fbActions {
+  display: flex; gap: 12px; padding-top: 6px;
+  border-top: 1px solid #3a3b3c;
+  font-size: 10px; color: #8a8d91; font-weight: 600;
+}
+
+/* INSTAGRAM */
+.igCard {
+  background: #000; border: 1px solid #262626;
+  border-radius: 10px; overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+.igPost {}
+.igTopBar { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+.igAvatarWrap {
+  width: 28px; height: 28px; border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366);
+}
+.igAvatar {
+  width: 100%; height: 100%; border-radius: 50%;
+  color: white; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid #000;
+}
+.igHandle { flex: 1; }
+.igName { font-size: 11px; font-weight: 600; color: white; }
+.igSub { font-size: 9px; color: #8e8e8e; }
+.igMore { font-size: 14px; color: white; letter-spacing: 1px; }
+.igImg {
+  width: 100%; height: 110px;
+  background-color: #262626;
+}
+.igFooter { padding: 8px 10px; }
+.igReactions { display: flex; gap: 10px; font-size: 14px; margin-bottom: 5px; }
+.igLikes { font-size: 11px; font-weight: 700; color: white; margin-bottom: 4px; }
+.igCaption { font-size: 10px; color: #e8e8e8; line-height: 1.5; }
+.igCaption strong { color: white; }
+
+/* LINKEDIN */
+.liCard {
+  background: #1b1f23; border: 1px solid #38434f;
+  border-radius: 10px; overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+.liPost { padding: 10px; }
+.liTopBar { display: flex; gap: 8px; margin-bottom: 8px; }
+.liAvatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  color: white; font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.liName { font-size: 12px; font-weight: 700; color: #e8e8e8; }
+.liSub { font-size: 10px; color: #8a8d91; }
+.liTime { font-size: 10px; color: #8a8d91; }
+.liText { font-size: 11px; color: #d0d0d0; line-height: 1.6; margin-bottom: 8px; }
+.liImg {
+  width: 100%; height: 80px; border-radius: 6px;
+  margin-bottom: 8px; background-color: #38434f;
+}
+.liActions {
+  display: flex; gap: 10px; padding-top: 6px;
+  border-top: 1px solid #38434f;
+  font-size: 10px; color: #8a8d91; font-weight: 600;
+}
 
 /* DONE CARD */
 .doneCard {

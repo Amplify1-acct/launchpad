@@ -363,16 +363,107 @@ export default function Demo() {
                   {socialProgress === 0 && phase !== "social" && <div className={styles.waitingMsg}>Queued — starts after blog posts</div>}
                   {socialProgress === 100 && (
                     <div className={styles.socialList}>
-                      {data.posts.slice(0, visibleSocial).map((p, i) => (
-                        <div key={i} className={styles.socialPost}>
-                          <div className={styles.socialAvatar} style={{ background: `${data.accent}25`, color: data.accent }}>{name.charAt(0)}</div>
-                          <div className={styles.socialContent}>
-                            <div className={styles.socialName}>{name}</div>
-                            <div className={styles.socialText}>{p}</div>
-                            <div className={styles.socialActions}><span>👍 Like</span><span>💬 Comment</span><span>↗ Share</span></div>
+
+                      {/* FACEBOOK POST */}
+                      {visibleSocial >= 1 && (
+                        <div className={styles.fbCard}>
+                          <div className={styles.fbHeader}>
+                            <div className={styles.fbLogo}>f</div>
+                            <span className={styles.fbPlatform}>Facebook</span>
+                          </div>
+                          <div className={styles.fbPost}>
+                            <div className={styles.fbAvatar} style={{ background: data.accent }}>
+                              {name.charAt(0)}
+                            </div>
+                            <div className={styles.fbBody}>
+                              <div className={styles.fbName}>{name}
+                                <span className={styles.fbBadge}>✓</span>
+                              </div>
+                              <div className={styles.fbTime}>Just now · 🌐</div>
+                              <div className={styles.fbText}>{data.posts[0]}</div>
+                              <div className={styles.fbImage} style={{
+                                backgroundImage: `url(${data.image})`,
+                                backgroundSize: "cover", backgroundPosition: "center"
+                              }} />
+                              <div className={styles.fbActions}>
+                                <span>👍 Like</span>
+                                <span>💬 Comment</span>
+                                <span>↗ Share</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      ))}
+                      )}
+
+                      {/* INSTAGRAM POST */}
+                      {visibleSocial >= 2 && (
+                        <div className={styles.igCard}>
+                          <div className={styles.igHeader}>
+                            <div className={styles.igLogo}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            </div>
+                            <span className={styles.igPlatform}>Instagram</span>
+                          </div>
+                          <div className={styles.igPost}>
+                            <div className={styles.igTopBar}>
+                              <div className={styles.igAvatarWrap}>
+                                <div className={styles.igAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div>
+                              </div>
+                              <div className={styles.igHandle}>
+                                <div className={styles.igName}>{name.toLowerCase().replace(/\s+/g, "_")}</div>
+                                <div className={styles.igSub}>Sponsored</div>
+                              </div>
+                              <div className={styles.igMore}>···</div>
+                            </div>
+                            <div className={styles.igImg} style={{
+                              backgroundImage: `url(${data.image})`,
+                              backgroundSize: "cover", backgroundPosition: "center"
+                            }} />
+                            <div className={styles.igFooter}>
+                              <div className={styles.igReactions}>
+                                <span>❤️</span><span>💬</span><span>✈️</span>
+                                <span style={{ marginLeft: "auto" }}>🔖</span>
+                              </div>
+                              <div className={styles.igLikes}>127 likes</div>
+                              <div className={styles.igCaption}>
+                                <strong>{name.toLowerCase().replace(/\s+/g, "_")}</strong> {data.posts[1]}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* LINKEDIN POST */}
+                      {visibleSocial >= 3 && (
+                        <div className={styles.liCard}>
+                          <div className={styles.liHeader}>
+                            <div className={styles.liLogo}>in</div>
+                            <span className={styles.liPlatform}>LinkedIn</span>
+                          </div>
+                          <div className={styles.liPost}>
+                            <div className={styles.liTopBar}>
+                              <div className={styles.liAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div>
+                              <div>
+                                <div className={styles.liName}>{name}</div>
+                                <div className={styles.liSub}>Local Business · 1st</div>
+                                <div className={styles.liTime}>Just now · 🌐</div>
+                              </div>
+                            </div>
+                            <div className={styles.liText}>{data.posts[2]}</div>
+                            <div className={styles.liImg} style={{
+                              backgroundImage: `url(${data.image})`,
+                              backgroundSize: "cover", backgroundPosition: "center"
+                            }} />
+                            <div className={styles.liActions}>
+                              <span>👍 Like</span>
+                              <span>💬 Comment</span>
+                              <span>🔁 Repost</span>
+                              <span>✉️ Send</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                     </div>
                   )}
                 </div>
