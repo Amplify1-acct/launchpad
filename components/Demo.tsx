@@ -171,6 +171,7 @@ export default function Demo() {
     setPhase("website");
 
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setWebsiteProgress(i); }
+    setWebsiteProgress(100);
     for (let i = 1; i <= data.pages.length; i++) { await new Promise(r => setTimeout(r, 70)); setVisiblePages(i); }
     const hl = name;
     for (let i = 0; i <= hl.length; i++) { await new Promise(r => setTimeout(r, 45)); setTypedHeadline(hl.slice(0, i)); }
@@ -179,11 +180,13 @@ export default function Demo() {
 
     setPhase("blog");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setBlogProgress(i); }
+    setBlogProgress(100);
     for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 380)); setVisibleBlogs(i); }
     await new Promise(r => setTimeout(r, 400));
 
     setPhase("social");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setSocialProgress(i); }
+    setSocialProgress(100);
     for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 320)); setVisibleSocial(i); }
     await new Promise(r => setTimeout(r, 400));
     setPhase("done");
