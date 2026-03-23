@@ -10,12 +10,14 @@ const industries = [
 
 const industryData: Record<string, {
   color: string; accent: string; emoji: string; tagline: string; cta: string;
+  image: string;
   services: string[]; stats: { num: string; label: string }[];
   testimonial: { text: string; name: string; role: string };
   blogs: string[]; posts: string[]; pages: string[];
 }> = {
   "Plumbing": {
     color: "#1e3a5f", accent: "#2563eb", emoji: "🔧",
+    image: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&h=300&fit=crop&auto=format",
     tagline: "Fast, reliable plumbing — available 24/7 for emergencies.",
     cta: "Get a Free Quote",
     services: ["Emergency Repairs", "Pipe Installation", "Water Heaters", "Drain Cleaning"],
@@ -27,6 +29,7 @@ const industryData: Record<string, {
   },
   "Bakery": {
     color: "#7c2d12", accent: "#ea580c", emoji: "🥐",
+    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=300&fit=crop&auto=format",
     tagline: "Handcrafted breads, pastries & custom cakes — baked fresh daily.",
     cta: "Order Now",
     services: ["Sourdough Bread", "Custom Cakes", "Pastries", "Catering"],
@@ -38,6 +41,7 @@ const industryData: Record<string, {
   },
   "Law Firm": {
     color: "#1c1917", accent: "#b45309", emoji: "⚖️",
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&h=300&fit=crop&auto=format",
     tagline: "Experienced attorneys fighting for the results you deserve.",
     cta: "Free Consultation",
     services: ["Personal Injury", "Workers Comp", "Car Accidents", "Slip & Fall"],
@@ -49,6 +53,7 @@ const industryData: Record<string, {
   },
   "Real Estate": {
     color: "#14532d", accent: "#16a34a", emoji: "🏡",
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=300&fit=crop&auto=format",
     tagline: "Your local experts for buying, selling & investing in real estate.",
     cta: "See Listings",
     services: ["Buy a Home", "Sell Your Home", "Investment Properties", "Free Valuation"],
@@ -60,6 +65,7 @@ const industryData: Record<string, {
   },
   "Dental": {
     color: "#0c4a6e", accent: "#0284c7", emoji: "🦷",
+    image: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&h=300&fit=crop&auto=format",
     tagline: "Gentle, modern dental care for the whole family.",
     cta: "Book Appointment",
     services: ["Cleanings & Exams", "Teeth Whitening", "Invisalign", "Implants"],
@@ -71,6 +77,7 @@ const industryData: Record<string, {
   },
   "Gym & Fitness": {
     color: "#1a1a2e", accent: "#7c3aed", emoji: "💪",
+    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=300&fit=crop&auto=format",
     tagline: "Real results. No contracts. Just show up and do the work.",
     cta: "Start Free Trial",
     services: ["Group Classes", "Personal Training", "Nutrition Plans", "Online Coaching"],
@@ -82,6 +89,7 @@ const industryData: Record<string, {
   },
   "Restaurant": {
     color: "#1c0a00", accent: "#dc2626", emoji: "🍽️",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=300&fit=crop&auto=format",
     tagline: "Authentic flavors, fresh ingredients, unforgettable dining.",
     cta: "Reserve a Table",
     services: ["Dine In", "Takeout & Delivery", "Private Events", "Catering"],
@@ -93,6 +101,7 @@ const industryData: Record<string, {
   },
   "Photography": {
     color: "#1a1a2e", accent: "#db2777", emoji: "📸",
+    image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=300&fit=crop&auto=format",
     tagline: "Capturing the moments that matter most — beautifully.",
     cta: "Book a Session",
     services: ["Family Portraits", "Weddings", "Newborns", "Headshots"],
@@ -104,6 +113,7 @@ const industryData: Record<string, {
   },
   "Landscaping": {
     color: "#14532d", accent: "#15803d", emoji: "🌿",
+    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=300&fit=crop&auto=format",
     tagline: "Beautiful yards, stress-free maintenance — all season long.",
     cta: "Get Free Quote",
     services: ["Lawn Care", "Garden Design", "Tree Trimming", "Snow Removal"],
@@ -115,6 +125,7 @@ const industryData: Record<string, {
   },
   "Auto Repair": {
     color: "#1c1917", accent: "#d97706", emoji: "🚗",
+    image: "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=800&h=300&fit=crop&auto=format",
     tagline: "Honest repairs, fair prices — your car in expert hands.",
     cta: "Book Service",
     services: ["Oil Changes", "Brake Service", "Engine Repair", "Diagnostics"],
@@ -245,15 +256,21 @@ export default function Demo() {
                         </div>
 
                         {websiteSection >= 1 && (
-                          <div className={styles.siteHero} style={{ background: `linear-gradient(135deg, ${data.color} 0%, ${data.accent}44 100%)` }}>
-                            <div className={styles.siteHeroBadge} style={{ borderColor: `${data.accent}60`, color: data.accent }}>{industry} Services</div>
-                            <h1 className={styles.siteHeroH1}>{name}</h1>
-                            <p className={styles.siteHeroSub}>{data.tagline}</p>
-                            <div className={styles.siteHeroBtns}>
-                              <div className={styles.siteHeroBtn} style={{ background: data.accent }}>{data.cta}</div>
-                              <div className={styles.siteHeroBtnOut}>Learn More</div>
+                          <div className={styles.siteHero}>
+                            <div className={styles.siteHeroImg}
+                              style={{ backgroundImage: `url(${data.image})` }}>
+                              <div className={styles.siteHeroOverlay} style={{ background: `linear-gradient(135deg, ${data.color}ee 0%, ${data.color}99 60%, transparent 100%)` }} />
+                              <div className={styles.siteHeroContent}>
+                                <div className={styles.siteHeroBadge} style={{ borderColor: `${data.accent}80`, color: data.accent }}>{industry} Services</div>
+                                <h1 className={styles.siteHeroH1}>{name}</h1>
+                                <p className={styles.siteHeroSub}>{data.tagline}</p>
+                                <div className={styles.siteHeroBtns}>
+                                  <div className={styles.siteHeroBtn} style={{ background: data.accent }}>{data.cta}</div>
+                                  <div className={styles.siteHeroBtnOut}>Learn More</div>
+                                </div>
+                              </div>
                             </div>
-                            <div className={styles.siteHeroStats}>
+                            <div className={styles.siteHeroStats} style={{ background: data.color }}>
                               {data.stats.map((s, i) => (
                                 <div key={i} className={styles.siteStat}>
                                   <div className={styles.siteStatNum}>{s.num}</div>
