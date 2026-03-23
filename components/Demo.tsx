@@ -474,20 +474,62 @@ export default function Demo() {
             </div>
 
             {phase === "done" && (
-              <div className={styles.doneCard}>
-                <div className={styles.doneIcon}>🎉</div>
-                <h3 className={styles.doneTitle}>{name} is live!</h3>
-                <p className={styles.doneSub}>Website, {data.blogs.length} blog posts & 3 social channels — built in under 60 seconds. This is exactly what we do for real businesses.</p>
-                <div className={styles.doneMeta}>
-                  <div className={styles.doneMetaItem}><span>⏱</span> 47 seconds</div>
-                  <div className={styles.doneMetaItem}><span>🌐</span> Full website</div>
-                  <div className={styles.doneMetaItem}><span>✍️</span> {data.blogs.length} posts</div>
-                  <div className={styles.doneMetaItem}><span>📱</span> 3 channels</div>
+              <>
+                <div className={styles.doneCard}>
+                  <div className={styles.doneIcon}>🎉</div>
+                  <h3 className={styles.doneTitle}>{name} is live!</h3>
+                  <p className={styles.doneSub}>Website, {data.blogs.length} blog posts & 3 social channels — built in under 60 seconds. This is exactly what we do for real businesses.</p>
+                  <div className={styles.doneMeta}>
+                    <div className={styles.doneMetaItem}><span>⏱</span> 47 seconds</div>
+                    <div className={styles.doneMetaItem}><span>🌐</span> Full website</div>
+                    <div className={styles.doneMetaItem}><span>✍️</span> {data.blogs.length} posts</div>
+                    <div className={styles.doneMetaItem}><span>📱</span> 3 channels</div>
+                  </div>
+                  <button className={styles.doneBtn} onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+                    Get this for my real business →
+                  </button>
                 </div>
-                <button className={styles.doneBtn} onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
-                  Get this for my real business →
-                </button>
-              </div>
+
+                {/* SAMPLE BLOG POSTS FOR THIS INDUSTRY */}
+                <div className={styles.sampleBlogs}>
+                  <div className={styles.sampleBlogsHeader}>
+                    <div className={styles.sampleBlogsTitle}>
+                      📝 Here's a sample of the blog posts we'd write for {name}
+                    </div>
+                    <div className={styles.sampleBlogsSub}>
+                      Every week, a fully written SEO-optimized post — published automatically to your site.
+                    </div>
+                  </div>
+                  <div className={styles.sampleBlogsList}>
+                    {data.blogs.map((title: string, i: number) => (
+                      <div key={i} className={styles.sampleBlogCard}>
+                        <div className={styles.sampleBlogNum}>{i + 1}</div>
+                        <div className={styles.sampleBlogContent}>
+                          <div className={styles.sampleBlogTitle}>{title}</div>
+                          <div className={styles.sampleBlogMeta}>
+                            <span>~800 words</span>
+                            <span>·</span>
+                            <span>SEO optimized</span>
+                            <span>·</span>
+                            <span>Auto-published Monday</span>
+                          </div>
+                          <div className={styles.sampleBlogPreview}>
+                            {i === 0 && `A practical guide for ${industry} customers covering everything they need to know — the kind of content that ranks on Google and brings new clients to your door every week.`}
+                            {i === 1 && `An educational post that positions ${name} as the local expert — written in your voice, tailored to your market, and ready to share on social media.`}
+                            {i === 2 && `A helpful resource your customers will actually search for — designed to drive organic traffic and convert readers into paying customers.`}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.sampleBlogsNote}>
+                    Want to see a full sample post?{" "}
+                    <a href="/blog/5-signs-you-need-a-new-water-heater" className={styles.sampleBlogsLink} target="_blank" rel="noreferrer">
+                      Read one here →
+                    </a>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
