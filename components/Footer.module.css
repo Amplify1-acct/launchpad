@@ -1,0 +1,44 @@
+.footer {
+  background: var(--navy);
+  color: #94a3b8;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.logo {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.logo span {
+  color: var(--gold);
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.links a {
+  font-size: 13px;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.links a:hover {
+  color: white;
+}
+
+.copy {
+  font-size: 12px;
+  color: #475569;
+}
