@@ -8,10 +8,87 @@ const industries = [
   "Gym & Fitness", "Restaurant", "Photography", "Landscaping", "Auto Repair",
 ];
 
+const designStyles = [
+  {
+    id: "minimal",
+    name: "Modern & Minimal",
+    desc: "Clean whites, lots of space",
+    preview: "bg-white text",
+    icon: "◻",
+  },
+  {
+    id: "bold",
+    name: "Bold & Dark",
+    desc: "Navy/black, dramatic",
+    preview: "bg-navy text",
+    icon: "◼",
+  },
+  {
+    id: "warm",
+    name: "Warm & Friendly",
+    desc: "Earthy tones, approachable",
+    preview: "bg-warm text",
+    icon: "◈",
+  },
+];
+
+const themes: Record<string, {
+  bg: string; bg2: string; bg3: string; nav: string; navText: string;
+  hero: string; heroText: string; heroSub: string; heroBtn: string; heroBtnText: string;
+  heroBtnOut: string; heroBtnOutText: string; statBg: string; statText: string; statLabel: string;
+  serviceBg: string; serviceBorder: string; serviceTitle: string; serviceText: string; serviceIcon: string;
+  testimonialBg: string; testimonialBorder: string; testimonialText: string; testimonialAuthor: string;
+  ctaBg: string; ctaText: string; ctaBtn: string; ctaBtnText: string;
+  footerBg: string; footerText: string; footerLink: string;
+  badge: string; badgeText: string; stars: string;
+}> = {
+  minimal: {
+    bg: "#ffffff", bg2: "#f8faff", bg3: "#f1f5f9",
+    nav: "#ffffff", navText: "#0d1b2a",
+    hero: "linear-gradient(135deg, #f8faff 0%, #eff6ff 100%)",
+    heroText: "#0d1b2a", heroSub: "#475569",
+    heroBtn: "#2563eb", heroBtnText: "#ffffff",
+    heroBtnOut: "transparent", heroBtnOutText: "#2563eb",
+    statBg: "#ffffff", statText: "#0d1b2a", statLabel: "#94a3b8",
+    serviceBg: "#ffffff", serviceBorder: "#e5e7eb", serviceTitle: "#0d1b2a", serviceText: "#64748b", serviceIcon: "#2563eb",
+    testimonialBg: "#f8faff", testimonialBorder: "#2563eb", testimonialText: "#1e293b", testimonialAuthor: "#64748b",
+    ctaBg: "#0d1b2a", ctaText: "#ffffff", ctaBtn: "#2563eb", ctaBtnText: "#ffffff",
+    footerBg: "#f1f5f9", footerText: "#64748b", footerLink: "#94a3b8",
+    badge: "#eff6ff", badgeText: "#2563eb", stars: "#f59e0b",
+  },
+  bold: {
+    bg: "#0d1117", bg2: "#161b22", bg3: "#1c2128",
+    nav: "#0d1117", navText: "#ffffff",
+    hero: "linear-gradient(135deg, #0d1117 0%, #1a2e44 100%)",
+    heroText: "#ffffff", heroSub: "#94a3b8",
+    heroBtn: "#2563eb", heroBtnText: "#ffffff",
+    heroBtnOut: "transparent", heroBtnOutText: "#ffffff",
+    statBg: "rgba(255,255,255,0.05)", statText: "#ffffff", statLabel: "#475569",
+    serviceBg: "#161b22", serviceBorder: "#30363d", serviceTitle: "#e2e8f0", serviceText: "#8b949e", serviceIcon: "#60a5fa",
+    testimonialBg: "#161b22", testimonialBorder: "#2563eb", testimonialText: "#e2e8f0", testimonialAuthor: "#8b949e",
+    ctaBg: "#1a2e44", ctaText: "#ffffff", ctaBtn: "#2563eb", ctaBtnText: "#ffffff",
+    footerBg: "#0d1117", footerText: "#6e7681", footerLink: "#8b949e",
+    badge: "rgba(37,99,235,0.2)", badgeText: "#60a5fa", stars: "#f59e0b",
+  },
+  warm: {
+    bg: "#fffbf5", bg2: "#fef3e2", bg3: "#fde8c8",
+    nav: "#fffbf5", navText: "#292524",
+    hero: "linear-gradient(135deg, #fef3e2 0%, #fde8c8 100%)",
+    heroText: "#292524", heroSub: "#78716c",
+    heroBtn: "#d97706", heroBtnText: "#ffffff",
+    heroBtnOut: "transparent", heroBtnOutText: "#d97706",
+    statBg: "#ffffff", statText: "#292524", statLabel: "#a8a29e",
+    serviceBg: "#ffffff", serviceBorder: "#e7e5e4", serviceTitle: "#292524", serviceText: "#78716c", serviceIcon: "#d97706",
+    testimonialBg: "#fef3e2", testimonialBorder: "#d97706", testimonialText: "#292524", testimonialAuthor: "#78716c",
+    ctaBg: "#292524", ctaText: "#ffffff", ctaBtn: "#d97706", ctaBtnText: "#ffffff",
+    footerBg: "#1c1917", footerText: "#78716c", footerLink: "#57534e",
+    badge: "#fde8c8", badgeText: "#b45309", stars: "#d97706",
+  },
+};
+
 const industryData: Record<string, {
   color: string; accent: string; emoji: string; tagline: string; cta: string;
-  image: string;
-  services: string[]; stats: { num: string; label: string }[];
+  image: string; services: string[]; stats: { num: string; label: string }[];
   testimonial: { text: string; name: string; role: string };
   blogs: string[]; posts: string[]; pages: string[];
 }> = {
@@ -139,9 +216,112 @@ const industryData: Record<string, {
 
 type Phase = "idle" | "building" | "website" | "blog" | "social" | "done";
 
+function MockHomepage({ name, industry, data, themeId }: {
+  name: string; industry: string;
+  data: typeof industryData["Plumbing"]; themeId: string;
+}) {
+  const t = themes[themeId];
+  const s: React.CSSProperties = { fontFamily: "system-ui, sans-serif" };
+
+  return (
+    <div style={{ ...s, background: t.bg, fontSize: "10px", lineHeight: 1.5 }}>
+
+      {/* NAV */}
+      <div style={{ background: t.nav, padding: "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${t.serviceBorder}` }}>
+        <div style={{ fontWeight: 800, color: t.navText, fontSize: "12px" }}>{data.emoji} {name}</div>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          {data.pages.slice(0, 4).map((p, i) => (
+            <span key={i} style={{ color: t.navText, opacity: 0.7, fontSize: "9px" }}>{p}</span>
+          ))}
+          <span style={{ background: data.accent, color: "#fff", padding: "3px 8px", borderRadius: "4px", fontSize: "9px", fontWeight: 600 }}>{data.cta}</span>
+        </div>
+      </div>
+
+      {/* HERO */}
+      <div style={{ background: t.hero, padding: "22px 16px" }}>
+        <div style={{ display: "inline-block", background: t.badge, color: t.badgeText, fontSize: "8px", fontWeight: 700, padding: "2px 8px", borderRadius: "100px", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>{industry} Services</div>
+        <div style={{ fontSize: "17px", fontWeight: 800, color: t.heroText, marginBottom: "6px", lineHeight: 1.25 }}>{name}</div>
+        <div style={{ fontSize: "10px", color: t.heroSub, marginBottom: "12px", maxWidth: "280px", lineHeight: 1.6 }}>{data.tagline}</div>
+        <div style={{ display: "flex", gap: "6px", marginBottom: "16px" }}>
+          <span style={{ background: data.accent, color: "#fff", padding: "5px 12px", borderRadius: "5px", fontSize: "9px", fontWeight: 700 }}>{data.cta}</span>
+          <span style={{ border: `1px solid ${data.accent}`, color: data.accent, padding: "5px 12px", borderRadius: "5px", fontSize: "9px", fontWeight: 600 }}>Learn More</span>
+        </div>
+        {/* Stats */}
+        <div style={{ display: "flex", gap: "0", borderTop: `1px solid ${t.serviceBorder}`, paddingTop: "12px" }}>
+          {data.stats.map((st, i) => (
+            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? `1px solid ${t.serviceBorder}` : "none", padding: "0 8px" }}>
+              <div style={{ fontSize: "13px", fontWeight: 800, color: data.accent }}>{st.num}</div>
+              <div style={{ fontSize: "8px", color: t.statLabel, marginTop: "1px" }}>{st.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* HERO IMAGE */}
+      <div style={{ height: "100px", backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.25)" }} />
+      </div>
+
+      {/* SERVICES */}
+      <div style={{ padding: "16px", background: t.bg2 }}>
+        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>What We Offer</div>
+        <div style={{ fontSize: "13px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Our Services</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" }}>
+          {data.services.map((svc, i) => (
+            <div key={i} style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderTop: `2px solid ${data.accent}`, borderRadius: "6px", padding: "8px 10px" }}>
+              <div style={{ fontSize: "12px", marginBottom: "2px" }}>✦</div>
+              <div style={{ fontSize: "10px", fontWeight: 600, color: t.serviceTitle }}>{svc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* TESTIMONIAL */}
+      <div style={{ padding: "14px 16px", background: t.testimonialBg, borderLeft: `3px solid ${data.accent}`, margin: "0" }}>
+        <div style={{ color: t.stars, fontSize: "11px", marginBottom: "5px" }}>★★★★★</div>
+        <div style={{ fontSize: "10px", color: t.testimonialText, fontStyle: "italic", lineHeight: 1.6, marginBottom: "6px" }}>"{data.testimonial.text}"</div>
+        <div style={{ fontSize: "9px", color: t.testimonialAuthor, fontWeight: 600 }}>— {data.testimonial.name}, {data.testimonial.role}</div>
+      </div>
+
+      {/* BLOG PREVIEW */}
+      <div style={{ padding: "16px", background: t.bg }}>
+        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>From Our Blog</div>
+        <div style={{ fontSize: "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Latest Posts</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          {data.blogs.map((b, i) => (
+            <div key={i} style={{ display: "flex", gap: "8px", alignItems: "center", padding: "8px", background: t.bg2, borderRadius: "6px", border: `1px solid ${t.serviceBorder}` }}>
+              <div style={{ width: "20px", height: "20px", borderRadius: "5px", background: data.accent, color: "#fff", fontSize: "9px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ fontSize: "9px", color: t.serviceTitle, fontWeight: 500, lineHeight: 1.4 }}>{b}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA BANNER */}
+      <div style={{ padding: "20px 16px", background: t.ctaBg, textAlign: "center" }}>
+        <div style={{ fontSize: "13px", fontWeight: 800, color: t.ctaText, marginBottom: "6px" }}>Ready to get started?</div>
+        <div style={{ fontSize: "9px", color: t.ctaText, opacity: 0.7, marginBottom: "12px" }}>Contact us today for a free consultation.</div>
+        <span style={{ background: t.ctaBtn, color: t.ctaBtnText, padding: "6px 16px", borderRadius: "5px", fontSize: "9px", fontWeight: 700 }}>{data.cta} →</span>
+      </div>
+
+      {/* FOOTER */}
+      <div style={{ padding: "12px 16px", background: t.footerBg, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "10px", fontWeight: 700, color: t.footerText }}>{data.emoji} {name}</div>
+        <div style={{ display: "flex", gap: "8px" }}>
+          {data.pages.slice(0, 3).map((p, i) => (
+            <span key={i} style={{ fontSize: "8px", color: t.footerLink }}>{p}</span>
+          ))}
+        </div>
+        <div style={{ fontSize: "8px", color: t.footerLink }}>© 2026 {name}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function Demo() {
   const [businessName, setBusinessName] = useState("");
   const [industry, setIndustry] = useState("");
+  const [styleId, setStyleId] = useState("minimal");
   const [phase, setPhase] = useState<Phase>("idle");
   const [websiteProgress, setWebsiteProgress] = useState(0);
   const [blogProgress, setBlogProgress] = useState(0);
@@ -174,25 +354,26 @@ export default function Demo() {
     setWebsiteProgress(100);
     for (let i = 1; i <= data.pages.length; i++) { await new Promise(r => setTimeout(r, 70)); setVisiblePages(i); }
     const hl = name;
-    for (let i = 0; i <= hl.length; i++) { await new Promise(r => setTimeout(r, 45)); setTypedHeadline(hl.slice(0, i)); }
-    for (let i = 1; i <= 4; i++) { await new Promise(r => setTimeout(r, 350)); setWebsiteSection(i); }
-    await new Promise(r => setTimeout(r, 500));
+    for (let i = 0; i <= hl.length; i++) { await new Promise(r => setTimeout(r, 40)); setTypedHeadline(hl.slice(0, i)); }
+    for (let i = 1; i <= 4; i++) { await new Promise(r => setTimeout(r, 300)); setWebsiteSection(i); }
+    await new Promise(r => setTimeout(r, 400));
 
     setPhase("blog");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setBlogProgress(i); }
     setBlogProgress(100);
-    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 380)); setVisibleBlogs(i); }
+    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 350)); setVisibleBlogs(i); }
     await new Promise(r => setTimeout(r, 400));
 
     setPhase("social");
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setSocialProgress(i); }
     setSocialProgress(100);
-    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 320)); setVisibleSocial(i); }
+    for (let i = 1; i <= 3; i++) { await new Promise(r => setTimeout(r, 300)); setVisibleSocial(i); }
     await new Promise(r => setTimeout(r, 400));
     setPhase("done");
   };
 
   const canRun = businessName.trim().length > 1 && industry.length > 0;
+  const t = themes[styleId];
 
   return (
     <section className={styles.section}>
@@ -200,23 +381,79 @@ export default function Demo() {
         <div className={styles.header}>
           <p className={styles.label}>See it in action</p>
           <h2 className={styles.title}>Watch your business go live<br />in under 60 seconds</h2>
-          <p className={styles.sub}>Type your business name, pick your industry, and watch us build your entire digital presence in real time.</p>
+          <p className={styles.sub}>Enter your details, pick a design style, and watch us build your entire digital presence in real time.</p>
         </div>
 
-        <div className={styles.inputRow}>
-          <input className={styles.input} type="text" placeholder="e.g. Mike's Plumbing" value={businessName}
-            onChange={e => setBusinessName(e.target.value)} disabled={phase !== "idle" && phase !== "done"} maxLength={40}
-            onKeyDown={e => e.key === "Enter" && canRun && runDemo()} />
-          <select className={styles.select} value={industry} onChange={e => setIndustry(e.target.value)} disabled={phase !== "idle" && phase !== "done"}>
-            <option value="">Pick your industry</option>
-            {industries.map(i => <option key={i}>{i}</option>)}
-          </select>
-          <button className={`${styles.buildBtn} ${!canRun && phase === "idle" ? styles.disabled : ""}`}
-            onClick={phase === "done" ? reset : runDemo} disabled={!canRun && phase === "idle"}>
-            {phase === "idle" ? "⚡ Build my presence" : phase === "done" ? "↺ Try another" : "⏳ Building..."}
+        {/* STEP 1: Business info */}
+        <div className={styles.setupRow}>
+          <div className={styles.setupStep}>
+            <div className={styles.setupStepNum}>1</div>
+            <div className={styles.setupStepLabel}>Your business</div>
+          </div>
+          <div className={styles.inputPair}>
+            <input className={styles.input} type="text" placeholder="e.g. Mike's Plumbing" value={businessName}
+              onChange={e => setBusinessName(e.target.value)} disabled={phase !== "idle" && phase !== "done"} maxLength={40}
+              onKeyDown={e => e.key === "Enter" && canRun && runDemo()} />
+            <select className={styles.select} value={industry} onChange={e => setIndustry(e.target.value)} disabled={phase !== "idle" && phase !== "done"}>
+              <option value="">Pick your industry</option>
+              {industries.map(i => <option key={i}>{i}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {/* STEP 2: Design style */}
+        <div className={styles.setupRow}>
+          <div className={styles.setupStep}>
+            <div className={styles.setupStepNum}>2</div>
+            <div className={styles.setupStepLabel}>Choose a style</div>
+          </div>
+          <div className={styles.styleGrid}>
+            {designStyles.map(ds => (
+              <button
+                key={ds.id}
+                className={`${styles.styleCard} ${styleId === ds.id ? styles.styleCardActive : ""}`}
+                onClick={() => setStyleId(ds.id)}
+                disabled={phase !== "idle" && phase !== "done"}
+              >
+                <div className={styles.stylePreview} style={{
+                  background: ds.id === "minimal" ? "#ffffff" : ds.id === "bold" ? "#0d1117" : "#fef3e2",
+                  border: `2px solid ${ds.id === "minimal" ? "#e5e7eb" : ds.id === "bold" ? "#30363d" : "#fde8c8"}`,
+                }}>
+                  <div style={{ width: "100%", height: "8px", background: ds.id === "minimal" ? "#ffffff" : ds.id === "bold" ? "#161b22" : "#fffbf5", borderBottom: `1px solid ${ds.id === "minimal" ? "#e5e7eb" : ds.id === "bold" ? "#30363d" : "#e7e5e4"}`, marginBottom: "4px" }} />
+                  <div style={{ padding: "0 6px", display: "flex", flexDirection: "column", gap: "3px" }}>
+                    <div style={{ width: "60%", height: "5px", borderRadius: "2px", background: ds.id === "minimal" ? "#0d1b2a" : ds.id === "bold" ? "#e2e8f0" : "#292524", opacity: 0.8 }} />
+                    <div style={{ width: "80%", height: "3px", borderRadius: "2px", background: ds.id === "minimal" ? "#94a3b8" : ds.id === "bold" ? "#8b949e" : "#a8a29e" }} />
+                    <div style={{ display: "flex", gap: "3px", marginTop: "2px" }}>
+                      <div style={{ width: "28px", height: "8px", borderRadius: "2px", background: ds.id === "minimal" ? "#2563eb" : ds.id === "bold" ? "#2563eb" : "#d97706" }} />
+                      <div style={{ width: "22px", height: "8px", borderRadius: "2px", border: `1px solid ${ds.id === "minimal" ? "#2563eb" : ds.id === "bold" ? "#4a5568" : "#d97706"}`, background: "transparent" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.styleInfo}>
+                  <div className={styles.styleName}>{ds.name}</div>
+                  <div className={styles.styleDesc}>{ds.desc}</div>
+                </div>
+                {styleId === ds.id && <div className={styles.styleCheck}>✓</div>}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* BUILD BUTTON */}
+        <div className={styles.buildRow}>
+          <button
+            className={`${styles.buildBtn} ${!canRun && phase === "idle" ? styles.disabled : ""}`}
+            onClick={phase === "done" ? reset : runDemo}
+            disabled={!canRun && phase === "idle"}
+          >
+            {phase === "idle" ? "⚡ Build my presence" : phase === "done" ? "↺ Try another business" : "⏳ Building..."}
           </button>
+          {!canRun && phase === "idle" && (
+            <div className={styles.buildHint}>Enter your business name and industry to get started</div>
+          )}
         </div>
 
+        {/* DEMO OUTPUT */}
         {phase !== "idle" && (
           <div className={styles.demoArea} ref={demoRef}>
             <div className={styles.demoGrid}>
@@ -228,95 +465,82 @@ export default function Demo() {
                     {websiteProgress === 100 ? "✓" : "🌐"}
                   </div>
                   <span className={styles.stepTitle}>Your website</span>
-                  <div className={styles.progressPill} style={{ marginLeft: "auto" }}>{websiteProgress}%</div>
+                  {phase === "done" && (
+                    <div className={styles.styleToggle}>
+                      {designStyles.map(ds => (
+                        <button
+                          key={ds.id}
+                          className={`${styles.styleToggleBtn} ${styleId === ds.id ? styles.styleToggleBtnActive : ""}`}
+                          onClick={() => setStyleId(ds.id)}
+                          title={ds.name}
+                        >
+                          {ds.name.split(" ")[0]}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className={styles.progressPill} style={{ marginLeft: phase === "done" ? "0" : "auto" }}>{websiteProgress}%</div>
                 </div>
                 <div className={styles.progressBar}>
                   <div className={styles.progressFill} style={{ width: `${websiteProgress}%`, background: "#2563eb" }} />
                 </div>
 
+                {/* BROWSER */}
                 <div className={styles.browser}>
                   <div className={styles.browserChrome}>
                     <div className={styles.browserDots}><span /><span /><span /></div>
                     <div className={styles.browserUrl}>{websiteProgress > 0 ? `${name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com` : "generating..."}</div>
                     <div className={styles.browserActions}>↺ ⋯</div>
                   </div>
-                  <div className={styles.browserBody}>
+                  <div className={styles.browserBody} style={{ maxHeight: "480px", overflowY: "auto" }}>
                     {websiteProgress === 0 && (
                       <div className={styles.buildingScreen}>
                         <div className={styles.buildingDot} /><div className={styles.buildingDot} /><div className={styles.buildingDot} />
                       </div>
                     )}
-                    {websiteProgress > 0 && (
-                      <div className={styles.siteWrap}>
-                        <div className={styles.siteNav} style={{ background: data.color }}>
-                          <div className={styles.siteLogo}>{data.emoji} {typedHeadline || "​"}</div>
-                          <div className={styles.siteNavLinks}>
+                    {websiteProgress === 100 && websiteSection >= 4 ? (
+                      <MockHomepage name={name} industry={industry} data={data} themeId={styleId} />
+                    ) : websiteProgress > 0 ? (
+                      <div style={{ fontFamily: "system-ui", background: t.bg, fontSize: "10px" }}>
+                        {/* Building state - partial site */}
+                        <div style={{ background: t.nav, padding: "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${t.serviceBorder}` }}>
+                          <div style={{ fontWeight: 800, color: t.navText, fontSize: "12px" }}>{data.emoji} {typedHeadline || "​"}<span style={{ animation: "blink 0.8s infinite", color: data.accent }}>|</span></div>
+                          <div style={{ display: "flex", gap: "8px" }}>
                             {data.pages.slice(0, visiblePages).map((p, i) => (
-                              <span key={i} className={`${styles.siteNavLink} ${i === data.pages.length - 1 ? styles.siteNavCta : ""}`}
-                                style={i === data.pages.length - 1 ? { background: data.accent } : {}}>{p}</span>
+                              <span key={i} style={{ color: t.navText, opacity: 0.7, fontSize: "9px" }}>{p}</span>
                             ))}
                           </div>
                         </div>
-
                         {websiteSection >= 1 && (
-                          <div className={styles.siteHero}>
-                            <div className={styles.siteHeroImg}
-                              style={{ backgroundImage: `url(${data.image})` }}>
-                              <div className={styles.siteHeroOverlay} style={{ background: `linear-gradient(135deg, ${data.color}ee 0%, ${data.color}99 60%, transparent 100%)` }} />
-                              <div className={styles.siteHeroContent}>
-                                <div className={styles.siteHeroBadge} style={{ borderColor: `${data.accent}80`, color: data.accent }}>{industry} Services</div>
-                                <h1 className={styles.siteHeroH1}>{name}</h1>
-                                <p className={styles.siteHeroSub}>{data.tagline}</p>
-                                <div className={styles.siteHeroBtns}>
-                                  <div className={styles.siteHeroBtn} style={{ background: data.accent }}>{data.cta}</div>
-                                  <div className={styles.siteHeroBtnOut}>Learn More</div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className={styles.siteHeroStats} style={{ background: data.color }}>
-                              {data.stats.map((s, i) => (
-                                <div key={i} className={styles.siteStat}>
-                                  <div className={styles.siteStatNum}>{s.num}</div>
-                                  <div className={styles.siteStatLabel}>{s.label}</div>
-                                </div>
-                              ))}
+                          <div style={{ background: t.hero, padding: "22px 16px" }}>
+                            <div style={{ fontSize: "17px", fontWeight: 800, color: t.heroText, marginBottom: "6px" }}>{name}</div>
+                            <div style={{ fontSize: "10px", color: t.heroSub, marginBottom: "12px", maxWidth: "280px", lineHeight: 1.6 }}>{data.tagline}</div>
+                            <div style={{ display: "flex", gap: "6px" }}>
+                              <span style={{ background: data.accent, color: "#fff", padding: "5px 12px", borderRadius: "5px", fontSize: "9px", fontWeight: 700 }}>{data.cta}</span>
                             </div>
                           </div>
                         )}
-
                         {websiteSection >= 2 && (
-                          <div className={styles.siteServices}>
-                            <div className={styles.siteSectionTitle}>What We Offer</div>
-                            <div className={styles.siteServicesGrid}>
-                              {data.services.map((s, i) => (
-                                <div key={i} className={styles.siteServiceCard} style={{ borderTop: `2px solid ${data.accent}` }}>
-                                  <div className={styles.siteServiceDot} style={{ background: data.accent }} />
-                                  <div className={styles.siteServiceName}>{s}</div>
-                                </div>
+                          <div style={{ height: "80px", backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                        )}
+                        {websiteSection >= 3 && (
+                          <div style={{ padding: "12px 14px", background: t.bg2 }}>
+                            <div style={{ fontSize: "11px", fontWeight: 700, color: t.serviceTitle, marginBottom: "8px" }}>Our Services</div>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px" }}>
+                              {data.services.map((svc, i) => (
+                                <div key={i} style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderTop: `2px solid ${data.accent}`, borderRadius: "5px", padding: "6px 8px", fontSize: "9px", color: t.serviceTitle, fontWeight: 600 }}>{svc}</div>
                               ))}
                             </div>
                           </div>
                         )}
-
-                        {websiteSection >= 3 && (
-                          <div className={styles.siteReview} style={{ borderLeft: `3px solid ${data.accent}` }}>
-                            <div className={styles.siteReviewStars} style={{ color: data.accent }}>★★★★★</div>
-                            <p className={styles.siteReviewText}>"{data.testimonial.text}"</p>
-                            <div className={styles.siteReviewAuthor}>— {data.testimonial.name}, {data.testimonial.role}</div>
-                          </div>
-                        )}
-
                         {websiteSection >= 4 && (
-                          <div className={styles.siteFooter} style={{ background: data.color }}>
-                            <div className={styles.siteFooterLogo}>{data.emoji} {name}</div>
-                            <div className={styles.siteFooterLinks}>
-                              {data.pages.slice(0, 4).map((p, i) => <span key={i}>{p}</span>)}
-                            </div>
-                            <div className={styles.siteFooterCopy}>© 2026 {name}. All rights reserved.</div>
+                          <div style={{ padding: "10px 14px", background: t.testimonialBg, borderLeft: `3px solid ${data.accent}` }}>
+                            <div style={{ color: t.stars, fontSize: "10px", marginBottom: "4px" }}>★★★★★</div>
+                            <div style={{ fontSize: "9px", color: t.testimonialText, fontStyle: "italic" }}>"{data.testimonial.text}"</div>
                           </div>
                         )}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -366,107 +590,56 @@ export default function Demo() {
                   {socialProgress === 0 && phase !== "social" && <div className={styles.waitingMsg}>Queued — starts after blog posts</div>}
                   {socialProgress === 100 && (
                     <div className={styles.socialList}>
-
-                      {/* FACEBOOK POST */}
                       {visibleSocial >= 1 && (
                         <div className={styles.fbCard}>
-                          <div className={styles.fbHeader}>
-                            <div className={styles.fbLogo}>f</div>
-                            <span className={styles.fbPlatform}>Facebook</span>
-                          </div>
+                          <div className={styles.fbHeader}><div className={styles.fbLogo}>f</div><span className={styles.fbPlatform}>Facebook</span></div>
                           <div className={styles.fbPost}>
-                            <div className={styles.fbAvatar} style={{ background: data.accent }}>
-                              {name.charAt(0)}
-                            </div>
+                            <div className={styles.fbAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div>
                             <div className={styles.fbBody}>
-                              <div className={styles.fbName}>{name}
-                                <span className={styles.fbBadge}>✓</span>
-                              </div>
+                              <div className={styles.fbName}>{name}<span className={styles.fbBadge}>✓</span></div>
                               <div className={styles.fbTime}>Just now · 🌐</div>
                               <div className={styles.fbText}>{data.posts[0]}</div>
-                              <div className={styles.fbImage} style={{
-                                backgroundImage: `url(${data.image})`,
-                                backgroundSize: "cover", backgroundPosition: "center"
-                              }} />
-                              <div className={styles.fbActions}>
-                                <span>👍 Like</span>
-                                <span>💬 Comment</span>
-                                <span>↗ Share</span>
-                              </div>
+                              <div className={styles.fbImage} style={{ backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                              <div className={styles.fbActions}><span>👍 Like</span><span>💬 Comment</span><span>↗ Share</span></div>
                             </div>
                           </div>
                         </div>
                       )}
-
-                      {/* INSTAGRAM POST */}
                       {visibleSocial >= 2 && (
                         <div className={styles.igCard}>
                           <div className={styles.igHeader}>
-                            <div className={styles.igLogo}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            </div>
+                            <div className={styles.igLogo}><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
                             <span className={styles.igPlatform}>Instagram</span>
                           </div>
                           <div className={styles.igPost}>
                             <div className={styles.igTopBar}>
-                              <div className={styles.igAvatarWrap}>
-                                <div className={styles.igAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div>
-                              </div>
-                              <div className={styles.igHandle}>
-                                <div className={styles.igName}>{name.toLowerCase().replace(/\s+/g, "_")}</div>
-                                <div className={styles.igSub}>Sponsored</div>
-                              </div>
+                              <div className={styles.igAvatarWrap}><div className={styles.igAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div></div>
+                              <div className={styles.igHandle}><div className={styles.igName}>{name.toLowerCase().replace(/\s+/g, "_")}</div><div className={styles.igSub}>Sponsored</div></div>
                               <div className={styles.igMore}>···</div>
                             </div>
-                            <div className={styles.igImg} style={{
-                              backgroundImage: `url(${data.image})`,
-                              backgroundSize: "cover", backgroundPosition: "center"
-                            }} />
+                            <div className={styles.igImg} style={{ backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center" }} />
                             <div className={styles.igFooter}>
-                              <div className={styles.igReactions}>
-                                <span>❤️</span><span>💬</span><span>✈️</span>
-                                <span style={{ marginLeft: "auto" }}>🔖</span>
-                              </div>
+                              <div className={styles.igReactions}><span>❤️</span><span>💬</span><span>✈️</span><span style={{ marginLeft: "auto" }}>🔖</span></div>
                               <div className={styles.igLikes}>127 likes</div>
-                              <div className={styles.igCaption}>
-                                <strong>{name.toLowerCase().replace(/\s+/g, "_")}</strong> {data.posts[1]}
-                              </div>
+                              <div className={styles.igCaption}><strong>{name.toLowerCase().replace(/\s+/g, "_")}</strong> {data.posts[1]}</div>
                             </div>
                           </div>
                         </div>
                       )}
-
-                      {/* LINKEDIN POST */}
                       {visibleSocial >= 3 && (
                         <div className={styles.liCard}>
-                          <div className={styles.liHeader}>
-                            <div className={styles.liLogo}>in</div>
-                            <span className={styles.liPlatform}>LinkedIn</span>
-                          </div>
+                          <div className={styles.liHeader}><div className={styles.liLogo}>in</div><span className={styles.liPlatform}>LinkedIn</span></div>
                           <div className={styles.liPost}>
                             <div className={styles.liTopBar}>
                               <div className={styles.liAvatar} style={{ background: data.accent }}>{name.charAt(0)}</div>
-                              <div>
-                                <div className={styles.liName}>{name}</div>
-                                <div className={styles.liSub}>Local Business · 1st</div>
-                                <div className={styles.liTime}>Just now · 🌐</div>
-                              </div>
+                              <div><div className={styles.liName}>{name}</div><div className={styles.liSub}>Local Business · 1st</div><div className={styles.liTime}>Just now · 🌐</div></div>
                             </div>
                             <div className={styles.liText}>{data.posts[2]}</div>
-                            <div className={styles.liImg} style={{
-                              backgroundImage: `url(${data.image})`,
-                              backgroundSize: "cover", backgroundPosition: "center"
-                            }} />
-                            <div className={styles.liActions}>
-                              <span>👍 Like</span>
-                              <span>💬 Comment</span>
-                              <span>🔁 Repost</span>
-                              <span>✉️ Send</span>
-                            </div>
+                            <div className={styles.liImg} style={{ backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                            <div className={styles.liActions}><span>👍 Like</span><span>💬 Comment</span><span>🔁 Repost</span><span>✉️ Send</span></div>
                           </div>
                         </div>
                       )}
-
                     </div>
                   )}
                 </div>
@@ -490,15 +663,10 @@ export default function Demo() {
                   </button>
                 </div>
 
-                {/* SAMPLE BLOG POSTS FOR THIS INDUSTRY */}
                 <div className={styles.sampleBlogs}>
                   <div className={styles.sampleBlogsHeader}>
-                    <div className={styles.sampleBlogsTitle}>
-                      📝 Here's a sample of the blog posts we'd write for {name}
-                    </div>
-                    <div className={styles.sampleBlogsSub}>
-                      Every week, a fully written SEO-optimized post — published automatically to your site.
-                    </div>
+                    <div className={styles.sampleBlogsTitle}>📝 Here&apos;s a sample of the blog posts we&apos;d write for {name}</div>
+                    <div className={styles.sampleBlogsSub}>Every week, a fully written SEO-optimized post — published automatically to your site.</div>
                   </div>
                   <div className={styles.sampleBlogsList}>
                     {data.blogs.map((title: string, i: number) => (
@@ -506,17 +674,11 @@ export default function Demo() {
                         <div className={styles.sampleBlogNum}>{i + 1}</div>
                         <div className={styles.sampleBlogContent}>
                           <div className={styles.sampleBlogTitle}>{title}</div>
-                          <div className={styles.sampleBlogMeta}>
-                            <span>~800 words</span>
-                            <span>·</span>
-                            <span>SEO optimized</span>
-                            <span>·</span>
-                            <span>Auto-published Monday</span>
-                          </div>
+                          <div className={styles.sampleBlogMeta}><span>~800 words</span><span>·</span><span>SEO optimized</span><span>·</span><span>Auto-published Monday</span></div>
                           <div className={styles.sampleBlogPreview}>
-                            {i === 0 && `A practical guide for ${industry} customers covering everything they need to know — the kind of content that ranks on Google and brings new clients to your door every week.`}
-                            {i === 1 && `An educational post that positions ${name} as the local expert — written in your voice, tailored to your market, and ready to share on social media.`}
-                            {i === 2 && `A helpful resource your customers will actually search for — designed to drive organic traffic and convert readers into paying customers.`}
+                            {i === 0 && `A practical guide for ${industry} customers covering everything they need to know.`}
+                            {i === 1 && `An educational post that positions ${name} as the local expert.`}
+                            {i === 2 && `A helpful resource your customers will search for — drives organic traffic.`}
                           </div>
                         </div>
                       </div>
@@ -524,9 +686,7 @@ export default function Demo() {
                   </div>
                   <div className={styles.sampleBlogsNote}>
                     Want to see a full sample post?{" "}
-                    <a href="/blog/5-signs-you-need-a-new-water-heater" className={styles.sampleBlogsLink} target="_blank" rel="noreferrer">
-                      Read one here →
-                    </a>
+                    <a href="/blog/5-signs-you-need-a-new-water-heater" className={styles.sampleBlogsLink} target="_blank" rel="noreferrer">Read one here →</a>
                   </div>
                 </div>
               </>
