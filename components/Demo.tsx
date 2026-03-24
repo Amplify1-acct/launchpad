@@ -353,9 +353,9 @@ export default function Demo() {
   const [websiteSection, setWebsiteSection] = useState(0);
   const [typedHeadline, setTypedHeadline] = useState("");
   const [visiblePages, setVisiblePages] = useState(0);
+  const [aiGeneratedData, setAiGeneratedData] = useState<typeof industryData["Plumbing"] | null>(null);
   const demoRef = useRef<HTMLDivElement>(null);
 
-  const data = industryData[industry] || industryData["Plumbing"];
   const name = businessName || "Your Business";
 
   const reset = () => {
@@ -366,10 +366,61 @@ export default function Demo() {
   const runDemo = async () => {
     if (!businessName || !industry) return;
     const resolvedIndustry = effectiveIndustry;
+    setAiGeneratedData(null);
     reset();
     await new Promise(r => setTimeout(r, 50));
     demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setPhase("building");
+
+    // If industry not in our hardcoded list, generate custom data via Claude API
+    const hasHardcoded = !!industryData[resolvedIndustry] ||
+      Object.keys(industryData).some(k =>
+        k.toLowerCase().includes(resolvedIndustry.toLowerCase()) ||
+        resolvedIndustry.toLowerCase().includes(k.toLowerCase())
+      );
+
+    if (!hasHardcoded && resolvedIndustry.length > 2) {
+      try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 800,
+            messages: [{
+              role: "user",
+              content: `Generate website demo content for a small business: "${businessName}" which is a "${resolvedIndustry}".
+
+Return ONLY valid JSON with this exact structure:
+{
+  "color": "#1a1a2e",
+  "accent": "#7c3aed",
+  "emoji": "🥋",
+  "tagline": "one sentence tagline for this business",
+  "cta": "2-3 word CTA button text",
+  "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=300&fit=crop&auto=format",
+  "services": ["Service 1", "Service 2", "Service 3", "Service 4"],
+  "stats": [{"num": "200+", "label": "Students"}, {"num": "10yr", "label": "Experience"}, {"num": "5★", "label": "Rated"}],
+  "testimonial": {"text": "A genuine testimonial for this type of business", "name": "Customer Name", "role": "Customer type"},
+  "blogs": ["Blog post title 1", "Blog post title 2", "Blog post title 3"],
+  "posts": ["Social post 1 with emoji", "Social post 2 with emoji", "Social post 3 with emoji"],
+  "pages": ["Home", "Page2", "Page3", "Page4", "CTA Page"]
+}
+
+Use a relevant Unsplash photo URL for this business type. Pick an accent color that fits the industry vibe. Return ONLY the JSON, no other text.`
+            }]
+          })
+        });
+        const d = await res.json();
+        const text = d.content?.[0]?.text?.trim() || "";
+        const clean = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
+        const generated = JSON.parse(clean);
+        setAiGeneratedData(generated);
+      } catch (e) {
+        // Fall back to closest match silently
+      }
+    }
+
     await new Promise(r => setTimeout(r, 400));
     setPhase("website");
 
@@ -397,6 +448,14 @@ export default function Demo() {
 
   const isOther = industry === "Other (describe below)";
   const effectiveIndustry = isOther ? (aiIndustry || customIndustry) : industry;
+
+  // Find closest matching industry from our hardcoded list, or use AI-generated data
+  const closestIndustry = Object.keys(industryData).find(k =>
+    k.toLowerCase().includes(effectiveIndustry.toLowerCase()) ||
+    effectiveIndustry.toLowerCase().includes(k.toLowerCase())
+  );
+  const data = aiGeneratedData || industryData[closestIndustry || ""] || industryData["Plumbing"];
+
   const canRun = businessName.trim().length > 1 && industry.length > 0 && (!isOther || customIndustry.trim().length > 2);
 
   const handleCustomIndustryBlur = async () => {
