@@ -301,135 +301,220 @@ function MockHomepage({ name, industry, data, themeId, fullSize = false }: {
 }) {
   const t = themes[themeId];
   const s: React.CSSProperties = { fontFamily: "system-ui, sans-serif" };
-  const fs = fullSize ? "16px" : "10px";
-  const fsSm = fullSize ? "14px" : "9px";
+  const [carouselIdx, setCarouselIdx] = React.useState(0);
+  const fs   = fullSize ? "16px" : "10px";
+  const fsSm = fullSize ? "13px" : "9px";
   const fsMd = fullSize ? "15px" : "10px";
-  const fsLg = fullSize ? "24px" : "17px";
-  const pad = fullSize ? "28px 32px" : "22px 16px";
-  const padSm = fullSize ? "20px 24px" : "16px";
-  const padXs = fullSize ? "16px 24px" : "12px 14px";
+  const fsLg = fullSize ? "28px" : "18px";
+  const pad  = fullSize ? "36px 40px" : "18px 16px";
+  const padSm = fullSize ? "24px 32px" : "14px 16px";
+  const gap  = fullSize ? "12px" : "6px";
+
+  // Generate 3 fake testimonials from the one real one
+  const testimonials = [
+    { text: data.testimonial.text, name: data.testimonial.name, role: data.testimonial.role },
+    { text: `Absolutely the best in the area. ${data.testimonial.name} was right — ${name} delivers every single time.`, name: "Chris R.", role: "Repeat Customer" },
+    { text: `I referred three friends already. The quality and service are unmatched. Highly recommend!`, name: "Sarah K.", role: "Loyal Customer" },
+  ];
+
+  const features = [
+    { icon: "⚡", title: "Fast Turnaround", desc: "Quick service without cutting corners" },
+    { icon: "🏆", title: "Top Rated", desc: "5 stars across all review platforms" },
+    { icon: "💰", title: "Fair Pricing", desc: "Transparent quotes, no surprises" },
+    { icon: "🛡️", title: "Guaranteed", desc: "We stand behind every job we do" },
+  ];
+
+  const steps = [
+    { num: "1", label: "Contact Us" },
+    { num: "2", label: "Get a Quote" },
+    { num: "3", label: "We Do the Work" },
+    { num: "4", label: "You're Happy" },
+  ];
 
   return (
     <div style={{ ...s, background: t.bg, fontSize: fs, lineHeight: 1.5 }}>
 
       {/* NAV */}
-      <div style={{ background: t.nav, padding: fullSize ? "14px 28px" : "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${t.serviceBorder}` }}>
+      <div style={{ background: t.nav, padding: fullSize ? "14px 32px" : "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${t.serviceBorder}`, position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ fontWeight: 800, color: t.navText, fontSize: fullSize ? "18px" : "12px" }}>{data.emoji} {name}</div>
-        <div style={{ display: "flex", gap: fullSize ? "20px" : "10px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: fullSize ? "24px" : "10px", alignItems: "center" }}>
           {data.pages.slice(0, 4).map((p, i) => (
             <span key={i} style={{ color: t.navText, opacity: 0.7, fontSize: fsSm }}>{p}</span>
           ))}
-          <span style={{ background: data.accent, color: "#fff", padding: fullSize ? "8px 16px" : "3px 8px", borderRadius: "4px", fontSize: fsSm, fontWeight: 600 }}>{data.cta}</span>
+          <span style={{ background: data.accent, color: "#fff", padding: fullSize ? "8px 18px" : "3px 8px", borderRadius: "4px", fontSize: fsSm, fontWeight: 700 }}>{data.cta}</span>
         </div>
       </div>
 
       {/* HERO */}
       <div style={{ background: t.hero, padding: pad }}>
-        <div style={{ display: "inline-block", background: t.badge, color: t.badgeText, fontSize: fsSm, fontWeight: 700, padding: "2px 8px", borderRadius: "100px", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Services</div>
-        <div style={{ fontSize: fsLg, fontWeight: 800, color: t.heroText, marginBottom: "6px", lineHeight: 1.25 }}>{name}</div>
-        <div style={{ fontSize: fsMd, color: t.heroSub, marginBottom: "12px", maxWidth: fullSize ? "600px" : "280px", lineHeight: 1.6 }}>{data.tagline}</div>
-        <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-          <span style={{ background: data.accent, color: "#fff", padding: fullSize ? "10px 24px" : "5px 12px", borderRadius: "5px", fontSize: fsMd, fontWeight: 700 }}>{data.cta}</span>
-          <span style={{ border: `1px solid ${data.accent}`, color: data.accent, padding: fullSize ? "10px 24px" : "5px 12px", borderRadius: "5px", fontSize: fsMd, fontWeight: 600 }}>Learn More</span>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "4px", background: t.badge, color: t.badgeText, fontSize: fsSm, fontWeight: 700, padding: "3px 10px", borderRadius: "100px", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <span>{data.emoji}</span> Trusted Local Experts
         </div>
-        {/* Stats */}
-        <div style={{ display: "flex", gap: "0", borderTop: `1px solid ${t.serviceBorder}`, paddingTop: "12px" }}>
+        <div style={{ fontSize: fsLg, fontWeight: 900, color: t.heroText, marginBottom: "8px", lineHeight: 1.2 }}>{name}</div>
+        <div style={{ fontSize: fsMd, color: t.heroSub, marginBottom: "14px", maxWidth: fullSize ? "560px" : "260px", lineHeight: 1.7 }}>{data.tagline}</div>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+          <span style={{ background: data.accent, color: "#fff", padding: fullSize ? "12px 28px" : "6px 14px", borderRadius: "6px", fontSize: fsMd, fontWeight: 700, boxShadow: `0 4px 12px ${data.accent}44` }}>{data.cta}</span>
+          <span style={{ border: `1.5px solid ${data.accent}`, color: data.accent, padding: fullSize ? "12px 28px" : "6px 14px", borderRadius: "6px", fontSize: fsMd, fontWeight: 600 }}>Our Work →</span>
+        </div>
+        {/* Stats bar */}
+        <div style={{ display: "flex", borderTop: `1px solid ${t.serviceBorder}`, paddingTop: "14px", gap: "0" }}>
           {data.stats.map((st, i) => (
-            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? `1px solid ${t.serviceBorder}` : "none", padding: "0 8px" }}>
-              <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: data.accent }}>{st.num}</div>
-              <div style={{ fontSize: fsSm, color: t.statLabel, marginTop: "1px" }}>{st.label}</div>
+            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? `1px solid ${t.serviceBorder}` : "none" }}>
+              <div style={{ fontSize: fullSize ? "26px" : "14px", fontWeight: 900, color: data.accent }}>{st.num}</div>
+              <div style={{ fontSize: fsSm, color: t.statLabel, marginTop: "2px" }}>{st.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* HERO IMAGE */}
-      <div style={{ height: fullSize ? "280px" : "100px", backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.25)" }} />
+      {/* HERO IMAGE with overlay text */}
+      <div style={{ height: fullSize ? "320px" : "110px", backgroundImage: `url(${data.image})`, backgroundSize: "cover", backgroundPosition: "center", position: "relative", display: "flex", alignItems: "flex-end" }}>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
+        <div style={{ position: "relative", zIndex: 1, padding: fullSize ? "24px 32px" : "8px 12px" }}>
+          <div style={{ color: "rgba(255,255,255,0.9)", fontSize: fsSm, fontWeight: 600, letterSpacing: "0.5px" }}>📍 Serving Your Local Area · Open Mon–Sat 8am–6pm</div>
+        </div>
+      </div>
+
+      {/* FEATURE BOXES - 4 icon cards */}
+      <div style={{ padding: padSm, background: t.bg }}>
+        <div style={{ textAlign: "center", marginBottom: fullSize ? "20px" : "10px" }}>
+          <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Why Choose Us</div>
+          <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle }}>The {name} Difference</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: gap }}>
+          {features.map((f, i) => (
+            <div key={i} style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderRadius: "8px", padding: fullSize ? "18px" : "10px", textAlign: "center" }}>
+              <div style={{ fontSize: fullSize ? "28px" : "16px", marginBottom: fullSize ? "8px" : "4px" }}>{f.icon}</div>
+              <div style={{ fontSize: fsMd, fontWeight: 700, color: t.serviceTitle, marginBottom: "3px" }}>{f.title}</div>
+              <div style={{ fontSize: fsSm, color: t.statLabel, lineHeight: 1.5 }}>{f.desc}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* SERVICES */}
       <div style={{ padding: padSm, background: t.bg2 }}>
         <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>What We Offer</div>
-        <div style={{ fontSize: fullSize ? "20px" : "13px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Our Services</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+        <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle, marginBottom: fullSize ? "16px" : "8px" }}>Our Services</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: gap }}>
           {data.services.map((svc, i) => (
-            <div key={i} style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderTop: `2px solid ${data.accent}`, borderRadius: "6px", padding: fullSize ? "14px 16px" : "8px 10px" }}>
-              <div style={{ fontSize: fullSize ? "18px" : "12px", marginBottom: "2px" }}>✦</div>
-              <div style={{ fontSize: fsMd, fontWeight: 600, color: t.serviceTitle }}>{svc}</div>
+            <div key={i} style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderTop: `3px solid ${data.accent}`, borderRadius: "8px", padding: fullSize ? "16px" : "8px 10px", display: "flex", alignItems: "flex-start", gap: fullSize ? "10px" : "5px" }}>
+              <div style={{ width: fullSize ? "24px" : "14px", height: fullSize ? "24px" : "14px", borderRadius: "50%", background: data.accent, color: "#fff", fontSize: fsSm, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "1px" }}>✓</div>
+              <div>
+                <div style={{ fontSize: fsMd, fontWeight: 700, color: t.serviceTitle }}>{svc}</div>
+                {fullSize && <div style={{ fontSize: "12px", color: t.statLabel, marginTop: "3px" }}>Professional service, guaranteed results</div>}
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* TESTIMONIAL */}
-      <div style={{ padding: padSm, background: t.testimonialBg, borderLeft: `3px solid ${data.accent}`, margin: "0" }}>
-        <div style={{ color: t.stars, fontSize: fullSize ? "18px" : "11px", marginBottom: "5px" }}>★★★★★</div>
-        <div style={{ fontSize: fsMd, color: t.testimonialText, fontStyle: "italic", lineHeight: 1.6, marginBottom: "6px" }}>"{data.testimonial.text}"</div>
-        <div style={{ fontSize: fsSm, color: t.testimonialAuthor, fontWeight: 600 }}>— {data.testimonial.name}, {data.testimonial.role}</div>
+      {/* HOW IT WORKS - process steps */}
+      <div style={{ padding: padSm, background: t.bg }}>
+        <div style={{ textAlign: "center", marginBottom: fullSize ? "20px" : "8px" }}>
+          <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Our Process</div>
+          <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle }}>How It Works</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: gap }}>
+          {steps.map((step, i) => (
+            <div key={i} style={{ textAlign: "center", position: "relative" }}>
+              {i < 3 && <div style={{ position: "absolute", top: fullSize ? "20px" : "12px", left: "60%", right: "-40%", height: "2px", background: `${data.accent}44` }} />}
+              <div style={{ width: fullSize ? "40px" : "24px", height: fullSize ? "40px" : "24px", borderRadius: "50%", background: data.accent, color: "#fff", fontSize: fsMd, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", marginBottom: fullSize ? "10px" : "4px", position: "relative", zIndex: 1 }}>{step.num}</div>
+              <div style={{ fontSize: fsSm, fontWeight: 600, color: t.serviceTitle, lineHeight: 1.3 }}>{step.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* TESTIMONIAL CAROUSEL */}
+      <div style={{ padding: padSm, background: t.testimonialBg }}>
+        <div style={{ textAlign: "center", marginBottom: fullSize ? "20px" : "8px" }}>
+          <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Reviews</div>
+          <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle }}>What Customers Say</div>
+        </div>
+        {/* Carousel card */}
+        <div style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderRadius: "10px", padding: fullSize ? "24px" : "12px", marginBottom: "10px" }}>
+          <div style={{ color: "#f59e0b", fontSize: fullSize ? "18px" : "11px", marginBottom: "6px" }}>★★★★★</div>
+          <div style={{ fontSize: fsMd, color: t.testimonialText, fontStyle: "italic", lineHeight: 1.7, marginBottom: "8px" }}>"{testimonials[carouselIdx].text}"</div>
+          <div style={{ fontSize: fsSm, color: t.testimonialAuthor, fontWeight: 700 }}>— {testimonials[carouselIdx].name}, <span style={{ fontWeight: 400, opacity: 0.7 }}>{testimonials[carouselIdx].role}</span></div>
+        </div>
+        {/* Carousel dots + arrows */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: fullSize ? "12px" : "6px" }}>
+          <button onClick={() => setCarouselIdx((carouselIdx - 1 + 3) % 3)} style={{ background: "none", border: `1px solid ${t.serviceBorder}`, borderRadius: "50%", width: fullSize ? "28px" : "16px", height: fullSize ? "28px" : "16px", cursor: "pointer", color: t.serviceTitle, fontSize: fsSm, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+          {[0, 1, 2].map(i => (
+            <div key={i} onClick={() => setCarouselIdx(i)} style={{ width: fullSize ? "8px" : "5px", height: fullSize ? "8px" : "5px", borderRadius: "50%", background: i === carouselIdx ? data.accent : t.serviceBorder, cursor: "pointer", transition: "all 0.2s" }} />
+          ))}
+          <button onClick={() => setCarouselIdx((carouselIdx + 1) % 3)} style={{ background: "none", border: `1px solid ${t.serviceBorder}`, borderRadius: "50%", width: fullSize ? "28px" : "16px", height: fullSize ? "28px" : "16px", cursor: "pointer", color: t.serviceTitle, fontSize: fsSm, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
+        </div>
       </div>
 
       {/* BLOG PREVIEW */}
-      <div style={{ padding: padSm, background: t.bg }}>
+      <div style={{ padding: padSm, background: t.bg2 }}>
         <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>From Our Blog</div>
-        <div style={{ fontSize: fullSize ? "20px" : "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Latest Posts</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle, marginBottom: fullSize ? "16px" : "8px" }}>Latest Articles</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: gap }}>
           {data.blogs.map((b, i) => (
-            <div key={i} style={{ display: "flex", gap: "10px", alignItems: "center", padding: fullSize ? "12px" : "8px", background: t.bg2, borderRadius: "6px", border: `1px solid ${t.serviceBorder}` }}>
-              <div style={{ width: fullSize ? "28px" : "20px", height: fullSize ? "28px" : "20px", borderRadius: "5px", background: data.accent, color: "#fff", fontSize: fsSm, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
-              <div style={{ fontSize: fsMd, color: t.serviceTitle, fontWeight: 500, lineHeight: 1.4 }}>{b}</div>
+            <div key={i} style={{ display: "flex", gap: fullSize ? "14px" : "8px", alignItems: "center", padding: fullSize ? "14px" : "8px", background: t.serviceBg, borderRadius: "8px", border: `1px solid ${t.serviceBorder}` }}>
+              <div style={{ width: fullSize ? "32px" : "18px", height: fullSize ? "32px" : "18px", borderRadius: "6px", background: data.accent, color: "#fff", fontSize: fsMd, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: fsMd, color: t.serviceTitle, fontWeight: 600, lineHeight: 1.4 }}>{b}</div>
+                {fullSize && <div style={{ fontSize: "12px", color: t.statLabel, marginTop: "3px" }}>5 min read · SEO optimized</div>}
+              </div>
+              <div style={{ fontSize: fsSm, color: data.accent, fontWeight: 600 }}>Read →</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* CTA BANNER */}
-      <div style={{ padding: "20px 16px", background: t.ctaBg, textAlign: "center" }}>
-        <div style={{ fontSize: "13px", fontWeight: 800, color: t.ctaText, marginBottom: "6px" }}>Ready to get started?</div>
-        <div style={{ fontSize: "9px", color: t.ctaText, opacity: 0.7, marginBottom: "12px" }}>Contact us today for a free consultation.</div>
-        <span style={{ background: t.ctaBtn, color: t.ctaBtnText, padding: "6px 16px", borderRadius: "5px", fontSize: "9px", fontWeight: 700 }}>{data.cta} →</span>
+      <div style={{ padding: fullSize ? "40px 32px" : "16px", background: t.ctaBg, textAlign: "center" }}>
+        <div style={{ fontSize: fullSize ? "26px" : "13px", fontWeight: 900, color: t.ctaText, marginBottom: "8px" }}>Ready to get started?</div>
+        <div style={{ fontSize: fsMd, color: t.ctaText, opacity: 0.8, marginBottom: fullSize ? "20px" : "10px" }}>Join {data.stats[0]?.num || "hundreds of"} happy customers. {data.cta} today.</div>
+        <span style={{ background: t.ctaBtn, color: t.ctaBtnText, padding: fullSize ? "14px 36px" : "7px 18px", borderRadius: "8px", fontSize: fsMd, fontWeight: 700, boxShadow: "0 4px 16px rgba(0,0,0,0.2)", display: "inline-block" }}>{data.cta} →</span>
       </div>
 
-      {/* WHY CHOOSE US */}
-      <div style={{ padding: "16px", background: t.bg2 }}>
-        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Why Us</div>
-        <div style={{ fontSize: "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Why Choose {name}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          {["Licensed & insured professionals", "5-star rated by 200+ customers", "Fast turnaround, fair pricing", "Free consultations available"].map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "9px", color: t.testimonialText }}>
-              <div style={{ width: "14px", height: "14px", borderRadius: "50%", background: data.accent, color: "#fff", fontSize: "8px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>✓</div>
-              {item}
+      {/* CONTACT FORM */}
+      <div style={{ padding: padSm, background: t.bg }}>
+        <div style={{ display: "grid", gridTemplateColumns: fullSize ? "1fr 1fr" : "1fr", gap: "16px" }}>
+          <div>
+            <div style={{ fontSize: fsSm, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Contact</div>
+            <div style={{ fontSize: fullSize ? "22px" : "13px", fontWeight: 800, color: t.serviceTitle, marginBottom: fullSize ? "12px" : "6px" }}>Get a Free Quote</div>
+            {fullSize && (
+              <div>
+                {["📞 (555) 123-4567", "✉️ hello@" + name.toLowerCase().replace(/[^a-z]/g, "") + ".com", "📍 Serving your local area"].map((item, i) => (
+                  <div key={i} style={{ fontSize: "14px", color: t.testimonialText, marginBottom: "8px" }}>{item}</div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: gap, marginBottom: gap }}>
+              {[{ label: "Name", ph: "Your name" }, { label: "Phone", ph: "(555) 000-0000" }, { label: "Email", ph: "you@email.com" }, { label: "Service", ph: "What do you need?" }].map((f, i) => (
+                <div key={i}>
+                  <div style={{ fontSize: fsSm, color: t.testimonialAuthor, marginBottom: "3px", fontWeight: 600 }}>{f.label}</div>
+                  <div style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderRadius: "5px", padding: fullSize ? "10px 12px" : "5px 8px", fontSize: fsSm, color: t.statLabel }}>{f.ph}</div>
+                </div>
+              ))}
             </div>
-          ))}
+            <div style={{ background: data.accent, color: "#fff", borderRadius: "6px", padding: fullSize ? "12px 24px" : "7px 14px", fontSize: fsMd, fontWeight: 700, display: "inline-block" }}>Send Message →</div>
+          </div>
         </div>
-      </div>
-
-      {/* CONTACT SECTION */}
-      <div style={{ padding: "16px", background: t.bg }}>
-        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Get In Touch</div>
-        <div style={{ fontSize: "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Contact Us</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "10px" }}>
-          {[{ label: "Name", ph: "Your name" }, { label: "Email", ph: "your@email.com" }, { label: "Phone", ph: "(555) 000-0000" }, { label: "Service", ph: "What do you need?" }].map((f, i) => (
-            <div key={i}>
-              <div style={{ fontSize: "8px", color: t.testimonialAuthor, marginBottom: "3px", fontWeight: 600 }}>{f.label}</div>
-              <div style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderRadius: "4px", padding: "5px 8px", fontSize: "8px", color: t.statLabel }}>{f.ph}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ background: data.accent, color: "#fff", borderRadius: "5px", padding: "7px 14px", fontSize: "9px", fontWeight: 700, display: "inline-block" }}>{data.cta} →</div>
       </div>
 
       {/* FOOTER */}
-      <div style={{ padding: "14px 16px", background: t.footerBg }}>
+      <div style={{ padding: fullSize ? "28px 32px" : "12px 16px", background: t.footerBg }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: t.footerText }}>{data.emoji} {name}</div>
-          <div style={{ display: "flex", gap: "10px" }}>
-            {data.pages.slice(0, 4).map((p, i) => (
-              <span key={i} style={{ fontSize: "8px", color: t.footerLink }}>{p}</span>
+          <div style={{ fontSize: fullSize ? "16px" : "11px", fontWeight: 800, color: t.footerText }}>{data.emoji} {name}</div>
+          <div style={{ display: "flex", gap: fullSize ? "20px" : "10px" }}>
+            {data.pages.map((p, i) => (
+              <span key={i} style={{ fontSize: fsSm, color: t.footerLink }}>{p}</span>
             ))}
           </div>
         </div>
-        <div style={{ borderTop: `1px solid rgba(255,255,255,0.1)`, paddingTop: "8px", fontSize: "8px", color: t.footerLink }}>© 2026 {name} · All rights reserved · Built by LaunchPad</div>
+        <div style={{ borderTop: `1px solid rgba(255,255,255,0.1)`, paddingTop: "8px", display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontSize: fsSm, color: t.footerLink }}>© 2026 {name} · All rights reserved</span>
+          <span style={{ fontSize: fsSm, color: t.footerLink, opacity: 0.6 }}>Built by LaunchPad</span>
+        </div>
       </div>
     </div>
   );
@@ -692,16 +777,14 @@ export default function Demo() {
 
                 {/* BROWSER */}
                 <div
-                  className={styles.browser}
+                  className={`${styles.browser} ${phase === "done" ? styles.browserClickable : ""}`}
                   onClick={() => phase === "done" && setModalOpen(true)}
-                  style={{ cursor: phase === "done" ? "pointer" : "default" }}
-                  title={phase === "done" ? "Click to view full screen" : ""}
                 >
                   <div className={styles.browserChrome}>
                     <div className={styles.browserDots}><span /><span /><span /></div>
                     <div className={styles.browserUrl}>{websiteProgress > 0 ? `${name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com` : "generating..."}</div>
                     <div className={styles.browserActions}>
-                      {phase === "done" && <span className={styles.expandHint}>⛶ Expand</span>}
+                      {phase === "done" && <span className={styles.expandHint}>⛶</span>}
                       ↺ ⋯
                     </div>
                   </div>
@@ -758,6 +841,17 @@ export default function Demo() {
                     </div>{/* /browserBodyInner */}
                   </div>{/* /browserBody */}
                 </div>{/* /browser */}
+
+                {/* EXPAND PROMPT */}
+                {phase === "done" && (
+                  <div
+                    className={styles.expandPrompt}
+                    onClick={() => setModalOpen(true)}
+                  >
+                    <span className={styles.expandPromptIcon}>⛶</span>
+                    <span>Click to view full website</span>
+                  </div>
+                )}
               </div>{/* /websiteWrap */}
 
               {/* BLOG + SOCIAL COLUMN */}
