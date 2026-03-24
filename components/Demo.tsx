@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./Demo.module.css";
 
 const industries = [
@@ -328,7 +328,7 @@ function MockHomepage({ name, industry, data, themeId, fullSize = false }: {
     { num: "1", label: "Contact Us" },
     { num: "2", label: "Get a Quote" },
     { num: "3", label: "We Do the Work" },
-    { num: "4", label: "You're Happy" },
+    { num: "4", label: "You're Done! 🎉" },
   ];
 
   return (
