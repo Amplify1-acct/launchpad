@@ -41,29 +41,38 @@ export default function OnboardingPage() {
 
       if (!customer) throw new Error("Customer record not found");
 
-      // Create business
+      // Upsert business (handles case where user already has one)
       const { data: business, error: bizError } = await supabase
         .from("businesses")
-        .insert({ customer_id: customer.id, name: bizName, description: bizDesc, city, state, phone })
+        .upsert(
+          { customer_id: customer.id, name: bizName, description: bizDesc, city, state, phone },
+          { onConflict: "customer_id" }
+        )
         .select("id")
         .single();
 
       if (bizError) throw bizError;
 
-      // Create subscription record (trialing)
-      await supabase.from("subscriptions").insert({
-        customer_id: customer.id,
-        plan,
-        status: "trialing",
-      });
+      // Upsert subscription record
+      await supabase.from("subscriptions").upsert(
+        { customer_id: customer.id, plan, status: "trialing" },
+        { onConflict: "customer_id" }
+      );
 
-      // Queue generation jobs
-      await supabase.from("generation_jobs").insert([
-        { business_id: business.id, type: "website", status: "pending" },
-        { business_id: business.id, type: "blog_post", status: "pending" },
-        { business_id: business.id, type: "social_posts", status: "pending" },
-        { business_id: business.id, type: "seo", status: "pending" },
-      ]);
+      // Queue generation jobs (only if not already queued)
+      const { data: existingJobs } = await supabase
+        .from("generation_jobs")
+        .select("type")
+        .eq("business_id", business.id);
+
+      const existingTypes = existingJobs?.map(j => j.type) || [];
+      const jobsToCreate = (["website", "blog_post", "social_posts", "seo"] as const)
+        .filter(type => !existingTypes.includes(type))
+        .map(type => ({ business_id: business.id, type, status: "pending" as const }));
+
+      if (jobsToCreate.length > 0) {
+        await supabase.from("generation_jobs").insert(jobsToCreate);
+      }
 
       router.push("/dashboard");
     } catch (err: any) {
