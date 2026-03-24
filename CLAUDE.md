@@ -312,13 +312,41 @@ social_accounts
 
 ---
 
-## How to Continue This Project in a New Session
+## Development Workflow
+
+### Branching strategy
+- `dev` branch → preview deploys (test here first)
+- `main` branch → production at launchpad-olive-omega.vercel.app
+
+### Push commands
+```bash
+python3 /home/claude/push_to_github.py        # push to dev (default, safe)
+python3 /home/claude/push_to_github.py main   # push to production
+```
+
+### What happens on every push
+1. GitHub Actions runs Playwright tests automatically
+2. Tests open a real browser and check every key feature
+3. If tests pass → Vercel deploys
+4. If tests fail → deploy is blocked, owner is notified
+5. Sentry catches any runtime errors that slip through
+
+### Quality checks before pushing to main
+- [ ] Pushed to dev first
+- [ ] Checked Vercel preview URL
+- [ ] GitHub Actions tests passed (green checkmark on GitHub)
+- [ ] No new Sentry errors
+
+### How to Continue This Project in a New Session
 
 1. Read this file top to bottom
 2. Check what's live: `launchpad-olive-omega.vercel.app`
 3. Check the repo: `github.com/Amplify1-acct/launchpad`
-4. The push script is at `/home/claude/push_to_github.py` — it has the GitHub token baked in
+4. Push script: `python3 /home/claude/push_to_github.py` (defaults to dev branch)
 5. Pick the next item from the roadmap and build it
+
+### Test files
+- `tests/homepage.spec.ts` — 15 Playwright tests covering all key flows
 
 **The owner of this project** is working with Claude as their sole developer. They are non-technical — explain decisions clearly, handle all code, push all changes. They review via the live site, not by reading code.
 
