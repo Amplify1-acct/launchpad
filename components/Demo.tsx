@@ -433,9 +433,7 @@ export default function Demo() {
     reset();
     await new Promise(r => setTimeout(r, 50));
     demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setPhase("building");
-
-    // Always generate with Claude API — description gives us rich context
+    // Always generate with Claude API FIRST before showing any animation
     // Only skip if description exactly matches a hardcoded industry name
     const industryToUse = resolvedIndustry;
     const exactMatch = industryData[resolvedIndustry];
@@ -482,12 +480,18 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
       }
     }
 
+    // NOW start the animation — data is ready
+    setPhase("building");
+
     // Build the active data using ref (immediately available) not state
     const closestKey = Object.keys(industryData).find(k =>
       industryToUse.toLowerCase().includes(k.toLowerCase()) ||
       k.toLowerCase().includes(industryToUse.toLowerCase())
     );
     const activeData = aiDataRef.current || exactMatch || (closestKey ? industryData[closestKey] : null) || industryData["Plumbing"];
+
+    // If we had an exact match, we skipped setPhase("building") above — set it now
+    if (exactMatch) setPhase("building");
 
     await new Promise(r => setTimeout(r, 400));
     setPhase("website");
