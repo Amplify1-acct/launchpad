@@ -17,8 +17,21 @@ export default async function DashboardPage() {
   const business = customer?.businesses?.[0] || null;
   const subscription = customer?.subscriptions?.[0] || null;
 
-  // If no business yet, redirect to onboarding
-  if (!business) redirect("/onboarding");
+  // If no business yet, show setup prompt (don't redirect - that causes loops)
+  if (!business) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-soft)" }}>
+        <div style={{ textAlign: "center", padding: "2rem" }}>
+          <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🚀</div>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", marginBottom: "0.5rem" }}>Let's set up your account</h2>
+          <p style={{ color: "var(--text-mid)", marginBottom: "1.5rem" }}>Tell us about your business to get started.</p>
+          <a href="/onboarding" style={{ padding: "0.75rem 1.5rem", background: "var(--black)", color: "white", borderRadius: "var(--radius-sm)", textDecoration: "none", fontWeight: 600 }}>
+            Complete setup →
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   // Fetch deliverables
   const { data: blogPosts } = await supabase

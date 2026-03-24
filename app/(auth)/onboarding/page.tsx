@@ -10,42 +10,14 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [checking, setChecking] = useState(true);
   const router = useRouter();
   const supabase = createClient();
 
-  // Check if business already exists — if so skip onboarding
-  React.useEffect(() => {
-    async function checkBusiness() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setChecking(false); return; }
-      const { data: customer } = await supabase.from("customers").select("id").eq("user_id", user.id).single();
-      if (!customer) { setChecking(false); return; }
-      const { data: biz } = await supabase.from("businesses").select("id").eq("customer_id", customer.id).single();
-      if (biz) { router.replace("/dashboard"); return; }
-      setChecking(false);
-    }
-    checkBusiness();
-  }, []);
-
-  if (checking) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-soft)" }}>
-        <div style={{ color: "var(--text-mid)", fontSize: "0.9rem" }}>Loading...</div>
-      </div>
-    );
-  }
-
-  // Step 1 — Business basics
   const [bizName, setBizName] = useState("");
   const [bizDesc, setBizDesc] = useState("");
-
-  // Step 2 — Contact details
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-
-  // Step 3 — Plan
+  const [stateName, setStateName] = useState("");
   const [plan, setPlan] = useState<"starter" | "growth" | "premium">("growth");
 
   async function handleFinish() {
@@ -55,44 +27,30 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Get customer record (auto-created by trigger on signup)
       const { data: customer } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
-
+        .from("customers").select("id").eq("user_id", user.id).single();
       if (!customer) throw new Error("Customer record not found");
 
-      // Upsert business (handles case where user already has one)
       const { data: business, error: bizError } = await supabase
         .from("businesses")
         .upsert(
-          { customer_id: customer.id, name: bizName, description: bizDesc, city, state, phone },
+          { customer_id: customer.id, name: bizName, description: bizDesc, city, state: stateName, phone },
           { onConflict: "customer_id" }
         )
-        .select("id")
-        .single();
-
+        .select("id").single();
       if (bizError) throw bizError;
 
-      // Upsert subscription record
       await supabase.from("subscriptions").upsert(
         { customer_id: customer.id, plan, status: "trialing" },
         { onConflict: "customer_id" }
       );
 
-      // Queue generation jobs (only if not already queued)
       const { data: existingJobs } = await supabase
-        .from("generation_jobs")
-        .select("type")
-        .eq("business_id", business.id);
-
-      const existingTypes = existingJobs?.map(j => j.type) || [];
+        .from("generation_jobs").select("type").eq("business_id", business.id);
+      const existingTypes = existingJobs?.map((j: any) => j.type) || [];
       const jobsToCreate = (["website", "blog_post", "social_posts", "seo"] as const)
         .filter(type => !existingTypes.includes(type))
         .map(type => ({ business_id: business.id, type, status: "pending" as const }));
-
       if (jobsToCreate.length > 0) {
         await supabase.from("generation_jobs").insert(jobsToCreate);
       }
@@ -109,7 +67,6 @@ export default function OnboardingPage() {
       <div className={styles.card}>
         <a href="/" className={styles.logo}>Launch<span>Pad</span></a>
 
-        {/* Progress */}
         <div className={styles.steps}>
           {steps.map((s, i) => (
             <div key={s} className={`${styles.stepItem} ${i === step ? styles.active : ""} ${i < step ? styles.done : ""}`}>
@@ -150,7 +107,7 @@ export default function OnboardingPage() {
               </div>
               <div className={styles.field}>
                 <label>State</label>
-                <input value={state} onChange={e => setState(e.target.value)} placeholder="IL" maxLength={2} />
+                <input value={stateName} onChange={e => setStateName(e.target.value)} placeholder="IL" maxLength={2} />
               </div>
             </div>
             <div className={styles.field}>
@@ -159,7 +116,7 @@ export default function OnboardingPage() {
             </div>
             <div className={styles.btnRow}>
               <button className={styles.btnOutline} onClick={() => setStep(0)}>← Back</button>
-              <button className={styles.btn} onClick={() => setStep(2)} disabled={!city || !state}>Continue →</button>
+              <button className={styles.btn} onClick={() => setStep(2)} disabled={!city || !stateName}>Continue →</button>
             </div>
           </div>
         )}

@@ -22,15 +22,18 @@ export async function middleware(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
+  const path = request.nextUrl.pathname
 
-  // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
+  // Protect dashboard - must be logged in
+  if (path.startsWith('/dashboard') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect logged-in users away from auth pages to onboarding
-  // (dashboard will redirect to onboarding if no business exists)
-  if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup') && user) {
+  // Don't redirect away from onboarding even if logged in
+  // (onboarding handles its own redirect to dashboard)
+
+  // Only redirect away from login/signup if logged in
+  if ((path === '/login' || path === '/signup') && user) {
     return NextResponse.redirect(new URL('/onboarding', request.url))
   }
 
