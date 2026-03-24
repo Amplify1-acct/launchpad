@@ -691,12 +691,12 @@ export default function Demo() {
                   </div>
                   <div className={styles.browserBody}>
                     <div className={styles.browserBodyInner}>
-                    {websiteProgress === 0 && (
+                    {websiteProgress === 0 && phase !== "done" && (
                       <div className={styles.buildingScreen}>
                         <div className={styles.buildingDot} /><div className={styles.buildingDot} /><div className={styles.buildingDot} />
                       </div>
                     )}
-                    {websiteProgress === 100 && websiteSection >= 4 ? (
+                    {(phase === "done" || (websiteProgress === 100 && websiteSection >= 4)) ? (
                       <MockHomepage name={name} industry={industry} data={data} themeId={styleId} />
                     ) : websiteProgress > 0 ? (
                       <div style={{ fontFamily: "system-ui", background: t.bg, fontSize: "10px" }}>

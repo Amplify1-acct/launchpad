@@ -149,12 +149,13 @@
   overflow: hidden;
   position: relative;
   min-height: 340px;
+  background: #f8faff;
 }
 
 .browserBodyInner {
   transform-origin: top left;
-  transform: scale(0.585);
-  width: calc(100% / 0.585);
+  transform: scale(0.56);
+  width: calc(100% / 0.56);
   position: absolute;
   top: 0;
   left: 0;
