@@ -27,6 +27,14 @@ const mockups = [
     fill: 88,
     tags: ["FB · IG · LinkedIn", "Scheduled", "Branded"],
   },
+  {
+    icon: "🔍",
+    color: "orange",
+    title: "On-Page SEO",
+    sub: "Every page optimized",
+    fill: 64,
+    tags: ["Meta tags", "Schema markup", "Local SEO"],
+  },
 ];
 
 export default function Hero() {
@@ -43,8 +51,9 @@ export default function Hero() {
             Not DIY. DIFY — Done It For You.
           </div>
           <h1 className={styles.h1}>
-            Your Website, Blog &{" "}
-            <em className={styles.gold}>Social Media.</em>
+            Your Website, Blog,
+            Social &{" "}
+            <em className={styles.gold}>SEO.</em>
             {" "}Handled.
           </h1>
           <p className={styles.sub}>
@@ -68,7 +77,7 @@ export default function Hero() {
             </div>
             <div className={styles.difyItem} style={{ marginTop: "0.5rem" }}>
               <span className={styles.difyCheck}>✓</span>
-              <span className={styles.difyNew}>We build it, write it, and post it for you</span>
+              <span className={styles.difyNew}>We build it, write it, post it, and rank it for you</span>
             </div>
           </div>
           <div className={styles.btns}>
