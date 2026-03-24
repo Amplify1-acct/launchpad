@@ -48,7 +48,7 @@ export default function Hero() {
             {" "}Handled.
           </h1>
           <p className={styles.sub}>
-            Wix and Squarespace make you do all the work yourself.
+            Other website builders make you do all the work yourself.
             We do it <em className={styles.goldText}>for</em> you — your website built,
             your blog written weekly, your social media posted automatically.
             You just run your business.

@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-dm-sans",
-});
-
-const playfair = Playfair_Display({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-playfair",
+  variable: "--font-inter",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-fraunces",
 });
 
 export const metadata: Metadata = {
   title: "LaunchPad — Not DIY. DIFY. Done It For You.",
   description:
-    "We build your website, publish weekly blog content, and manage your social media — so you can focus on running your business.",
+    "Stop doing it yourself. We build your website, write your blog posts, and handle your social media every week — you just run your business.",
   openGraph: {
     title: "LaunchPad — Not DIY. DIFY.",
     description:
@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${playfair.variable}`}>
+      <body className={`${inter.variable} ${fraunces.variable}`}>
         {children}
       </body>
     </html>

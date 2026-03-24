@@ -22,7 +22,7 @@
   font-family: var(--font-serif);
   font-size: 22px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--black);
   text-decoration: none;
 }
 
@@ -39,7 +39,7 @@
   transition: background 0.2s;
 }
 
-.navCta:hover { background: var(--accent-dark); }
+.navCta:hover { background: var(--accent-hover); }
 
 /* HERO */
 .hero {
@@ -152,7 +152,7 @@
 .authorName {
   font-size: 15px;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--black);
   margin-bottom: 2px;
 }
 
@@ -165,7 +165,7 @@
   margin-left: auto;
   font-size: 12px;
   color: var(--text-mid);
-  background: var(--bg-accent);
+  background: var(--accent-subtle);
   padding: 5px 12px;
   border-radius: 100px;
   border: 1px solid var(--accent-light);
@@ -184,7 +184,7 @@
   font-family: var(--font-serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--black);
   margin: 2.5rem 0 1rem;
   line-height: 1.3;
   letter-spacing: -0.2px;
@@ -229,7 +229,7 @@
   display: flex;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
-  background: var(--bg-accent);
+  background: var(--accent-subtle);
   border: 1px solid var(--accent-light);
   border-left: 4px solid var(--accent);
   border-radius: var(--radius);
@@ -250,7 +250,7 @@
 }
 
 .ctaBox {
-  background: var(--navy);
+  background: var(--black);
   border-radius: var(--radius-lg);
   padding: 2rem;
   margin: 3rem 0;
@@ -275,7 +275,7 @@
   transition: background 0.2s;
 }
 
-.ctaBtn:hover { background: var(--accent-dark); }
+.ctaBtn:hover { background: var(--accent-hover); }
 
 /* SIDEBAR */
 .sidebar {
@@ -296,7 +296,7 @@
 .sidebarTitle {
   font-size: 15px;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--black);
   margin-bottom: 0.75rem;
 }
 
@@ -321,7 +321,7 @@
   line-height: 1.4;
 }
 
-.sidebarCta:hover { background: var(--accent-dark); }
+.sidebarCta:hover { background: var(--accent-hover); }
 
 .sidebarPosts {
   display: flex;
@@ -360,7 +360,7 @@
 .sidebarPostTitle {
   font-size: 13px;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--black);
   line-height: 1.4;
   margin-bottom: 3px;
   display: -webkit-box;
@@ -376,7 +376,7 @@
 
 /* BOTTOM CTA */
 .bottomCta {
-  background: var(--navy);
+  background: var(--black);
   padding: 5rem 2rem;
   text-align: center;
 }
@@ -408,7 +408,7 @@
 }
 
 .bottomCtaBtn:hover {
-  background: var(--accent-dark);
+  background: var(--accent-hover);
   transform: translateY(-2px);
 }
 
