@@ -776,17 +776,20 @@ export default function Demo() {
                 </div>
 
                 {/* BROWSER */}
-                <div
-                  className={`${styles.browser} ${phase === "done" ? styles.browserClickable : ""}`}
-                  onClick={() => phase === "done" && setModalOpen(true)}
-                >
+                <div className={styles.browserWrap}>
+                  {phase === "done" && (
+                    <button
+                      className={styles.expandBtn}
+                      onClick={() => setModalOpen(true)}
+                    >
+                      <span>⛶</span> View Full Website
+                    </button>
+                  )}
+                <div className={styles.browser}>
                   <div className={styles.browserChrome}>
                     <div className={styles.browserDots}><span /><span /><span /></div>
                     <div className={styles.browserUrl}>{websiteProgress > 0 ? `${name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com` : "generating..."}</div>
-                    <div className={styles.browserActions}>
-                      {phase === "done" && <span className={styles.expandHint}>⛶</span>}
-                      ↺ ⋯
-                    </div>
+                    <div className={styles.browserActions}>↺ ⋯</div>
                   </div>
                   <div className={styles.browserBody}>
                     <div className={styles.browserBodyInner}>
@@ -841,17 +844,7 @@ export default function Demo() {
                     </div>{/* /browserBodyInner */}
                   </div>{/* /browserBody */}
                 </div>{/* /browser */}
-
-                {/* EXPAND PROMPT */}
-                {phase === "done" && (
-                  <div
-                    className={styles.expandPrompt}
-                    onClick={() => setModalOpen(true)}
-                  >
-                    <span className={styles.expandPromptIcon}>⛶</span>
-                    <span>Click to view full website</span>
-                  </div>
-                )}
+                </div>{/* /browserWrap */}
               </div>{/* /websiteWrap */}
 
               {/* BLOG + SOCIAL COLUMN */}
