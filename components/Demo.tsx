@@ -439,42 +439,18 @@ export default function Demo() {
     const exactMatch = industryData[resolvedIndustry];
     if (!exactMatch) {
       try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("/api/generate-demo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 800,
-            messages: [{
-              role: "user",
-              content: `Generate website demo content for a small business called "${businessName}". Here is what they do: "${industryToUse}". Build everything specifically around this description.
-
-Return ONLY valid JSON with this exact structure:
-{
-  "color": "#1a1a2e",
-  "accent": "#7c3aed",
-  "emoji": "🥋",
-  "tagline": "one sentence tagline for this business",
-  "cta": "2-3 word CTA button text",
-  "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=300&fit=crop&auto=format",
-  "services": ["Service 1", "Service 2", "Service 3", "Service 4"],
-  "stats": [{"num": "200+", "label": "Students"}, {"num": "10yr", "label": "Experience"}, {"num": "5★", "label": "Rated"}],
-  "testimonial": {"text": "A genuine testimonial for this type of business", "name": "Customer Name", "role": "Customer type"},
-  "blogs": ["Blog post title 1", "Blog post title 2", "Blog post title 3"],
-  "posts": ["Social post 1 with emoji", "Social post 2 with emoji", "Social post 3 with emoji"],
-  "pages": ["Home", "Page2", "Page3", "Page4", "CTA Page"]
-}
-
-Use a relevant Unsplash photo URL for this business type. Pick an accent color that fits the industry vibe. Return ONLY the JSON, no other text.`
-            }]
-          })
+          body: JSON.stringify({ businessName, description: industryToUse }),
         });
-        const d = await res.json();
-        const text = d.content?.[0]?.text?.trim() || "";
-        const clean = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
-        const generated = JSON.parse(clean);
-        aiDataRef.current = generated;
-        setAiGeneratedData(generated);
+        if (res.ok) {
+          const generated = await res.json();
+          if (!generated.error) {
+            aiDataRef.current = generated;
+            setAiGeneratedData(generated);
+          }
+        }
       } catch (e) {
         // Fall back to closest match silently
       }
