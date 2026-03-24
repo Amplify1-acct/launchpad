@@ -945,6 +945,73 @@ export default function Demo() {
                     </div>
                   )}
                 </div>
+
+                {/* SEO PANEL — inside rightCol */}
+                <div className={styles.step}>
+                  <div className={styles.stepHeaderSmall}>
+                    <div className={`${styles.stepIcon} ${socialProgress === 100 ? styles.done : styles.waiting}`}>
+                      {socialProgress === 100 ? "✓" : "🔍"}
+                    </div>
+                    <span className={styles.stepTitle}>On-page SEO</span>
+                    <div className={styles.progressPill} style={{ marginLeft: "auto" }}>
+                      {socialProgress === 100 ? "100%" : "Queued"}
+                    </div>
+                  </div>
+                  <div className={styles.progressBar}>
+                    <div className={styles.progressFill} style={{ width: socialProgress === 100 ? "100%" : "0%", background: "#f97316" }} />
+                  </div>
+                  {socialProgress === 100 ? (
+                    <div className={styles.seoPanel}>
+                      <div className={styles.seoItem}>
+                        <div className={styles.seoItemHeader}>
+                          <span className={styles.seoCheck}>✓</span>
+                          <span className={styles.seoLabel}>Meta Title</span>
+                          <span className={styles.seoBadge} style={{ background: "#f0fdf4", color: "#16a34a" }}>Optimized</span>
+                        </div>
+                        <div className={styles.seoValue}>{name} | {data.services?.[0]} | {industry} Experts</div>
+                      </div>
+                      <div className={styles.seoItem}>
+                        <div className={styles.seoItemHeader}>
+                          <span className={styles.seoCheck}>✓</span>
+                          <span className={styles.seoLabel}>Meta Description</span>
+                          <span className={styles.seoBadge} style={{ background: "#f0fdf4", color: "#16a34a" }}>Optimized</span>
+                        </div>
+                        <div className={styles.seoValue}>{data.tagline} Call us today for a free quote.</div>
+                      </div>
+                      <div className={styles.seoItem}>
+                        <div className={styles.seoItemHeader}>
+                          <span className={styles.seoCheck}>✓</span>
+                          <span className={styles.seoLabel}>Schema Markup</span>
+                          <span className={styles.seoBadge} style={{ background: "#f0fdf4", color: "#16a34a" }}>Injected</span>
+                        </div>
+                        <div className={styles.seoCode}>
+                          <span style={{ color: "#94a3b8" }}>{"{ "}</span>
+                          <span style={{ color: "#f97316" }}>"@type"</span>
+                          <span style={{ color: "#94a3b8" }}>: </span>
+                          <span style={{ color: "#86efac" }}>"LocalBusiness"</span>
+                          <span style={{ color: "#94a3b8" }}>, </span>
+                          <span style={{ color: "#f97316" }}>"name"</span>
+                          <span style={{ color: "#94a3b8" }}>: </span>
+                          <span style={{ color: "#86efac" }}>"{name}"</span>
+                          <span style={{ color: "#94a3b8" }}>{" }"}</span>
+                        </div>
+                      </div>
+                      <div className={styles.seoItem}>
+                        <div className={styles.seoItemHeader}>
+                          <span className={styles.seoCheck}>✓</span>
+                          <span className={styles.seoLabel}>Target Keywords</span>
+                        </div>
+                        <div className={styles.seoKeywords}>
+                          {[data.services?.[0], `best ${industry.toLowerCase()}`, `${industry.toLowerCase()} near me`].map((kw, i) => (
+                            <span key={i} className={styles.seoKeyword}>{kw}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.waitingMsg}>Queued — starts after social media</div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -953,12 +1020,13 @@ export default function Demo() {
                 <div className={styles.doneCard}>
                   <div className={styles.doneIcon}>🎉</div>
                   <h3 className={styles.doneTitle}>{name} is live!</h3>
-                  <p className={styles.doneSub}>Website, {data.blogs.length} blog posts & 3 social channels — built in under 60 seconds. This is exactly what we do for real businesses.</p>
+                  <p className={styles.doneSub}>Website, {data.blogs.length} blog posts, 3 social channels & on-page SEO — built in under 60 seconds.</p>
                   <div className={styles.doneMeta}>
                     <div className={styles.doneMetaItem}><span>⏱</span> 47 seconds</div>
                     <div className={styles.doneMetaItem}><span>🌐</span> Full website</div>
                     <div className={styles.doneMetaItem}><span>✍️</span> {data.blogs.length} posts</div>
                     <div className={styles.doneMetaItem}><span>📱</span> 3 channels</div>
+                    <div className={styles.doneMetaItem}><span>🔍</span> SEO done</div>
                   </div>
                   <button className={styles.doneBtn} onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
                     Get this for my real business →
