@@ -137,7 +137,20 @@
 }
 .browserActions { font-size: 12px; color: #999; letter-spacing: 3px; }
 
-.browserBody { min-height: 340px; overflow: hidden; }
+.browserBody {
+  height: 1148px;
+  overflow: hidden;
+  position: relative;
+}
+
+.browserBodyInner {
+  transform-origin: top left;
+  transform: scale(0.585);
+  width: calc(100% / 0.585);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .buildingScreen {
   display: flex; align-items: center; justify-content: center;

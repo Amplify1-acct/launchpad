@@ -383,15 +383,46 @@ function MockHomepage({ name, industry, data, themeId }: {
         <span style={{ background: t.ctaBtn, color: t.ctaBtnText, padding: "6px 16px", borderRadius: "5px", fontSize: "9px", fontWeight: 700 }}>{data.cta} →</span>
       </div>
 
-      {/* FOOTER */}
-      <div style={{ padding: "12px 16px", background: t.footerBg, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "10px", fontWeight: 700, color: t.footerText }}>{data.emoji} {name}</div>
-        <div style={{ display: "flex", gap: "8px" }}>
-          {data.pages.slice(0, 3).map((p, i) => (
-            <span key={i} style={{ fontSize: "8px", color: t.footerLink }}>{p}</span>
+      {/* WHY CHOOSE US */}
+      <div style={{ padding: "16px", background: t.bg2 }}>
+        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Why Us</div>
+        <div style={{ fontSize: "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Why Choose {name}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          {["Licensed & insured professionals", "5-star rated by 200+ customers", "Fast turnaround, fair pricing", "Free consultations available"].map((item, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "9px", color: t.testimonialText }}>
+              <div style={{ width: "14px", height: "14px", borderRadius: "50%", background: data.accent, color: "#fff", fontSize: "8px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>✓</div>
+              {item}
+            </div>
           ))}
         </div>
-        <div style={{ fontSize: "8px", color: t.footerLink }}>© 2026 {name}</div>
+      </div>
+
+      {/* CONTACT SECTION */}
+      <div style={{ padding: "16px", background: t.bg }}>
+        <div style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: data.accent, marginBottom: "4px" }}>Get In Touch</div>
+        <div style={{ fontSize: "12px", fontWeight: 700, color: t.serviceTitle, marginBottom: "10px" }}>Contact Us</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "10px" }}>
+          {[{ label: "Name", ph: "Your name" }, { label: "Email", ph: "your@email.com" }, { label: "Phone", ph: "(555) 000-0000" }, { label: "Service", ph: "What do you need?" }].map((f, i) => (
+            <div key={i}>
+              <div style={{ fontSize: "8px", color: t.testimonialAuthor, marginBottom: "3px", fontWeight: 600 }}>{f.label}</div>
+              <div style={{ background: t.serviceBg, border: `1px solid ${t.serviceBorder}`, borderRadius: "4px", padding: "5px 8px", fontSize: "8px", color: t.statLabel }}>{f.ph}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: data.accent, color: "#fff", borderRadius: "5px", padding: "7px 14px", fontSize: "9px", fontWeight: 700, display: "inline-block" }}>{data.cta} →</div>
+      </div>
+
+      {/* FOOTER */}
+      <div style={{ padding: "14px 16px", background: t.footerBg }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: t.footerText }}>{data.emoji} {name}</div>
+          <div style={{ display: "flex", gap: "10px" }}>
+            {data.pages.slice(0, 4).map((p, i) => (
+              <span key={i} style={{ fontSize: "8px", color: t.footerLink }}>{p}</span>
+            ))}
+          </div>
+        </div>
+        <div style={{ borderTop: `1px solid rgba(255,255,255,0.1)`, paddingTop: "8px", fontSize: "8px", color: t.footerLink }}>© 2026 {name} · All rights reserved · Built by LaunchPad</div>
       </div>
     </div>
   );
@@ -658,7 +689,8 @@ export default function Demo() {
                     <div className={styles.browserUrl}>{websiteProgress > 0 ? `${name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com` : "generating..."}</div>
                     <div className={styles.browserActions}>↺ ⋯</div>
                   </div>
-                  <div className={styles.browserBody} style={{ maxHeight: "480px", overflowY: "auto" }}>
+                  <div className={styles.browserBody}>
+                    <div className={styles.browserBodyInner}>
                     {websiteProgress === 0 && (
                       <div className={styles.buildingScreen}>
                         <div className={styles.buildingDot} /><div className={styles.buildingDot} /><div className={styles.buildingDot} />
