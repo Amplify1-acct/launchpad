@@ -4,8 +4,27 @@ import { useState, useRef } from "react";
 import styles from "./Demo.module.css";
 
 const industries = [
-  "Plumbing", "Bakery", "Law Firm", "Real Estate", "Dental",
-  "Gym & Fitness", "Restaurant", "Photography", "Landscaping", "Auto Repair",
+  // Home Services
+  "Plumbing", "Electrician", "HVAC & Heating", "Landscaping", "Cleaning Service",
+  "Roofing", "Painting", "Pest Control", "Pool Service", "Handyman",
+  // Health & Wellness  
+  "Dental", "Chiropractic", "Physical Therapy", "Veterinary", "Gym & Fitness",
+  "Yoga Studio", "Med Spa", "Mental Health", "Optometry", "Nutrition & Dietitian",
+  // Food & Hospitality
+  "Restaurant", "Bakery", "Catering", "Food Truck", "Coffee Shop", "Bar & Brewery",
+  // Professional Services
+  "Law Firm", "Accounting & CPA", "Financial Advisor", "Insurance Agency", "Mortgage Broker",
+  "Real Estate", "Architecture", "Marketing Agency",
+  // Beauty & Personal Care
+  "Hair Salon", "Nail Salon", "Barbershop", "Tattoo Studio", "Massage Therapy",
+  // Creative & Media
+  "Photography", "Videography", "Graphic Design", "Web Design",
+  // Retail & Auto
+  "Auto Repair", "Car Dealership", "Clothing Boutique", "Jewelry Store", "Florist",
+  // Education & Childcare
+  "Tutoring", "Childcare & Daycare", "Music School", "Martial Arts",
+  // Other
+  "Other (describe below)",
 ];
 
 const designStyles = [
@@ -322,6 +341,9 @@ export default function Demo() {
   const [businessName, setBusinessName] = useState("");
   const [industry, setIndustry] = useState("");
   const [styleId, setStyleId] = useState("minimal");
+  const [customIndustry, setCustomIndustry] = useState("");
+  const [aiIndustry, setAiIndustry] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [websiteProgress, setWebsiteProgress] = useState(0);
   const [blogProgress, setBlogProgress] = useState(0);
@@ -343,6 +365,7 @@ export default function Demo() {
 
   const runDemo = async () => {
     if (!businessName || !industry) return;
+    const resolvedIndustry = effectiveIndustry;
     reset();
     await new Promise(r => setTimeout(r, 50));
     demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -372,16 +395,48 @@ export default function Demo() {
     setPhase("done");
   };
 
-  const canRun = businessName.trim().length > 1 && industry.length > 0;
+  const isOther = industry === "Other (describe below)";
+  const effectiveIndustry = isOther ? (aiIndustry || customIndustry) : industry;
+  const canRun = businessName.trim().length > 1 && industry.length > 0 && (!isOther || customIndustry.trim().length > 2);
+
+  const handleCustomIndustryBlur = async () => {
+    if (!customIndustry.trim() || aiIndustry) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 100,
+          messages: [{ role: "user", content: `A small business owner described their business as: "${customIndustry}". In 3-5 words, what type of business is this? Reply with ONLY the business type label, nothing else. Examples: "Tattoo Studio", "Dog Grooming", "Event Planning", "IT Consulting"` }]
+        })
+      });
+      const d = await res.json();
+      const label = d.content?.[0]?.text?.trim() || customIndustry;
+      setAiIndustry(label);
+    } catch {
+      setAiIndustry(customIndustry);
+    }
+    setAiLoading(false);
+  };
   const t = themes[styleId];
 
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
         <div className={styles.header}>
-          <p className={styles.label}>See it in action</p>
-          <h2 className={styles.title}>Watch your business go live<br />in under 60 seconds</h2>
-          <p className={styles.sub}>Enter your details, pick a design style, and watch us build your entire digital presence in real time.</p>
+          <p className={styles.label}>Try it live — free, no signup</p>
+          <h2 className={styles.title}>See your business online<br />in under 60 seconds</h2>
+          <p className={styles.sub}>Follow the 3 steps below. We&apos;ll build your real website, write your blog posts, and set up your social media — live, right here on screen.</p>
+        </div>
+
+        <div className={styles.stepsBar}>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>1</span> Enter your business</div>
+          <div className={styles.stepsBarArrow}>→</div>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>2</span> Pick a design style</div>
+          <div className={styles.stepsBarArrow}>→</div>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>3</span> Hit Build & watch it happen</div>
         </div>
 
         {/* STEP 1: Business info */}
@@ -390,14 +445,58 @@ export default function Demo() {
             <div className={styles.setupStepNum}>1</div>
             <div className={styles.setupStepLabel}>Your business</div>
           </div>
-          <div className={styles.inputPair}>
-            <input className={styles.input} type="text" placeholder="e.g. Mike's Plumbing" value={businessName}
-              onChange={e => setBusinessName(e.target.value)} disabled={phase !== "idle" && phase !== "done"} maxLength={40}
-              onKeyDown={e => e.key === "Enter" && canRun && runDemo()} />
-            <select className={styles.select} value={industry} onChange={e => setIndustry(e.target.value)} disabled={phase !== "idle" && phase !== "done"}>
-              <option value="">Pick your industry</option>
-              {industries.map(i => <option key={i}>{i}</option>)}
-            </select>
+          <div className={styles.inputCol}>
+            <div className={styles.inputPair}>
+              <input className={styles.input} type="text" placeholder="Your business name (e.g. Mike's Plumbing)" value={businessName}
+                onChange={e => setBusinessName(e.target.value)} disabled={phase !== "idle" && phase !== "done"} maxLength={40}
+                onKeyDown={e => e.key === "Enter" && canRun && runDemo()} />
+              <select className={styles.select} value={industry} onChange={e => { setIndustry(e.target.value); setAiIndustry(""); setCustomIndustry(""); }} disabled={phase !== "idle" && phase !== "done"}>
+                <option value="">Select your industry / business type</option>
+                <optgroup label="🏠 Home Services">
+                  {["Plumbing","Electrician","HVAC & Heating","Landscaping","Cleaning Service","Roofing","Painting","Pest Control","Pool Service","Handyman"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="🏥 Health & Wellness">
+                  {["Dental","Chiropractic","Physical Therapy","Veterinary","Gym & Fitness","Yoga Studio","Med Spa","Mental Health","Optometry","Nutrition & Dietitian"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="🍽️ Food & Hospitality">
+                  {["Restaurant","Bakery","Catering","Food Truck","Coffee Shop","Bar & Brewery"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="💼 Professional Services">
+                  {["Law Firm","Accounting & CPA","Financial Advisor","Insurance Agency","Mortgage Broker","Real Estate","Architecture","Marketing Agency"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="💅 Beauty & Personal Care">
+                  {["Hair Salon","Nail Salon","Barbershop","Tattoo Studio","Massage Therapy"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="🎨 Creative & Media">
+                  {["Photography","Videography","Graphic Design","Web Design"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="🚗 Retail & Auto">
+                  {["Auto Repair","Car Dealership","Clothing Boutique","Jewelry Store","Florist"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="📚 Education & Childcare">
+                  {["Tutoring","Childcare & Daycare","Music School","Martial Arts"].map(i => <option key={i}>{i}</option>)}
+                </optgroup>
+                <optgroup label="✨ Other">
+                  <option>Other (describe below)</option>
+                </optgroup>
+              </select>
+            </div>
+            {isOther && (
+              <div className={styles.customIndustryWrap}>
+                <input
+                  className={styles.input}
+                  type="text"
+                  placeholder="Describe your business (e.g. &apos;I repair vintage watches&apos; or &apos;I do wedding makeup&apos;)"
+                  value={customIndustry}
+                  onChange={e => { setCustomIndustry(e.target.value); setAiIndustry(""); }}
+                  onBlur={handleCustomIndustryBlur}
+                  disabled={phase !== "idle" && phase !== "done"}
+                  maxLength={80}
+                />
+                {aiLoading && <div className={styles.aiDetecting}>🤖 Identifying your business type...</div>}
+                {aiIndustry && !aiLoading && <div className={styles.aiDetected}>✓ Identified as: <strong>{aiIndustry}</strong> — we&apos;ll build content tailored to this</div>}
+              </div>
+            )}
           </div>
         </div>
 
@@ -405,7 +504,7 @@ export default function Demo() {
         <div className={styles.setupRow}>
           <div className={styles.setupStep}>
             <div className={styles.setupStepNum}>2</div>
-            <div className={styles.setupStepLabel}>Choose a style</div>
+            <div className={styles.setupStepLabel}>Choose your design</div>
           </div>
           <div className={styles.styleGrid}>
             {designStyles.map(ds => (
@@ -439,18 +538,26 @@ export default function Demo() {
           </div>
         </div>
 
-        {/* BUILD BUTTON */}
-        <div className={styles.buildRow}>
-          <button
-            className={`${styles.buildBtn} ${!canRun && phase === "idle" ? styles.disabled : ""}`}
-            onClick={phase === "done" ? reset : runDemo}
-            disabled={!canRun && phase === "idle"}
-          >
-            {phase === "idle" ? "⚡ Build my presence" : phase === "done" ? "↺ Try another business" : "⏳ Building..."}
-          </button>
-          {!canRun && phase === "idle" && (
-            <div className={styles.buildHint}>Enter your business name and industry to get started</div>
-          )}
+        {/* STEP 3: BUILD */}
+        <div className={styles.setupRow} style={{ background: canRun ? "rgba(37,99,235,0.08)" : "rgba(255,255,255,0.02)", borderColor: canRun ? "rgba(37,99,235,0.3)" : "rgba(255,255,255,0.06)" }}>
+          <div className={styles.setupStep}>
+            <div className={styles.setupStepNum} style={{ background: canRun ? "#2563eb" : "#334155" }}>3</div>
+            <div className={styles.setupStepLabel}>Build it</div>
+          </div>
+          <div className={styles.buildStepContent}>
+            <div className={styles.buildStepText}>
+              {canRun
+                ? `Ready! We'll build ${businessName}'s website, blog posts, and social media in about 45 seconds.`
+                : "Complete steps 1 and 2 above to unlock the builder."}
+            </div>
+            <button
+              className={`${styles.buildBtn} ${!canRun && phase === "idle" ? styles.disabled : ""}`}
+              onClick={phase === "done" ? reset : runDemo}
+              disabled={!canRun && phase === "idle"}
+            >
+              {phase === "idle" ? "⚡ Build my digital presence" : phase === "done" ? "↺ Try another business" : "⏳ Building your presence..."}
+            </button>
+          </div>
         </div>
 
         {/* DEMO OUTPUT */}
