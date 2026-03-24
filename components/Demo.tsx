@@ -267,6 +267,30 @@ const industryData: Record<string, {
     posts: ["🐾 Book this week and your pup gets a free bandana!", "🛁 Smelly dog? Our deep clean bath will fix that.", "⭐ 'My dog loves coming here!' – Kevin S."],
     pages: ["Home", "Services", "Gallery", "Pricing", "Book Now"],
   },
+  "Watch Repair": {
+    color: "#1a1209", accent: "#b45309", emoji: "⌚",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=300&fit=crop&auto=format",
+    tagline: "Expert watch repair and restoration — from vintage heirlooms to modern timepieces.",
+    cta: "Get a Free Estimate",
+    services: ["Watch Repair", "Battery Replacement", "Vintage Restoration", "Strap Replacement"],
+    stats: [{ num: "15yr", label: "Experience" }, { num: "500+", label: "Watches restored" }, { num: "5★", label: "Rated" }],
+    testimonial: { text: "Brought in my grandfather's Rolex and they restored it perfectly. I couldn't believe it.", name: "Robert T.", role: "Customer" },
+    blogs: ["How to Tell if Your Vintage Watch is Worth Restoring", "5 Signs Your Watch Needs a Service", "The Difference Between a Repair and a Full Restoration"],
+    posts: ["⌚ Free estimates on all watch repairs — bring it in today.", "🔧 Vintage watch restoration is our specialty.", "⭐ 'Restored my grandfather's Rolex perfectly!' – Robert T."],
+    pages: ["Home", "Services", "Repairs", "Vintage", "Contact"],
+  },
+  "Pet Services": {
+    color: "#0a1a2e", accent: "#0284c7", emoji: "🐶",
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=300&fit=crop&auto=format",
+    tagline: "Professional, loving care for your pets — grooming, sitting, and more.",
+    cta: "Book a Service",
+    services: ["Dog Grooming", "Pet Sitting", "Dog Walking", "Boarding"],
+    stats: [{ num: "200+", label: "Happy pets" }, { num: "Insured", label: "& certified" }, { num: "5★", label: "Rated" }],
+    testimonial: { text: "Our dog comes home happy and exhausted every time. Absolute peace of mind.", name: "Sarah M.", role: "Dog Owner" },
+    blogs: ["How to Choose a Pet Sitter You Can Trust", "5 Signs Your Dog Needs More Exercise", "What to Pack When Your Dog Goes to Boarding"],
+    posts: ["🐶 Spots available this weekend — book now!", "🐾 Your pet deserves the best care while you're away.", "⭐ 'Our dog loves coming here!' – Sarah M."],
+    pages: ["Home", "Services", "Gallery", "Pricing", "Book Now"],
+  },
 };
 
 type Phase = "idle" | "building" | "website" | "blog" | "social" | "done";
@@ -413,13 +437,16 @@ export default function Demo() {
     setPhase("building");
 
     // If industry not in our hardcoded list, generate custom data via Claude API
+    // Also generate if isOther with no description (use business name as context)
+    const industryToUse = resolvedIndustry.length > 2 ? resolvedIndustry : businessName;
     const hasHardcoded = !!industryData[resolvedIndustry] ||
       Object.keys(industryData).some(k =>
         k.toLowerCase().includes(resolvedIndustry.toLowerCase()) ||
         resolvedIndustry.toLowerCase().includes(k.toLowerCase())
       );
 
-    if (!hasHardcoded && resolvedIndustry.length > 2) {
+    // Generate AI content if: no hardcoded match, OR if "Other" with no description typed
+    if (!hasHardcoded && industryToUse.length > 2) {
       try {
         const res = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
@@ -429,7 +456,7 @@ export default function Demo() {
             max_tokens: 800,
             messages: [{
               role: "user",
-              content: `Generate website demo content for a small business: "${businessName}" which is a "${resolvedIndustry}".
+              content: `Generate website demo content for a small business: "${businessName}" which is a "${industryToUse}".
 
 Return ONLY valid JSON with this exact structure:
 {
@@ -464,10 +491,10 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
 
     // Build the active data using ref (immediately available) not state
     const closestKey = Object.keys(industryData).find(k =>
-      k.toLowerCase().includes(resolvedIndustry.toLowerCase()) ||
-      resolvedIndustry.toLowerCase().includes(k.toLowerCase())
+      k.toLowerCase().includes(industryToUse.toLowerCase()) ||
+      industryToUse.toLowerCase().includes(k.toLowerCase())
     );
-    const activeData = aiDataRef.current || industryData[closestKey || ""] || industryData["Plumbing"];
+    const activeData = aiDataRef.current || (closestKey ? industryData[closestKey] : null) || industryData["Plumbing"];
 
     await new Promise(r => setTimeout(r, 400));
     setPhase("website");
