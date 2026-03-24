@@ -3,23 +3,23 @@ import styles from "./HowItWorks.module.css";
 const steps = [
   {
     num: "1",
-    title: "Tell us about your business",
-    desc: "Complete a simple intake form with your business details, goals, and brand preferences.",
+    title: "You fill out one short form",
+    desc: "Tell us your business name, industry, and what you do. Takes 3 minutes. That's the hardest part.",
   },
   {
     num: "2",
-    title: "We build your digital presence",
-    desc: "Our team designs your website, sets up social channels, and creates your content calendar.",
+    title: "We build everything for you",
+    desc: "We design your website, write your first blog posts, and set up your social channels. You do nothing.",
   },
   {
     num: "3",
-    title: "Review & approve",
-    desc: "You get a full preview before anything goes live. Full control, zero hassle.",
+    title: "You review and say go",
+    desc: "We send you a preview. You approve it — or ask for tweaks. One click and it's live.",
   },
   {
     num: "4",
-    title: "We keep it all running",
-    desc: "Weekly blogs, social posts, and ongoing updates — handled for you automatically.",
+    title: "It runs on autopilot forever",
+    desc: "Every week we write a new blog post and schedule your social posts. You never think about it again.",
   },
 ];
 
@@ -29,7 +29,7 @@ export default function HowItWorks() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.label}>The process</p>
-          <h2 className={styles.title}>Up and running in four simple steps</h2>
+          <h2 className={styles.title}>Four steps. Three of them are ours.</h2>
           <p className={styles.sub}>
             No tech skills needed. No back-and-forth headaches. Just fill out a
             short form and we handle everything from start to finish.

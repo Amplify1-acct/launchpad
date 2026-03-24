@@ -1,5 +1,6 @@
 import styles from "./Services.module.css";
 
+// Services updated for DIFY positioning
 const services = [
   {
     icon: "🌐",
@@ -51,7 +52,7 @@ export default function Services() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.label}>What we deliver</p>
-          <h2 className={styles.title}>Everything your business needs online</h2>
+          <h2 className={styles.title}>Everything done for you. Every week.</h2>
           <p className={styles.sub}>
             Three core services, all working together to grow your online
             presence on autopilot.

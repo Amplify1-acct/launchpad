@@ -15,13 +15,13 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "LaunchPad — Your Complete Digital Presence, Done For You",
+  title: "LaunchPad — Not DIY. DIFY. Done It For You.",
   description:
     "We build your website, publish weekly blog content, and manage your social media — so you can focus on running your business.",
   openGraph: {
-    title: "LaunchPad — Your Complete Digital Presence",
+    title: "LaunchPad — Not DIY. DIFY.",
     description:
-      "Website, blog, and social media — built and managed for small businesses.",
+      "Your website built, your blog written, your social media posted — done for you every week.",
     type: "website",
   },
 };

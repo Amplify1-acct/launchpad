@@ -40,21 +40,40 @@ export default function Hero() {
         <div className={styles.left}>
           <div className={styles.badge}>
             <div className={styles.badgeDot} />
-            Your complete digital presence, done for you
+            Not DIY. DIFY — Done It For You.
           </div>
           <h1 className={styles.h1}>
-            Your Business Online,{" "}
-            <em className={styles.gold}>Fully Built</em>
-            {" "}& Running.
+            Your Website, Blog &{" "}
+            <em className={styles.gold}>Social Media.</em>
+            {" "}Handled.
           </h1>
           <p className={styles.sub}>
-            We handle everything — your website, weekly blog content, and social
-            media channels — so you can focus on what you do best: running your
-            business.
+            Wix and Squarespace make you do all the work yourself.
+            We do it <em className={styles.goldText}>for</em> you — your website built,
+            your blog written weekly, your social media posted automatically.
+            You just run your business.
           </p>
+          <div className={styles.difyCta}>
+            <div className={styles.difyItem}>
+              <span className={styles.difyX}>✗</span>
+              <span className={styles.difyOld}>No dragging and dropping for hours</span>
+            </div>
+            <div className={styles.difyItem}>
+              <span className={styles.difyX}>✗</span>
+              <span className={styles.difyOld}>No writing your own blog posts</span>
+            </div>
+            <div className={styles.difyItem}>
+              <span className={styles.difyX}>✗</span>
+              <span className={styles.difyOld}>No figuring out social media</span>
+            </div>
+            <div className={styles.difyItem} style={{ marginTop: "0.5rem" }}>
+              <span className={styles.difyCheck}>✓</span>
+              <span className={styles.difyNew}>We build it, write it, and post it for you</span>
+            </div>
+          </div>
           <div className={styles.btns}>
             <button className={styles.btnPrimary} onClick={() => scrollTo("contact")}>
-              Start for free →
+              Get it done for me →
             </button>
             <button className={styles.btnOutline} onClick={() => scrollTo("how")}>
               See how it works
@@ -62,9 +81,9 @@ export default function Hero() {
           </div>
           <div className={styles.stats}>
             {[
-              { num: "500+", label: "Businesses launched" },
-              { num: "48hr", label: "Average delivery time" },
-              { num: "97%", label: "Client satisfaction" },
+              { num: "33M", label: "Small businesses need this" },
+              { num: "48hr", label: "Yours is live" },
+              { num: "0hrs", label: "Of your time required" },
             ].map((s) => (
               <div key={s.label}>
                 <div className={styles.statNum}>{s.num}</div>
