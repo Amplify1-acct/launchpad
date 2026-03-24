@@ -12,6 +12,7 @@ const plans = [
       "2 blog posts per month",
       "Facebook + Instagram setup",
       "8 social posts per month",
+      "On-page SEO on all pages",
       "Monthly performance report",
     ],
     popular: false,
@@ -25,7 +26,8 @@ const plans = [
       "4 blog posts per month",
       "FB, IG + LinkedIn setup",
       "20 social posts per month",
-      "SEO keyword strategy",
+      "On-page SEO + schema markup",
+      "Local SEO optimization",
       "Weekly performance report",
       "Priority support",
     ],
@@ -34,15 +36,16 @@ const plans = [
   {
     name: "Premium",
     price: "$999",
-    desc: "Full-service digital marketing for established businesses.",
+    desc: "Full-service digital presence for established businesses.",
     features: [
       "Unlimited pages + ecommerce",
       "Weekly blog posts",
       "All social platforms",
       "Daily social posts",
+      "Full SEO suite + monthly audit",
+      "Google Business Profile mgmt",
       "Google & Meta ads setup",
       "Dedicated account manager",
-      "Custom strategy sessions",
     ],
     popular: false,
   },
@@ -60,8 +63,8 @@ export default function Pricing() {
           <p className={styles.label}>Simple, transparent pricing</p>
           <h2 className={styles.title}>One flat monthly fee, no surprises</h2>
           <p className={styles.sub}>
-            Pick the plan that fits your stage. Upgrade or cancel any time —
-            no contracts, no hidden fees.
+            Website, blog, social, and SEO — all included. Pick your plan,
+            cancel any time.
           </p>
         </div>
         <div className={styles.grid}>

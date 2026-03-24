@@ -13,6 +13,7 @@
 .icon.blue   { background: var(--accent-subtle); }
 .icon.green  { background: #f0fdf4; }
 .icon.purple { background: #f5f3ff; }
+.icon.orange { background: #fff7ed; }
 .name { font-size: 17px; font-weight: 600; color: var(--black); margin-bottom: 0.5rem; }
 .desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 1.5rem; }
 .features { list-style: none; display: flex; flex-direction: column; gap: 8px; }

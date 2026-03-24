@@ -28,7 +28,7 @@ const services = [
       "Auto-published to your site",
       "Monthly performance report",
     ],
-    featured: true,
+    featured: false,
   },
   {
     icon: "📱",
@@ -44,6 +44,20 @@ const services = [
     ],
     featured: false,
   },
+  {
+    icon: "🔍",
+    color: "orange",
+    name: "On-Page SEO",
+    desc: "Every page of your site optimized so Google can find you — meta titles, descriptions, schema markup, and more.",
+    features: [
+      "Meta titles & descriptions",
+      "Schema markup (JSON-LD)",
+      "Local SEO optimization",
+      "Page speed optimization",
+      "Monthly ranking report",
+    ],
+    featured: true,
+  },
 ];
 
 export default function Services() {
@@ -52,10 +66,10 @@ export default function Services() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.label}>What we deliver</p>
-          <h2 className={styles.title}>Everything done for you. Every week.</h2>
+          <h2 className={styles.title}>Four services. Zero effort on your part.</h2>
           <p className={styles.sub}>
-            Three core services, all working together to grow your online
-            presence on autopilot.
+            Website, blog, social, and SEO — all done for you, every week,
+            while you run your business.
           </p>
         </div>
         <div className={styles.grid}>
@@ -64,7 +78,7 @@ export default function Services() {
               key={s.name}
               className={`${styles.card} ${s.featured ? styles.featured : ""}`}
             >
-              {s.featured && <div className={styles.badge}>Most popular</div>}
+              {s.featured && <div className={styles.badge}>New</div>}
               <div className={`${styles.icon} ${styles[s.color]}`}>{s.icon}</div>
               <h3 className={styles.name}>{s.name}</h3>
               <p className={styles.desc}>{s.desc}</p>
