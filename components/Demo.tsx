@@ -425,10 +425,9 @@ export default function Demo() {
   };
 
   const runDemo = async () => {
-    if (!businessName || !industry) return;
-    // Capture current values synchronously before any async work
-    const isOtherNow = industry === "Other (describe below)";
-    const resolvedIndustry = isOtherNow ? (aiIndustry || customIndustry) : industry;
+    if (!businessName || !customIndustry) return;
+    // Use the business description as the industry context
+    const resolvedIndustry = customIndustry.trim();
     aiDataRef.current = null;
     setAiGeneratedData(null);
     reset();
@@ -436,17 +435,11 @@ export default function Demo() {
     demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setPhase("building");
 
-    // If industry not in our hardcoded list, generate custom data via Claude API
-    // Also generate if isOther with no description (use business name as context)
-    const industryToUse = resolvedIndustry.length > 2 ? resolvedIndustry : businessName;
-    const hasHardcoded = !!industryData[resolvedIndustry] ||
-      Object.keys(industryData).some(k =>
-        k.toLowerCase().includes(resolvedIndustry.toLowerCase()) ||
-        resolvedIndustry.toLowerCase().includes(k.toLowerCase())
-      );
-
-    // Generate AI content if: no hardcoded match, OR if "Other" with no description typed
-    if (!hasHardcoded && industryToUse.length > 2) {
+    // Always generate with Claude API — description gives us rich context
+    // Only skip if description exactly matches a hardcoded industry name
+    const industryToUse = resolvedIndustry;
+    const exactMatch = industryData[resolvedIndustry];
+    if (!exactMatch) {
       try {
         const res = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
@@ -456,7 +449,7 @@ export default function Demo() {
             max_tokens: 800,
             messages: [{
               role: "user",
-              content: `Generate website demo content for a small business: "${businessName}" which is a "${industryToUse}".
+              content: `Generate website demo content for a small business called "${businessName}". Here is what they do: "${industryToUse}". Build everything specifically around this description.
 
 Return ONLY valid JSON with this exact structure:
 {
@@ -491,10 +484,10 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
 
     // Build the active data using ref (immediately available) not state
     const closestKey = Object.keys(industryData).find(k =>
-      k.toLowerCase().includes(industryToUse.toLowerCase()) ||
-      industryToUse.toLowerCase().includes(k.toLowerCase())
+      industryToUse.toLowerCase().includes(k.toLowerCase()) ||
+      k.toLowerCase().includes(industryToUse.toLowerCase())
     );
-    const activeData = aiDataRef.current || (closestKey ? industryData[closestKey] : null) || industryData["Plumbing"];
+    const activeData = aiDataRef.current || exactMatch || (closestKey ? industryData[closestKey] : null) || industryData["Plumbing"];
 
     await new Promise(r => setTimeout(r, 400));
     setPhase("website");
@@ -521,39 +514,19 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
     setPhase("done");
   };
 
-  const isOther = industry === "Other (describe below)";
-  const effectiveIndustry = isOther ? (aiIndustry || customIndustry) : industry;
+  // Always use AI generation based on the description
+  const effectiveIndustry = customIndustry.trim();
 
-  // Find closest matching industry from our hardcoded list, or use AI-generated data
+  // Try to find a closest hardcoded match as fallback only
   const closestIndustry = effectiveIndustry ? Object.keys(industryData).find(k =>
     k.toLowerCase().includes(effectiveIndustry.toLowerCase()) ||
     effectiveIndustry.toLowerCase().includes(k.toLowerCase())
   ) : undefined;
-  const data = aiGeneratedData || (closestIndustry ? industryData[closestIndustry] : null) || (industryData[industry] ?? null) || industryData["Plumbing"];
+  const data = aiGeneratedData || (closestIndustry ? industryData[closestIndustry] : null) || industryData["Plumbing"];
 
-  const canRun = businessName.trim().length > 1 && industry.length > 0 && (!isOther || customIndustry.trim().length > 2);
+  const canRun = businessName.trim().length > 1 && customIndustry.trim().length > 8;
 
-  const handleCustomIndustryBlur = async () => {
-    if (!customIndustry.trim() || aiIndustry) return;
-    setAiLoading(true);
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 100,
-          messages: [{ role: "user", content: `A small business owner described their business as: "${customIndustry}". In 3-5 words, what type of business is this? Reply with ONLY the business type label, nothing else. Examples: "Tattoo Studio", "Dog Grooming", "Event Planning", "IT Consulting"` }]
-        })
-      });
-      const d = await res.json();
-      const label = d.content?.[0]?.text?.trim() || customIndustry;
-      setAiIndustry(label);
-    } catch {
-      setAiIndustry(customIndustry);
-    }
-    setAiLoading(false);
-  };
+  const handleCustomIndustryBlur = () => {}; // No longer needed
   const t = themes[styleId];
 
   return (
@@ -561,74 +534,46 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.label}>Try it live — free, no signup</p>
-          <h2 className={styles.title}>See your business online<br />in under 60 seconds</h2>
-          <p className={styles.sub}>Follow the 3 steps below. We&apos;ll build your real website, write your blog posts, and set up your social media — live, right here on screen.</p>
+          <h2 className={styles.title}>See your actual business<br />built in 60 seconds</h2>
+          <p className={styles.sub}>Tell us your name and what you do. Our AI reads your description and builds a website, blog posts, and social media <em>specific to your business</em> — live, right here.</p>
         </div>
 
         <div className={styles.stepsBar}>
-          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>1</span> Enter your business</div>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>1</span> Name + what you do</div>
           <div className={styles.stepsBarArrow}>→</div>
-          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>2</span> Pick a design style</div>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>2</span> Pick a design</div>
           <div className={styles.stepsBarArrow}>→</div>
-          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>3</span> Hit Build & watch it happen</div>
+          <div className={styles.stepsBarItem}><span className={styles.stepsBarNum}>3</span> Watch it build live</div>
         </div>
 
         {/* STEP 1: Business info */}
         <div className={styles.setupRow}>
           <div className={styles.setupStep}>
             <div className={styles.setupStepNum}>1</div>
-            <div className={styles.setupStepLabel}>Your business</div>
+            <div className={styles.setupStepLabel}>Name & what you do</div>
           </div>
           <div className={styles.inputCol}>
-            <div className={styles.inputPair}>
-              <input className={styles.input} type="text" placeholder="Your business name (e.g. Mike's Plumbing)" value={businessName}
-                onChange={e => setBusinessName(e.target.value)} disabled={phase !== "idle" && phase !== "done"} maxLength={40}
-                onKeyDown={e => e.key === "Enter" && canRun && runDemo()} />
-              <select className={styles.select} value={industry} onChange={e => { setIndustry(e.target.value); setAiIndustry(""); setCustomIndustry(""); }} disabled={phase !== "idle" && phase !== "done"}>
-                <option value="">Select your industry / business type</option>
-                <optgroup label="🏠 Home Services">
-                  {["Plumbing","Electrician","HVAC & Heating","Landscaping","Cleaning Service","Roofing","Painting","Pest Control","Pool Service","Handyman"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="🏥 Health & Wellness">
-                  {["Dental","Chiropractic","Physical Therapy","Veterinary","Gym & Fitness","Yoga Studio","Med Spa","Mental Health","Optometry","Nutrition & Dietitian"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="🍽️ Food & Hospitality">
-                  {["Restaurant","Bakery","Catering","Food Truck","Coffee Shop","Bar & Brewery"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="💼 Professional Services">
-                  {["Law Firm","Accounting & CPA","Financial Advisor","Insurance Agency","Mortgage Broker","Real Estate","Architecture","Marketing Agency"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="💅 Beauty & Personal Care">
-                  {["Hair Salon","Nail Salon","Barbershop","Tattoo Studio","Massage Therapy"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="🎨 Creative & Media">
-                  {["Photography","Videography","Graphic Design","Web Design"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="🚗 Retail & Auto">
-                  {["Auto Repair","Car Dealership","Clothing Boutique","Jewelry Store","Florist"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="📚 Education & Childcare">
-                  {["Tutoring","Childcare & Daycare","Music School","Martial Arts"].map(i => <option key={i}>{i}</option>)}
-                </optgroup>
-                <optgroup label="✨ Other">
-                  <option>Other (describe below)</option>
-                </optgroup>
-              </select>
-            </div>
-            {isOther && (
-              <div className={styles.customIndustryWrap}>
-                <input
-                  className={styles.input}
-                  type="text"
-                  placeholder="Describe your business (e.g. &apos;I repair vintage watches&apos; or &apos;I do wedding makeup&apos;)"
-                  value={customIndustry}
-                  onChange={e => { setCustomIndustry(e.target.value); setAiIndustry(""); }}
-                  onBlur={handleCustomIndustryBlur}
-                  disabled={phase !== "idle" && phase !== "done"}
-                  maxLength={80}
-                />
-                {aiLoading && <div className={styles.aiDetecting}>🤖 Identifying your business type...</div>}
-                {aiIndustry && !aiLoading && <div className={styles.aiDetected}>✓ Identified as: <strong>{aiIndustry}</strong> — we&apos;ll build content tailored to this</div>}
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Your business name — e.g. Matt&apos;s Vintage Watches"
+              value={businessName}
+              onChange={e => setBusinessName(e.target.value)}
+              disabled={phase !== "idle" && phase !== "done"}
+              maxLength={50}
+            />
+            <textarea
+              className={styles.textarea}
+              placeholder="Tell us what you do in one sentence — e.g. &apos;I repair and restore vintage watches, and sell rare timepieces from the 1950s–1980s&apos;"
+              value={customIndustry}
+              onChange={e => setCustomIndustry(e.target.value)}
+              disabled={phase !== "idle" && phase !== "done"}
+              maxLength={200}
+              rows={2}
+            />
+            {customIndustry.trim().length > 10 && (
+              <div className={styles.aiReady}>
+                ✓ Got it — we&apos;ll build everything specific to your business
               </div>
             )}
           </div>

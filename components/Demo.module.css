@@ -769,3 +769,33 @@
   flex: 1;
   line-height: 1.5;
 }
+
+/* TEXTAREA for business description */
+.textarea {
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  resize: none;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.textarea::placeholder { color: var(--text-light); }
+.textarea:focus {
+  border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+.textarea:disabled { opacity: 0.5; background: var(--bg-subtle); }
+
+.aiReady {
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+  padding: 4px 0;
+}
