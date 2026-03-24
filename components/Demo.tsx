@@ -231,6 +231,42 @@ const industryData: Record<string, {
     posts: ["🚗 Free brake inspection this week — no appointment needed.", "🔑 Oil change + tire rotation combo: $49.99.", "⭐ 'Honest, fast, and fair priced.' – James W."],
     pages: ["Home", "Services", "Specials", "Reviews", "Book Service"],
   },
+  "Martial Arts": {
+    color: "#1a0a2e", accent: "#7c3aed", emoji: "🥋",
+    image: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800&h=300&fit=crop&auto=format",
+    tagline: "Build discipline, confidence, and strength — for all ages and skill levels.",
+    cta: "Try a Free Class",
+    services: ["Kids Classes", "Adult Classes", "Self-Defense", "Competition Training"],
+    stats: [{ num: "300+", label: "Students" }, { num: "All", label: "Ages welcome" }, { num: "5★", label: "Rated" }],
+    testimonial: { text: "My son has grown so much in confidence since joining. Best decision we ever made.", name: "Lisa M.", role: "Parent" },
+    blogs: ["5 Reasons Martial Arts is Great for Kids", "What to Expect in Your First Class", "How Martial Arts Builds Real-World Confidence"],
+    posts: ["🥋 First class is FREE — come see what we're about.", "💪 Our students don't just learn to fight. They learn to lead.", "⭐ 'Best decision for my kids!' – Lisa M."],
+    pages: ["Home", "Classes", "Schedule", "Instructors", "Try Free"],
+  },
+  "Hair Salon": {
+    color: "#1a0a1a", accent: "#be185d", emoji: "✂️",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=300&fit=crop&auto=format",
+    tagline: "Expert cuts, color, and styling in a relaxing, welcoming environment.",
+    cta: "Book Appointment",
+    services: ["Haircuts & Styling", "Color & Highlights", "Keratin Treatments", "Bridal Hair"],
+    stats: [{ num: "500+", label: "Happy clients" }, { num: "10+", label: "Years experience" }, { num: "5★", label: "Rated" }],
+    testimonial: { text: "I've been coming here for 3 years and never leave disappointed. Absolutely love my hair.", name: "Amanda R.", role: "Regular Client" },
+    blogs: ["How to Choose the Right Hair Color for Your Skin Tone", "5 Tips to Keep Your Color Fresh Between Appointments", "The Best Haircuts for Face Shapes in 2026"],
+    posts: ["✂️ Book before Friday and get 15% off your first color service.", "💇 New season, new look — spring hair trends are here.", "⭐ 'Never been happier with my hair!' – Amanda R."],
+    pages: ["Home", "Services", "Gallery", "Team", "Book Now"],
+  },
+  "Dog Grooming": {
+    color: "#0a2010", accent: "#16a34a", emoji: "🐾",
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=300&fit=crop&auto=format",
+    tagline: "Professional grooming that keeps your pup looking — and feeling — their best.",
+    cta: "Book a Groom",
+    services: ["Full Groom", "Bath & Brush", "Nail Trimming", "Teeth Brushing"],
+    stats: [{ num: "1,000+", label: "Happy pups" }, { num: "Gentle", label: "Approach always" }, { num: "5★", label: "Rated" }],
+    testimonial: { text: "My dog actually gets excited when we pull into the parking lot. That tells you everything.", name: "Kevin S.", role: "Dog Owner" },
+    blogs: ["How Often Should You Groom Your Dog? (By Breed)", "5 Signs Your Dog Needs a Professional Groomer", "What to Expect at Your Dog's First Grooming Appointment"],
+    posts: ["🐾 Book this week and your pup gets a free bandana!", "🛁 Smelly dog? Our deep clean bath will fix that.", "⭐ 'My dog loves coming here!' – Kevin S."],
+    pages: ["Home", "Services", "Gallery", "Pricing", "Book Now"],
+  },
 };
 
 type Phase = "idle" | "building" | "website" | "blog" | "social" | "done";
@@ -354,6 +390,7 @@ export default function Demo() {
   const [typedHeadline, setTypedHeadline] = useState("");
   const [visiblePages, setVisiblePages] = useState(0);
   const [aiGeneratedData, setAiGeneratedData] = useState<typeof industryData["Plumbing"] | null>(null);
+  const aiDataRef = useRef<typeof industryData["Plumbing"] | null>(null);
   const demoRef = useRef<HTMLDivElement>(null);
 
   const name = businessName || "Your Business";
@@ -365,7 +402,10 @@ export default function Demo() {
 
   const runDemo = async () => {
     if (!businessName || !industry) return;
-    const resolvedIndustry = effectiveIndustry;
+    // Capture current values synchronously before any async work
+    const isOtherNow = industry === "Other (describe below)";
+    const resolvedIndustry = isOtherNow ? (aiIndustry || customIndustry) : industry;
+    aiDataRef.current = null;
     setAiGeneratedData(null);
     reset();
     await new Promise(r => setTimeout(r, 50));
@@ -415,18 +455,26 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
         const text = d.content?.[0]?.text?.trim() || "";
         const clean = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
         const generated = JSON.parse(clean);
+        aiDataRef.current = generated;
         setAiGeneratedData(generated);
       } catch (e) {
         // Fall back to closest match silently
       }
     }
 
+    // Build the active data using ref (immediately available) not state
+    const closestKey = Object.keys(industryData).find(k =>
+      k.toLowerCase().includes(resolvedIndustry.toLowerCase()) ||
+      resolvedIndustry.toLowerCase().includes(k.toLowerCase())
+    );
+    const activeData = aiDataRef.current || industryData[closestKey || ""] || industryData["Plumbing"];
+
     await new Promise(r => setTimeout(r, 400));
     setPhase("website");
 
     for (let i = 0; i <= 100; i += 3) { await new Promise(r => setTimeout(r, 12)); setWebsiteProgress(i); }
     setWebsiteProgress(100);
-    for (let i = 1; i <= data.pages.length; i++) { await new Promise(r => setTimeout(r, 70)); setVisiblePages(i); }
+    for (let i = 1; i <= activeData.pages.length; i++) { await new Promise(r => setTimeout(r, 70)); setVisiblePages(i); }
     const hl = name;
     for (let i = 0; i <= hl.length; i++) { await new Promise(r => setTimeout(r, 40)); setTypedHeadline(hl.slice(0, i)); }
     for (let i = 1; i <= 4; i++) { await new Promise(r => setTimeout(r, 300)); setWebsiteSection(i); }
@@ -450,11 +498,11 @@ Use a relevant Unsplash photo URL for this business type. Pick an accent color t
   const effectiveIndustry = isOther ? (aiIndustry || customIndustry) : industry;
 
   // Find closest matching industry from our hardcoded list, or use AI-generated data
-  const closestIndustry = Object.keys(industryData).find(k =>
+  const closestIndustry = effectiveIndustry ? Object.keys(industryData).find(k =>
     k.toLowerCase().includes(effectiveIndustry.toLowerCase()) ||
     effectiveIndustry.toLowerCase().includes(k.toLowerCase())
-  );
-  const data = aiGeneratedData || industryData[closestIndustry || ""] || industryData["Plumbing"];
+  ) : undefined;
+  const data = aiGeneratedData || (closestIndustry ? industryData[closestIndustry] : null) || (industryData[industry] ?? null) || industryData["Plumbing"];
 
   const canRun = businessName.trim().length > 1 && industry.length > 0 && (!isOther || customIndustry.trim().length > 2);
 
