@@ -28,9 +28,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect logged-in users away from auth pages
+  // Redirect logged-in users away from auth pages to onboarding
+  // (dashboard will redirect to onboarding if no business exists)
   if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup') && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/onboarding', request.url))
   }
 
   return supabaseResponse

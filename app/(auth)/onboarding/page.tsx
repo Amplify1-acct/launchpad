@@ -10,8 +10,31 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
   const supabase = createClient();
+
+  // Check if business already exists — if so skip onboarding
+  React.useEffect(() => {
+    async function checkBusiness() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setChecking(false); return; }
+      const { data: customer } = await supabase.from("customers").select("id").eq("user_id", user.id).single();
+      if (!customer) { setChecking(false); return; }
+      const { data: biz } = await supabase.from("businesses").select("id").eq("customer_id", customer.id).single();
+      if (biz) { router.replace("/dashboard"); return; }
+      setChecking(false);
+    }
+    checkBusiness();
+  }, []);
+
+  if (checking) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-soft)" }}>
+        <div style={{ color: "var(--text-mid)", fontSize: "0.9rem" }}>Loading...</div>
+      </div>
+    );
+  }
 
   // Step 1 — Business basics
   const [bizName, setBizName] = useState("");
