@@ -15,11 +15,11 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "LaunchPad — Not DIY. DIFY. Done It For You.",
+  title: "Exsisto — Your business, brought to life.",
   description:
     "Stop doing it yourself. We build your website, write your blog posts, and handle your social media every week — you just run your business.",
   openGraph: {
-    title: "LaunchPad — Not DIY. DIFY.",
+    title: "Exsisto — Your business, brought to life.",
     description:
       "Your website built, your blog written, your social media posted — done for you every week.",
     type: "website",

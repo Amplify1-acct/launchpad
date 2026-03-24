@@ -513,7 +513,7 @@ function MockHomepage({ name, industry, data, themeId, fullSize = false }: {
         </div>
         <div style={{ borderTop: `1px solid rgba(255,255,255,0.1)`, paddingTop: "8px", display: "flex", justifyContent: "space-between" }}>
           <span style={{ fontSize: fsSm, color: t.footerLink }}>© 2026 {name} · All rights reserved</span>
-          <span style={{ fontSize: fsSm, color: t.footerLink, opacity: 0.6 }}>Built by LaunchPad</span>
+          <span style={{ fontSize: fsSm, color: t.footerLink, opacity: 0.6 }}>Built by Exsisto</span>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   const post = getPost(params.slug);
   if (!post) return {};
   return {
-    title: `${post.title} | LaunchPad Blog`,
+    title: `${post.title} | Exsisto Blog`,
     description: post.excerpt,
   };
 }
@@ -67,7 +67,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               <div className={styles.authorName}>{post.author}</div>
               <div className={styles.authorRole}>{post.authorRole}</div>
             </div>
-            <div className={styles.authorBadge}>✍️ Written by LaunchPad AI</div>
+            <div className={styles.authorBadge}>✍️ Written by Exsisto AI</div>
           </div>
 
           {/* CONTENT */}
@@ -109,7 +109,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarCard}>
-            <div className={styles.sidebarTitle}>This post was written by LaunchPad</div>
+            <div className={styles.sidebarTitle}>This post was written by Exsisto</div>
             <p className={styles.sidebarText}>
               Every week we write SEO-optimized blog posts like this one for small businesses — fully tailored to your industry, voice, and local market.
             </p>

@@ -16,7 +16,7 @@ export default function Footer() {
         ))}
       </div>
       <p className={styles.copy}>
-        © {new Date().getFullYear()} LaunchPad · Not DIY. DIFY.
+        © {new Date().getFullYear()} Exsisto · Your business, brought to life.
       </p>
     </footer>
   );

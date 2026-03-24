@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <nav className={styles.nav}>
       <div className={styles.logo}>
-        Launch<span>Pad</span>
+        Exsisto<span>.</span>
       </div>
       <div className={styles.links}>
         <button onClick={() => scrollTo("how")}>How it works</button>

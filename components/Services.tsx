@@ -1,6 +1,6 @@
 import styles from "./Services.module.css";
 
-// Services updated for DIFY positioning
+// Services updated for Exsisto
 const services = [
   {
     icon: "🌐",

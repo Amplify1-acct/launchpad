@@ -48,7 +48,7 @@ export default function Hero() {
         <div className={styles.left}>
           <div className={styles.badge}>
             <div className={styles.badgeDot} />
-            Not DIY. DIFY — Done It For You.
+            Your business, brought to life.
           </div>
           <h1 className={styles.h1}>
             Your Website, Blog,

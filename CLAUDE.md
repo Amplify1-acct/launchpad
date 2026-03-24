@@ -1,4 +1,4 @@
-# LaunchPad — Project Brain
+# Exsisto — Project Brain
 
 This file contains everything needed to understand, continue, and build this project.
 Any AI assistant or developer should read this before touching any code.
@@ -7,9 +7,9 @@ Any AI assistant or developer should read this before touching any code.
 
 ## What This Product Is
 
-**LaunchPad** is a "Done It For You" (DIFY) digital presence platform for small business owners.
+**Exsisto** is a "Done It For You" (DIFY) digital presence platform for small business owners.
 
-The core insight: other website builders (Wix, Squarespace, etc.) are DIY — they give you tools and make you do all the work. LaunchPad does everything FOR the business owner:
+The core insight: other website builders (Wix, Squarespace, etc.) are DIY — they give you tools and make you do all the work. Exsisto does everything FOR the business owner:
 - Builds their website
 - Writes their blog posts every week
 - Manages their social media (Facebook, Instagram, LinkedIn)
@@ -17,9 +17,9 @@ The core insight: other website builders (Wix, Squarespace, etc.) are DIY — th
 
 The target customer is a plumber, dentist, restaurant owner, landscaper — someone who is great at their job and has zero interest in learning to build websites or write blog posts. They pay a monthly fee and never think about their online presence again.
 
-**Positioning:** Not DIY. DIFY — Done It For You.
+**Positioning:** Your business, brought to life.— Done It For You.
 
-**This is NOT competing with Wix/Squarespace.** Those serve people who want to build their own site. LaunchPad serves the 33 million US small businesses that either have no online presence or have something outdated and neglected.
+**This is NOT competing with Wix/Squarespace.** Those serve people who want to build their own site. Exsisto serves the 33 million US small businesses that either have no online presence or have something outdated and neglected.
 
 ---
 
@@ -46,7 +46,7 @@ The target customer is a plumber, dentist, restaurant owner, landscaper — some
 - 3 design themes (minimal, bold, warm)
 - Full mock homepage generator per business/industry
 - Real blog post pages at `/blog/[slug]`
-- DIFY positioning throughout all copy
+- Exsisto positioning throughout all copy
 - Clean white/modern redesign (Inter + Fraunces fonts)
 - GitHub auto-deploy via push script
 
@@ -187,7 +187,7 @@ launchpad/
 **Blog post page features:**
 - Hero image with dark overlay
 - Breadcrumb navigation
-- Author bar with "Written by LaunchPad AI" badge
+- Author bar with "Written by Exsisto AI" badge
 - Full article with h2, p, ul, tip boxes, CTA boxes
 - Sticky sidebar with conversion CTA + related posts
 - Bottom CTA banner
@@ -289,7 +289,7 @@ social_accounts
 
 **Why Inngest over raw cron:** Handles retries, observability, failure recovery. Weekly content generation is mission-critical.
 
-**DIFY positioning:** Do not mention competitor names on the site. Say "other website builders" instead.
+**Exsisto positioning:** Do not mention competitor names on the site. Say "other website builders" instead.
 
 **Demo progress bar bug:** Never use `i += 3` loops with `=== 100` conditions. Always set to 100 explicitly after the loop.
 
@@ -354,7 +354,7 @@ python3 /home/claude/push_to_github.py main   # push to production
 
 ## Contact / Business Info
 
-- **Product name:** LaunchPad
+- **Product name:** Exsisto
 - **GitHub:** `Amplify1-acct`
 - **Vercel team:** AmplifyForLawyers
 - **Live URL:** `launchpad-olive-omega.vercel.app`

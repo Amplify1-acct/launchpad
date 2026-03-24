@@ -1,4 +1,4 @@
-# LaunchPad
+# Exsisto
 
 Your complete digital presence platform for small businesses — built with Next.js 14.
 

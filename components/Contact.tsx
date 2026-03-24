@@ -6,7 +6,7 @@ import styles from "./Contact.module.css";
 const infoItems = [
   { icon: "⚡", label: "Response time", value: "Within 24 hours" },
   { icon: "📞", label: "Prefer to talk?", value: "Book a free 15-min call" },
-  { icon: "📧", label: "Email us directly", value: "hello@launchpad.com" },
+  { icon: "📧", label: "Email us directly", value: "hello@exsisto.ai" },
 ];
 
 const industries = [
