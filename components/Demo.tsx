@@ -739,9 +739,10 @@ export default function Demo() {
                         )}
                       </div>
                     ) : null}
-                  </div>
-                </div>
-              </div>
+                    </div>{/* /browserBodyInner */}
+                  </div>{/* /browserBody */}
+                </div>{/* /browser */}
+              </div>{/* /websiteWrap */}
 
               {/* BLOG + SOCIAL COLUMN */}
               <div className={styles.rightCol}>
