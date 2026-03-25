@@ -1,22 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-inter",
-  display: "swap",
-  preload: false,
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-fraunces",
-  display: "swap",
-  preload: false,
-});
 
 export const metadata: Metadata = {
   title: "Exsisto — Your business, brought to life.",
@@ -37,7 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${fraunces.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ fontFamily: "'Inter', sans-serif" }}>
         {children}
       </body>
     </html>

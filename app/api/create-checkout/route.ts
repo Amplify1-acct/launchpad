@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-02-25.clover",
-});
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY not set");
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2026-02-25.clover",
+  });
+}
 
 const PLANS = {
   starter: {
@@ -24,6 +27,7 @@ const PLANS = {
 };
 
 export async function POST(request: Request) {
+  const stripe = getStripe();
   const { plan = "growth", siteData, email, businessName } = await request.json();
 
   if (!process.env.STRIPE_SECRET_KEY) {
