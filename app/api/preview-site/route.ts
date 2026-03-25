@@ -15,13 +15,10 @@ const STATE_LICENSED: string[] = [
   "law", "legal", "attorney", "lawyer",
   "accounting", "accountant", "cpa",
   "financial", "finance", "advisor", "wealth",
-  "insurance",
-  "real estate",
-  "mortgage",
+  "insurance", "real estate", "mortgage",
   "therapist", "therapy", "psychologist",
   "physician", "medical", "doctor",
-  "dental", "dentist",
-  "chiropractor",
+  "dental", "dentist", "chiropractor",
 ];
 
 function detectTemplate(industry: string): "trades" | "professional" {
@@ -32,9 +29,78 @@ function detectTemplate(industry: string): "trades" | "professional" {
 }
 
 function isStateLicensed(industry: string): boolean {
-  const lower = industry.toLowerCase();
-  return STATE_LICENSED.some(k => lower.includes(k));
+  return STATE_LICENSED.some(k => industry.toLowerCase().includes(k));
 }
+
+// ─── FORMAT TEAM DATA ──────────────────────────────────────────────────────────
+// Runs each team member's raw input through Claude to fix typos, capitalization,
+// grammar, punctuation, and sentence structure — without changing the meaning.
+
+async function formatTeamMember(member: any, businessName: string, industry: string): Promise<any> {
+  // Skip if member has no meaningful content
+  const hasContent = member.name || member.bio || member.education || member.awards;
+  if (!hasContent) return member;
+
+  const fieldSummary = [
+    member.name       && `Name: ${member.name}`,
+    member.title      && `Title: ${member.title}`,
+    member.experience && `Experience: ${member.experience}`,
+    member.credentials && `Credentials: ${member.credentials}`,
+    member.bio        && `Bio:\n${member.bio}`,
+    member.education  && `Education:\n${member.education}`,
+    member.barAdmissions && `Bar Admissions:\n${member.barAdmissions}`,
+    member.specializations && `Specializations: ${member.specializations}`,
+    member.awards     && `Awards:\n${member.awards}`,
+    member.publications && `Publications:\n${member.publications}`,
+  ].filter(Boolean).join("\n\n");
+
+  const prompt = `You are editing a professional bio for a ${industry} business called "${businessName}".
+
+The person below submitted their information but it may have typos, inconsistent capitalization, grammar issues, incomplete sentences, or informal/unprofessional phrasing. 
+
+Your job: clean it up professionally. Fix typos, capitalization, punctuation, and grammar. Expand abbreviations where appropriate (e.g. "NY law" → "New York Law School"). Make incomplete notes into proper sentences. Do NOT invent new facts, change dates, alter credentials, or add content that wasn't there. Preserve the person's voice and all specific details exactly.
+
+Here is their input:
+${fieldSummary}
+
+Return ONLY valid JSON with these exact fields (use empty string "" for any field not provided):
+{
+  "name": "properly capitalized full name",
+  "title": "properly formatted title",
+  "experience": "number or phrase as provided, just cleaned up",
+  "credentials": "properly formatted credentials, comma separated",
+  "bio": "cleaned up bio — fix typos, capitalize sentences, fix grammar, expand into proper paragraphs if notes were provided. Preserve all facts.",
+  "education": "each entry on its own line, properly formatted",
+  "barAdmissions": "each admission on its own line, properly formatted",
+  "specializations": "comma-separated, properly capitalized",
+  "awards": "each award on its own line, properly formatted",
+  "publications": "each publication on its own line, properly formatted"
+}`;
+
+  try {
+    const res = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1500,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const raw = res.content[0].type === "text" ? res.content[0].text : "";
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return member;
+    const cleaned = JSON.parse(match[0]);
+    // Merge cleaned fields back — preserve linkedin which we didn't send for formatting
+    return {
+      ...member,
+      ...Object.fromEntries(
+        Object.entries(cleaned).filter(([_, v]) => v !== "")
+      ),
+    };
+  } catch {
+    // If formatting fails, return original — never block the site generation
+    return member;
+  }
+}
+
+// ─── MAIN HANDLER ──────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
   const { businessName, industry, city, state, description, phone, email, founded, realStats, team } = await request.json();
@@ -42,8 +108,9 @@ export async function POST(request: Request) {
   if (!businessName || !industry) {
     return NextResponse.json({ error: "businessName and industry are required" }, { status: 400 });
   }
-  // Use fallback description if blank
-  const resolvedDescription = description?.trim() || `${businessName} is a ${industry} business serving clients in ${city || "the local area"}, ${state || ""}.`;
+
+  const resolvedDescription = description?.trim() ||
+    `${businessName} is a ${industry} business serving clients in ${city || "the local area"}, ${state || ""}.`;
 
   const template = detectTemplate(industry);
   const accentColor = template === "trades" ? "#a8c500" : "#8b4513";
@@ -57,7 +124,8 @@ export async function POST(request: Request) {
     ? `throughout ${resolvedState}`
     : `${resolvedCity}, ${resolvedState} and surrounding areas`;
 
-  const prompt = `You are generating content for a small business website.
+  // Run site content generation + team formatting in parallel
+  const sitePrompt = `You are generating content for a small business website.
 
 Business Name: ${businessName}
 Industry: ${industry}
@@ -100,22 +168,31 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   "keywords": ["${industry.toLowerCase()} ${stateLicensed ? resolvedState : resolvedCity}", "${industry.toLowerCase()} ${resolvedState}", "keyword 3", "keyword 4", "keyword 5", "keyword 6"]
 }`;
 
-  let generated: any;
-  try {
-    const aiResponse = await anthropic.messages.create({
+  // Run site generation and team formatting in parallel for speed
+  const teamMembers = team && team.length > 0
+    ? team.filter((m: any) => m.name?.trim())
+    : [];
+
+  const [generated, formattedTeam] = await Promise.all([
+    // Site content generation
+    anthropic.messages.create({
       model: "claude-opus-4-5-20251101",
       max_tokens: 3000,
-      messages: [{ role: "user", content: prompt }],
-    });
-    const raw = aiResponse.content[0].type === "text" ? aiResponse.content[0].text : "";
-    const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("No JSON in response");
-    generated = JSON.parse(match[0]);
-  } catch (e: any) {
-    return NextResponse.json({ error: "AI generation failed: " + e.message }, { status: 500 });
-  }
+      messages: [{ role: "user", content: sitePrompt }],
+    }).then(res => {
+      const raw = res.content[0].type === "text" ? res.content[0].text : "";
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("No JSON in AI response");
+      return JSON.parse(match[0]);
+    }),
 
-  // Pick distinct photos for each section — no repeats on the same site
+    // Team formatting — runs all members in parallel too
+    Promise.all(
+      teamMembers.map((m: any) => formatTeamMember(m, businessName, industry))
+    ),
+  ]);
+
+  // Pick distinct photos
   const sitePhotos = pickSitePhotos(industry, template);
 
   const siteData = {
@@ -146,21 +223,17 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       services: generated.services || [],
       stats: (realStats && realStats.length > 0)
         ? realStats.map((s: any) => ({ value: s.value, label: s.label }))
-        : generated.stats || [],
+        : [],
       testimonials: [],
       process_steps: generated.process_steps || [],
       faqs: generated.faqs || [],
     },
-  };
-
-  const siteWithTeam = {
-    ...siteData,
-    team: (team && team.length > 0) ? team : undefined,
+    team: formattedTeam.length > 0 ? formattedTeam : undefined,
   };
 
   const pages = template === "trades"
-    ? buildTradesSite(siteWithTeam)
-    : buildProfessionalSite(siteWithTeam);
+    ? buildTradesSite(siteData)
+    : buildProfessionalSite(siteData);
 
   return NextResponse.json({ success: true, template, pages, generated });
 }
