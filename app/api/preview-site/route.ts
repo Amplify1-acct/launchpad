@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
+import { pickHero, pickInterior } from "@/lib/photos";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -10,7 +11,6 @@ const TEMPLATE_MAP: Record<string, string[]> = {
   professional: ["law", "legal", "attorney", "lawyer", "accounting", "accountant", "financial", "finance", "consulting", "consultant", "insurance", "real estate", "advisor", "bookkeeping", "tax", "cpa", "hr", "recruiting"],
 };
 
-// Industries that are state-licensed and should target the full state, not just the city
 const STATE_LICENSED: string[] = [
   "law", "legal", "attorney", "lawyer",
   "accounting", "accountant", "cpa",
@@ -24,52 +24,6 @@ const STATE_LICENSED: string[] = [
   "chiropractor",
 ];
 
-function isStateLicensed(industry: string): boolean {
-  const lower = industry.toLowerCase();
-  return STATE_LICENSED.some(k => lower.includes(k));
-}
-
-// Specific Pexels queries per industry — tuned for relevance
-const PHOTO_QUERIES: Record<string, string> = {
-  "law firm":      "law office attorney",
-  "legal":         "lawyer office professional",
-  "attorney":      "attorney law office",
-  "accounting":    "accountant office desk",
-  "accountant":    "accounting professional office",
-  "financial":     "financial advisor meeting",
-  "finance":       "finance office professional",
-  "consulting":    "business consulting meeting",
-  "consultant":    "consultant business meeting",
-  "real estate":   "real estate office agent",
-  "insurance":     "insurance office professional",
-  "bookkeeping":   "accountant office bookkeeping",
-  "tax":           "tax accountant office",
-  "hr":            "human resources office meeting",
-  "plumbing":      "plumber working pipes",
-  "roofing":       "roofer roofing contractor",
-  "hvac":          "hvac technician air conditioning",
-  "electrical":    "electrician working professional",
-  "contractor":    "contractor construction worker",
-  "landscaping":   "landscaping garden professional",
-  "lawn":          "lawn care mowing grass",
-  "cleaning":      "house cleaning professional service",
-  "pest":          "pest control exterminator",
-  "painting":      "house painter professional",
-  "salon":         "hair salon stylist",
-  "spa":           "spa wellness massage",
-  "fitness":       "gym fitness trainer",
-  "dental":        "dental office dentist",
-  "medical":       "medical clinic doctor office",
-  "chiropractic":  "chiropractor office professional",
-  "photography":   "photographer studio professional",
-};
-
-// Reliable fallbacks per template — never wrong industry
-const FALLBACKS: Record<string, string> = {
-  professional: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  trades:       "https://images.pexels.com/photos/1249611/pexels-photo-1249611.jpeg?auto=compress&cs=tinysrgb&w=1400",
-};
-
 function detectTemplate(industry: string): "trades" | "professional" {
   const lower = industry.toLowerCase();
   if (TEMPLATE_MAP.trades.some(k => lower.includes(k))) return "trades";
@@ -77,32 +31,9 @@ function detectTemplate(industry: string): "trades" | "professional" {
   return "trades";
 }
 
-function getPhotoQuery(industry: string): string {
+function isStateLicensed(industry: string): boolean {
   const lower = industry.toLowerCase();
-  for (const [key, query] of Object.entries(PHOTO_QUERIES)) {
-    if (lower.includes(key)) return query;
-  }
-  return `${industry} professional`;
-}
-
-async function fetchPexelsPhoto(query: string): Promise<string | null> {
-  const key = process.env.PEXELS_API_KEY;
-  if (!key) return null;
-  try {
-    const res = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=5&orientation=landscape`,
-      { headers: { Authorization: key } }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    const photos = data.photos || [];
-    if (!photos.length) return null;
-    // Pick randomly from top 5 for variety
-    const pick = photos[Math.floor(Math.random() * Math.min(photos.length, 5))];
-    return `${pick.src.large2x}?auto=compress&cs=tinysrgb&w=1400&fit=crop`;
-  } catch {
-    return null;
-  }
+  return STATE_LICENSED.some(k => lower.includes(k));
 }
 
 export async function POST(request: Request) {
@@ -115,19 +46,24 @@ export async function POST(request: Request) {
   const template = detectTemplate(industry);
   const accentColor = template === "trades" ? "#a8c500" : "#8b4513";
   const stateLicensed = isStateLicensed(industry);
+  const resolvedState = state || "IL";
+  const resolvedCity = city || "Springfield";
   const geoTarget = stateLicensed
-    ? `${state || "IL"} statewide (licensed throughout the state)`
-    : `${city || "Springfield"}, ${state || "IL"} and surrounding areas`;
+    ? `${resolvedState} statewide (licensed throughout the state)`
+    : `${resolvedCity}, ${resolvedState} and surrounding areas`;
+  const serviceArea = stateLicensed
+    ? `throughout ${resolvedState}`
+    : `${resolvedCity}, ${resolvedState} and surrounding areas`;
 
   const prompt = `You are generating content for a small business website.
 
 Business Name: ${businessName}
 Industry: ${industry}
-Location: ${city || "Springfield"}, ${state || "IL"}
+Location: ${resolvedCity}, ${resolvedState}
 Geographic Target: ${geoTarget}
 Description: ${description}
 
-IMPORTANT: This business serves ${geoTarget}. All geographic references in copy, meta tags, and keywords should reflect this — ${stateLicensed ? `use "${state || "IL"}" statewide references, not just the city` : `use the local city and region`}.
+IMPORTANT: This business serves ${geoTarget}. All geographic references in copy, meta tags, and keywords should reflect this — ${stateLicensed ? `use "${resolvedState}" statewide references, not just the city` : `use the local city and region`}.
 
 Generate rich, specific, professional content tailored to THIS exact business. No generic filler.
 
@@ -162,9 +98,9 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     {"question": "Real FAQ", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"}
   ],
-  "meta_title": "${businessName} | ${industry} in ${city || "Springfield"}, ${state || "IL"}",
-  "meta_description": "Under 155 characters. Compelling description for search results.",
-  "keywords": ["local keyword 1", "local keyword 2", "service keyword 3", "keyword 4", "keyword 5", "keyword 6"]
+  "meta_title": "${businessName} | ${industry} in ${stateLicensed ? resolvedState : `${resolvedCity}, ${resolvedState}`}",
+  "meta_description": "Under 155 characters. Compelling description mentioning ${stateLicensed ? resolvedState : resolvedCity}.",
+  "keywords": ["${industry.toLowerCase()} ${stateLicensed ? resolvedState : resolvedCity}", "${industry.toLowerCase()} ${resolvedState}", "keyword 3", "keyword 4", "keyword 5", "keyword 6"]
 }`;
 
   let generated: any;
@@ -182,15 +118,9 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     return NextResponse.json({ error: "AI generation failed: " + e.message }, { status: 500 });
   }
 
-  // Fetch hero image from Pexels
-  const photoQuery = getPhotoQuery(industry);
-  const heroImageUrl = (await fetchPexelsPhoto(photoQuery)) || FALLBACKS[template];
-
-  const resolvedState = state || "IL";
-  const resolvedCity = city || "Springfield";
-  const serviceArea = stateLicensed
-    ? `throughout ${resolvedState}`
-    : `${resolvedCity}, ${resolvedState} and surrounding areas`;
+  // Use curated photo library — no API call needed, always perfect match
+  const heroImageUrl = pickHero(industry, template);
+  const interiorImageUrl = pickInterior(industry, template);
 
   const siteData = {
     business: {
@@ -209,12 +139,13 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     },
     website: {
       hero_image_url: heroImageUrl,
+      interior_image_url: interiorImageUrl,
       meta_title: generated.meta_title,
       meta_description: generated.meta_description,
       keywords: generated.keywords || [],
       services: generated.services || [],
       stats: generated.stats || [],
-      testimonials: generated.testimonials || [],
+      testimonials: [],
       process_steps: generated.process_steps || [],
       faqs: generated.faqs || [],
     },

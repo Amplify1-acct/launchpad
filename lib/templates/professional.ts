@@ -321,7 +321,7 @@ const placeholderLogos = ['AlphaGroup', 'Meridian Co.', 'NorthStar LLC', 'Pinnac
 export function buildIndex(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
-  const teamImg = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format';
+  const teamImg = w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
 ${nav(b, 'index.html')}
@@ -553,7 +553,7 @@ ${js}
 export function buildAbout(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
-  const teamImg = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format';
+  const teamImg = w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(`About | ${w.meta_title}`, `About ${b.name} — ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
 ${nav(b, 'about.html')}

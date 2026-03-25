@@ -15,6 +15,7 @@ export interface SiteData {
   };
   website: {
     hero_image_url: string;
+    interior_image_url?: string;
     meta_title: string;
     meta_description: string;
     keywords: string[];
