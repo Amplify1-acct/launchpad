@@ -113,9 +113,19 @@ interface TeamMember {
   bio: string;
   experience: string;
   credentials: string;
+  education: string;
+  barAdmissions: string;
+  specializations: string;
+  awards: string;
+  publications: string;
+  linkedin: string;
 }
 
-const emptyMember = (): TeamMember => ({ name: "", title: "", bio: "", experience: "", credentials: "" });
+const emptyMember = (): TeamMember => ({
+  name: "", title: "", bio: "", experience: "", credentials: "",
+  education: "", barAdmissions: "", specializations: "",
+  awards: "", publications: "", linkedin: "",
+});
 
 const inp: React.CSSProperties = {
   width: "100%", padding: "0.6rem 0.8rem",
@@ -357,20 +367,74 @@ export default function PreviewPage() {
                   style={{ ...inp, background: "#fff" }} />
               </div>
 
-              <div>
+              <div style={{ marginBottom: "0.6rem" }}>
                 <label style={lbl}>
                   Bio
-                  <span style={{ fontWeight: 400, color: "#bbb", marginLeft: 6, textTransform: "none", letterSpacing: 0 }}>
-                    — background, expertise, personal touch
-                  </span>
+                  <span style={{ fontWeight: 400, color: "#bbb", marginLeft: 6, textTransform: "none", letterSpacing: 0 }}>— background, career, personal touch</span>
                 </label>
                 <textarea value={member.bio} onChange={e => setMember(i, "bio", e.target.value)}
-                  placeholder={`Tell their story. Where did they train? What drives them? What makes them exceptional at what they do? Include career highlights, specializations, community involvement — anything that builds trust and connection with a potential client.`}
+                  placeholder="Tell their full story — where they trained, career highlights, what drives them, community involvement. No limit — the more detail the better the bio page."
                   rows={5}
                   style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
                 <div style={{ fontSize: "0.68rem", color: "#ccc", marginTop: 3 }}>
-                  {member.bio.length} characters — no limit, write as much as you like
+                  {member.bio.length} characters — no limit
                 </div>
+              </div>
+
+              <div style={{ marginBottom: "0.6rem" }}>
+                <label style={lbl}>Education</label>
+                <textarea value={member.education} onChange={e => setMember(i, "education", e.target.value)}
+                  placeholder={"e.g.
+Harvard Law School, J.D., 2004
+Boston College, B.A. Political Science, 2001"}
+                  rows={3}
+                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+              </div>
+
+              <div style={{ marginBottom: "0.6rem" }}>
+                <label style={lbl}>Bar Admissions / Licenses</label>
+                <textarea value={member.barAdmissions} onChange={e => setMember(i, "barAdmissions", e.target.value)}
+                  placeholder={"e.g.
+New Jersey State Bar, 2005
+New York State Bar, 2006
+U.S. District Court, D.N.J."}
+                  rows={3}
+                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+              </div>
+
+              <div style={{ marginBottom: "0.6rem" }}>
+                <label style={lbl}>Practice Areas / Specializations</label>
+                <input value={member.specializations} onChange={e => setMember(i, "specializations", e.target.value)}
+                  placeholder="e.g. Personal Injury, Medical Malpractice, Wrongful Death"
+                  style={{ ...inp, background: "#fff" }} />
+              </div>
+
+              <div style={{ marginBottom: "0.6rem" }}>
+                <label style={lbl}>Awards & Recognitions</label>
+                <textarea value={member.awards} onChange={e => setMember(i, "awards", e.target.value)}
+                  placeholder={"e.g.
+Super Lawyers 2018–2024
+Best Lawyers in America 2020
+AV Preeminent® Rating, Martindale-Hubbell"}
+                  rows={3}
+                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+              </div>
+
+              <div style={{ marginBottom: "0.6rem" }}>
+                <label style={lbl}>Publications / Media <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                <textarea value={member.publications} onChange={e => setMember(i, "publications", e.target.value)}
+                  placeholder={"e.g.
+"Understanding NJ Personal Injury Law" — NJ Law Journal, 2022
+Featured on NBC News, CNN discussing case outcomes"}
+                  rows={3}
+                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+              </div>
+
+              <div>
+                <label style={lbl}>LinkedIn URL <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                <input value={member.linkedin} onChange={e => setMember(i, "linkedin", e.target.value)}
+                  placeholder="https://linkedin.com/in/name"
+                  style={{ ...inp, background: "#fff" }} />
               </div>
             </div>
           ))}

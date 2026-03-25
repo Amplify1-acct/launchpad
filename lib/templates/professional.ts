@@ -273,18 +273,31 @@ if(band) band.addEventListener('submit', e => { e.preventDefault(); });
 </script>
 `;
 
-function nav(business: SiteData['business'], activePage: string) {
-  const pages = [
-    { href: 'index.html', label: 'Home' },
-    { href: 'services.html', label: 'Services' },
-    { href: 'about.html', label: 'About' },
-    { href: 'contact.html', label: 'Contact' },
-  ];
+function nav(business: SiteData['business'], activePage: string, team?: SiteData['team']) {
+  const hasTeam = team && team.length > 0;
   return `
+<style>
+.nav-dropdown { position: relative; }
+.nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); min-width: 200px; box-shadow: var(--shadow); z-index: 200; padding: 0.5rem 0; }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu a { display: block; padding: 0.5rem 1.25rem; font-size: 0.82rem; color: var(--mid); white-space: nowrap; }
+.nav-dropdown-menu a:hover { color: var(--accent); background: var(--cream); }
+.nav-dropdown-toggle::after { content: ' ▾'; font-size: 0.65rem; opacity: 0.5; }
+</style>
 <nav>
   <div class="logo">${business.name.split(' ')[0]} <em>${business.name.split(' ').slice(1).join(' ')}</em></div>
   <div class="nav-links">
-    ${pages.map(p => `<a href="${p.href}"${activePage === p.href ? ' style="color:var(--black);font-weight:600"' : ''}>${p.label}</a>`).join('')}
+    <a href="index.html"${activePage === 'index.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Home</a>
+    <a href="services.html"${activePage === 'services.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Services</a>
+    <div class="nav-dropdown">
+      <a href="about.html" class="nav-dropdown-toggle"${activePage === 'about.html' || activePage === 'team.html' ? ' style="color:var(--black);font-weight:600"' : ''}>About</a>
+      <div class="nav-dropdown-menu">
+        <a href="about.html">About Us</a>
+        <a href="team.html">Our Team</a>
+        ${hasTeam ? team!.map(m => `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html">${m.name}</a>`).join('') : ''}
+      </div>
+    </div>
+    <a href="contact.html"${activePage === 'contact.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Contact</a>
     <a href="contact.html" class="nav-cta btn">Schedule a Consultation</a>
   </div>
 </nav>`;
@@ -348,7 +361,7 @@ export function buildIndex(d: SiteData): string {
   const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
-${nav(b, 'index.html')}
+${nav(b, 'index.html', d.team)}
 
 <!-- HERO -->
 <div class="hero">
@@ -555,7 +568,7 @@ export function buildServices(d: SiteData): string {
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
 
   return `${head(`Services | ${w.meta_title}`, `Explore all services from ${b.name} in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'services.html')}
+${nav(b, 'services.html', d.team)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -612,7 +625,7 @@ export function buildAbout(d: SiteData): string {
   const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(`About | ${w.meta_title}`, `About ${b.name} — ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'about.html')}
+${nav(b, 'about.html', d.team)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -678,7 +691,7 @@ export function buildContact(d: SiteData): string {
   const { business: b, website: w } = d;
 
   return `${head(`Contact | ${w.meta_title}`, `Contact ${b.name} for a free consultation in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'contact.html')}
+${nav(b, 'contact.html', d.team)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -743,37 +756,144 @@ ${js}
 
 function buildTeamBioPagePro(d: SiteData, member: NonNullable<SiteData['team']>[0]): string {
   const { business: b, website: w } = d;
-  return `${head(`${member.name} | ${b.name}`, `${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 120) || ""}`, w.keywords, b.accent_color)}
-${nav(b, '')}
+  const slug = member.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-<div class="bio-hero-pro">
-  <div class="bio-hero-pro-inner">
-    <div class="bio-avatar-lg-pro">${member.name.charAt(0)}</div>
-    <div>
-      <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><a href="team.html">Team</a><span>›</span>${member.name}</div>
-      <h1 class="bio-hero-pro-name">${member.name}</h1>
-      <div class="bio-hero-pro-title">${member.title}${member.credentials ? ` · ${member.credentials}` : ""}</div>
-      <div class="bio-hero-pro-meta">
-        ${member.experience ? `${member.experience} years of experience · ` : ""}${b.stateLicensed ? `Licensed in ${b.state}` : `${b.city}, ${b.state}`}
+  const educationLines = member.education?.split(/\n/).filter(Boolean) || [];
+  const barLines = member.barAdmissions?.split(/\n/).filter(Boolean) || [];
+  const awardLines = member.awards?.split(/\n/).filter(Boolean) || [];
+  const pubLines = member.publications?.split(/\n/).filter(Boolean) || [];
+  const specList = member.specializations?.split(/,/).map((s: string) => s.trim()).filter(Boolean) || [];
+
+  const hasSidebar = specList.length > 0 || barLines.length > 0 || educationLines.length > 0 || awardLines.length > 0;
+  const hasAchievements = awardLines.length > 0 || pubLines.length > 0;
+
+  return `${head(`${member.name} | ${b.name}`, `${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 140) || ""}`, w.keywords, b.accent_color)}
+<style>
+.bio-page { max-width: 1180px; margin: 0 auto; padding: 3rem; display: grid; grid-template-columns: 240px 1fr 280px; gap: 3rem; align-items: start; }
+.bio-toc { position: sticky; top: 88px; }
+.bio-toc-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--light); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
+.bio-toc-label::before { content: ''; display: block; width: 14px; height: 1.5px; background: var(--accent); }
+.bio-toc a { display: block; font-size: 0.82rem; color: var(--mid); padding: 0.4rem 0; border-bottom: 1px solid var(--border); text-decoration: none; transition: color 0.2s; }
+.bio-toc a:hover { color: var(--accent); }
+.bio-toc-contact { margin-top: 1.25rem; padding: 1.25rem; background: var(--cream); border-radius: var(--radius); }
+.bio-toc-contact .ctc-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--light); margin-bottom: 0.6rem; }
+.bio-toc-contact .ctc-phone { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--black); }
+.bio-toc-contact .ctc-email { font-size: 0.82rem; color: var(--accent); margin-top: 4px; }
+.bio-main h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--black); margin-bottom: 1.25rem; margin-top: 2.5rem; padding-top: 2.5rem; border-top: 1px solid var(--border); }
+.bio-main h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.bio-main p { font-size: 0.975rem; color: var(--text); line-height: 1.9; margin-bottom: 1.1rem; }
+.bio-sidebar { position: sticky; top: 88px; }
+.bio-sidebar-section { margin-bottom: 2rem; }
+.bio-sidebar-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--light); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+.bio-sidebar-item { font-size: 0.82rem; color: var(--mid); padding: 0.35rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.bio-sidebar-item::before { content: '›'; color: var(--accent); font-size: 0.9rem; }
+.bio-achievements { margin-top: 2rem; }
+.bio-achievement-item { font-size: 0.875rem; color: var(--text); padding: 0.6rem 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
+.bio-achievement-item::before { content: '✦ '; color: var(--accent); font-size: 0.75rem; }
+.bio-pub-item { font-size: 0.875rem; color: var(--text); padding: 0.6rem 0; border-bottom: 1px solid var(--border); line-height: 1.55; font-style: italic; }
+@media (max-width: 960px) {
+  .bio-page { grid-template-columns: 1fr; }
+  .bio-toc, .bio-sidebar { position: static; }
+}
+</style>
+${nav(b, 'about.html', d.team)}
+
+<div style="background:var(--cream);border-bottom:1px solid var(--border);padding:2rem 3rem">
+  <div style="max-width:1180px;margin:0 auto">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><a href="about.html">About Us</a><span>›</span><a href="team.html">Our Team</a><span>›</span>${member.name}</div>
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-top:1rem;flex-wrap:wrap">
+      <div class="bio-avatar-lg-pro">${member.name.charAt(0)}</div>
+      <div>
+        ${member.title ? `<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin-bottom:6px">${member.title}</div>` : ""}
+        <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:var(--black);line-height:1.1">${member.name}</h1>
+        <div style="font-size:0.85rem;color:var(--mid);margin-top:6px">
+          ${member.credentials ? `${member.credentials}` : ""}
+          ${member.experience ? `${member.credentials ? " · " : ""}${member.experience} years of experience` : ""}
+          ${b.stateLicensed ? ` · Licensed in ${b.state}` : (b.city ? ` · ${b.city}, ${b.state}` : "")}
+        </div>
+        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer" style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--accent);margin-top:8px;font-weight:600">LinkedIn →</a>` : ""}
       </div>
     </div>
   </div>
 </div>
 
-<div class="bio-content-pro">
-  ${member.bio
-    ? member.bio.split(/\n+/).filter(Boolean).map((p: string) => `<p>${p}</p>`).join("\n  ")
-    : `<p>${member.name} is ${member.title} at ${b.name}, serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}.</p>`
-  }
-  ${member.credentials ? `
-  <div style="margin-top:2.5rem;padding:2rem;background:var(--cream);border-radius:var(--radius);border-top:3px solid var(--accent)">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;margin-bottom:0.5rem">Credentials & Licenses</div>
-    <div style="font-size:0.9rem;color:var(--mid);line-height:1.7">${member.credentials}</div>
-  </div>` : ""}
-  <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);display:flex;gap:1rem;flex-wrap:wrap">
-    <a href="contact.html" class="btn btn-dark">Schedule a Consultation →</a>
-    <a href="team.html" class="btn btn-outline">← Back to Team</a>
+<div class="bio-page">
+
+  <!-- LEFT: Table of contents + contact -->
+  <div class="bio-toc">
+    <div class="bio-toc-label">Contents</div>
+    <a href="#about">About ${member.name.split(" ")[0]}</a>
+    ${hasAchievements ? `<a href="#achievements">Recognition & Achievements</a>` : ""}
+    ${specList.length > 0 ? `<a href="#specializations">Practice Areas</a>` : ""}
+    ${barLines.length > 0 ? `<a href="#bar">Bar Admissions</a>` : ""}
+    ${educationLines.length > 0 ? `<a href="#education">Education</a>` : ""}
+
+    <div class="bio-toc-contact">
+      <div class="ctc-label">Contact Info</div>
+      ${b.phone ? `<div class="ctc-phone">${b.phone}</div>` : ""}
+      ${b.email ? `<div class="ctc-email">${b.email}</div>` : ""}
+      <a href="contact.html" class="btn btn-dark" style="margin-top:1rem;font-size:0.78rem;padding:0.6rem 1rem;width:100%;justify-content:center">Free Consultation</a>
+    </div>
   </div>
+
+  <!-- CENTER: Main bio content -->
+  <div class="bio-main">
+    <h2 id="about">About ${member.name.split(" ")[0]}</h2>
+    ${member.bio
+      ? member.bio.split(/
++/).filter(Boolean).map((p: string) => `<p>${p}</p>`).join("
+    ")
+      : `<p>${member.name} is ${member.title} at ${b.name}, serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}. ${member.credentials ? `${member.credentials}.` : ""}</p>`
+    }
+
+    ${hasAchievements ? `
+    <h2 id="achievements">Recognition & Achievements</h2>
+    ${awardLines.length > 0 ? `
+    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--light);margin-bottom:0.75rem">Awards & Honors</div>
+    <div class="bio-achievements">
+      ${awardLines.map((a: string) => `<div class="bio-achievement-item">${a}</div>`).join("")}
+    </div>` : ""}
+    ${pubLines.length > 0 ? `
+    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--light);margin-top:1.5rem;margin-bottom:0.75rem">Publications & Media</div>
+    <div>
+      ${pubLines.map((p: string) => `<div class="bio-pub-item">${p}</div>`).join("")}
+    </div>` : ""}
+    ` : ""}
+
+    <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="contact.html" class="btn btn-dark">Schedule a Consultation →</a>
+      <a href="team.html" class="btn btn-outline">← Our Team</a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Sidebar -->
+  ${hasSidebar ? `
+  <div class="bio-sidebar">
+    ${specList.length > 0 ? `
+    <div class="bio-sidebar-section" id="specializations">
+      <div class="bio-sidebar-title">Practice Areas</div>
+      ${specList.map((s: string) => `<div class="bio-sidebar-item">${s}</div>`).join("")}
+    </div>` : ""}
+
+    ${barLines.length > 0 ? `
+    <div class="bio-sidebar-section" id="bar">
+      <div class="bio-sidebar-title">Bar Admissions</div>
+      ${barLines.map((b: string) => `<div class="bio-sidebar-item" style="font-size:0.8rem">${b}</div>`).join("")}
+    </div>` : ""}
+
+    ${educationLines.length > 0 ? `
+    <div class="bio-sidebar-section" id="education">
+      <div class="bio-sidebar-title">Education</div>
+      ${educationLines.map((e: string) => `<div class="bio-sidebar-item" style="font-size:0.8rem">${e}</div>`).join("")}
+    </div>` : ""}
+
+    ${member.credentials ? `
+    <div class="bio-sidebar-section">
+      <div class="bio-sidebar-title">Certifications</div>
+      ${member.credentials.split(/,|\n/).map((c: string) => c.trim()).filter(Boolean).map((c: string) => `<div class="bio-sidebar-item" style="font-size:0.8rem">${c}</div>`).join("")}
+    </div>` : ""}
+  </div>` : "<div></div>"}
+
 </div>
 
 ${footer(b)}
@@ -785,7 +905,7 @@ function buildTeamPagePro(d: SiteData): string {
   const { business: b, website: w } = d;
   const team = d.team || [];
   return `${head(`Our Team | ${w.meta_title}`, `Meet the team at ${b.name}.`, w.keywords, b.accent_color)}
-${nav(b, 'team.html')}
+${nav(b, 'team.html', d.team)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
