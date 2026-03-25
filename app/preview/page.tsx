@@ -556,12 +556,16 @@ export default function PreviewPage() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "0.75rem" }}>
               {practiceAreaSuggestions.filter(s => !practiceAreas.includes(s)).slice(0, 12).map(suggestion => (
                 <button key={suggestion}
-                  onClick={() => setPracticeAreas(a => a.length < 8 ? [...a, suggestion] : a)}
+                  onClick={() => setPracticeAreas(a => a.length < currentPkg.servicePages ? [...a, suggestion] : a)}
                   style={{
                     fontSize: "0.72rem", padding: "3px 9px",
-                    background: "#f8f8f6", border: "1px solid #e4e4e0",
-                    borderRadius: 3, cursor: "pointer", color: "#555",
+                    background: practiceAreas.length >= currentPkg.servicePages ? "#f0f0f0" : "#f8f8f6",
+                    border: "1px solid #e4e4e0",
+                    borderRadius: 3,
+                    cursor: practiceAreas.length >= currentPkg.servicePages ? "not-allowed" : "pointer",
+                    color: practiceAreas.length >= currentPkg.servicePages ? "#ccc" : "#555",
                     fontFamily: "inherit",
+                    opacity: practiceAreas.length >= currentPkg.servicePages ? 0.5 : 1,
                   }}>
                   + {suggestion}
                 </button>
@@ -589,7 +593,7 @@ export default function PreviewPage() {
                 onClick={() => {
                   const input = document.getElementById("customArea") as HTMLInputElement;
                   const val = input?.value.trim();
-                  if (val && !practiceAreas.includes(val) && practiceAreas.length < 8) {
+                  if (val && !practiceAreas.includes(val) && practiceAreas.length < currentPkg.servicePages) {
                     setPracticeAreas(a => [...a, val]);
                     input.value = "";
                   }
@@ -599,7 +603,7 @@ export default function PreviewPage() {
               </button>
             </div>
             <div style={{ fontSize: "0.68rem", color: "#ccc", marginTop: 4 }}>
-              {practiceAreas.length}/8 selected · {practiceAreas.length === 0 ? "AI will generate services from your description if none selected" : "AI will write 750-word pages for each"}
+              {practiceAreas.length}/{currentPkg.servicePages} selected ({currentPkg.name} plan) · {practiceAreas.length === 0 ? "AI will generate from your description if none selected" : practiceAreas.length >= currentPkg.servicePages ? `Limit reached — upgrade for more` : "AI will write 750-word pages for each"}
             </div>
           </div>
 
