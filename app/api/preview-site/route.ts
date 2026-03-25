@@ -10,6 +10,25 @@ const TEMPLATE_MAP: Record<string, string[]> = {
   professional: ["law", "legal", "attorney", "lawyer", "accounting", "accountant", "financial", "finance", "consulting", "consultant", "insurance", "real estate", "advisor", "bookkeeping", "tax", "cpa", "hr", "recruiting"],
 };
 
+// Industries that are state-licensed and should target the full state, not just the city
+const STATE_LICENSED: string[] = [
+  "law", "legal", "attorney", "lawyer",
+  "accounting", "accountant", "cpa",
+  "financial", "finance", "advisor", "wealth",
+  "insurance",
+  "real estate",
+  "mortgage",
+  "therapist", "therapy", "psychologist",
+  "physician", "medical", "doctor",
+  "dental", "dentist",
+  "chiropractor",
+];
+
+function isStateLicensed(industry: string): boolean {
+  const lower = industry.toLowerCase();
+  return STATE_LICENSED.some(k => lower.includes(k));
+}
+
 // Specific Pexels queries per industry — tuned for relevance
 const PHOTO_QUERIES: Record<string, string> = {
   "law firm":      "law office attorney",
@@ -95,13 +114,20 @@ export async function POST(request: Request) {
 
   const template = detectTemplate(industry);
   const accentColor = template === "trades" ? "#a8c500" : "#8b4513";
+  const stateLicensed = isStateLicensed(industry);
+  const geoTarget = stateLicensed
+    ? `${state || "IL"} statewide (licensed throughout the state)`
+    : `${city || "Springfield"}, ${state || "IL"} and surrounding areas`;
 
   const prompt = `You are generating content for a small business website.
 
 Business Name: ${businessName}
 Industry: ${industry}
 Location: ${city || "Springfield"}, ${state || "IL"}
+Geographic Target: ${geoTarget}
 Description: ${description}
+
+IMPORTANT: This business serves ${geoTarget}. All geographic references in copy, meta tags, and keywords should reflect this — ${stateLicensed ? `use "${state || "IL"}" statewide references, not just the city` : `use the local city and region`}.
 
 Generate rich, specific, professional content tailored to THIS exact business. No generic filler.
 
@@ -160,6 +186,12 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   const photoQuery = getPhotoQuery(industry);
   const heroImageUrl = (await fetchPexelsPhoto(photoQuery)) || FALLBACKS[template];
 
+  const resolvedState = state || "IL";
+  const resolvedCity = city || "Springfield";
+  const serviceArea = stateLicensed
+    ? `throughout ${resolvedState}`
+    : `${resolvedCity}, ${resolvedState} and surrounding areas`;
+
   const siteData = {
     business: {
       name: businessName,
@@ -168,10 +200,12 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       phone: phone || "(555) 000-0000",
       email: email || `hello@${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`,
       address: "",
-      city: city || "Springfield",
-      state: state || "IL",
+      city: resolvedCity,
+      state: resolvedState,
       accent_color: generated.accent_color || accentColor,
       emoji: "🏆",
+      stateLicensed,
+      serviceArea,
     },
     website: {
       hero_image_url: heroImageUrl,

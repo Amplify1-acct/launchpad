@@ -10,6 +10,8 @@ export interface SiteData {
     state: string;
     accent_color: string;
     emoji: string;
+    stateLicensed?: boolean;
+    serviceArea?: string;
   };
   website: {
     hero_image_url: string;
@@ -383,7 +385,7 @@ ${nav(b, 'index.html')}
   <div class="hero-bg" style="background-image:url('${heroImg}')"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-label">✦ ${b.city}, ${b.state}</div>
+    <div class="hero-label">✦ Serving ${b.serviceArea || `${b.city}, ${b.state}`}</div>
     <h1>${b.name}<br/><em>${b.tagline}</em></h1>
     <p class="hero-sub">${b.description}</p>
     <div class="hero-actions">
@@ -391,7 +393,7 @@ ${nav(b, 'index.html')}
       <a href="tel:${b.phone}" class="btn btn-outline">📞 ${b.phone}</a>
     </div>
     <div class="hero-trust">
-      ${['Licensed & Insured', 'Same-Day Service', 'Free Estimates', '5-Star Rated'].map(t => `
+      ${['Licensed & Insured', `Serving ${b.serviceArea || b.state}`, 'Free Estimates', '5-Star Rated'].map(t => `
       <div class="trust-badge"><div class="trust-badge-dot"></div>${t}</div>`).join('')}
     </div>
   </div>
@@ -400,8 +402,8 @@ ${nav(b, 'index.html')}
 <!-- AVAILABILITY BAND -->
 <div class="accent-band">
   <div>
-    <div class="accent-band-text">Available Monday – Saturday, 7am – 7pm</div>
-    <div class="accent-band-sub">Emergency services available 24/7</div>
+    <div class="accent-band-text">Serving ${b.serviceArea || `${b.city}, ${b.state} and surrounding areas`}</div>
+    <div class="accent-band-sub">Available Monday – Saturday · Emergency services 24/7</div>
   </div>
   <div class="accent-band-phone">📞 ${b.phone}</div>
 </div>
@@ -466,7 +468,7 @@ ${nav(b, 'index.html')}
   <div class="stats-inner">
     <div class="stats-left">
       <h2>Delivering excellence<br/>across every job</h2>
-      <p>Trusted by hundreds of homeowners and businesses in ${b.city}.</p>
+      <p>Trusted by hundreds of homeowners and businesses ${b.serviceArea ? `throughout ${b.state}` : `in ${b.city}`}.</p>
     </div>
     <div class="stats-numbers">
       ${w.stats.map(s => `
@@ -548,7 +550,7 @@ ${w.testimonials?.length > 0 ? `
           { question: 'Do you offer free estimates?', answer: 'Yes — all estimates are completely free with no obligation. We\'ll come to your location and give you a clear, honest quote.' },
           { question: 'Are you licensed and insured?', answer: 'Absolutely. We are fully licensed, bonded, and insured for your complete peace of mind.' },
           { question: 'How quickly can you respond?', answer: 'We aim to respond to all requests within 2 hours. Emergency services are available 24/7.' },
-          { question: 'What areas do you serve?', answer: `We serve ${b.city}, ${b.state} and surrounding areas. Call us to confirm your location.` },
+          { question: 'What areas do you serve?', answer: `We serve ${b.serviceArea || `${b.city}, ${b.state} and surrounding areas`}. Call us to confirm your location.` },
         ]).map(f => `
         <div class="faq-item">
           <div class="faq-question">${f.question}<span class="faq-icon">+</span></div>
@@ -794,6 +796,10 @@ ${nav(b, 'contact.html')}
           <div class="contact-detail-icon">📍</div>
           <div><div class="contact-detail-label">Location</div><div class="contact-detail-val">${b.address}<br/>${b.city}, ${b.state}</div></div>
         </div>` : ''}
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📍</div>
+          <div><div class="contact-detail-label">Service Area</div><div class="contact-detail-val">Serving ${b.serviceArea || `${b.city}, ${b.state} and surrounding areas`}</div></div>
+        </div>
         <div class="contact-detail">
           <div class="contact-detail-icon">🕐</div>
           <div><div class="contact-detail-label">Hours</div><div class="contact-detail-val">Mon–Sat: 7am – 7pm<br/>Emergency: 24/7</div></div>

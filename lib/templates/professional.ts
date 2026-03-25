@@ -273,7 +273,7 @@ function footer(b: SiteData['business']) {
     <div class="footer-top">
       <div class="footer-brand">
         <span class="logo">${b.name}</span>
-        <p>${b.tagline}. Trusted by clients throughout ${b.city}, ${b.state}.</p>
+        <p>${b.tagline}. Trusted by clients ${b.serviceArea || `throughout ${b.city}, ${b.state}`}.</p>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
@@ -330,9 +330,9 @@ ${nav(b, 'index.html')}
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-left">
-      <div class="hero-eyebrow">${b.city}, ${b.state} · Est. ${new Date().getFullYear()}</div>
+      <div class="hero-eyebrow">${b.stateLicensed ? `Licensed in ${b.state}` : `${b.city}, ${b.state}`} · Est. ${new Date().getFullYear()}</div>
       <h1>Your Partner for<br/><em>${b.tagline}</em></h1>
-      <p class="hero-sub">${b.description}</p>
+      <p class="hero-sub">${b.description} Serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}.</p>
       <div class="hero-actions">
         <a href="contact.html" class="btn btn-dark">Schedule a Consultation →</a>
         <a href="services.html" class="btn btn-outline">Our Services</a>
@@ -359,7 +359,7 @@ ${nav(b, 'index.html')}
 <!-- LOGOS -->
 <div class="logos-band">
   <div class="logos-inner">
-    <div class="logos-label">Trusted by</div>
+    <div class="logos-label">Trusted by clients ${b.serviceArea ? `throughout ${b.state}` : `in ${b.city}`}</div>
     ${placeholderLogos.map(l => `<div class="logo-item">${l}</div>`).join('')}
   </div>
 </div>
@@ -481,7 +481,7 @@ ${w.testimonials?.length > 0 ? `
 <!-- CONTACT BAND -->
 <div class="contact-band">
   <div class="contact-band-inner">
-    <div class="contact-band-text">Ready to get started?</div>
+    <div class="contact-band-text">Ready to get started? We serve clients ${b.serviceArea || `in ${b.city}, ${b.state}`}.</div>
     <div style="display:flex;gap:1rem">
       <a href="contact.html" class="btn" style="background:var(--black);color:white">Schedule a Free Consultation →</a>
       <a href="tel:${b.phone}" class="btn btn-outline-light">📞 ${b.phone}</a>
@@ -505,7 +505,7 @@ ${nav(b, 'services.html')}
   <div class="page-hero-inner">
     <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>Services</div>
     <h1>Our Services</h1>
-    <p>Tailored expertise for every challenge. Serving ${b.city}, ${b.state} and beyond.</p>
+    <p>Tailored expertise for every challenge. Serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}.</p>
   </div>
 </div>
 
@@ -562,7 +562,7 @@ ${nav(b, 'about.html')}
   <div class="page-hero-inner">
     <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>About</div>
     <h1>About ${b.name}</h1>
-    <p>${b.tagline}. Trusted advisors in ${b.city}, ${b.state}.</p>
+    <p>${b.tagline}. ${b.stateLicensed ? `Licensed in ${b.state}, serving clients statewide.` : `Trusted advisors in ${b.city}, ${b.state}.`}</p>
   </div>
 </div>
 
@@ -577,6 +577,7 @@ ${nav(b, 'about.html')}
         <h2 class="section-title">Built on trust, driven by results</h2>
         <p class="section-sub">${b.description}</p>
         <p class="section-sub" style="margin-top:1rem">We believe every client deserves expert guidance delivered with honesty, clarity, and care. That principle has shaped everything we do since day one.</p>
+        ${b.stateLicensed ? `<p class="section-sub" style="margin-top:0.75rem">Licensed in ${b.state} and serving clients throughout the state — from ${b.city} to every corner of ${b.state}.</p>` : ""}
         <a href="contact.html" class="btn btn-dark" style="margin-top:2.5rem">Schedule a Consultation →</a>
       </div>
     </div>
@@ -646,7 +647,7 @@ ${nav(b, 'contact.html')}
           <div><div class="contact-detail-pro-label">Email</div><div class="contact-detail-pro-val">${b.email}</div></div>
         </div>` : ''}
         <div class="contact-detail-pro">
-          <div><div class="contact-detail-pro-label">Location</div><div class="contact-detail-pro-val">${b.city}, ${b.state}</div></div>
+          <div><div class="contact-detail-pro-label">${b.stateLicensed ? "Licensed In" : "Location"}</div><div class="contact-detail-pro-val">${b.stateLicensed ? `${b.state} — Serving clients statewide` : `${b.city}, ${b.state}`}</div></div>
         </div>
         <div class="contact-detail-pro">
           <div><div class="contact-detail-pro-label">Office Hours</div><div class="contact-detail-pro-val">Monday – Friday, 9am – 6pm</div></div>
