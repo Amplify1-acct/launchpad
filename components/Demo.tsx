@@ -637,9 +637,10 @@ export default function Demo() {
     <section className={styles.section}>
       <div className={styles.inner}>
         <div className={styles.header}>
-          <p className={styles.label}>Try it live — free, no signup</p>
+          <div className={styles.demoBadge}>⚡ Live Demo — No signup required</div>
           <h2 className={styles.title}>See your actual business<br />built in 60 seconds</h2>
-          <p className={styles.sub}>Tell us your name and what you do. Our AI reads your description and builds a website, blog posts, and social media <em>specific to your business</em> — live, right here.</p>
+          <p className={styles.sub}>Type your business name and what you do. Watch our AI build a real website, blog posts, and social media <em>specific to you</em> — live, right here.</p>
+          <div className={styles.demoArrow}>↓ Try it below</div>
         </div>
 
         <div className={styles.stepsBar}>
