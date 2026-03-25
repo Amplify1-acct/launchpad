@@ -150,11 +150,19 @@ Respond ONLY with valid JSON:
 // ─── MAIN HANDLER ──────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
-  const { businessName, industry, city, state, description, phone, email, founded, realStats, team } = await request.json();
+  const { businessName, industry, city, state, description, phone, email, founded, realStats, team, plan } = await request.json();
 
   if (!businessName || !industry) {
     return NextResponse.json({ error: "businessName and industry are required" }, { status: 400 });
   }
+
+  // Plan limits
+  const PLAN_LIMITS: Record<string, { servicePages: number; maxTeamMembers: number }> = {
+    starter: { servicePages: 3, maxTeamMembers: 1 },
+    growth:  { servicePages: 6, maxTeamMembers: 3 },
+    pro:     { servicePages: 6, maxTeamMembers: 5 },
+  };
+  const planLimits = PLAN_LIMITS[plan || "growth"] || PLAN_LIMITS.growth;
 
   const resolvedDescription = description?.trim() ||
     `${businessName} is a ${industry} business serving clients in ${city || "the local area"}, ${state || ""}.`;
@@ -214,7 +222,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   "keywords": ["${industry.toLowerCase()} ${stateLicensed ? resolvedState : resolvedCity}", "${industry.toLowerCase()} ${resolvedState}", "keyword 3", "keyword 4", "keyword 5", "keyword 6"]
 }`;
 
-  const teamMembers = team && team.length > 0 ? team.filter((m: any) => m.name?.trim()) : [];
+  const teamMembers = (team && team.length > 0 ? team.filter((m: any) => m.name?.trim()) : []).slice(0, planLimits.maxTeamMembers);
 
   // Phase 1: Generate site content + format team in parallel
   const [generated, formattedTeam] = await Promise.all([
@@ -235,8 +243,9 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 
   // Phase 2: Generate all service pages in parallel
   const serviceCtx = { businessName, industry, city: resolvedCity, state: resolvedState, serviceArea, stateLicensed };
+  // Generate content only for services within plan limit
   const servicePageContents = await Promise.all(
-    services.map(s => generateServicePageContent(s, serviceCtx))
+    services.slice(0, planLimits.servicePages).map(s => generateServicePageContent(s, serviceCtx))
   );
 
   // Pick photos
@@ -286,13 +295,16 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     ? buildTradesSite(siteData)
     : buildProfessionalSite(siteData);
 
+  // Apply plan service page limit
+  const limitedServices = services.slice(0, planLimits.servicePages);
+
   // Build individual service pages
   const servicePageCtx: ServicePageContext = {
     business: { ...siteData.business },
     template,
   };
 
-  services.forEach((service, i) => {
+  limitedServices.forEach((service, i) => {
     const pageSlug = servicePageSlug(service.name);
     const content = servicePageContents[i];
     pages[pageSlug] = buildServicePage(servicePageCtx, {

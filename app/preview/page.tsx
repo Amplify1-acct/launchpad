@@ -3,6 +3,73 @@
 import { useState } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
 
+
+// ─── PACKAGES ─────────────────────────────────────────────────────────────────
+
+const PACKAGES = [
+  {
+    id: "starter",
+    name: "Starter",
+    price: "$199",
+    period: "/mo",
+    color: "#2563eb",
+    tagline: "Get online fast",
+    servicePages: 3,
+    blogPostsPerMonth: 2,
+    socialPostsPerMonth: 8,
+    maxTeamMembers: 1,
+    features: [
+      "Home, About, Services, Contact pages",
+      "3 dedicated service pages (750 words each)",
+      "2 blog posts / month",
+      "Social setup + 8 posts / month",
+      "1 team bio page",
+      "SEO — meta tags & schema",
+    ],
+  },
+  {
+    id: "growth",
+    name: "Growth",
+    price: "$349",
+    period: "/mo",
+    color: "#16a34a",
+    tagline: "Most popular",
+    highlight: true,
+    servicePages: 6,
+    blogPostsPerMonth: 4,
+    socialPostsPerMonth: 16,
+    maxTeamMembers: 3,
+    features: [
+      "Everything in Starter",
+      "6 dedicated service pages",
+      "4 blog posts / month",
+      "16 social posts / month",
+      "3 team bio pages",
+      "Advanced local SEO",
+    ],
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    price: "$549",
+    period: "/mo",
+    color: "#9333ea",
+    tagline: "Dominate your market",
+    servicePages: 6,
+    blogPostsPerMonth: 8,
+    socialPostsPerMonth: 24,
+    maxTeamMembers: 5,
+    features: [
+      "Everything in Growth",
+      "8 blog posts / month",
+      "24 social posts / month",
+      "5 team bio pages",
+      "6 blog landing pages",
+      "Competitor keyword targeting",
+    ],
+  },
+];
+
 const INDUSTRIES = [
   "Plumbing", "Roofing", "HVAC", "Electrical", "General Contractor",
   "Landscaping", "Lawn Care", "House Cleaning", "Pest Control", "Painting",
@@ -157,8 +224,10 @@ export default function PreviewPage() {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState("growth");
 
   const statPrompts = getStatPrompts(form.industry);
+  const currentPkg = PACKAGES.find(p => p.id === selectedPlan) || PACKAGES[1];
   const titleSuggestions = getTitleSuggestions(form.industry);
 
   function setField(key: string, val: string) {
@@ -171,7 +240,7 @@ export default function PreviewPage() {
   }
 
   function addMember() {
-    if (team.length < 5) setTeam(t => [...t, emptyMember()]);
+    if (team.length < currentPkg.maxTeamMembers) setTeam(t => [...t, emptyMember()]);
   }
 
   function removeMember(i: number) {
@@ -180,6 +249,7 @@ export default function PreviewPage() {
 
   async function handleGenerate() {
     const missing = [];
+    if (!selectedPlan) missing.push("Package");
     if (!form.businessName.trim()) missing.push("Business Name");
     if (!form.industry) missing.push("Industry");
     if (missing.length > 0) {
@@ -207,7 +277,7 @@ export default function PreviewPage() {
       const res = await fetch("/api/preview-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, realStats, team: realTeam }),
+        body: JSON.stringify({ ...form, realStats, team: realTeam, plan: selectedPlan }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -242,8 +312,79 @@ export default function PreviewPage() {
 
         <div style={{ padding: "1.25rem 1.5rem", flex: 1 }}>
 
+          {/* ── PACKAGE SELECTOR ── */}
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem" }}>Choose Your Plan</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1.25rem" }}>
+            {PACKAGES.map(pkg => {
+              const active = selectedPlan === pkg.id;
+              return (
+                <div
+                  key={pkg.id}
+                  onClick={() => setSelectedPlan(pkg.id)}
+                  style={{
+                    border: `2px solid ${active ? pkg.color : "#e4e4e0"}`,
+                    borderRadius: 4,
+                    padding: "0.75rem 1rem",
+                    cursor: "pointer",
+                    background: active ? `${pkg.color}08` : "#fff",
+                    transition: "all 0.15s",
+                    position: "relative",
+                  }}
+                >
+                  {pkg.highlight && (
+                    <div style={{
+                      position: "absolute", top: -9, right: 10,
+                      background: pkg.color, color: "#fff",
+                      fontSize: "0.6rem", fontWeight: 800,
+                      letterSpacing: "0.1em", textTransform: "uppercase",
+                      padding: "2px 8px", borderRadius: 2,
+                    }}>Most Popular</div>
+                  )}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                      <div style={{
+                        width: 16, height: 16, borderRadius: "50%",
+                        border: `2px solid ${active ? pkg.color : "#ccc"}`,
+                        background: active ? pkg.color : "transparent",
+                        flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        {active && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff" }} />}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "0.875rem", fontWeight: 700, color: active ? pkg.color : "#111" }}>
+                          {pkg.name}
+                          <span style={{ fontSize: "0.72rem", fontWeight: 400, color: "#aaa", marginLeft: 6 }}>{pkg.tagline}</span>
+                        </div>
+                        <div style={{ fontSize: "0.72rem", color: "#999", marginTop: 1 }}>
+                          {pkg.servicePages} service pages · {pkg.blogPostsPerMonth} blogs/mo · {pkg.maxTeamMembers} team bio{pkg.maxTeamMembers > 1 ? "s" : ""}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <div style={{ fontSize: "1rem", fontWeight: 800, color: active ? pkg.color : "#333" }}>{pkg.price}</div>
+                      <div style={{ fontSize: "0.68rem", color: "#aaa" }}>{pkg.period}</div>
+                    </div>
+                  </div>
+                  {active && (
+                    <div style={{ marginTop: "0.6rem", paddingTop: "0.6rem", borderTop: `1px solid ${pkg.color}22` }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                        {pkg.features.map((f, i) => (
+                          <span key={i} style={{
+                            fontSize: "0.68rem", color: pkg.color,
+                            background: `${pkg.color}12`, padding: "2px 7px",
+                            borderRadius: 2, whiteSpace: "nowrap",
+                          }}>{f}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
           {/* ── BUSINESS INFO ── */}
-          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem" }}>Business Info</div>
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid #f0f0ee" }}>Business Info</div>
 
           <div style={{ marginBottom: "0.8rem" }}>
             <label style={lbl}>Business Name *</label>
@@ -311,7 +452,7 @@ export default function PreviewPage() {
           </div>
 
           {/* ── YOUR TEAM ── */}
-          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>Your Team <span style={{ fontWeight: 400, color: "#ccc" }}>— principals, partners &amp; key staff</span></div>
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>Your Team <span style={{ fontWeight: 400, color: "#ccc" }}>— up to {currentPkg.maxTeamMembers} on {currentPkg.name}</span></div>
 
           <div style={{ fontSize: "0.74rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
             Add up to 5 people. Each gets a bio on your site and a dedicated team page. Leave blank to skip.
@@ -434,7 +575,7 @@ export default function PreviewPage() {
               fontSize: "0.8rem", color: "#aaa", cursor: "pointer",
               marginBottom: "1.25rem",
             }}>
-              + Add another person
+              + Add another person {team.length >= currentPkg.maxTeamMembers ? `(${currentPkg.name} plan includes ${currentPkg.maxTeamMembers})` : ""}
             </button>
           )}
 
@@ -552,15 +693,15 @@ export default function PreviewPage() {
               </button>
               {pages && (
                 <button
-                  onClick={() => alert("Payment flow coming soon!")}
+                  onClick={() => setShowPayment(true)}
                   style={{
-                    background: "#111", color: "#fff", border: "none",
+                    background: currentPkg.color, color: "#fff", border: "none",
                     borderRadius: 3, padding: "0.35rem 1rem",
                     fontSize: "0.78rem", fontWeight: 700, cursor: "pointer",
                     letterSpacing: "0.04em",
                   }}
                 >
-                  Publish Site →
+                  Publish {currentPkg.price}/mo →
                 </button>
               )}
             </div>
@@ -599,10 +740,10 @@ export default function PreviewPage() {
           <div style={{ background: "#0a0a0a", borderTop: "1px solid #222", padding: "0.85rem 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexShrink: 0 }}>
             <div>
               <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#fff", marginBottom: 2 }}>
-                🎉 Your site is ready — {Object.keys(pages).length} pages including {Object.keys(pages).filter(p => p.startsWith("services/")).length} service articles
+                🎉 {Object.keys(pages).length} pages ready — {Object.keys(pages).filter(p => p.startsWith("services/")).length} service articles included
               </div>
               <div style={{ fontSize: "0.75rem", color: "#888" }}>
-                Review every page above. When you&apos;re happy, publish and go live.
+                <span style={{ color: currentPkg.color, fontWeight: 600 }}>{currentPkg.name} plan</span> · {currentPkg.price}/mo · Review every page, then publish.
               </div>
             </div>
             <button
