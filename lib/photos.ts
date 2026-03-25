@@ -335,7 +335,7 @@ export function pickSitePhotos(industry: string, template: string): SitePhotos {
   const photos = getPhotos(industry, template);
   const heroPool = photos.hero;
   const interiorPool = photos.interior?.length ? photos.interior : photos.hero;
-  const allPhotos = [...new Set([...heroPool, ...interiorPool])];
+  const allPhotos = Array.from(new Set([...heroPool, ...interiorPool]));
   const seed = industry.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const picks = shuffle(allPhotos, seed);
 

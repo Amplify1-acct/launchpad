@@ -139,12 +139,7 @@ const lbl: React.CSSProperties = {
   color: "#777", marginBottom: 3,
 };
 
-const sectionHeader = (text: string, sub?: string) => (
-  <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>
-    {text}
-    {sub && <span style={{ fontWeight: 400, color: "#ccc", marginLeft: 6 }}>{sub}</span>}
-  </div>
-);
+
 
 export default function PreviewPage() {
   const [form, setForm] = useState({
@@ -298,7 +293,7 @@ export default function PreviewPage() {
           </div>
 
           {/* ── YOUR NUMBERS ── */}
-          {sectionHeader("Your Numbers", "— shown on your site")}
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>Your Numbers <span style={{ fontWeight: 400, color: "#ccc" }}>— shown on your site</span></div>
           <div style={{ background: "#f8f8f6", border: "1px solid #ece9e4", borderRadius: 4, padding: "0.9rem", marginBottom: "0.5rem" }}>
             <div style={{ fontSize: "0.74rem", color: "#aaa", marginBottom: "0.8rem", lineHeight: 1.5 }}>
               Fill in what applies — skip any that don't.
@@ -313,7 +308,7 @@ export default function PreviewPage() {
           </div>
 
           {/* ── YOUR TEAM ── */}
-          {sectionHeader("Your Team", "— principals, partners & key staff")}
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>Your Team <span style={{ fontWeight: 400, color: "#ccc" }}>— principals, partners &amp; key staff</span></div>
 
           <div style={{ fontSize: "0.74rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
             Add up to 5 people. Each gets a bio on your site and a dedicated team page. Leave blank to skip.
@@ -384,9 +379,7 @@ export default function PreviewPage() {
               <div style={{ marginBottom: "0.6rem" }}>
                 <label style={lbl}>Education</label>
                 <textarea value={member.education} onChange={e => setMember(i, "education", e.target.value)}
-                  placeholder={"e.g.
-Harvard Law School, J.D., 2004
-Boston College, B.A. Political Science, 2001"}
+                  placeholder={"e.g.\nHarvard Law School, J.D., 2004\nBoston College, B.A. Political Science, 2001"}
                   rows={3}
                   style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
               </div>
@@ -394,10 +387,7 @@ Boston College, B.A. Political Science, 2001"}
               <div style={{ marginBottom: "0.6rem" }}>
                 <label style={lbl}>Bar Admissions / Licenses</label>
                 <textarea value={member.barAdmissions} onChange={e => setMember(i, "barAdmissions", e.target.value)}
-                  placeholder={"e.g.
-New Jersey State Bar, 2005
-New York State Bar, 2006
-U.S. District Court, D.N.J."}
+                  placeholder={"e.g.\nNew Jersey State Bar, 2005\nNew York State Bar, 2006\nU.S. District Court, D.N.J."}
                   rows={3}
                   style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
               </div>
@@ -412,10 +402,7 @@ U.S. District Court, D.N.J."}
               <div style={{ marginBottom: "0.6rem" }}>
                 <label style={lbl}>Awards & Recognitions</label>
                 <textarea value={member.awards} onChange={e => setMember(i, "awards", e.target.value)}
-                  placeholder={"e.g.
-Super Lawyers 2018–2024
-Best Lawyers in America 2020
-AV Preeminent® Rating, Martindale-Hubbell"}
+                  placeholder={"e.g.\nSuper Lawyers 2018–2024\nBest Lawyers in America 2020\nAV Preeminent® Rating, Martindale-Hubbell"}
                   rows={3}
                   style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
               </div>
@@ -423,9 +410,7 @@ AV Preeminent® Rating, Martindale-Hubbell"}
               <div style={{ marginBottom: "0.6rem" }}>
                 <label style={lbl}>Publications / Media <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
                 <textarea value={member.publications} onChange={e => setMember(i, "publications", e.target.value)}
-                  placeholder={"e.g.
-"Understanding NJ Personal Injury Law" — NJ Law Journal, 2022
-Featured on NBC News, CNN discussing case outcomes"}
+                  placeholder="e.g. 'Understanding NJ Personal Injury Law' — NJ Law Journal, 2022 | Featured on NBC News discussing case outcomes"
                   rows={3}
                   style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
               </div>

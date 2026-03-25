@@ -758,10 +758,10 @@ function buildTeamBioPagePro(d: SiteData, member: NonNullable<SiteData['team']>[
   const { business: b, website: w } = d;
   const slug = member.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-  const educationLines = member.education?.split(/\n/).filter(Boolean) || [];
-  const barLines = member.barAdmissions?.split(/\n/).filter(Boolean) || [];
-  const awardLines = member.awards?.split(/\n/).filter(Boolean) || [];
-  const pubLines = member.publications?.split(/\n/).filter(Boolean) || [];
+  const educationLines = member.education?.split("\n").filter(Boolean) || [];
+  const barLines = member.barAdmissions?.split("\n").filter(Boolean) || [];
+  const awardLines = member.awards?.split("\n").filter(Boolean) || [];
+  const pubLines = member.publications?.split("\n").filter(Boolean) || [];
   const specList = member.specializations?.split(/,/).map((s: string) => s.trim()).filter(Boolean) || [];
 
   const hasSidebar = specList.length > 0 || barLines.length > 0 || educationLines.length > 0 || awardLines.length > 0;
@@ -839,12 +839,10 @@ ${nav(b, 'about.html', d.team)}
   <!-- CENTER: Main bio content -->
   <div class="bio-main">
     <h2 id="about">About ${member.name.split(" ")[0]}</h2>
-    ${member.bio
-      ? member.bio.split(/
-+/).filter(Boolean).map((p: string) => `<p>${p}</p>`).join("
-    ")
-      : `<p>${member.name} is ${member.title} at ${b.name}, serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}. ${member.credentials ? `${member.credentials}.` : ""}</p>`
-    }
+    ${(member.bio
+      ? member.bio.split("\n").filter((p: string) => p.trim()).map((p: string) => "<p>" + p + "</p>").join(" ")
+      : "<p>" + member.name + " is " + member.title + " at " + b.name + ", serving clients " + (b.serviceArea || ("in " + b.city + ", " + b.state)) + ".</p>"
+    )}
 
     ${hasAchievements ? `
     <h2 id="achievements">Recognition & Achievements</h2>
