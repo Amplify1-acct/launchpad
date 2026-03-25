@@ -281,6 +281,7 @@ function nav(business: SiteData['business'], activePage: string, team?: SiteData
 .nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); min-width: 200px; box-shadow: var(--shadow); z-index: 200; padding: 0.5rem 0; }
 .nav-dropdown:hover .nav-dropdown-menu { display: block; }
 .nav-dropdown-menu a { display: block; padding: 0.5rem 1.25rem; font-size: 0.82rem; color: var(--mid); white-space: nowrap; }
+.nav-dropdown-menu a.nav-sub { padding-left: 2rem; font-size: 0.78rem; border-left: 2px solid var(--border); margin-left: 1.25rem; margin-right: 0.5rem; }
 .nav-dropdown-menu a:hover { color: var(--accent); background: var(--cream); }
 .nav-dropdown-toggle::after { content: ' ▾'; font-size: 0.65rem; opacity: 0.5; }
 </style>
@@ -293,8 +294,8 @@ function nav(business: SiteData['business'], activePage: string, team?: SiteData
       <a href="about.html" class="nav-dropdown-toggle"${activePage === 'about.html' || activePage === 'team.html' ? ' style="color:var(--black);font-weight:600"' : ''}>About</a>
       <div class="nav-dropdown-menu">
         <a href="about.html">About Us</a>
-        <a href="team.html">Our Team</a>
-        ${hasTeam ? team!.map(m => `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html">${m.name}</a>`).join('') : ''}
+        <a href="team.html" style="font-weight:600;color:var(--black)">Our Team</a>
+        ${hasTeam ? team!.map(m => `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html" style="padding-left:2rem;font-size:0.78rem;border-left:2px solid var(--border);margin-left:1.25rem">${m.name}</a>`).join('') : ''}
       </div>
     </div>
     <a href="contact.html"${activePage === 'contact.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Contact</a>

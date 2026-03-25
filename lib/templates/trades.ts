@@ -367,8 +367,8 @@ function nav(business: SiteData['business'], activePage: string, team?: SiteData
       <a href="about.html" class="nav-dropdown-toggle" ${activePage === 'about.html' || activePage === 'team.html' ? 'style="color:var(--accent)"' : ''}>About</a>
       <div class="nav-dropdown-menu">
         <a href="about.html">About Us</a>
-        ${hasTeam ? `<a href="team.html">Our Team</a>` : ''}
-        ${hasTeam ? team!.map(m => `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html">${m.name}</a>`).join('') : ''}
+        ${hasTeam ? `<a href="team.html" style="font-weight:700;color:var(--black)">Our Team</a>` : ''}
+        ${hasTeam ? team!.map(m => `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html" style="padding-left:2rem;font-size:0.75rem;border-left:2px solid var(--border);margin-left:1.25rem">${m.name}</a>`).join('') : ''}
       </div>
     </div>
     <a href="contact.html" ${activePage === 'contact.html' ? 'style="color:var(--accent)"' : ''}>Contact</a>
