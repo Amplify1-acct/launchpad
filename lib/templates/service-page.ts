@@ -179,7 +179,7 @@ ${sharedFonts(template)}
   <div class="logo">${b.name.split(" ")[0]} <em>${b.name.split(" ").slice(1).join(" ")}</em></div>
   <div class="nav-links">
     <a href="../index.html">Home</a>
-    <a href="../services.html" style="color:var(--accent)">Services</a>
+    <a href="../services.html" style="color:var(--accent)">${isProf ? "Practice Areas" : "Services"}</a>
     <a href="../about.html">About</a>
     <a href="../contact.html">Contact</a>
     <a href="../contact.html" class="nav-cta">${isProf ? "Free Consultation" : "Free Quote"}</a>

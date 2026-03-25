@@ -273,8 +273,9 @@ if(band) band.addEventListener('submit', e => { e.preventDefault(); });
 </script>
 `;
 
-function nav(business: SiteData['business'], activePage: string, team?: SiteData['team']) {
+function nav(business: SiteData['business'], activePage: string, team?: SiteData['team'], services?: SiteData['website']['services']) {
   const hasTeam = team && team.length > 0;
+  const hasServices = services && services.length > 0;
   return `
 <style>
 .nav-dropdown { position: relative; }
@@ -289,7 +290,13 @@ function nav(business: SiteData['business'], activePage: string, team?: SiteData
   <div class="logo">${business.name.split(' ')[0]} <em>${business.name.split(' ').slice(1).join(' ')}</em></div>
   <div class="nav-links">
     <a href="index.html"${activePage === 'index.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Home</a>
-    <a href="services.html"${activePage === 'services.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Services</a>
+    <div class="nav-dropdown">
+      <a href="services.html" class="nav-dropdown-toggle"${activePage === 'services.html' || (activePage && activePage.startsWith('services/')) ? ' style="color:var(--black);font-weight:600"' : ''}>Practice Areas</a>
+      <div class="nav-dropdown-menu">
+        <a href="services.html" style="font-weight:600;color:var(--black)">All Practice Areas</a>
+        ${hasServices ? services!.map(s => `<a href="${s.link || 'services.html'}" style="padding-left:2rem;font-size:0.78rem;border-left:2px solid var(--border);margin-left:1.25rem">${s.name}</a>`).join('') : ''}
+      </div>
+    </div>
     <div class="nav-dropdown">
       <a href="about.html" class="nav-dropdown-toggle"${activePage === 'about.html' || activePage === 'team.html' ? ' style="color:var(--black);font-weight:600"' : ''}>About</a>
       <div class="nav-dropdown-menu">
@@ -362,7 +369,7 @@ export function buildIndex(d: SiteData): string {
   const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
-${nav(b, 'index.html', d.team)}
+${nav(b, 'index.html', d.team, w.services)}
 
 <!-- HERO -->
 <div class="hero">
@@ -569,7 +576,7 @@ export function buildServices(d: SiteData): string {
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
 
   return `${head(`Services | ${w.meta_title}`, `Explore all services from ${b.name} in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'services.html', d.team)}
+${nav(b, 'services.html', d.team, w.services)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -626,7 +633,7 @@ export function buildAbout(d: SiteData): string {
   const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(`About | ${w.meta_title}`, `About ${b.name} — ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'about.html', d.team)}
+${nav(b, 'about.html', d.team, w.services)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -692,7 +699,7 @@ export function buildContact(d: SiteData): string {
   const { business: b, website: w } = d;
 
   return `${head(`Contact | ${w.meta_title}`, `Contact ${b.name} for a free consultation in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
-${nav(b, 'contact.html', d.team)}
+${nav(b, 'contact.html', d.team, w.services)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
@@ -797,7 +804,7 @@ function buildTeamBioPagePro(d: SiteData, member: NonNullable<SiteData['team']>[
   .bio-toc, .bio-sidebar { position: static; }
 }
 </style>
-${nav(b, 'about.html', d.team)}
+${nav(b, 'about.html', d.team, w.services)}
 
 <div style="background:var(--cream);border-bottom:1px solid var(--border);padding:2rem 3rem">
   <div style="max-width:1180px;margin:0 auto">
@@ -904,7 +911,7 @@ function buildTeamPagePro(d: SiteData): string {
   const { business: b, website: w } = d;
   const team = d.team || [];
   return `${head(`Our Team | ${w.meta_title}`, `Meet the team at ${b.name}.`, w.keywords, b.accent_color)}
-${nav(b, 'team.html', d.team)}
+${nav(b, 'team.html', d.team, w.services)}
 
 <div class="page-hero">
   <div class="page-hero-inner">
