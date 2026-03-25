@@ -1,6 +1,8 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import styles from "./dashboard.module.css";
+import { DeployStatus } from "./DeployStatus";
+import { GenerateButton } from "./GenerateButton";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -70,7 +72,7 @@ export default async function DashboardPage() {
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
-        <div className={styles.sidebarLogo}><a href="/">Launch<span>Pad</span></a></div>
+        <div className={styles.sidebarLogo}><a href="/">Ex<span>sisto</span></a></div>
         <nav className={styles.nav}>
           <a href="/dashboard" className={`${styles.navItem} ${styles.active}`}><span>⚡</span> Overview</a>
           <a href="/dashboard/website" className={styles.navItem}><span>🌐</span> Website</a>
@@ -95,10 +97,20 @@ export default async function DashboardPage() {
             <h1 className={styles.greeting}>{business.emoji || "🏆"} {business.name}</h1>
             <p className={styles.subGreeting}>Your digital presence, handled.</p>
           </div>
-          {website?.vercel_url && (
-            <a href={website.vercel_url} target="_blank" rel="noreferrer" className={styles.viewSiteBtn}>View live site →</a>
-          )}
+          <div className={styles.headerActions}>
+            <GenerateButton businessId={business.id} hasWebsite={!!website} websiteStatus={website?.status || null} />
+            {website?.vercel_url && (
+              <a href={website.vercel_url} target="_blank" rel="noreferrer" className={styles.viewSiteBtn}>View live site →</a>
+            )}
+          </div>
         </div>
+
+        {/* Live deployment status */}
+        <DeployStatus
+          businessId={business.id}
+          initialStatus={website?.status || null}
+          initialUrl={website?.vercel_url || null}
+        />
 
         <div className={styles.statusGrid}>
           {[

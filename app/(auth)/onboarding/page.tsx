@@ -55,6 +55,13 @@ export default function OnboardingPage() {
         await supabase.from("generation_jobs").insert(jobsToCreate);
       }
 
+      // Auto-trigger site generation — fire and forget, dashboard will poll for status
+      fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: business.id }),
+      }).catch(() => {}); // non-blocking
+
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);

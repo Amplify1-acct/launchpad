@@ -75,10 +75,10 @@ Respond ONLY with valid JSON, no markdown or extra text:
       heroImageUrl = pexelsData.photos?.[0]?.src?.large2x || null;
     } catch (e) { console.error("Pexels error:", e); }
 
-    // Save website
+    // Save website content (status = generating — deploy-site will set to live)
     await supabase.from("websites").upsert({
       business_id,
-      status: "live",
+      status: "generating",
       hero_image_url: heroImageUrl,
       services: generated.services,
       stats: generated.stats,
@@ -126,7 +126,15 @@ Respond ONLY with valid JSON, no markdown or extra text:
       .update({ status: "completed", completed_at: new Date().toISOString() })
       .eq("business_id", business_id);
 
-    return NextResponse.json({ success: true, generated });
+    // Kick off site deployment (non-blocking — runs in background)
+    const deployUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://exsisto.ai"}/api/deploy-site`;
+    fetch(deployUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ business_id }),
+    }).catch((e) => console.error("Deploy kickoff failed:", e));
+
+    return NextResponse.json({ success: true, generated, deploying: true });
 
   } catch (error: any) {
     await supabase.from("generation_jobs")
