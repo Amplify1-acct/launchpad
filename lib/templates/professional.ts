@@ -347,10 +347,11 @@ ${nav(b, 'index.html')}
     </div>
     <div class="hero-right">
       <img src="${heroImg}" alt="${b.name} team" loading="eager"/>
+      ${w.testimonials?.[0] ? `
       <div class="hero-right-caption">
-        <div class="hero-caption-quote">"${w.testimonials?.[0]?.text?.slice(0, 80) || 'Exceptional service and results beyond our expectations.'}"</div>
-        <div class="hero-caption-author">— ${w.testimonials?.[0]?.name || 'A satisfied client'}</div>
-      </div>
+        <div class="hero-caption-quote">"${w.testimonials[0].text.slice(0, 100)}"</div>
+        <div class="hero-caption-author">— ${w.testimonials[0].name}</div>
+      </div>` : ""}
     </div>
   </div>
 </div>
@@ -409,21 +410,22 @@ ${nav(b, 'index.html')}
   </div>
 </section>
 
+${w.testimonials?.[0] ? `
 <!-- FEATURED QUOTE -->
 <div class="featured-quote">
   <div class="featured-quote-inner">
     <div class="fade-up">
       <div class="quote-mark">"</div>
-      <div class="quote-text">${w.testimonials?.[0]?.text || 'Exceptional service that exceeded all expectations. Highly recommended to anyone seeking professional expertise.'}</div>
-      <div class="quote-author-name">${w.testimonials?.[0]?.name || 'Client'}</div>
-      <div class="quote-author-title">${w.testimonials?.[0]?.location || b.city}</div>
+      <div class="quote-text">${w.testimonials[0].text}</div>
+      <div class="quote-author-name">${w.testimonials[0].name}</div>
+      <div class="quote-author-title">${w.testimonials[0].location}</div>
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">
       <img src="${teamImg}" alt="Professional team" loading="lazy"/>
     </div>
   </div>
-</div>
+</div>` : ""}
 
 <!-- CASE STUDIES -->
 <section>
@@ -452,6 +454,7 @@ ${nav(b, 'index.html')}
   </div>
 </section>
 
+${w.testimonials?.length > 0 ? `
 <!-- TESTIMONIALS -->
 <section class="bg-cream">
   <div class="container">
@@ -473,7 +476,7 @@ ${nav(b, 'index.html')}
       </div>`).join('')}
     </div>
   </div>
-</section>
+</section>` : ""}
 
 <!-- CONTACT BAND -->
 <div class="contact-band">
@@ -584,9 +587,9 @@ ${nav(b, 'about.html')}
   <div class="featured-quote-inner">
     <div class="fade-up">
       <div class="quote-mark">"</div>
-      <div class="quote-text">${w.testimonials?.[1]?.text || 'The level of expertise and personal attention we received was exceptional. They truly care about their clients.'}</div>
-      <div class="quote-author-name">${w.testimonials?.[1]?.name || 'A valued client'}</div>
-      <div class="quote-author-title">${w.testimonials?.[1]?.location || b.city}</div>
+      <div class="quote-text">${w.testimonials?.[1]?.text || w.testimonials?.[0]?.text || ''}</div>
+      <div class="quote-author-name">${w.testimonials?.[1]?.name || w.testimonials?.[0]?.name || ''}</div>
+      <div class="quote-author-title">${w.testimonials?.[1]?.location || w.testimonials?.[0]?.location || b.city}</div>
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">

@@ -34,11 +34,7 @@ Respond ONLY with valid JSON, no markdown or extra text:
     {"value": "100%", "label": "Satisfaction"},
     {"value": "24hr", "label": "Response Time"}
   ],
-  "testimonials": [
-    {"name": "Customer Name", "text": "Testimonial text", "rating": 5, "location": "City, ST"},
-    {"name": "Customer Name", "text": "Testimonial text", "rating": 5, "location": "City, ST"},
-    {"name": "Customer Name", "text": "Testimonial text", "rating": 5, "location": "City, ST"}
-  ],
+  "testimonials": [],
   "pages": ["Home", "Services", "About", "Testimonials", "Contact"],
   "meta_title": "SEO page title under 60 chars",
   "meta_description": "SEO meta description under 160 chars",

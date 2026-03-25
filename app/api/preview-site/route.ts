@@ -123,12 +123,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     {"value": "100%", "label": "Satisfaction Rate"},
     {"value": "24hr", "label": "Response Time"}
   ],
-  "testimonials": [
-    {"name": "Full Name", "text": "Specific 2-3 sentence testimonial referencing real results from this type of business", "rating": 5, "location": "${city || "Springfield"}, ${state || "IL"}"},
-    {"name": "Full Name", "text": "Specific 2-3 sentence testimonial", "rating": 5, "location": "Nearby City, ${state || "IL"}"},
-    {"name": "Full Name", "text": "Specific 2-3 sentence testimonial", "rating": 5, "location": "${city || "Springfield"}, ${state || "IL"}"},
-    {"name": "Full Name", "text": "Specific 2-3 sentence testimonial", "rating": 5, "location": "Nearby City, ${state || "IL"}"}
-  ],
+  "testimonials": [],
   "process_steps": [
     {"title": "Step 1 title for ${industry}", "description": "What happens — be specific to this industry"},
     {"title": "Step 2 title", "description": "What happens"},

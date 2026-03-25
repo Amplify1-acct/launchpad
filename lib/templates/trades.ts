@@ -423,10 +423,11 @@ ${nav(b, 'index.html')}
           <div class="about-badge"><div class="about-badge-check">✓</div>Personalized service for every client</div>
           <div class="about-badge"><div class="about-badge-check">✓</div>Fully licensed, bonded & insured</div>
         </div>
+        ${w.testimonials?.length > 0 ? `
         <div class="about-review">
-          <div class="about-review-text">"${w.testimonials?.[0]?.text || 'Exceptional service from start to finish. I highly recommend them to anyone.'}"</div>
-          <div class="about-review-author">— ${w.testimonials?.[0]?.name || 'Satisfied Customer'}, ${w.testimonials?.[0]?.location || b.city}</div>
-        </div>
+          <div class="about-review-text">"${w.testimonials[0].text}"</div>
+          <div class="about-review-author">— ${w.testimonials[0].name}, ${w.testimonials[0].location}</div>
+        </div>` : ""}
       </div>
     </div>
   </div>
@@ -507,6 +508,7 @@ ${nav(b, 'index.html')}
   </div>
 </section>
 
+${w.testimonials?.length > 0 ? `
 <!-- TESTIMONIALS -->
 <section class="bg-soft">
   <div class="container">
@@ -529,7 +531,7 @@ ${nav(b, 'index.html')}
       </div>`).join('')}
     </div>
   </div>
-</section>
+</section>` : ""}
 
 <!-- FAQ -->
 <section>
@@ -636,6 +638,7 @@ ${nav(b, 'services.html')}
   </div>
 </section>
 
+${w.testimonials?.length > 0 ? `
 <section>
   <div class="container" style="text-align:center">
     <span class="label">Client Stories</span>
@@ -652,7 +655,7 @@ ${nav(b, 'services.html')}
       </div>`).join('')}
     </div>
   </div>
-</section>
+</section>` : ""}
 
 ${footer(b)}
 ${js}
