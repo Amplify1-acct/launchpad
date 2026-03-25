@@ -311,3 +311,42 @@ export function pickInterior(industry: string, template: string): string {
   const pool = photos.interior?.length ? photos.interior : photos.hero;
   return pool[Math.floor(Math.random() * pool.length)];
 }
+
+// ─── MULTI-PICK: distinct images per site section ─────────────────────────────
+
+export interface SitePhotos {
+  hero: string;
+  about: string;
+  process: string;
+  cta: string;
+  interior: string;
+}
+
+function shuffle(arr: string[], seed: number): string[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = (seed * 31 + i * 7) % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+export function pickSitePhotos(industry: string, template: string): SitePhotos {
+  const photos = getPhotos(industry, template);
+  const heroPool = photos.hero;
+  const interiorPool = photos.interior?.length ? photos.interior : photos.hero;
+  const allPhotos = [...new Set([...heroPool, ...interiorPool])];
+  const seed = industry.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const picks = shuffle(allPhotos, seed);
+
+  // Each slot gets a distinct photo — cycle only if pool is tiny
+  const get = (i: number) => picks[i % picks.length];
+
+  return {
+    hero:     get(0),
+    about:    get(Math.min(1, picks.length - 1)),
+    process:  get(Math.min(2, picks.length - 1)),
+    cta:      get(Math.min(3, picks.length - 1)),
+    interior: get(Math.min(4, picks.length - 1)),
+  };
+}

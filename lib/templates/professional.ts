@@ -345,7 +345,7 @@ const placeholderLogos = ['AlphaGroup', 'Meridian Co.', 'NorthStar LLC', 'Pinnac
 export function buildIndex(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
-  const teamImg = w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
+  const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
 ${nav(b, 'index.html')}
@@ -465,7 +465,7 @@ ${w.testimonials?.[0] ? `
       ${w.services.slice(0, 3).map((s, i) => `
       <div class="case-card fade-up">
         <div class="case-img">
-          <img src="${heroImg}" alt="${s.name}" loading="lazy"/>
+          <img src="${[w.about_image_url, w.process_image_url, w.interior_image_url][i % 3] || heroImg}" alt="${s.name}" loading="lazy"/>
         </div>
         <div class="case-body">
           <div class="case-tag">${s.name}</div>
@@ -595,7 +595,7 @@ ${nav(b, 'services.html')}
         <a href="contact.html" class="btn btn-dark" style="margin-top:2rem">Book a Consultation →</a>
       </div>
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3" class="fade-up">
-        <img src="${heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+        <img src="${w.about_image_url || heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
       </div>
     </div>
   </div>
@@ -609,7 +609,7 @@ ${js}
 export function buildAbout(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
-  const teamImg = w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
+  const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return `${head(`About | ${w.meta_title}`, `About ${b.name} — ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
 ${nav(b, 'about.html')}
@@ -626,7 +626,7 @@ ${nav(b, 'about.html')}
   <div class="container">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center">
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3" class="fade-up">
-        <img src="${heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover"/>
+        <img src="${w.about_image_url || heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover"/>
       </div>
       <div class="fade-up">
         <span class="label">Our Story</span>

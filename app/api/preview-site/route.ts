@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
-import { pickHero, pickInterior } from "@/lib/photos";
+import { pickSitePhotos } from "@/lib/photos";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -115,9 +115,8 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     return NextResponse.json({ error: "AI generation failed: " + e.message }, { status: 500 });
   }
 
-  // Use curated photo library — no API call needed, always perfect match
-  const heroImageUrl = pickHero(industry, template);
-  const interiorImageUrl = pickInterior(industry, template);
+  // Pick distinct photos for each section — no repeats on the same site
+  const sitePhotos = pickSitePhotos(industry, template);
 
   const siteData = {
     business: {
@@ -135,8 +134,11 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       serviceArea,
     },
     website: {
-      hero_image_url: heroImageUrl,
-      interior_image_url: interiorImageUrl,
+      hero_image_url: sitePhotos.hero,
+      interior_image_url: sitePhotos.interior,
+      about_image_url: sitePhotos.about,
+      process_image_url: sitePhotos.process,
+      cta_image_url: sitePhotos.cta,
       meta_title: generated.meta_title,
       meta_description: generated.meta_description,
       keywords: generated.keywords || [],

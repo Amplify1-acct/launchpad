@@ -24,6 +24,9 @@ export interface SiteData {
   website: {
     hero_image_url: string;
     interior_image_url?: string;
+    about_image_url?: string;
+    process_image_url?: string;
+    cta_image_url?: string;
     meta_title: string;
     meta_description: string;
     keywords: string[];
@@ -450,7 +453,7 @@ ${nav(b, 'index.html')}
   <div class="container">
     <div class="about-grid">
       <div class="about-images">
-        <div class="about-img-main"><img src="${heroImg}" alt="${b.name} team" loading="lazy"/></div>
+        <div class="about-img-main"><img src="${w.about_image_url || heroImg}" alt="${b.name} team" loading="lazy"/></div>
         <div class="about-img-accent"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&auto=format" alt="Work quality" loading="lazy"/></div>
       </div>
       <div class="about-text fade-up">
@@ -541,7 +544,7 @@ ${nav(b, 'index.html')}
         </div>
       </div>
       <div class="process-img fade-up">
-        <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format" alt="Professional at work" loading="lazy"/>
+        <img src="${w.process_image_url || heroImg}" alt="Professional at work" loading="lazy"/>
       </div>
     </div>
   </div>
@@ -629,7 +632,7 @@ ${d.team && d.team.length > 0 ? `
 
 <!-- CTA BANNER -->
 <div class="cta-banner">
-  <div class="cta-banner-bg" style="background-image:url('${heroImg}')"></div>
+  <div class="cta-banner-bg" style="background-image:url('${w.cta_image_url || heroImg}')"></div>
   <div class="cta-banner-overlay"></div>
   <div class="cta-banner-content">
     <h2>Ready for a <em>job done right?</em></h2>
@@ -806,7 +809,7 @@ ${nav(b, 'about.html')}
         </div>`).join('')}
       </div>
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4" class="fade-up">
-        <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format" alt="Professional at work" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+        <img src="${w.process_image_url || heroImg}" alt="Professional at work" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
       </div>
     </div>
   </div>
