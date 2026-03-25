@@ -10,12 +10,54 @@ const TEMPLATE_MAP: Record<string, string[]> = {
   professional: ["law", "legal", "attorney", "lawyer", "accounting", "accountant", "financial", "finance", "consulting", "consultant", "insurance", "real estate", "advisor", "bookkeeping", "tax", "cpa", "hr", "recruiting"],
 };
 
+// Industry → specific Unsplash photo query for relevant, high-quality results
+const PHOTO_QUERIES: Record<string, string> = {
+  "law firm": "law firm office attorney professional",
+  "legal": "lawyer office legal professional",
+  "attorney": "attorney law office professional",
+  "accounting": "accountant office professional desk",
+  "accountant": "accounting office business professional",
+  "financial": "financial advisor office business meeting",
+  "finance": "finance office professional business",
+  "consulting": "business consulting office meeting professional",
+  "consultant": "business consultant meeting office",
+  "real estate": "real estate office professional agent",
+  "insurance": "insurance office professional business",
+  "bookkeeping": "accountant office desk professional",
+  "tax": "tax accountant office professional",
+  "plumbing": "plumber professional working pipes",
+  "roofing": "roofer professional roofing contractor",
+  "hvac": "hvac technician professional air conditioning",
+  "electrical": "electrician professional working",
+  "contractor": "contractor construction professional worker",
+  "landscaping": "landscaping garden professional outdoor",
+  "lawn": "lawn care professional outdoor garden",
+  "cleaning": "professional cleaning service house",
+  "pest": "pest control professional exterminator",
+  "painting": "painter professional house painting",
+};
+
 function detectTemplate(industry: string): "trades" | "professional" {
   const lower = industry.toLowerCase();
   if (TEMPLATE_MAP.trades.some(k => lower.includes(k))) return "trades";
   if (TEMPLATE_MAP.professional.some(k => lower.includes(k))) return "professional";
-  return "trades"; // default
+  return "trades";
 }
+
+function getPhotoQuery(industry: string): string {
+  const lower = industry.toLowerCase();
+  for (const [key, query] of Object.entries(PHOTO_QUERIES)) {
+    if (lower.includes(key)) return query;
+  }
+  // Fallback: use the industry name directly
+  return `${industry} professional office business`;
+}
+
+// Curated fallback images per template type (no construction workers for law firms!)
+const FALLBACKS: Record<string, string> = {
+  professional: "https://images.unsplash.com/photo-1521791055366-0d553872952f?w=1400&auto=format&fit=crop", // law office
+  trades: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format&fit=crop", // contractor
+};
 
 export async function POST(request: Request) {
   const { businessName, industry, city, state, description, phone, email } = await request.json();
@@ -51,14 +93,15 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   ],
   "stats": [
     {"value": "15+", "label": "Years in Business"},
-    {"value": "800+", "label": "Happy Customers"},
+    {"value": "800+", "label": "Happy Clients"},
     {"value": "100%", "label": "Satisfaction Rate"},
-    {"value": "24hr", "label": "Response Time"}
+    {"value": "$50M+", "label": "Recovered for Clients"}
   ],
   "testimonials": [
     {"name": "First Last", "text": "A specific, believable 2-3 sentence testimonial that references the actual service and result", "rating": 5, "location": "${city || "Springfield"}, ${state || "IL"}"},
     {"name": "First Last", "text": "A specific, believable 2-3 sentence testimonial", "rating": 5, "location": "Nearby city, ${state || "IL"}"},
-    {"name": "First Last", "text": "A specific, believable 2-3 sentence testimonial", "rating": 5, "location": "${city || "Springfield"}, ${state || "IL"}"}
+    {"name": "First Last", "text": "A specific, believable 2-3 sentence testimonial", "rating": 5, "location": "${city || "Springfield"}, ${state || "IL"}"},
+    {"name": "First Last", "text": "A specific, believable 2-3 sentence testimonial", "rating": 5, "location": "Nearby city, ${state || "IL"}"}
   ],
   "process_steps": [
     {"title": "Step title specific to ${industry}", "description": "What happens in this step — be specific"},
@@ -72,7 +115,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     {"question": "Specific FAQ", "answer": "Detailed answer"},
     {"question": "Specific FAQ", "answer": "Detailed answer"}
   ],
-  "meta_title": "${businessName} | ${industry} in ${city || "Springfield"}, ${state || "IL"} | Under 60 chars",
+  "meta_title": "${businessName} | ${industry} in ${city || "Springfield"}, ${state || "IL"}",
   "meta_description": "Compelling meta description for ${businessName} under 155 characters.",
   "keywords": ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5", "keyword 6"]
 }`;
@@ -92,17 +135,20 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     return NextResponse.json({ error: "AI generation failed: " + e.message }, { status: 500 });
   }
 
-  // Fetch hero image
-  let heroImageUrl = `https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format`;
+  // Fetch industry-specific hero image
+  let heroImageUrl = FALLBACKS[template];
   try {
-    const unsplashQuery = encodeURIComponent(`${industry} professional`);
+    const photoQuery = getPhotoQuery(industry);
     const unsplashRes = await fetch(
-      `https://api.unsplash.com/search/photos?query=${unsplashQuery}&per_page=1&orientation=landscape`,
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(photoQuery)}&per_page=5&orientation=landscape`,
       { headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` } }
     );
     const unsplashData = await unsplashRes.json();
-    if (unsplashData.results?.[0]?.urls?.regular) {
-      heroImageUrl = unsplashData.results[0].urls.regular;
+    // Pick a random one from top 5 for variety
+    const results = unsplashData.results || [];
+    if (results.length > 0) {
+      const pick = results[Math.floor(Math.random() * Math.min(results.length, 3))];
+      heroImageUrl = pick.urls.regular + "&w=1400&fit=crop";
     }
   } catch {}
 
@@ -112,7 +158,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       tagline: generated.tagline,
       description,
       phone: phone || "(555) 000-0000",
-      email: email || `hello@${businessName.toLowerCase().replace(/\s+/g, "")}.com`,
+      email: email || `hello@${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`,
       address: "",
       city: city || "Springfield",
       state: state || "IL",
@@ -123,24 +169,18 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       hero_image_url: heroImageUrl,
       meta_title: generated.meta_title,
       meta_description: generated.meta_description,
-      keywords: generated.keywords,
-      services: generated.services,
-      stats: generated.stats,
-      testimonials: generated.testimonials,
-      process_steps: generated.process_steps,
-      faqs: generated.faqs,
+      keywords: generated.keywords || [],
+      services: generated.services || [],
+      stats: generated.stats || [],
+      testimonials: generated.testimonials || [],
+      process_steps: generated.process_steps || [],
+      faqs: generated.faqs || [],
     },
   };
 
-  // Build all pages
   const pages = template === "trades"
     ? buildTradesSite(siteData)
     : buildProfessionalSite(siteData);
 
-  return NextResponse.json({
-    success: true,
-    template,
-    pages,       // { "index.html": "...", "services.html": "...", ... }
-    generated,
-  });
+  return NextResponse.json({ success: true, template, pages, generated });
 }

@@ -202,7 +202,7 @@ footer { background: var(--dark); color: rgba(255,255,255,0.45); padding: 5rem 3
 .footer-tagline { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: rgba(255,255,255,0.2); font-style: italic; }
 
 /* ANIMATIONS */
-.fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up { opacity: 1; transform: none; transition: opacity 0.6s ease, transform 0.6s ease; }
 .fade-up.visible { opacity: 1; transform: none; }
 
 /* RESPONSIVE */

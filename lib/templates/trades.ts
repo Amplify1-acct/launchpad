@@ -261,7 +261,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 4rem 2
   .form-row { grid-template-columns: 1fr; }
 }
 /* Scroll animations */
-.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.fade-up { opacity: 1; transform: none; transition: opacity 0.55s ease, transform 0.55s ease; }
 .fade-up.visible { opacity: 1; transform: none; }
   `;
 }
