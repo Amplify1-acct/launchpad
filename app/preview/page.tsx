@@ -171,6 +171,92 @@ function getTitleSuggestions(industry: string): string[] {
   return TITLE_SUGGESTIONS[industry] || ["Owner & Operator", "Founder", "Manager", "Lead Specialist"];
 }
 
+// ─── PRACTICE AREA / SERVICE SUGGESTIONS PER INDUSTRY ─────────────────────────
+
+const PRACTICE_AREA_SUGGESTIONS: Record<string, string[]> = {
+  "Law Firm": [
+    "Personal Injury", "Medical Malpractice", "Workers' Compensation", "Car Accidents",
+    "Business Law", "Contract Law", "Corporate Law", "M&A / Mergers & Acquisitions",
+    "Employment Law", "Wrongful Termination", "Discrimination Claims",
+    "Family Law", "Divorce", "Child Custody", "Adoption",
+    "Criminal Defense", "DUI / DWI", "Drug Offenses",
+    "Real Estate Law", "Estate Planning", "Wills & Trusts", "Probate",
+    "Immigration Law", "Bankruptcy", "Intellectual Property", "Patent Law",
+    "Civil Litigation", "Contract Disputes",
+  ],
+  "Accounting / CPA": [
+    "Tax Preparation", "Tax Planning", "IRS Representation", "Bookkeeping",
+    "Payroll Services", "Business Accounting", "Personal Accounting",
+    "Financial Statements", "Audit & Assurance", "Business Consulting",
+    "Nonprofit Accounting", "Estate & Trust Tax", "Sales Tax Compliance",
+  ],
+  "Financial Advisory": [
+    "Retirement Planning", "Investment Management", "Wealth Management",
+    "Portfolio Management", "Estate Planning", "Tax-Efficient Investing",
+    "College Planning", "Life Insurance", "Annuities",
+    "Business Succession Planning", "401(k) / IRA Rollovers",
+  ],
+  "Real Estate": [
+    "Buyer Representation", "Seller Representation", "Listing Services",
+    "Commercial Real Estate", "Residential Real Estate", "Luxury Homes",
+    "First-Time Buyers", "Investment Properties", "Property Management",
+    "Relocation Services", "New Construction",
+  ],
+  "Medical Clinic": [
+    "Primary Care", "Preventive Care", "Chronic Disease Management",
+    "Urgent Care", "Pediatrics", "Women's Health", "Men's Health",
+    "Mental Health", "Telehealth", "Annual Physicals",
+  ],
+  "Dental Office": [
+    "General Dentistry", "Teeth Cleaning", "Teeth Whitening", "Invisalign",
+    "Dental Implants", "Veneers", "Crowns & Bridges", "Root Canal",
+    "Pediatric Dentistry", "Emergency Dental Care", "Oral Surgery",
+  ],
+  "Plumbing": [
+    "Pipe Repair & Replacement", "Drain Cleaning", "Water Heater Installation",
+    "Leak Detection", "Sewer Line Repair", "Bathroom Remodeling",
+    "Kitchen Plumbing", "Emergency Plumbing", "Water Softeners",
+    "Gas Line Services", "Backflow Prevention",
+  ],
+  "Roofing": [
+    "Roof Replacement", "Roof Repair", "Storm Damage Repair",
+    "Shingle Roofing", "Metal Roofing", "Flat Roof Systems",
+    "Roof Inspection", "Gutters & Downspouts", "Skylight Installation",
+    "Attic Insulation", "Emergency Tarping",
+  ],
+  "HVAC": [
+    "AC Installation", "AC Repair", "Furnace Installation", "Furnace Repair",
+    "Heat Pump Services", "Duct Cleaning", "Duct Sealing",
+    "Indoor Air Quality", "Smart Thermostat Installation",
+    "Preventive Maintenance", "Emergency HVAC Service",
+  ],
+  "General Contractor": [
+    "Home Additions", "Kitchen Remodeling", "Bathroom Remodeling",
+    "Basement Finishing", "Deck & Patio", "Garage Conversion",
+    "New Construction", "Commercial Build-Out", "Siding Replacement",
+    "Window & Door Installation", "Interior Renovation",
+  ],
+  "Hair Salon": [
+    "Haircuts & Styling", "Color & Highlights", "Balayage", "Keratin Treatment",
+    "Perms", "Hair Extensions", "Bridal Hair", "Men's Cuts",
+    "Deep Conditioning", "Scalp Treatments", "Blowouts",
+  ],
+  "Landscaping": [
+    "Lawn Maintenance", "Landscape Design", "Sod Installation",
+    "Irrigation Systems", "Tree Trimming", "Shrub Pruning",
+    "Mulching", "Seasonal Cleanups", "Snow Removal",
+    "Hardscaping", "Outdoor Lighting",
+  ],
+};
+
+const DEFAULT_PRACTICE_AREAS: string[] = [
+  "Core Service 1", "Core Service 2", "Core Service 3",
+];
+
+function getPracticeAreaSuggestions(industry: string): string[] {
+  return PRACTICE_AREA_SUGGESTIONS[industry] || DEFAULT_PRACTICE_AREAS;
+}
+
 function getStatPrompts(industry: string) {
   return STAT_PROMPTS[industry] || DEFAULT_STATS;
 }
@@ -215,6 +301,7 @@ export default function PreviewPage() {
     description: "", phone: "", email: "", founded: "",
   });
   const [stats, setStats] = useState<string[]>(["", "", "", ""]);
+  const [practiceAreas, setPracticeAreas] = useState<string[]>([]);
   const [team, setTeam] = useState<TeamMember[]>([emptyMember()]);
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState<Record<string, string> | null>(null);
@@ -227,12 +314,13 @@ export default function PreviewPage() {
   const [selectedPlan, setSelectedPlan] = useState("growth");
 
   const statPrompts = getStatPrompts(form.industry);
+  const practiceAreaSuggestions = getPracticeAreaSuggestions(form.industry);
   const currentPkg = PACKAGES.find(p => p.id === selectedPlan) || PACKAGES[1];
   const titleSuggestions = getTitleSuggestions(form.industry);
 
   function setField(key: string, val: string) {
     setForm(f => ({ ...f, [key]: val }));
-    if (key === "industry") setStats(["", "", "", ""]);
+    if (key === "industry") { setStats(["", "", "", ""]); setPracticeAreas([]); }
   }
 
   function setMember(i: number, key: keyof TeamMember, val: string) {
@@ -277,7 +365,7 @@ export default function PreviewPage() {
       const res = await fetch("/api/preview-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, realStats, team: realTeam, plan: selectedPlan }),
+        body: JSON.stringify({ ...form, realStats, team: realTeam, plan: selectedPlan, practiceAreas }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -434,6 +522,85 @@ export default function PreviewPage() {
             <textarea value={form.description} onChange={e => setField("description", e.target.value)}
               placeholder="What do you do, who do you serve, what makes you different... (leave blank and we'll use your business name + industry)"
               rows={3} style={{ ...inp, resize: "vertical" }} />
+          </div>
+
+          {/* ── PRACTICE AREAS / SERVICES ── */}
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.12em", color: "#bbb", marginBottom: "0.75rem", paddingTop: "1.25rem", borderTop: "1px solid #f0f0ee" }}>
+            {form.industry === "Law Firm" || form.industry === "Accounting / CPA" || form.industry === "Financial Advisory" ? "Practice Areas" : "Your Services"}
+            <span style={{ fontWeight: 400, color: "#ccc", marginLeft: 6 }}>— what you actually offer</span>
+          </div>
+          <div style={{ marginBottom: "1rem" }}>
+            <div style={{ fontSize: "0.74rem", color: "#aaa", marginBottom: "0.75rem", lineHeight: 1.5 }}>
+              Select from the list or type your own. These become your site's service pages.
+            </div>
+
+            {/* Selected tags */}
+            {practiceAreas.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.75rem" }}>
+                {practiceAreas.map((area, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    background: "#111", color: "#fff",
+                    fontSize: "0.75rem", fontWeight: 600,
+                    padding: "3px 8px 3px 10px", borderRadius: 3,
+                  }}>
+                    {area}
+                    <button onClick={() => setPracticeAreas(a => a.filter((_, idx) => idx !== i))}
+                      style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: "1rem", lineHeight: 1, padding: 0, marginLeft: 2 }}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Suggestion chips */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "0.75rem" }}>
+              {practiceAreaSuggestions.filter(s => !practiceAreas.includes(s)).slice(0, 12).map(suggestion => (
+                <button key={suggestion}
+                  onClick={() => setPracticeAreas(a => a.length < 8 ? [...a, suggestion] : a)}
+                  style={{
+                    fontSize: "0.72rem", padding: "3px 9px",
+                    background: "#f8f8f6", border: "1px solid #e4e4e0",
+                    borderRadius: 3, cursor: "pointer", color: "#555",
+                    fontFamily: "inherit",
+                  }}>
+                  + {suggestion}
+                </button>
+              ))}
+            </div>
+
+            {/* Free text input */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <input
+                id="customArea"
+                placeholder="Type a custom service or practice area..."
+                style={{ ...inp, flex: 1 }}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    const val = (e.target as HTMLInputElement).value.trim();
+                    if (val && !practiceAreas.includes(val) && practiceAreas.length < 8) {
+                      setPracticeAreas(a => [...a, val]);
+                      (e.target as HTMLInputElement).value = "";
+                    }
+                    e.preventDefault();
+                  }
+                }}
+              />
+              <button
+                onClick={() => {
+                  const input = document.getElementById("customArea") as HTMLInputElement;
+                  const val = input?.value.trim();
+                  if (val && !practiceAreas.includes(val) && practiceAreas.length < 8) {
+                    setPracticeAreas(a => [...a, val]);
+                    input.value = "";
+                  }
+                }}
+                style={{ background: "#111", color: "#fff", border: "none", borderRadius: 3, padding: "0 0.85rem", fontSize: "0.8rem", cursor: "pointer", whiteSpace: "nowrap" }}>
+                Add
+              </button>
+            </div>
+            <div style={{ fontSize: "0.68rem", color: "#ccc", marginTop: 4 }}>
+              {practiceAreas.length}/8 selected · {practiceAreas.length === 0 ? "AI will generate services from your description if none selected" : "AI will write 750-word pages for each"}
+            </div>
           </div>
 
           {/* ── YOUR NUMBERS ── */}

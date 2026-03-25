@@ -150,7 +150,7 @@ Respond ONLY with valid JSON:
 // ─── MAIN HANDLER ──────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
-  const { businessName, industry, city, state, description, phone, email, founded, realStats, team, plan } = await request.json();
+  const { businessName, industry, city, state, description, phone, email, founded, realStats, team, plan, practiceAreas } = await request.json();
 
   if (!businessName || !industry) {
     return NextResponse.json({ error: "businessName and industry are required" }, { status: 400 });
@@ -183,36 +183,44 @@ export async function POST(request: Request) {
 
 Business Name: ${businessName}
 Industry: ${industry}
+Specific Business Type: ${resolvedDescription}
 Location: ${resolvedCity}, ${resolvedState}
 Geographic Target: ${geoTarget}
-Description: ${resolvedDescription}
+
+CRITICAL INSTRUCTION FOR SERVICES:
+${practiceAreas && practiceAreas.length > 0
+  ? `The customer has specified their exact practice areas/services: ${practiceAreas.join(", ")}
+Use THESE as the service names exactly as written. Generate descriptions for each one specific to ${businessName}.
+Do NOT add or substitute different services.`
+  : `Generate services SPECIFICALLY relevant to "${businessName}" based on their description: "${resolvedDescription}".
+Do NOT generate generic "${industry}" services — use the description to infer the EXACT specialty.
+For example: "business law" → Contract Law, Business Formation, M&A — NOT personal injury.`
+}
 
 IMPORTANT: This business serves ${geoTarget}. ${stateLicensed ? `Use "${resolvedState}" statewide references.` : `Use the local city and region.`}
 
-Generate rich, specific, professional content. No generic filler.
+Generate rich, specific, professional content tailored to THIS exact business. No generic filler.
 
 Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "tagline": "Compelling 4-7 word tagline",
+  "tagline": "Compelling 4-7 word tagline specific to ${resolvedDescription}",
   "accent_color": "${accentColor}",
   "services": [
-    {"name": "Service name", "description": "2-3 sentences specific to this business", "icon": "emoji"},
-    {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
-    {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
-    {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
-    {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
-    {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"}
+    ${(practiceAreas && practiceAreas.length > 0
+      ? practiceAreas.slice(0, 6).map((a: string) => `{"name": "${a}", "description": "2-3 sentences specific to ${businessName}", "icon": "relevant emoji"}`)
+      : Array(6).fill(`{"name": "Specific service based on description", "description": "2-3 sentences", "icon": "emoji"}`)
+    ).join(",\n    ")}
   ],
   "stats": [],
   "testimonials": [],
   "process_steps": [
-    {"title": "Step 1 for ${industry}", "description": "Specific description"},
-    {"title": "Step 2", "description": "Description"},
-    {"title": "Step 3", "description": "Description"},
-    {"title": "Step 4", "description": "Description"}
+    {"title": "Step 1 specific to ${resolvedDescription}", "description": "Specific to this type of business"},
+    {"title": "Step 2", "description": "Specific description"},
+    {"title": "Step 3", "description": "Specific description"},
+    {"title": "Step 4", "description": "Specific description"}
   ],
   "faqs": [
-    {"question": "Real FAQ for ${industry}", "answer": "Detailed answer"},
+    {"question": "Real FAQ a client of ${businessName} would ask about ${resolvedDescription}", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"}
