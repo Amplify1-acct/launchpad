@@ -36,7 +36,7 @@ export interface SiteData {
     meta_title: string;
     meta_description: string;
     keywords: string[];
-    services: Array<{ name: string; description: string; icon: string }>;
+    services: Array<{ name: string; description: string; icon: string; link?: string }>;
     stats: Array<{ value: string; label: string }>;
     testimonials: Array<{ name: string; text: string; rating: number; location: string }>;
     faqs: Array<{ question: string; answer: string }>;
@@ -694,7 +694,7 @@ ${nav(b, 'services.html', d.team)}
         <div class="service-card-icon">${s.icon}</div>
         <div class="service-card-name">${s.name}</div>
         <div class="service-card-desc">${s.description}</div>
-        <a href="contact.html" class="btn btn-outline-dark" style="margin-top:1.25rem;font-size:0.85rem;padding:0.65rem 1.25rem">Get a Quote →</a>
+        <a href="${s.link || 'contact.html'}" class="btn btn-outline-dark" style="margin-top:1.25rem;font-size:0.85rem;padding:0.65rem 1.25rem">${s.link ? "Learn more →" : "Get a Quote →"}</a>
       </div>`).join('')}
     </div>
   </div>

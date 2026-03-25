@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
+import { buildServicePage, servicePageSlug, ServicePageContext } from "@/lib/templates/service-page";
 import { pickSitePhotos } from "@/lib/photos";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -33,43 +34,38 @@ function isStateLicensed(industry: string): boolean {
 }
 
 // ─── FORMAT TEAM DATA ──────────────────────────────────────────────────────────
-// Runs each team member's raw input through Claude to fix typos, capitalization,
-// grammar, punctuation, and sentence structure — without changing the meaning.
 
 async function formatTeamMember(member: any, businessName: string, industry: string): Promise<any> {
-  // Skip if member has no meaningful content
   const hasContent = member.name || member.bio || member.education || member.awards;
   if (!hasContent) return member;
 
   const fieldSummary = [
-    member.name       && `Name: ${member.name}`,
-    member.title      && `Title: ${member.title}`,
-    member.experience && `Experience: ${member.experience}`,
+    member.name        && `Name: ${member.name}`,
+    member.title       && `Title: ${member.title}`,
+    member.experience  && `Experience: ${member.experience}`,
     member.credentials && `Credentials: ${member.credentials}`,
-    member.bio        && `Bio:\n${member.bio}`,
-    member.education  && `Education:\n${member.education}`,
+    member.bio         && `Bio:\n${member.bio}`,
+    member.education   && `Education:\n${member.education}`,
     member.barAdmissions && `Bar Admissions:\n${member.barAdmissions}`,
     member.specializations && `Specializations: ${member.specializations}`,
-    member.awards     && `Awards:\n${member.awards}`,
+    member.awards      && `Awards:\n${member.awards}`,
     member.publications && `Publications:\n${member.publications}`,
   ].filter(Boolean).join("\n\n");
 
   const prompt = `You are editing a professional bio for a ${industry} business called "${businessName}".
 
-The person below submitted their information but it may have typos, inconsistent capitalization, grammar issues, incomplete sentences, or informal/unprofessional phrasing. 
+Fix typos, capitalization, punctuation, and grammar. Expand abbreviations where appropriate (e.g. "NY law" → "New York Law School"). Make incomplete notes into proper sentences. Do NOT invent new facts or add content not provided.
 
-Your job: clean it up professionally. Fix typos, capitalization, punctuation, and grammar. Expand abbreviations where appropriate (e.g. "NY law" → "New York Law School"). Make incomplete notes into proper sentences. Do NOT invent new facts, change dates, alter credentials, or add content that wasn't there. Preserve the person's voice and all specific details exactly.
-
-Here is their input:
+Input:
 ${fieldSummary}
 
 Return ONLY valid JSON with these exact fields (use empty string "" for any field not provided):
 {
   "name": "properly capitalized full name",
   "title": "properly formatted title",
-  "experience": "number or phrase as provided, just cleaned up",
-  "credentials": "properly formatted credentials, comma separated",
-  "bio": "cleaned up bio — fix typos, capitalize sentences, fix grammar, expand into proper paragraphs if notes were provided. Preserve all facts.",
+  "experience": "cleaned up",
+  "credentials": "properly formatted, comma separated",
+  "bio": "cleaned up bio — fix typos, capitalize sentences, expand into proper paragraphs",
   "education": "each entry on its own line, properly formatted",
   "barAdmissions": "each admission on its own line, properly formatted",
   "specializations": "comma-separated, properly capitalized",
@@ -87,16 +83,67 @@ Return ONLY valid JSON with these exact fields (use empty string "" for any fiel
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) return member;
     const cleaned = JSON.parse(match[0]);
-    // Merge cleaned fields back — preserve linkedin which we didn't send for formatting
-    return {
-      ...member,
-      ...Object.fromEntries(
-        Object.entries(cleaned).filter(([_, v]) => v !== "")
-      ),
-    };
+    return { ...member, ...Object.fromEntries(Object.entries(cleaned).filter(([_, v]) => v !== "")) };
   } catch {
-    // If formatting fails, return original — never block the site generation
     return member;
+  }
+}
+
+// ─── GENERATE SERVICE PAGE CONTENT ────────────────────────────────────────────
+
+async function generateServicePageContent(
+  service: { name: string; description: string },
+  ctx: { businessName: string; industry: string; city: string; state: string; serviceArea: string; stateLicensed: boolean }
+): Promise<{ content: string; faqs: Array<{ question: string; answer: string }>; metaTitle: string; metaDescription: string }> {
+
+  const geoPhrase = ctx.stateLicensed ? ctx.state : `${ctx.city}, ${ctx.state}`;
+
+  const prompt = `Write a professional, SEO-optimized service page for a ${ctx.industry} business.
+
+Business: ${ctx.businessName}
+Service: ${service.name}
+Service Description: ${service.description}
+Location: ${ctx.serviceArea}
+
+Write approximately 750 words of content. Use proper HTML heading tags (h2, h3) and paragraph tags. Structure it as:
+- Opening paragraph establishing the business as the authority on this service in ${geoPhrase}
+- 2-3 h2 sections diving into what this service involves, why it matters, and what sets ${ctx.businessName} apart
+- Use specific details relevant to ${service.name} — don't be generic
+- Naturally weave in "${geoPhrase}" for local SEO without keyword stuffing
+- End with a compelling paragraph that drives toward contact
+
+Also generate 3 FAQs specific to this service and location.
+
+Respond ONLY with valid JSON:
+{
+  "content": "<p>Opening paragraph...</p><h2>Section heading</h2><p>...</p>",
+  "faqs": [
+    {"question": "Specific question about ${service.name} in ${geoPhrase}", "answer": "Detailed answer"},
+    {"question": "Another specific question", "answer": "Detailed answer"},
+    {"question": "Another specific question", "answer": "Detailed answer"}
+  ],
+  "metaTitle": "${service.name} | ${ctx.businessName} | ${geoPhrase} — under 60 chars",
+  "metaDescription": "Compelling meta description under 155 chars mentioning ${service.name} and ${geoPhrase}"
+}`;
+
+  try {
+    const res = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2000,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const raw = res.content[0].type === "text" ? res.content[0].text : "";
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("No JSON");
+    return JSON.parse(match[0]);
+  } catch {
+    // Graceful fallback
+    return {
+      content: `<p>${service.description}</p><h2>Why Choose ${ctx.businessName}?</h2><p>We are dedicated to providing exceptional ${service.name.toLowerCase()} services throughout ${ctx.serviceArea}. Contact us today to learn more.</p>`,
+      faqs: [],
+      metaTitle: `${service.name} | ${ctx.businessName}`,
+      metaDescription: `${service.name} services from ${ctx.businessName}. Serving ${ctx.serviceArea}.`,
+    };
   }
 }
 
@@ -124,7 +171,6 @@ export async function POST(request: Request) {
     ? `throughout ${resolvedState}`
     : `${resolvedCity}, ${resolvedState} and surrounding areas`;
 
-  // Run site content generation + team formatting in parallel
   const sitePrompt = `You are generating content for a small business website.
 
 Business Name: ${businessName}
@@ -133,16 +179,16 @@ Location: ${resolvedCity}, ${resolvedState}
 Geographic Target: ${geoTarget}
 Description: ${resolvedDescription}
 
-IMPORTANT: This business serves ${geoTarget}. All geographic references in copy, meta tags, and keywords should reflect this — ${stateLicensed ? `use "${resolvedState}" statewide references, not just the city` : `use the local city and region`}.
+IMPORTANT: This business serves ${geoTarget}. ${stateLicensed ? `Use "${resolvedState}" statewide references.` : `Use the local city and region.`}
 
-Generate rich, specific, professional content tailored to THIS exact business. No generic filler.
+Generate rich, specific, professional content. No generic filler.
 
 Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "tagline": "Compelling 4-7 word tagline for this specific business",
+  "tagline": "Compelling 4-7 word tagline",
   "accent_color": "${accentColor}",
   "services": [
-    {"name": "Service name", "description": "2-3 sentences specific to this business and what makes it valuable", "icon": "emoji"},
+    {"name": "Service name", "description": "2-3 sentences specific to this business", "icon": "emoji"},
     {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
     {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
     {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
@@ -152,29 +198,26 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   "stats": [],
   "testimonials": [],
   "process_steps": [
-    {"title": "Step 1 title for ${industry}", "description": "What happens — be specific to this industry"},
-    {"title": "Step 2 title", "description": "What happens"},
-    {"title": "Step 3 title", "description": "What happens"},
-    {"title": "Step 4 title", "description": "What happens"}
+    {"title": "Step 1 for ${industry}", "description": "Specific description"},
+    {"title": "Step 2", "description": "Description"},
+    {"title": "Step 3", "description": "Description"},
+    {"title": "Step 4", "description": "Description"}
   ],
   "faqs": [
-    {"question": "Real FAQ a ${industry} client would ask", "answer": "Detailed, helpful answer"},
+    {"question": "Real FAQ for ${industry}", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"},
     {"question": "Real FAQ", "answer": "Detailed answer"}
   ],
   "meta_title": "${businessName} | ${industry} in ${stateLicensed ? resolvedState : `${resolvedCity}, ${resolvedState}`}",
-  "meta_description": "Under 155 characters. Compelling description mentioning ${stateLicensed ? resolvedState : resolvedCity}.",
+  "meta_description": "Under 155 chars mentioning ${stateLicensed ? resolvedState : resolvedCity}.",
   "keywords": ["${industry.toLowerCase()} ${stateLicensed ? resolvedState : resolvedCity}", "${industry.toLowerCase()} ${resolvedState}", "keyword 3", "keyword 4", "keyword 5", "keyword 6"]
 }`;
 
-  // Run site generation and team formatting in parallel for speed
-  const teamMembers = team && team.length > 0
-    ? team.filter((m: any) => m.name?.trim())
-    : [];
+  const teamMembers = team && team.length > 0 ? team.filter((m: any) => m.name?.trim()) : [];
 
+  // Phase 1: Generate site content + format team in parallel
   const [generated, formattedTeam] = await Promise.all([
-    // Site content generation
     anthropic.messages.create({
       model: "claude-opus-4-5-20251101",
       max_tokens: 3000,
@@ -185,14 +228,18 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       if (!match) throw new Error("No JSON in AI response");
       return JSON.parse(match[0]);
     }),
-
-    // Team formatting — runs all members in parallel too
-    Promise.all(
-      teamMembers.map((m: any) => formatTeamMember(m, businessName, industry))
-    ),
+    Promise.all(teamMembers.map((m: any) => formatTeamMember(m, businessName, industry))),
   ]);
 
-  // Pick distinct photos
+  const services: Array<{ name: string; description: string; icon: string }> = generated.services || [];
+
+  // Phase 2: Generate all service pages in parallel
+  const serviceCtx = { businessName, industry, city: resolvedCity, state: resolvedState, serviceArea, stateLicensed };
+  const servicePageContents = await Promise.all(
+    services.map(s => generateServicePageContent(s, serviceCtx))
+  );
+
+  // Pick photos
   const sitePhotos = pickSitePhotos(industry, template);
 
   const siteData = {
@@ -220,7 +267,10 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       meta_description: generated.meta_description,
       keywords: generated.keywords || [],
       founded: founded || null,
-      services: generated.services || [],
+      services: services.map(s => ({
+        ...s,
+        link: servicePageSlug(s.name), // e.g. "services/personal-injury-law.html"
+      })),
       stats: (realStats && realStats.length > 0)
         ? realStats.map((s: any) => ({ value: s.value, label: s.label }))
         : [],
@@ -231,9 +281,29 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     team: formattedTeam.length > 0 ? formattedTeam : undefined,
   };
 
+  // Build main site pages
   const pages = template === "trades"
     ? buildTradesSite(siteData)
     : buildProfessionalSite(siteData);
+
+  // Build individual service pages
+  const servicePageCtx: ServicePageContext = {
+    business: { ...siteData.business },
+    template,
+  };
+
+  services.forEach((service, i) => {
+    const pageSlug = servicePageSlug(service.name);
+    const content = servicePageContents[i];
+    pages[pageSlug] = buildServicePage(servicePageCtx, {
+      serviceName: service.name,
+      serviceDescription: service.description,
+      content: content.content,
+      faqs: content.faqs,
+      metaTitle: content.metaTitle,
+      metaDescription: content.metaDescription,
+    });
+  });
 
   return NextResponse.json({ success: true, template, pages, generated });
 }

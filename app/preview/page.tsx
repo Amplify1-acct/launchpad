@@ -154,6 +154,7 @@ export default function PreviewPage() {
   const [template, setTemplate] = useState("");
   const [error, setError] = useState("");
   const [timeElapsed, setTimeElapsed] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
 
   const statPrompts = getStatPrompts(form.industry);
   const titleSuggestions = getTitleSuggestions(form.industry);
@@ -477,40 +478,111 @@ export default function PreviewPage() {
       </div>
 
       {/* ── RIGHT PANEL ── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{
+        flex: 1, display: "flex", flexDirection: "column", overflow: "hidden",
+        ...(fullscreen ? { position: "fixed" as const, inset: 0, zIndex: 1000, background: "#fff" } : {}),
+      }}>
 
+        {/* Tab bar */}
         {pages && (
-          <div style={{ background: "#fff", borderBottom: "1px solid #e4e4e0", padding: "0 1.5rem", display: "flex", alignItems: "center", height: 44 }}>
-            {Object.keys(pages).map(page => (
+          <div style={{ background: "#fff", borderBottom: "1px solid #e4e4e0", padding: "0 1rem", display: "flex", alignItems: "center", height: 44, gap: 0, overflowX: "auto", flexShrink: 0 }}>
+
+            {/* Main pages first */}
+            {["index.html","services.html","about.html","contact.html","team.html"].filter(p => pages[p]).map(page => (
               <button key={page} onClick={() => setActivePage(page)} style={{
-                padding: "0 1.1rem", height: "100%", border: "none", background: "none",
-                fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                padding: "0 1rem", height: "100%", border: "none", background: "none",
+                fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
                 color: activePage === page ? "#111" : "#888",
                 borderBottom: activePage === page ? "2px solid #111" : "2px solid transparent",
               }}>
                 {pageLabels[page] || page}
               </button>
             ))}
-            <div style={{ marginLeft: "auto", fontSize: "0.73rem", color: "#bbb" }}>Preview only — Go Live to deploy</div>
+
+            {/* Service pages — grouped under a label */}
+            {Object.keys(pages).some(p => p.startsWith("services/")) && (
+              <>
+                <div style={{ width: 1, height: 20, background: "#e4e4e0", margin: "0 0.5rem", flexShrink: 0 }} />
+                {Object.keys(pages).filter(p => p.startsWith("services/")).map(page => {
+                  const label = page.replace("services/","").replace(".html","").replace(/-/g," ").replace(/\w/g, c => c.toUpperCase());
+                  return (
+                    <button key={page} onClick={() => setActivePage(page)} style={{
+                      padding: "0 0.85rem", height: "100%", border: "none", background: "none",
+                      fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                      color: activePage === page ? "#111" : "#aaa",
+                      borderBottom: activePage === page ? "2px solid var(--accent,#a8c500)" : "2px solid transparent",
+                    }}>
+                      {label}
+                    </button>
+                  );
+                })}
+              </>
+            )}
+
+            {/* Team bio pages */}
+            {Object.keys(pages).filter(p => p.startsWith("team-") && p !== "team.html").map(page => {
+              const label = page.replace("team-","").replace(".html","").replace(/-/g," ").replace(/\w/g, c => c.toUpperCase());
+              return (
+                <button key={page} onClick={() => setActivePage(page)} style={{
+                  padding: "0 0.85rem", height: "100%", border: "none", background: "none",
+                  fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                  color: activePage === page ? "#111" : "#aaa",
+                  borderBottom: activePage === page ? "2px solid #111" : "2px solid transparent",
+                }}>
+                  {label}
+                </button>
+              );
+            })}
+
+            {/* Right actions */}
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0, paddingLeft: "0.5rem" }}>
+              {pages && (
+                <div style={{ fontSize: "0.7rem", color: "#bbb", whiteSpace: "nowrap" }}>
+                  {Object.keys(pages).length} pages
+                </div>
+              )}
+              <button
+                onClick={() => setFullscreen(f => !f)}
+                title={fullscreen ? "Exit fullscreen" : "Fullscreen preview"}
+                style={{ background: "none", border: "1px solid #e4e4e0", borderRadius: 3, padding: "0.25rem 0.6rem", cursor: "pointer", fontSize: "0.8rem", color: "#666" }}
+              >
+                {fullscreen ? "✕ Exit" : "⛶ Fullscreen"}
+              </button>
+              {pages && (
+                <button
+                  onClick={() => alert("Payment flow coming soon!")}
+                  style={{
+                    background: "#111", color: "#fff", border: "none",
+                    borderRadius: 3, padding: "0.35rem 1rem",
+                    fontSize: "0.78rem", fontWeight: 700, cursor: "pointer",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  Publish Site →
+                </button>
+              )}
+            </div>
           </div>
         )}
 
+        {/* Preview area */}
         <div style={{ flex: 1, overflow: "hidden" }}>
           {!pages && !loading && (
             <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 10, color: "#ccc" }}>
               <div style={{ fontSize: "2.5rem" }}>🏗️</div>
               <div style={{ fontSize: "1rem", fontWeight: 600, color: "#555" }}>Fill in the form and hit Generate</div>
-              <div style={{ fontSize: "0.85rem", color: "#aaa" }}>Your site appears here in ~15 seconds</div>
+              <div style={{ fontSize: "0.85rem", color: "#aaa" }}>Your site will appear here in ~30 seconds</div>
             </div>
           )}
           {loading && (
             <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 14, color: "#aaa" }}>
               <div style={{ fontSize: "2rem", animation: "spin 2s linear infinite" }}>⚙️</div>
               <div style={{ fontSize: "1rem", fontWeight: 600, color: "#555" }}>Building your site...</div>
-              <div style={{ fontSize: "0.85rem" }}>AI is writing copy, picking photos, assembling pages</div>
+              <div style={{ fontSize: "0.85rem" }}>Writing copy, assembling pages, generating service articles...</div>
               <div style={{ marginTop: 6, width: 180, height: 3, background: "#e4e4e0", borderRadius: 2, overflow: "hidden" }}>
-                <div style={{ height: "100%", background: "#111", borderRadius: 2, width: `${Math.min(timeElapsed * 6, 95)}%`, transition: "width 1s ease" }} />
+                <div style={{ height: "100%", background: "#111", borderRadius: 2, width: `${Math.min(timeElapsed * 3, 95)}%`, transition: "width 1s ease" }} />
               </div>
+              <div style={{ fontSize: "0.75rem", color: "#ccc" }}>{timeElapsed}s — service pages take ~30s</div>
             </div>
           )}
           {pages && pages[activePage] && (
@@ -519,6 +591,32 @@ export default function PreviewPage() {
               title={activePage} sandbox="allow-scripts allow-same-origin" />
           )}
         </div>
+
+        {/* Post-generation CTA banner */}
+        {pages && !fullscreen && (
+          <div style={{ background: "#0a0a0a", borderTop: "1px solid #222", padding: "0.85rem 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexShrink: 0 }}>
+            <div>
+              <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#fff", marginBottom: 2 }}>
+                🎉 Your site is ready — {Object.keys(pages).length} pages including {Object.keys(pages).filter(p => p.startsWith("services/")).length} service articles
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "#888" }}>
+                Review every page above. When you&apos;re happy, publish and go live.
+              </div>
+            </div>
+            <button
+              onClick={() => alert("Payment flow coming soon!")}
+              style={{
+                background: "#fff", color: "#111", border: "none",
+                borderRadius: 3, padding: "0.65rem 1.5rem",
+                fontSize: "0.85rem", fontWeight: 800, cursor: "pointer",
+                letterSpacing: "0.04em", whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              ✓ Publish My Site →
+            </button>
+          </div>
+        )}
       </div>
 
       <style>{`

@@ -420,7 +420,7 @@ ${nav(b, 'index.html', d.team)}
         <div class="service-card-pro-num">0${i + 1}</div>
         <div class="service-card-pro-name">${s.name}</div>
         <div class="service-card-pro-desc">${s.description}</div>
-        <div class="service-card-pro-link">Learn more →</div>
+        <a href="${s.link || 'services.html'}" class="service-card-pro-link">Learn more →</a>
       </div>`).join('')}
     </div>
   </div>
@@ -587,7 +587,7 @@ ${nav(b, 'services.html', d.team)}
         <div class="service-card-pro-num">0${i + 1}</div>
         <div class="service-card-pro-name">${s.name}</div>
         <div class="service-card-pro-desc">${s.description}</div>
-        <a href="contact.html" class="btn btn-outline" style="margin-top:1.5rem;font-size:0.8rem;padding:0.65rem 1.25rem">Get Started →</a>
+        <a href="${s.link || 'contact.html'}" class="btn btn-outline" style="margin-top:1.5rem;font-size:0.8rem;padding:0.65rem 1.25rem">${s.link ? "Learn More →" : "Get Started →"}</a>
       </div>`).join('')}
     </div>
   </div>
