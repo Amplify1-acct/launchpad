@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.logo}>
-        Launch<span>Pad</span>
+        Exsisto<span>.</span>
       </div>
       <div className={styles.links}>
         {links.map((l) => (
