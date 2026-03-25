@@ -799,9 +799,9 @@ export default function PreviewPage() {
 
         {/* Tab bar */}
         {pages && (
-          <div style={{ background: "#fff", borderBottom: "1px solid #e4e4e0", padding: "0 1rem", display: "flex", alignItems: "center", height: 44, gap: 0, overflowX: "auto", flexShrink: 0 }}>
+          <div style={{ background: "#fff", borderBottom: "1px solid #e4e4e0", padding: "0 1rem", display: "flex", alignItems: "center", height: 44, gap: 0, flexShrink: 0 }}>
 
-            {/* Main pages first */}
+            {/* Main pages */}
             {["index.html","services.html","about.html","contact.html","team.html"].filter(p => pages[p]).map(page => (
               <button key={page} onClick={() => setActivePage(page)} style={{
                 padding: "0 1rem", height: "100%", border: "none", background: "none",
@@ -813,40 +813,81 @@ export default function PreviewPage() {
               </button>
             ))}
 
-            {/* Service pages — grouped under a label */}
-            {Object.keys(pages).some(p => p.startsWith("services/")) && (
-              <>
-                <div style={{ width: 1, height: 20, background: "#e4e4e0", margin: "0 0.5rem", flexShrink: 0 }} />
-                {Object.keys(pages).filter(p => p.startsWith("services/")).map(page => {
-                  const label = page.replace("services/","").replace(".html","").replace(/-/g," ").replace(/\w/g, c => c.toUpperCase());
-                  return (
-                    <button key={page} onClick={() => setActivePage(page)} style={{
-                      padding: "0 0.85rem", height: "100%", border: "none", background: "none",
-                      fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
-                      color: activePage === page ? "#111" : "#aaa",
-                      borderBottom: activePage === page ? "2px solid var(--accent,#a8c500)" : "2px solid transparent",
-                    }}>
-                      {label}
-                    </button>
-                  );
-                })}
-              </>
-            )}
-
-            {/* Team bio pages */}
-            {Object.keys(pages).filter(p => p.startsWith("team-") && p !== "team.html").map(page => {
-              const label = page.replace("team-","").replace(".html","").replace(/-/g," ").replace(/\w/g, c => c.toUpperCase());
+            {/* Practice Areas — grouped dropdown */}
+            {Object.keys(pages).some(p => p.startsWith("services/")) && (() => {
+              const servicePages = Object.keys(pages).filter(p => p.startsWith("services/"));
+              const isActive = activePage.startsWith("services/");
               return (
-                <button key={page} onClick={() => setActivePage(page)} style={{
-                  padding: "0 0.85rem", height: "100%", border: "none", background: "none",
-                  fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
-                  color: activePage === page ? "#111" : "#aaa",
-                  borderBottom: activePage === page ? "2px solid #111" : "2px solid transparent",
-                }}>
-                  {label}
-                </button>
+                <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center" }} className="tab-group">
+                  <button style={{
+                    padding: "0 1rem", height: "100%", border: "none", background: "none",
+                    fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                    color: isActive ? "#111" : "#888",
+                    borderBottom: isActive ? "2px solid #111" : "2px solid transparent",
+                    display: "flex", alignItems: "center", gap: 4,
+                  }}>
+                    Practice Areas <span style={{ fontSize: "0.6rem", opacity: 0.5 }}>▾</span>
+                  </button>
+                  <div className="tab-dropdown" style={{
+                    display: "none", position: "absolute", top: "100%", left: 0,
+                    background: "#fff", border: "1px solid #e4e4e0", borderRadius: 3,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.1)", zIndex: 200, minWidth: 200,
+                    padding: "0.35rem 0",
+                  }}>
+                    {servicePages.map(page => {
+                      const label = page.replace("services/","").replace(".html","").replace(/-/g," ").replace(/\w/g, (c: string) => c.toUpperCase());
+                      return (
+                        <button key={page} onClick={() => setActivePage(page)} style={{
+                          display: "block", width: "100%", textAlign: "left",
+                          padding: "0.45rem 1rem", border: "none",
+                          background: activePage === page ? "#f8f8f6" : "none",
+                          fontSize: "0.78rem", fontWeight: activePage === page ? 700 : 500,
+                          color: activePage === page ? "#111" : "#555", cursor: "pointer",
+                        }}>{label}</button>
+                      );
+                    })}
+                  </div>
+                </div>
               );
-            })}
+            })()}
+
+            {/* Team bios — grouped dropdown */}
+            {Object.keys(pages).filter(p => p.startsWith("team-") && p !== "team.html").length > 0 && (() => {
+              const bioPages = Object.keys(pages).filter(p => p.startsWith("team-") && p !== "team.html");
+              const isActive = bioPages.includes(activePage);
+              return (
+                <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center" }} className="tab-group">
+                  <button style={{
+                    padding: "0 1rem", height: "100%", border: "none", background: "none",
+                    fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                    color: isActive ? "#111" : "#888",
+                    borderBottom: isActive ? "2px solid #111" : "2px solid transparent",
+                    display: "flex", alignItems: "center", gap: 4,
+                  }}>
+                    Bios <span style={{ fontSize: "0.6rem", opacity: 0.5 }}>▾</span>
+                  </button>
+                  <div className="tab-dropdown" style={{
+                    display: "none", position: "absolute", top: "100%", left: 0,
+                    background: "#fff", border: "1px solid #e4e4e0", borderRadius: 3,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.1)", zIndex: 200, minWidth: 180,
+                    padding: "0.35rem 0",
+                  }}>
+                    {bioPages.map(page => {
+                      const label = page.replace("team-","").replace(".html","").replace(/-/g," ").replace(/\w/g, (c: string) => c.toUpperCase());
+                      return (
+                        <button key={page} onClick={() => setActivePage(page)} style={{
+                          display: "block", width: "100%", textAlign: "left",
+                          padding: "0.45rem 1rem", border: "none",
+                          background: activePage === page ? "#f8f8f6" : "none",
+                          fontSize: "0.78rem", fontWeight: activePage === page ? 700 : 500,
+                          color: activePage === page ? "#111" : "#555", cursor: "pointer",
+                        }}>{label}</button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Right actions */}
             <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0, paddingLeft: "0.5rem" }}>
@@ -957,6 +998,8 @@ export default function PreviewPage() {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
         button:hover { opacity: 0.8; }
+        .tab-group:hover .tab-dropdown { display: block !important; }
+        .tab-group button:hover { opacity: 1; }
       `}</style>
     </div>
   );
