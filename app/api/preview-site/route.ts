@@ -37,7 +37,7 @@ function isStateLicensed(industry: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const { businessName, industry, city, state, description, phone, email } = await request.json();
+  const { businessName, industry, city, state, description, phone, email, founded, realStats } = await request.json();
 
   if (!businessName || !industry || !description) {
     return NextResponse.json({ error: "businessName, industry, and description are required" }, { status: 400 });
@@ -79,12 +79,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"},
     {"name": "Service name", "description": "2-3 sentences", "icon": "emoji"}
   ],
-  "stats": [
-    {"value": "15+", "label": "Years in Business"},
-    {"value": "800+", "label": "Clients Served"},
-    {"value": "100%", "label": "Satisfaction Rate"},
-    {"value": "24hr", "label": "Response Time"}
-  ],
+  "stats": [],
   "testimonials": [],
   "process_steps": [
     {"title": "Step 1 title for ${industry}", "description": "What happens — be specific to this industry"},
@@ -143,8 +138,11 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       meta_title: generated.meta_title,
       meta_description: generated.meta_description,
       keywords: generated.keywords || [],
+      founded: founded || null,
       services: generated.services || [],
-      stats: generated.stats || [],
+      stats: (realStats && realStats.length > 0)
+        ? realStats.map((s: any) => ({ value: s.value, label: s.label }))
+        : generated.stats || [],
       testimonials: [],
       process_steps: generated.process_steps || [],
       faqs: generated.faqs || [],
