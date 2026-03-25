@@ -39,9 +39,11 @@ function isStateLicensed(industry: string): boolean {
 export async function POST(request: Request) {
   const { businessName, industry, city, state, description, phone, email, founded, realStats, team } = await request.json();
 
-  if (!businessName || !industry || !description) {
-    return NextResponse.json({ error: "businessName, industry, and description are required" }, { status: 400 });
+  if (!businessName || !industry) {
+    return NextResponse.json({ error: "businessName and industry are required" }, { status: 400 });
   }
+  // Use fallback description if blank
+  const resolvedDescription = description?.trim() || `${businessName} is a ${industry} business serving clients in ${city || "the local area"}, ${state || ""}.`;
 
   const template = detectTemplate(industry);
   const accentColor = template === "trades" ? "#a8c500" : "#8b4513";
@@ -61,7 +63,7 @@ Business Name: ${businessName}
 Industry: ${industry}
 Location: ${resolvedCity}, ${resolvedState}
 Geographic Target: ${geoTarget}
-Description: ${description}
+Description: ${resolvedDescription}
 
 IMPORTANT: This business serves ${geoTarget}. All geographic references in copy, meta tags, and keywords should reflect this — ${stateLicensed ? `use "${resolvedState}" statewide references, not just the city` : `use the local city and region`}.
 
@@ -121,7 +123,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     business: {
       name: businessName,
       tagline: generated.tagline,
-      description,
+      description: resolvedDescription,
       phone: phone || "(555) 000-0000",
       email: email || `hello@${businessName.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`,
       address: "",

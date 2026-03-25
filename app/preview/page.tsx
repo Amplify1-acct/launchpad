@@ -171,9 +171,16 @@ export default function PreviewPage() {
   }
 
   async function handleGenerate() {
-    if (!form.businessName || !form.industry || !form.description) {
-      setError("Please fill in business name, industry, and description.");
+    const missing = [];
+    if (!form.businessName.trim()) missing.push("Business Name");
+    if (!form.industry) missing.push("Industry");
+    if (missing.length > 0) {
+      setError(`Please fill in: ${missing.join(", ")}`);
       return;
+    }
+    // Use a fallback description if blank
+    if (!form.description.trim()) {
+      setForm(f => ({ ...f, description: `${form.businessName} is a ${form.industry} business serving clients in ${form.city || "the local area"}.` }));
     }
     setError("");
     setLoading(true);
@@ -271,9 +278,12 @@ export default function PreviewPage() {
           </div>
 
           <div style={{ marginBottom: "0.5rem" }}>
-            <label style={lbl}>Business Description *</label>
+            <label style={lbl}>
+              Business Description
+              <span style={{ fontWeight: 400, color: "#ccc", marginLeft: 6, textTransform: "none", letterSpacing: 0 }}>— optional</span>
+            </label>
             <textarea value={form.description} onChange={e => setField("description", e.target.value)}
-              placeholder="What do you do, who do you serve, what makes you different..."
+              placeholder="What do you do, who do you serve, what makes you different... (leave blank and we'll use your business name + industry)"
               rows={3} style={{ ...inp, resize: "vertical" }} />
           </div>
 
