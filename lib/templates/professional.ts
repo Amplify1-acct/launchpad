@@ -86,10 +86,6 @@ section { padding: 6rem 3rem; }
 .hero-caption-author { font-size: 0.75rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* LOGOS */
-.logos-band { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.5rem 3rem; background: var(--white); }
-.logos-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.logos-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--light); white-space: nowrap; margin-right: 1rem; }
-.logo-item { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--light); padding: 0.4rem 1.2rem; border: 1px solid var(--border); border-radius: var(--radius); }
 
 /* SERVICES */
 .services-intro { display: grid; grid-template-columns: 1fr 2fr; gap: 5rem; align-items: start; margin-bottom: 4rem; }
@@ -361,8 +357,6 @@ function head(title: string, description: string, keywords: string[], accent: st
 <body>`;
 }
 
-const placeholderLogos = ['AlphaGroup', 'Meridian Co.', 'NorthStar LLC', 'Pinnacle Partners', 'Summit Group', 'Vantage Corp'];
-
 export function buildIndex(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
@@ -401,13 +395,6 @@ ${nav(b, 'index.html', d.team, w.services)}
   </div>
 </div>
 
-<!-- LOGOS -->
-<div class="logos-band">
-  <div class="logos-inner">
-    <div class="logos-label">Trusted by clients ${b.serviceArea ? `throughout ${b.state}` : `in ${b.city}`}</div>
-    ${placeholderLogos.map(l => `<div class="logo-item">${l}</div>`).join('')}
-  </div>
-</div>
 
 <!-- SERVICES -->
 <section>
