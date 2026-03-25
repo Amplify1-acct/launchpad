@@ -179,6 +179,30 @@ section { padding: 6rem 3rem; }
 .form-submit { width: 100%; padding: 1rem; background: var(--black); color: var(--white); border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
 .form-submit:hover { background: var(--dark); }
 
+/* TEAM */
+.team-grid-pro { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.team-card-pro { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; }
+.team-card-pro:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.team-card-pro-header { padding: 2rem 2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1.25rem; }
+.team-avatar-pro { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.team-name-pro { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--black); line-height: 1.2; margin-bottom: 3px; }
+.team-title-pro { font-size: 0.72rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.team-card-pro-body { padding: 1.5rem 2rem; }
+.team-credentials-pro { font-size: 0.78rem; color: var(--mid); font-weight: 500; margin-bottom: 0.5rem; font-style: italic; }
+.team-experience-pro { font-size: 0.72rem; color: var(--light); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 0.75rem; }
+.team-bio-pro { font-size: 0.875rem; color: var(--mid); line-height: 1.8; }
+.team-link-pro { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--accent); margin-top: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* BIO PAGE */
+.bio-hero-pro { background: var(--cream); border-bottom: 1px solid var(--border); padding: 4rem 3rem; }
+.bio-hero-pro-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 3rem; flex-wrap: wrap; }
+.bio-avatar-lg-pro { width: 110px; height: 110px; border-radius: 50%; background: var(--accent); color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bio-hero-pro-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3.5rem); color: var(--black); margin-bottom: 6px; }
+.bio-hero-pro-title { font-size: 0.8rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.bio-hero-pro-meta { font-size: 0.875rem; color: var(--mid); }
+.bio-content-pro { max-width: 780px; margin: 0 auto; padding: 5rem 3rem; }
+.bio-content-pro p { font-size: 1.05rem; color: var(--text); line-height: 1.9; margin-bottom: 1.5rem; }
+
 /* PAGE HERO */
 .page-hero { background: var(--cream); padding: 4rem 3rem; border-bottom: 1px solid var(--border); }
 .page-hero-inner { max-width: 1180px; margin: 0 auto; }
@@ -478,6 +502,38 @@ ${w.testimonials?.length > 0 ? `
   </div>
 </section>` : ""}
 
+${d.team && d.team.length > 0 ? `
+<!-- TEAM -->
+<section>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem">
+      <div>
+        <span class="label">Our People</span>
+        <h2 class="section-title">The team behind your results</h2>
+      </div>
+      ${d.team.length > 2 ? `<a href="team.html" class="btn btn-outline" style="font-size:0.8rem;padding:0.6rem 1.25rem">Meet everyone →</a>` : ""}
+    </div>
+    <div class="team-grid-pro">
+      ${d.team.map(m => `
+      <div class="team-card-pro">
+        <div class="team-card-pro-header">
+          <div class="team-avatar-pro">${m.name.charAt(0)}</div>
+          <div>
+            <div class="team-name-pro">${m.name}</div>
+            <div class="team-title-pro">${m.title}</div>
+          </div>
+        </div>
+        <div class="team-card-pro-body">
+          ${m.credentials ? `<div class="team-credentials-pro">${m.credentials}</div>` : ""}
+          ${m.experience ? `<div class="team-experience-pro">${m.experience} years of experience</div>` : ""}
+          <div class="team-bio-pro">${m.bio ? m.bio.slice(0, 200) + (m.bio.length > 200 ? "..." : "") : ""}</div>
+          ${m.bio && m.bio.length > 60 ? `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html" class="team-link-pro">Read full bio →</a>` : ""}
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</section>` : ""}
+
 <!-- CONTACT BAND -->
 <div class="contact-band">
   <div class="contact-band-inner">
@@ -685,11 +741,112 @@ ${js}
 </body></html>`;
 }
 
+function buildTeamBioPagePro(d: SiteData, member: NonNullable<SiteData['team']>[0]): string {
+  const { business: b, website: w } = d;
+  return `${head(`${member.name} | ${b.name}`, `${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 120) || ""}`, w.keywords, b.accent_color)}
+${nav(b, '')}
+
+<div class="bio-hero-pro">
+  <div class="bio-hero-pro-inner">
+    <div class="bio-avatar-lg-pro">${member.name.charAt(0)}</div>
+    <div>
+      <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><a href="team.html">Team</a><span>›</span>${member.name}</div>
+      <h1 class="bio-hero-pro-name">${member.name}</h1>
+      <div class="bio-hero-pro-title">${member.title}${member.credentials ? ` · ${member.credentials}` : ""}</div>
+      <div class="bio-hero-pro-meta">
+        ${member.experience ? `${member.experience} years of experience · ` : ""}${b.stateLicensed ? `Licensed in ${b.state}` : `${b.city}, ${b.state}`}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bio-content-pro">
+  ${member.bio
+    ? member.bio.split(/\n+/).filter(Boolean).map((p: string) => `<p>${p}</p>`).join("\n  ")
+    : `<p>${member.name} is ${member.title} at ${b.name}, serving clients ${b.serviceArea || `in ${b.city}, ${b.state}`}.</p>`
+  }
+  ${member.credentials ? `
+  <div style="margin-top:2.5rem;padding:2rem;background:var(--cream);border-radius:var(--radius);border-top:3px solid var(--accent)">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;margin-bottom:0.5rem">Credentials & Licenses</div>
+    <div style="font-size:0.9rem;color:var(--mid);line-height:1.7">${member.credentials}</div>
+  </div>` : ""}
+  <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);display:flex;gap:1rem;flex-wrap:wrap">
+    <a href="contact.html" class="btn btn-dark">Schedule a Consultation →</a>
+    <a href="team.html" class="btn btn-outline">← Back to Team</a>
+  </div>
+</div>
+
+${footer(b)}
+${js}
+</body></html>`;
+}
+
+function buildTeamPagePro(d: SiteData): string {
+  const { business: b, website: w } = d;
+  const team = d.team || [];
+  return `${head(`Our Team | ${w.meta_title}`, `Meet the team at ${b.name}.`, w.keywords, b.accent_color)}
+${nav(b, 'team.html')}
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>Our Team</div>
+    <h1>Our Team</h1>
+    <p>The people who will be working with you, every step of the way.</p>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="team-grid-pro">
+      ${team.map((m: any) => `
+      <div class="team-card-pro">
+        <div class="team-card-pro-header">
+          <div class="team-avatar-pro">${m.name.charAt(0)}</div>
+          <div>
+            <div class="team-name-pro">${m.name}</div>
+            <div class="team-title-pro">${m.title}</div>
+          </div>
+        </div>
+        <div class="team-card-pro-body">
+          ${m.credentials ? `<div class="team-credentials-pro">${m.credentials}</div>` : ""}
+          ${m.experience ? `<div class="team-experience-pro">${m.experience} years of experience</div>` : ""}
+          <div class="team-bio-pro">${m.bio ? m.bio.slice(0, 250) + (m.bio.length > 250 ? "..." : "") : ""}</div>
+          ${m.bio && m.bio.length > 60 ? `<a href="team-${m.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.html" class="team-link-pro">Read full bio →</a>` : ""}
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</section>
+
+<div class="contact-band">
+  <div class="contact-band-inner">
+    <div class="contact-band-text">Ready to work with our team?</div>
+    <a href="contact.html" class="btn" style="background:var(--black);color:white">Schedule a Consultation →</a>
+  </div>
+</div>
+
+${footer(b)}
+${js}
+</body></html>`;
+}
+
 export function buildProfessionalSite(d: SiteData): Record<string, string> {
-  return {
+  const pages: Record<string, string> = {
     'index.html': buildIndex(d),
     'services.html': buildServices(d),
     'about.html': buildAbout(d),
     'contact.html': buildContact(d),
   };
+
+  if (d.team && d.team.length > 0) {
+    pages['team.html'] = buildTeamPagePro(d);
+    d.team.forEach((member: any) => {
+      if (member.name.trim()) {
+        const slug = member.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        pages[`team-${slug}.html`] = buildTeamBioPagePro(d, member);
+      }
+    });
+  }
+
+  return pages;
 }

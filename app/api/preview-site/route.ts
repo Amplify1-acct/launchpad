@@ -37,7 +37,7 @@ function isStateLicensed(industry: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const { businessName, industry, city, state, description, phone, email, founded, realStats } = await request.json();
+  const { businessName, industry, city, state, description, phone, email, founded, realStats, team } = await request.json();
 
   if (!businessName || !industry || !description) {
     return NextResponse.json({ error: "businessName, industry, and description are required" }, { status: 400 });
@@ -149,9 +149,14 @@ Respond ONLY with valid JSON (no markdown, no backticks):
     },
   };
 
+  const siteWithTeam = {
+    ...siteData,
+    team: (team && team.length > 0) ? team : undefined,
+  };
+
   const pages = template === "trades"
-    ? buildTradesSite(siteData)
-    : buildProfessionalSite(siteData);
+    ? buildTradesSite(siteWithTeam)
+    : buildProfessionalSite(siteWithTeam);
 
   return NextResponse.json({ success: true, template, pages, generated });
 }
