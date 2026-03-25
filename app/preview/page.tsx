@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PaymentModal } from "@/components/PaymentModal";
 
 const INDUSTRIES = [
   "Plumbing", "Roofing", "HVAC", "Electrical", "General Contractor",
@@ -155,6 +156,7 @@ export default function PreviewPage() {
   const [error, setError] = useState("");
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const statPrompts = getStatPrompts(form.industry);
   const titleSuggestions = getTitleSuggestions(form.industry);
@@ -604,7 +606,16 @@ export default function PreviewPage() {
               </div>
             </div>
             <button
-              onClick={() => alert("Payment flow coming soon!")}
+              onClick={() => {
+                if (pages) {
+                  sessionStorage.setItem("exsisto_pending_site", JSON.stringify({
+                    ...form,
+                    pages,
+                    pageCount: Object.keys(pages).length,
+                  }));
+                  window.location.href = "/checkout";
+                }
+              }}
               style={{
                 background: "#fff", color: "#111", border: "none",
                 borderRadius: 3, padding: "0.65rem 1.5rem",
@@ -618,6 +629,13 @@ export default function PreviewPage() {
           </div>
         )}
       </div>
+
+      {showPayment && (
+        <PaymentModal
+          businessName={form.businessName || "Your Business"}
+          onClose={() => setShowPayment(false)}
+        />
+      )}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');

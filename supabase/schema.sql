@@ -178,3 +178,21 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- PENDING SITES (pre-payment, stores generated site data)
+create table if not exists public.pending_sites (
+  id            uuid primary key default uuid_generate_v4(),
+  business_name text not null,
+  email         text,
+  plan          text default 'growth',
+  site_data     jsonb,
+  status        text default 'awaiting_payment',
+  error         text,
+  user_id       uuid references auth.users(id),
+  business_id   uuid references public.businesses(id),
+  converted_at  timestamptz,
+  created_at    timestamptz default now() not null
+);
+
+alter table public.pending_sites enable row level security;
+-- Only admins/service role can access pending_sites (webhook uses admin client)
