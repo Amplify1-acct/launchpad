@@ -10,6 +10,17 @@ const SCENARIOS = [
     city: "Newark, NJ",
     services: ["Business Law", "Contract Law", "Employment Law"],
     template: "professional",
+    // Per-scenario specifics for the mockup
+    heroHeadline: "Business Law &\nContract Counsel",
+    heroCopy: "Smith & Jones Law serves entrepreneurs and businesses throughout New Jersey with strategic legal counsel and proven results.",
+    stats: [["20+", "Years Experience"], ["$80M+", "Deals Closed"], ["500+", "Clients Served"]],
+    cta: "Free Consultation",
+    navHighlight: "Practice Areas",
+    sectionLabel: "Practice Areas",
+    sectionHeading: "What We Handle",
+    serviceDesc: "Serving businesses throughout New Jersey with expert legal guidance.",
+    accentColor: "#8b4513",
+    image: "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=400",
   },
   {
     business: "Miller's Plumbing",
@@ -17,6 +28,16 @@ const SCENARIOS = [
     city: "Chicago, IL",
     services: ["Emergency Repairs", "Drain Cleaning", "Water Heaters"],
     template: "trades",
+    heroHeadline: "PLUMBING\nEXPERTS",
+    heroCopy: "Licensed & insured. Serving Chicago and surrounding areas. Available 24/7 for emergencies.",
+    stats: [["24/7", "Emergency"], ["500+", "Jobs Done"], ["5★", "Rated"]],
+    cta: "Get a Free Quote",
+    navHighlight: "Services",
+    sectionLabel: "Our Services",
+    sectionHeading: "What We Do",
+    serviceDesc: "Fast, reliable service across Chicago and the surrounding suburbs.",
+    accentColor: "#a8c500",
+    image: "https://images.pexels.com/photos/7937386/pexels-photo-7937386.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     business: "Coastal Dental Studio",
@@ -24,6 +45,16 @@ const SCENARIOS = [
     city: "San Diego, CA",
     services: ["General Dentistry", "Teeth Whitening", "Invisalign"],
     template: "professional",
+    heroHeadline: "Modern Dentistry\nin San Diego",
+    heroCopy: "Coastal Dental Studio offers compassionate, comprehensive dental care for the whole family in a comfortable, modern setting.",
+    stats: [["15+", "Years Practice"], ["3,000+", "Happy Patients"], ["99%", "Satisfaction"]],
+    cta: "Book Appointment",
+    navHighlight: "Services",
+    sectionLabel: "Our Services",
+    sectionHeading: "Dental Care We Offer",
+    serviceDesc: "Gentle, expert dental care for patients of all ages in San Diego.",
+    accentColor: "#0d7694",
+    image: "https://images.pexels.com/photos/3845766/pexels-photo-3845766.jpeg?auto=compress&cs=tinysrgb&w=400",
   },
   {
     business: "Summit Financial",
@@ -31,6 +62,16 @@ const SCENARIOS = [
     city: "Denver, CO",
     services: ["Retirement Planning", "Investment Management", "Estate Planning"],
     template: "professional",
+    heroHeadline: "Wealth Management\nfor Colorado Families",
+    heroCopy: "Summit Financial helps individuals and families in Denver build, protect, and transfer wealth with personalized financial strategies.",
+    stats: [["$200M+", "Assets Managed"], ["25+", "Years Experience"], ["300+", "Families Served"]],
+    cta: "Free Consultation",
+    navHighlight: "Services",
+    sectionLabel: "Our Services",
+    sectionHeading: "How We Help",
+    serviceDesc: "Personalized financial guidance for Colorado families and business owners.",
+    accentColor: "#1e5799",
+    image: "https://images.pexels.com/photos/7567434/pexels-photo-7567434.jpeg?auto=compress&cs=tinysrgb&w=400",
   },
 ];
 
@@ -48,6 +89,8 @@ const TOTAL = Object.values(STEP_DURATIONS).reduce((a, b) => a + b, 0);
 // ── Site preview mockup — editorial professional style ─────────────────────
 function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
   const isProf = scenario.template === "professional";
+  const ac = scenario.accentColor;
+  const headLines = scenario.heroHeadline.split("\n");
 
   if (isProf) {
     return (
@@ -55,51 +98,55 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
         {/* Nav */}
         <div style={{ background: "#fff", borderBottom: "1px solid #e0dbd2", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
           <div style={{ fontFamily: "Georgia, serif", fontWeight: 700, fontSize: 15, color: "#111" }}>
-            {scenario.business.split(" ")[0]} <em style={{ color: "#8b4513", fontStyle: "italic" }}>{scenario.business.split(" ").slice(1).join(" ")}</em>
+            {scenario.business.split(" ")[0]} <em style={{ color: ac, fontStyle: "italic" }}>{scenario.business.split(" ").slice(1).join(" ")}</em>
           </div>
           <div style={{ display: "flex", gap: 20, fontSize: 10, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", color: "#6a6a62" }}>
-            <span>Home</span><span style={{ color: "#8b4513", fontWeight: 700 }}>Practice Areas</span><span>About</span><span>Contact</span>
-            <span style={{ background: "#111", color: "#fff", padding: "4px 10px", borderRadius: 1, fontSize: 9 }}>Consultation</span>
+            <span>Home</span>
+            <span style={{ color: ac, fontWeight: 700 }}>{scenario.navHighlight}</span>
+            <span>About</span><span>Contact</span>
+            <span style={{ background: "#111", color: "#fff", padding: "4px 10px", borderRadius: 1, fontSize: 9 }}>{scenario.cta}</span>
           </div>
         </div>
         {/* Hero */}
-        <div style={{ background: "#1a1a18", padding: "3rem 2rem", display: "flex", gap: "2rem", alignItems: "center" }}>
+        <div style={{ background: "#1a1a18", padding: "2.5rem 2rem", display: "flex", gap: "2rem", alignItems: "center" }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: "#8b4513", marginBottom: 10 }}>Licensed in {scenario.city.split(", ")[1]} · Est. 2008</div>
-            <div style={{ fontFamily: "Georgia, serif", fontSize: 26, color: "#fff", lineHeight: 1.15, marginBottom: 12, fontWeight: 700 }}>
-              {scenario.services[0]} &<br/>Legal Counsel
+            <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 10 }}>
+              {scenario.city} · Est. 2008
+            </div>
+            <div style={{ fontFamily: "Georgia, serif", fontSize: 24, color: "#fff", lineHeight: 1.15, marginBottom: 12, fontWeight: 700 }}>
+              {headLines[0]}{headLines[1] ? <><br/>{headLines[1]}</> : null}
             </div>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, maxWidth: 280, marginBottom: 16 }}>
-              {scenario.business} serves clients throughout {scenario.city.split(", ")[1]} with decades of combined experience.
+              {scenario.heroCopy}
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <span style={{ background: "#8b4513", color: "#fff", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>Free Consultation</span>
+              <span style={{ background: ac, color: "#fff", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>{scenario.cta}</span>
               <span style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>Our Services</span>
             </div>
           </div>
-          <div style={{ width: 160, height: 110, background: "rgba(255,255,255,0.04)", borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-            <img src="https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=400" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.5 }} />
+          <div style={{ width: 160, height: 110, borderRadius: 2, flexShrink: 0, overflow: "hidden" }}>
+            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.6 }} />
           </div>
         </div>
         {/* Stats */}
-        <div style={{ background: "#8b4513", display: "flex", padding: "1rem 2rem", gap: 0 }}>
-          {[["20+", "Years Experience"], ["$50M+", "Recovered"], ["1,200+", "Cases Won"]].map(([v, l], i) => (
-            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+        <div style={{ background: ac, display: "flex", padding: "1rem 2rem" }}>
+          {scenario.stats.map(([v, l], i) => (
+            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < scenario.stats.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
               <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#fff", fontWeight: 700 }}>{v}</div>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.6)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </div>
         {/* Services */}
         <div style={{ padding: "2rem", background: "#f5f2ed" }}>
-          <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: "#8b4513", marginBottom: 6 }}>Practice Areas</div>
-          <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#111", marginBottom: 16, fontWeight: 700 }}>What We Handle</div>
+          <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 6 }}>{scenario.sectionLabel}</div>
+          <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#111", marginBottom: 16, fontWeight: 700 }}>{scenario.sectionHeading}</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
             {scenario.services.map((s, i) => (
               <div key={i} style={{ background: "#fff", border: "1px solid #e0dbd2", padding: "1rem", borderRadius: 2 }}>
                 <div style={{ fontSize: 13, fontFamily: "Georgia, serif", fontWeight: 700, color: "#111", marginBottom: 4 }}>{s}</div>
-                <div style={{ fontSize: 10, color: "#6a6a62", lineHeight: 1.5, fontFamily: "sans-serif" }}>Serving clients throughout {scenario.city.split(", ")[1]} with proven results.</div>
-                <div style={{ fontSize: 9, color: "#8b4513", fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 8 }}>Learn more →</div>
+                <div style={{ fontSize: 10, color: "#6a6a62", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
+                <div style={{ fontSize: 9, color: ac, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 8 }}>Learn more →</div>
               </div>
             ))}
           </div>
@@ -113,29 +160,29 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
     <div style={{ fontFamily: "'Barlow', sans-serif", background: "#f7f7f5", height: "100%", overflowY: "auto", fontSize: 13 }}>
       <div style={{ background: "#111", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
         <div style={{ fontWeight: 900, fontSize: 15, color: "#fff", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          {scenario.business.split(" ")[0]}<span style={{ color: "#a8c500" }}>{scenario.business.split(" ").slice(1).join(" ")}</span>
+          {scenario.business.split(" ")[0]}<span style={{ color: ac }}>{scenario.business.split(" ").slice(1).join(" ")}</span>
         </div>
         <div style={{ display: "flex", gap: 20, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.45)" }}>
-          <span>Home</span><span style={{ color: "#a8c500", fontWeight: 800 }}>Services</span><span>About</span>
-          <span style={{ background: "#a8c500", color: "#111", padding: "4px 10px", fontWeight: 800, borderRadius: 1 }}>Free Quote</span>
+          <span>Home</span><span style={{ color: ac, fontWeight: 800 }}>{scenario.navHighlight}</span><span>About</span>
+          <span style={{ background: ac, color: "#111", padding: "4px 10px", fontWeight: 800, borderRadius: 1 }}>{scenario.cta}</span>
         </div>
       </div>
       <div style={{ background: "#111", padding: "2.5rem 2rem", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `url(https://images.pexels.com/photos/7937386/pexels-photo-7937386.jpeg?auto=compress&cs=tinysrgb&w=800)`, backgroundSize: "cover", opacity: 0.15 }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${scenario.image})`, backgroundSize: "cover", opacity: 0.15 }} />
         <div style={{ position: "relative" }}>
-          <div style={{ background: "#a8c500", color: "#111", display: "inline-block", padding: "3px 10px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Serving {scenario.city}</div>
+          <div style={{ background: ac, color: "#111", display: "inline-block", padding: "3px 10px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Serving {scenario.city}</div>
           <div style={{ fontWeight: 900, fontSize: 28, color: "#fff", textTransform: "uppercase", lineHeight: 1.05, letterSpacing: "-0.01em", marginBottom: 12 }}>
-            {scenario.industry}<br/><span style={{ color: "#a8c500" }}>Experts</span>
+            {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1] || "Experts"}</span>
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginBottom: 16, lineHeight: 1.5 }}>Licensed & insured. Serving {scenario.city} and surrounding areas.</div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginBottom: 16, lineHeight: 1.5 }}>{scenario.heroCopy}</div>
           <div style={{ display: "flex", gap: 10 }}>
-            <span style={{ background: "#a8c500", color: "#111", padding: "7px 16px", fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>Get a Free Quote</span>
+            <span style={{ background: ac, color: "#111", padding: "7px 16px", fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>{scenario.cta}</span>
             <span style={{ border: "2px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)", padding: "6px 14px", fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>Our Work</span>
           </div>
         </div>
       </div>
-      <div style={{ background: "#a8c500", display: "flex", padding: "0.85rem 2rem", gap: 0 }}>
-        {[["15+", "Years"], ["500+", "Jobs Done"], ["5★", "Rated"]].map(([v, l], i) => (
+      <div style={{ background: ac, display: "flex", padding: "0.85rem 2rem" }}>
+        {scenario.stats.map(([v, l], i) => (
           <div key={i} style={{ flex: 1, textAlign: "center" }}>
             <div style={{ fontWeight: 900, fontSize: 17, color: "#111", textTransform: "uppercase" }}>{v}</div>
             <div style={{ fontSize: 9, color: "rgba(0,0,0,0.5)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 1 }}>{l}</div>
@@ -143,14 +190,14 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
         ))}
       </div>
       <div style={{ padding: "1.5rem 2rem" }}>
-        <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: "#a8c500", fontWeight: 800, marginBottom: 6 }}>Our Services</div>
-        <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", color: "#111", marginBottom: 14 }}>What We Do</div>
+        <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: ac, fontWeight: 800, marginBottom: 6 }}>{scenario.sectionLabel}</div>
+        <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", color: "#111", marginBottom: 14 }}>{scenario.sectionHeading}</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {scenario.services.map((s, i) => (
             <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e0", padding: "1rem" }}>
               <div style={{ fontWeight: 800, fontSize: 12, textTransform: "uppercase", color: "#111", marginBottom: 4 }}>{s}</div>
-              <div style={{ fontSize: 10, color: "#666", lineHeight: 1.5 }}>Serving {scenario.city} and surrounding areas.</div>
-              <div style={{ fontSize: 9, color: "#a8c500", fontWeight: 800, textTransform: "uppercase", marginTop: 8 }}>Learn more →</div>
+              <div style={{ fontSize: 10, color: "#666", lineHeight: 1.5 }}>{scenario.serviceDesc}</div>
+              <div style={{ fontSize: 9, color: ac, fontWeight: 800, textTransform: "uppercase", marginTop: 8 }}>Learn more →</div>
             </div>
           ))}
         </div>
