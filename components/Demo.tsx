@@ -20,7 +20,7 @@ const SCENARIOS = [
     sectionHeading: "What We Handle",
     serviceDesc: "Serving businesses throughout New Jersey with expert legal guidance.",
     accentColor: "#8b4513",
-    image: "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&h=900&fit=crop&auto=format",
   },
   {
     business: "Miller's Plumbing",
@@ -54,7 +54,7 @@ const SCENARIOS = [
     sectionHeading: "Dental Care We Offer",
     serviceDesc: "Gentle, expert dental care for patients of all ages in San Diego.",
     accentColor: "#0d7694",
-    image: "https://images.pexels.com/photos/3845766/pexels-photo-3845766.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
+    image: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1400&h=900&fit=crop&auto=format",
   },
   {
     business: "Summit Financial",
@@ -71,7 +71,7 @@ const SCENARIOS = [
     sectionHeading: "How We Help",
     serviceDesc: "Personalized financial guidance for Colorado families and business owners.",
     accentColor: "#1e5799",
-    image: "https://images.pexels.com/photos/7567434/pexels-photo-7567434.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&h=900&fit=crop&auto=format",
   },
 ];
 
