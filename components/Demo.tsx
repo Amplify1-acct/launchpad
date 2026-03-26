@@ -37,7 +37,7 @@ const SCENARIOS = [
     sectionHeading: "What We Do",
     serviceDesc: "Fast, reliable service across Chicago and the surrounding suburbs.",
     accentColor: "#a8c500",
-    image: "https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&h=900&fit=crop&auto=format",
   },
   {
     business: "Coastal Dental Studio",
