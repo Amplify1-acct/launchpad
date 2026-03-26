@@ -3,6 +3,7 @@
 // Multi-page: index.html, services.html, about.html, contact.html
 
 import { SiteData } from './trades';
+import { localBusinessSchema, personSchema, ogTags, websiteSchema } from '../schema';
 
 const fonts = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');`;
 
@@ -343,7 +344,7 @@ function footer(b: SiteData['business']) {
 </footer>`;
 }
 
-function head(title: string, description: string, keywords: string[], accent: string) {
+function head(title: string, description: string, keywords: string[], accent: string, schema?: string, image?: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -352,6 +353,8 @@ function head(title: string, description: string, keywords: string[], accent: st
 <title>${title}</title>
 <meta name="description" content="${description}"/>
 <meta name="keywords" content="${keywords.join(', ')}"/>
+${ogTags({ title, description, image, type: "website" })}
+${schema || ""}
 <style>${css(accent)}</style>
 </head>
 <body>`;
@@ -361,8 +364,10 @@ export function buildIndex(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&auto=format';
   const teamImg = w.about_image_url || w.interior_image_url || 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800';
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = [localBusinessSchema(_sc, w.services, w.faqs), websiteSchema(_sc)].join("\n");
 
-  return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
+  return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color, _schema, heroImg)}
 ${nav(b, 'index.html', d.team, w.services)}
 
 <!-- HERO -->
@@ -762,7 +767,10 @@ function buildTeamBioPagePro(d: SiteData, member: NonNullable<SiteData['team']>[
   const hasSidebar = specList.length > 0 || barLines.length > 0 || educationLines.length > 0 || awardLines.length > 0;
   const hasAchievements = awardLines.length > 0 || pubLines.length > 0;
 
-  return `${head(`${member.name} | ${b.name}`, `${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 140) || ""}`, w.keywords, b.accent_color)}
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = personSchema(_sc, { name: member.name, title: member.title, bio: member.bio, credentials: member.credentials, education: member.education, linkedin: member.linkedin });
+
+  return `${head(`${member.name} | ${b.name}`, `${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 140) || ""}`, w.keywords, b.accent_color, _schema)}
 <style>
 .bio-page { max-width: 1180px; margin: 0 auto; padding: 3rem; display: grid; grid-template-columns: 240px 1fr 280px; gap: 3rem; align-items: start; }
 .bio-toc { position: sticky; top: 88px; }

@@ -1,3 +1,4 @@
+import { localBusinessSchema, personSchema, ogTags, websiteSchema, buildSitemap, buildRobots } from '../schema';
 export interface SiteData {
   business: {
     name: string;
@@ -13,6 +14,7 @@ export interface SiteData {
     stateLicensed?: boolean;
     serviceArea?: string;
     founded?: string;
+    industry?: string;
   };
   team?: Array<{
     name: string;
@@ -421,7 +423,7 @@ function footer(business: SiteData['business']) {
 </footer>`;
 }
 
-function head(title: string, description: string, keywords: string[], accent: string) {
+function head(title: string, description: string, keywords: string[], accent: string, schema?: string, image?: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -430,8 +432,8 @@ function head(title: string, description: string, keywords: string[], accent: st
 <title>${title}</title>
 <meta name="description" content="${description}"/>
 <meta name="keywords" content="${keywords.join(', ')}"/>
-<meta property="og:title" content="${title}"/>
-<meta property="og:description" content="${description}"/>
+${ogTags({ title, description, image, type: "website" })}
+${schema || ""}
 <style>${css(accent)}</style>
 </head>
 <body>`;
@@ -442,8 +444,10 @@ function head(title: string, description: string, keywords: string[], accent: st
 export function buildIndex(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format';
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = [localBusinessSchema(_sc, w.services, w.faqs), websiteSchema(_sc)].join("\n");
 
-  return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color)}
+  return `${head(w.meta_title, w.meta_description, w.keywords, b.accent_color, _schema, heroImg)}
 ${nav(b, 'index.html', d.team, w.services)}
 
 <!-- HERO -->
@@ -676,8 +680,10 @@ ${js}
 export function buildServices(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format';
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = localBusinessSchema(_sc, w.services);
 
-  return `${head(`Services | ${w.meta_title}`, `Explore all services offered by ${b.name} in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
+  return `${head(`Services | ${w.meta_title}`, `Explore all services offered by ${b.name} in ${b.city}, ${b.state}.`, w.keywords, b.accent_color, _schema, heroImg)}
 ${nav(b, 'services.html', d.team, w.services)}
 
 <div class="page-hero">
@@ -764,8 +770,10 @@ ${js}
 export function buildAbout(d: SiteData): string {
   const { business: b, website: w } = d;
   const heroImg = w.hero_image_url || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format';
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = localBusinessSchema(_sc, w.services);
 
-  return `${head(`About | ${w.meta_title}`, `Learn about ${b.name} — serving ${b.city}, ${b.state} with pride.`, w.keywords, b.accent_color)}
+  return `${head(`About | ${w.meta_title}`, `Learn about ${b.name} — serving ${b.city}, ${b.state} with pride.`, w.keywords, b.accent_color, _schema, w.about_image_url || heroImg)}
 ${nav(b, 'about.html', d.team, w.services)}
 
 <div class="page-hero">
@@ -859,8 +867,10 @@ ${js}
 
 export function buildContact(d: SiteData): string {
   const { business: b, website: w } = d;
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = localBusinessSchema(_sc);
 
-  return `${head(`Contact | ${w.meta_title}`, `Contact ${b.name} for a free estimate in ${b.city}, ${b.state}.`, w.keywords, b.accent_color)}
+  return `${head(`Contact | ${w.meta_title}`, `Contact ${b.name} for a free estimate in ${b.city}, ${b.state}.`, w.keywords, b.accent_color, _schema)}
 ${nav(b, 'contact.html', d.team, w.services)}
 
 <div class="page-hero">
@@ -960,7 +970,9 @@ ${js}
 function buildTeamBioPage(d: SiteData, member: NonNullable<SiteData['team']>[0]): string {
   const { business: b, website: w } = d;
   const slug = member.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  return `${head(`${member.name} | ${b.name}`, `Meet ${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 120) || ""}`, w.keywords, b.accent_color)}
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = personSchema(_sc, { name: member.name, title: member.title, bio: member.bio, credentials: member.credentials, education: member.education, linkedin: member.linkedin });
+  return `${head(`${member.name} | ${b.name}`, `Meet ${member.name}, ${member.title} at ${b.name}. ${member.bio?.slice(0, 120) || ""}`, w.keywords, b.accent_color, _schema)}
 ${nav(b, '', d.team, w.services)}
 
 <div class="bio-hero">
@@ -1004,7 +1016,9 @@ ${js}
 function buildTeamPage(d: SiteData): string {
   const { business: b, website: w } = d;
   const team = d.team || [];
-  return `${head(`Our Team | ${w.meta_title}`, `Meet the team at ${b.name}.`, w.keywords, b.accent_color)}
+  const _sc = { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, description: b.description, founded: b.founded, serviceArea: b.serviceArea, industry: b.industry || '' };
+  const _schema = localBusinessSchema(_sc);
+  return `${head(`Our Team | ${w.meta_title}`, `Meet the team at ${b.name}.`, w.keywords, b.accent_color, _schema)}
 ${nav(b, 'team.html', d.team, w.services)}
 
 <div class="page-hero">

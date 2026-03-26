@@ -1,5 +1,6 @@
 // ─── SERVICE PAGE BUILDER ─────────────────────────────────────────────────────
 // Generates a full dedicated page per service with 750-word AI content.
+import { serviceSchema, ogTags } from '../schema';
 // Called after the main site generation once we have the services list.
 
 export interface ServicePageData {
@@ -74,22 +75,12 @@ export function buildServicePage(
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>${data.metaTitle}</title>
 <meta name="description" content="${data.metaDescription}"/>
-<meta property="og:title" content="${data.metaTitle}"/>
-<meta property="og:description" content="${data.metaDescription}"/>
-<script type="application/ld+json">${JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "name": data.serviceName,
-  "provider": {
-    "@type": "LocalBusiness",
-    "name": b.name,
-    "telephone": b.phone,
-    "email": b.email,
-    "address": { "@type": "PostalAddress", "addressLocality": b.city, "addressRegion": b.state }
-  },
-  "description": data.serviceDescription,
-  "areaServed": b.serviceArea || `${b.city}, ${b.state}`
-})}</script>
+${ogTags({ title: data.metaTitle, description: data.metaDescription, type: "website" })}
+${serviceSchema(
+  { name: b.name, phone: b.phone, email: b.email, city: b.city, state: b.state, serviceArea: b.serviceArea, industry: "" },
+  { name: data.serviceName, description: data.serviceDescription },
+  data.faqs
+)}
 ${sharedFonts(template)}
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

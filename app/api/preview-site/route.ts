@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
 import { buildServicePage, servicePageSlug, ServicePageContext } from "@/lib/templates/service-page";
+import { buildSitemap, buildRobots } from "@/lib/schema";
 import { pickSitePhotos } from "@/lib/photos";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -273,6 +274,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       emoji: "🏆",
       stateLicensed,
       serviceArea,
+      industry,
     },
     website: {
       hero_image_url: sitePhotos.hero,
@@ -324,6 +326,12 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       metaDescription: content.metaDescription,
     });
   });
+
+  // Sitemap + robots.txt
+  const siteSlug = businessName.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const siteUrl = `https://${siteSlug}.exsisto.ai`;
+  pages["sitemap.xml"] = buildSitemap(pages, siteUrl);
+  pages["robots.txt"] = buildRobots(siteUrl);
 
   return NextResponse.json({ success: true, template, pages, generated });
 }
