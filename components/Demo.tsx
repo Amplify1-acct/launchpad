@@ -20,7 +20,7 @@ const SCENARIOS = [
     sectionHeading: "What We Handle",
     serviceDesc: "Serving businesses throughout New Jersey with expert legal guidance.",
     accentColor: "#8b4513",
-    image: "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
   },
   {
     business: "Miller's Plumbing",
@@ -37,7 +37,7 @@ const SCENARIOS = [
     sectionHeading: "What We Do",
     serviceDesc: "Fast, reliable service across Chicago and the surrounding suburbs.",
     accentColor: "#a8c500",
-    image: "https://images.pexels.com/photos/7937386/pexels-photo-7937386.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "https://images.pexels.com/photos/7937386/pexels-photo-7937386.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
   },
   {
     business: "Coastal Dental Studio",
@@ -54,7 +54,7 @@ const SCENARIOS = [
     sectionHeading: "Dental Care We Offer",
     serviceDesc: "Gentle, expert dental care for patients of all ages in San Diego.",
     accentColor: "#0d7694",
-    image: "https://images.pexels.com/photos/3845766/pexels-photo-3845766.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://images.pexels.com/photos/3845766/pexels-photo-3845766.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
   },
   {
     business: "Summit Financial",
@@ -71,7 +71,7 @@ const SCENARIOS = [
     sectionHeading: "How We Help",
     serviceDesc: "Personalized financial guidance for Colorado families and business owners.",
     accentColor: "#1e5799",
-    image: "https://images.pexels.com/photos/7567434/pexels-photo-7567434.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://images.pexels.com/photos/7567434/pexels-photo-7567434.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop",
   },
 ];
 
@@ -124,8 +124,8 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
               <span style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>Our Services</span>
             </div>
           </div>
-          <div style={{ width: 160, height: 110, borderRadius: 2, flexShrink: 0, overflow: "hidden" }}>
-            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.6 }} />
+          <div style={{ width: 220, alignSelf: "stretch", borderRadius: 3, flexShrink: 0, overflow: "hidden", marginRight: "-2rem", marginTop: "-2.5rem", marginBottom: "-2.5rem" }}>
+            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.55 }} />
           </div>
         </div>
         {/* Stats */}
