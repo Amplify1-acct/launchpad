@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
 
 
@@ -249,12 +249,10 @@ const PRACTICE_AREA_SUGGESTIONS: Record<string, string[]> = {
   ],
 };
 
-const DEFAULT_PRACTICE_AREAS: string[] = [
-  "Core Service 1", "Core Service 2", "Core Service 3",
-];
+const DEFAULT_PRACTICE_AREAS: string[] = [];
 
 function getPracticeAreaSuggestions(industry: string): string[] {
-  return PRACTICE_AREA_SUGGESTIONS[industry] || DEFAULT_PRACTICE_AREAS;
+  return PRACTICE_AREA_SUGGESTIONS[industry] || [];
 }
 
 function getStatPrompts(industry: string) {
@@ -315,6 +313,35 @@ export default function PreviewPage() {
 
   const statPrompts = getStatPrompts(form.industry);
   const practiceAreaSuggestions = getPracticeAreaSuggestions(form.industry);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+
+  // Fetch AI suggestions when industry changes (debounced)
+  useEffect(() => {
+    const industry = form.industry.trim();
+    if (!industry || getPracticeAreaSuggestions(industry).length > 0) {
+      setAiSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const res = await fetch("/api/service-suggestions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ industry }),
+        });
+        const data = await res.json();
+        setAiSuggestions(data.suggestions || []);
+      } catch {}
+      setLoadingSuggestions(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [form.industry]);
+
+  const allSuggestions = getPracticeAreaSuggestions(form.industry).length > 0
+    ? getPracticeAreaSuggestions(form.industry)
+    : aiSuggestions;
   const currentPkg = PACKAGES.find(p => p.id === selectedPlan) || PACKAGES[1];
   const titleSuggestions = getTitleSuggestions(form.industry);
 
@@ -555,8 +582,18 @@ export default function PreviewPage() {
             )}
 
             {/* Suggestion chips */}
+            {loadingSuggestions && (
+              <div style={{ fontSize: "0.72rem", color: "#bbb", marginBottom: "0.5rem" }}>
+                Finding services for {form.industry}...
+              </div>
+            )}
+            {!loadingSuggestions && form.industry && allSuggestions.length === 0 && getPracticeAreaSuggestions(form.industry).length === 0 && (
+              <div style={{ fontSize: "0.72rem", color: "#bbb", marginBottom: "0.5rem" }}>
+                Type your services below or wait a moment for suggestions...
+              </div>
+            )}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "0.75rem" }}>
-              {practiceAreaSuggestions.filter(s => !practiceAreas.includes(s)).slice(0, 12).map(suggestion => (
+              {allSuggestions.filter(s => !practiceAreas.includes(s)).slice(0, 12).map(suggestion => (
                 <button key={suggestion}
                   onClick={() => setPracticeAreas(a => a.length < currentPkg.servicePages ? [...a, suggestion] : a)}
                   style={{
