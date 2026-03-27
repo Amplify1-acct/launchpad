@@ -25,7 +25,7 @@ export interface ServicePageContext {
     stateLicensed?: boolean;
     serviceArea?: string;
   };
-  template: "trades" | "professional";
+  template: "trades" | "professional" | "clinical";
 }
 
 function slug(name: string): string {

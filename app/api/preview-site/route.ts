@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
+import { generateClinicalTemplate } from "@/lib/templates/clinical";
 import { buildServicePage, servicePageSlug, ServicePageContext } from "@/lib/templates/service-page";
 import { buildSitemap, buildRobots } from "@/lib/schema";
 import { pickSitePhotos } from "@/lib/photos";
@@ -9,6 +10,7 @@ import { pickSitePhotos } from "@/lib/photos";
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const TEMPLATE_MAP: Record<string, string[]> = {
+  clinical: ["dental", "dentist", "chiropractic", "chiropractor", "optometry", "optometrist", "physical therapy", "medical clinic", "urgent care", "pediatric", "dermatology", "orthopedic", "mental health", "therapy", "counseling", "med spa", "wellness"],
   trades: ["plumbing", "roofing", "hvac", "electrical", "contractor", "landscaping", "lawn", "cleaning", "pest", "painting", "flooring", "handyman", "plumber", "roofer", "electrician", "carpenter"],
   professional: ["law", "legal", "attorney", "lawyer", "accounting", "accountant", "financial", "finance", "consulting", "consultant", "insurance", "real estate", "advisor", "bookkeeping", "tax", "cpa", "hr", "recruiting"],
 };
@@ -23,11 +25,12 @@ const STATE_LICENSED: string[] = [
   "dental", "dentist", "chiropractor",
 ];
 
-function detectTemplate(industry: string): "trades" | "professional" {
+function detectTemplate(industry: string): "trades" | "professional" | "clinical" {
   const lower = industry.toLowerCase();
+  if (TEMPLATE_MAP.clinical.some(k => lower.includes(k))) return "clinical";
   if (TEMPLATE_MAP.trades.some(k => lower.includes(k))) return "trades";
   if (TEMPLATE_MAP.professional.some(k => lower.includes(k))) return "professional";
-  return "trades";
+  return "professional";
 }
 
 function isStateLicensed(industry: string): boolean {
@@ -169,7 +172,7 @@ export async function POST(request: Request) {
     `${businessName} is a ${industry} business serving clients in ${city || "the local area"}, ${state || ""}.`;
 
   const template = detectTemplate(industry);
-  const accentColor = template === "trades" ? "#a8c500" : "#8b4513";
+  const accentColor = (template as string) === "trades" ? "#a8c500" : (template as string) === "clinical" ? "#0d7694" : "#8b4513";
   const stateLicensed = isStateLicensed(industry);
   const resolvedState = state || "IL";
   const resolvedCity = city || "Springfield";
@@ -301,9 +304,14 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   };
 
   // Build main site pages
-  const pages = template === "trades"
-    ? buildTradesSite(siteData)
-    : buildProfessionalSite(siteData);
+  let pages: Record<string, string>;
+  if (template === "trades") {
+    pages = buildTradesSite(siteData);
+  } else if (template === "clinical") {
+    pages = { "index.html": generateClinicalTemplate(siteData) };
+  } else {
+    pages = buildProfessionalSite(siteData);
+  }
 
   // Apply plan service page limit
   const limitedServices = services.slice(0, planLimits.servicePages);
