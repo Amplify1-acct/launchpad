@@ -3,6 +3,15 @@
 // Multi-page: index.html, services.html, about.html, contact.html
 
 import { SiteData } from './trades';
+function getNavLabel(industry?: string): string {
+  const ind = (industry || "").toLowerCase();
+  if (ind.includes("law") || ind.includes("attorney") || ind.includes("legal")) return "Practice Areas";
+  if (ind.includes("medical") || ind.includes("dental") || ind.includes("chiro") || ind.includes("therapy") || ind.includes("clinic")) return "Services";
+  if (ind.includes("financial") || ind.includes("accounting") || ind.includes("cpa") || ind.includes("advisor")) return "Services";
+  return "Services";
+}
+
+
 import { localBusinessSchema, personSchema, ogTags, websiteSchema } from '../schema';
 
 const fonts = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');`;
@@ -288,9 +297,9 @@ function nav(business: SiteData['business'], activePage: string, team?: SiteData
   <div class="nav-links">
     <a href="index.html"${activePage === 'index.html' ? ' style="color:var(--black);font-weight:600"' : ''}>Home</a>
     <div class="nav-dropdown">
-      <a href="services.html" class="nav-dropdown-toggle"${activePage === 'services.html' || (activePage && activePage.startsWith('services/')) ? ' style="color:var(--black);font-weight:600"' : ''}>Practice Areas</a>
+      <a href="services.html" class="nav-dropdown-toggle"${activePage === 'services.html' || (activePage && activePage.startsWith('services/')) ? ' style="color:var(--black);font-weight:600"' : ''}>${getNavLabel(business.industry)}</a>
       <div class="nav-dropdown-menu">
-        <a href="services.html" style="font-weight:600;color:var(--black)">All Practice Areas</a>
+        <a href="services.html" style="font-weight:600;color:var(--black)">All ${getNavLabel(business.industry)}</a>
         ${hasServices ? services!.map(s => `<a href="${s.link || 'services.html'}" style="padding-left:2rem;font-size:0.78rem;border-left:2px solid var(--border);margin-left:1.25rem">${s.name}</a>`).join('') : ''}
       </div>
     </div>
@@ -827,7 +836,7 @@ ${nav(b, 'about.html', d.team, w.services)}
     <div class="bio-toc-label">Contents</div>
     <a href="#about">About ${member.name.split(" ")[0]}</a>
     ${hasAchievements ? `<a href="#achievements">Recognition & Achievements</a>` : ""}
-    ${specList.length > 0 ? `<a href="#specializations">Practice Areas</a>` : ""}
+    ${specList.length > 0 ? `<a href="#specializations">${getNavLabel(d.business.industry)}</a>` : ""}
     ${barLines.length > 0 ? `<a href="#bar">Bar Admissions</a>` : ""}
     ${educationLines.length > 0 ? `<a href="#education">Education</a>` : ""}
 
@@ -872,7 +881,7 @@ ${nav(b, 'about.html', d.team, w.services)}
   <div class="bio-sidebar">
     ${specList.length > 0 ? `
     <div class="bio-sidebar-section" id="specializations">
-      <div class="bio-sidebar-title">Practice Areas</div>
+      <div class="bio-sidebar-title">${getNavLabel(d.business.industry)}</div>
       ${specList.map((s: string) => `<div class="bio-sidebar-item">${s}</div>`).join("")}
     </div>` : ""}
 
