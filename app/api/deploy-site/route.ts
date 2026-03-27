@@ -538,7 +538,8 @@ function handleSubmit(e) {
 // ─── Main handler ──────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
-  const { business_id } = await request.json();
+  const body = await request.json();
+  const { business_id } = body;
   if (!business_id) {
     return NextResponse.json({ error: "business_id required" }, { status: 400 });
   }
@@ -583,8 +584,30 @@ export async function POST(request: Request) {
     const repoName = `exsisto-site-${slug}`;
     const projectName = `exsisto-${slug}`;
 
-    // Use Stitch-generated HTML if available, otherwise fall back to template
-    const html = (website?.custom_html as string) || buildSiteHTML(business, website || {});
+    // Fetch HTML from chosen Stitch screen if provided
+    let html = "";
+    const screenId = body.screen_id;
+    const stitchProjectId = body.project_id || website?.stitch_project_id;
+    if (screenId && stitchProjectId) {
+      try {
+        const codeRes = await fetch(
+          `https://stitch.googleapis.com/v1alpha/projects/${stitchProjectId}/screens/${screenId}/code`,
+          { headers: { Authorization: `Bearer ${process.env.STITCH_API_KEY}` } }
+        );
+        if (codeRes.ok) {
+          const codeData = await codeRes.json();
+          if (codeData.downloadUrl) {
+            const r = await fetch(codeData.downloadUrl);
+            html = await r.text();
+          } else if (codeData.html) {
+            html = codeData.html;
+          }
+        }
+      } catch (e) { console.warn("Stitch fetch failed, using fallback:", e); }
+    }
+    if (!html) {
+      html = (website?.custom_html as string) || buildSiteHTML(business, website || {});
+    }
 
     // Push to GitHub
     await createRepo(repoName);
