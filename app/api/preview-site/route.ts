@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { buildTradesSite } from "@/lib/templates/trades";
 import { buildProfessionalSite } from "@/lib/templates/professional";
 import { generateClinicalTemplate } from "@/lib/templates/clinical";
+import { generateStitchSite } from "@/lib/stitch";
 import { buildServicePage, servicePageSlug, ServicePageContext } from "@/lib/templates/service-page";
 import { buildSitemap, buildRobots } from "@/lib/schema";
 import { pickSitePhotos } from "@/lib/photos";
@@ -305,7 +306,32 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 
   // Build main site pages
   let pages: Record<string, string>;
-  if (template === "trades") {
+
+  // Try Stitch first if service account is configured
+  if (process.env.GCP_SERVICE_ACCOUNT_JSON) {
+    try {
+      const stitchHtml = await generateStitchSite({
+        businessName,
+        industry,
+        city: resolvedCity,
+        state: resolvedState,
+        services: (practiceAreas || []).slice(0, 3),
+        phone: siteData.business.phone,
+        accentColor: siteData.business.accent_color,
+      });
+      pages = { "index.html": stitchHtml };
+    } catch (err) {
+      console.warn("Stitch generation failed, falling back to template:", err);
+      // Fall back to template system
+      if (template === "trades") {
+        pages = buildTradesSite(siteData);
+      } else if (template === "clinical") {
+        pages = { "index.html": generateClinicalTemplate(siteData) };
+      } else {
+        pages = buildProfessionalSite(siteData);
+      }
+    }
+  } else if (template === "trades") {
     pages = buildTradesSite(siteData);
   } else if (template === "clinical") {
     pages = { "index.html": generateClinicalTemplate(siteData) };
