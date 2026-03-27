@@ -481,10 +481,12 @@ export default function PreviewPage() {
 
           <div style={{ marginBottom: "0.8rem" }}>
             <label style={lbl}>Industry *</label>
-            <select value={form.industry} onChange={e => setField("industry", e.target.value)} style={inp}>
-              <option value="">Select industry...</option>
-              {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
-            </select>
+            <input
+              value={form.industry}
+              onChange={e => setField("industry", e.target.value)}
+              placeholder="e.g. Auto Shop, Dental Office, Law Firm, Bakery..."
+              style={inp}
+            />
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 72px", gap: "0.6rem", marginBottom: "0.8rem" }}>

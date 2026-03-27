@@ -128,6 +128,44 @@ async function fetchScreenHtml(htmlUrl: string): Promise<string> {
   return res.text();
 }
 
+// Use Claude to normalize free-text industry into design context
+async function normalizeIndustry(industry: string): Promise<{
+  category: string;
+  accentColor: string;
+  cta: string;
+  vibe: string;
+  navLabel: string;
+}> {
+  const prompt = `Given this business industry: "${industry}"
+
+Return a JSON object with these fields:
+- category: one of "trades", "professional", "clinical", "food", "retail", "creative", "fitness"
+- accentColor: a hex color that fits this industry (e.g. law firm = #8b4513, plumbing = #1e40af, dental = #0d7694, auto shop = #dc2626, bakery = #d97706)
+- cta: the best call-to-action button text for this industry (e.g. "Get a Free Quote", "Book Appointment", "Free Consultation", "Order Now")
+- vibe: 2-3 words describing the design aesthetic (e.g. "bold and rugged", "clean and clinical", "warm and inviting")
+- navLabel: what to call the services section (e.g. "Services", "Practice Areas", "Our Menu", "Our Work")
+
+Respond ONLY with valid JSON, no markdown.`;
+
+  const { default: Anthropic } = await import("@anthropic-ai/sdk");
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const res = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 300,
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  try {
+    const text = res.content[0].type === "text" ? res.content[0].text : "{}";
+    const match = text.match(/\{[\s\S]*\}/);
+    return match ? JSON.parse(match[0]) : {
+      category: "professional", accentColor: "#111", cta: "Contact Us", vibe: "professional", navLabel: "Services"
+    };
+  } catch {
+    return { category: "professional", accentColor: "#111", cta: "Contact Us", vibe: "professional", navLabel: "Services" };
+  }
+}
+
 // Main function: generate a complete site for a business
 export async function generateStitchSite(params: {
   businessName: string;
@@ -141,31 +179,36 @@ export async function generateStitchSite(params: {
   const { businessName, industry, city, state, services, phone, accentColor = "#0d7694" } = params;
 
   const serviceList = services.slice(0, 3).join(", ");
-  const ctaLabel =
-    industry.toLowerCase().includes("dental") ? "Book Appointment" :
-    industry.toLowerCase().includes("law") ? "Free Consultation" :
-    industry.toLowerCase().includes("plumb") || industry.toLowerCase().includes("hvac") ? "Get a Free Quote" :
-    "Contact Us";
 
-  const prompt = `${industry} business website homepage for "${businessName}" located in ${city}, ${state}.
+  // Use Claude to understand any free-text industry
+  const industryContext = await normalizeIndustry(industry);
+  const effectiveAccent = accentColor !== "#0d7694" ? accentColor : industryContext.accentColor;
+  const ctaLabel = industryContext.cta;
+  const vibe = industryContext.vibe;
+  const navLabel = industryContext.navLabel;
 
-Services offered: ${serviceList || industry + " services"}
-Primary accent color: ${accentColor}
-Phone: ${phone || "(555) 000-0000"}
-CTA button text: "${ctaLabel}"
+  const prompt = `Design a homepage for "${businessName}", a ${industry} business in ${city}, ${state}.
 
-Design requirements:
-- Professional, modern, trustworthy aesthetic appropriate for a ${industry} business
-- Sticky navigation with business name, nav links, phone number, and CTA button
-- Hero section with compelling headline mentioning ${city} and the business name
-- Stats/social proof bar (years in business, clients served, satisfaction rate)
-- Services section with 3 cards for: ${serviceList}
-- Customer testimonial section
-- Bold call-to-action section with gradient background using ${accentColor}
-- Footer with contact info, hours, and quick links
-- Use ${accentColor} as the primary accent/brand color throughout
-- High-end, polished design — NOT generic or template-looking
-- Generous whitespace, strong typography`;
+Business details:
+- Industry: ${industry}
+- Services: ${serviceList || industry + " services"}
+- Phone: ${phone || "(555) 000-0000"}
+- Primary brand color: ${effectiveAccent}
+
+Design direction: ${vibe} aesthetic — feel genuinely designed for this type of business, not generic.
+
+Page sections required:
+1. Sticky nav: business name logo, nav links (Home / ${navLabel} / About / Contact), phone number, "${ctaLabel}" button
+2. Hero: strong headline mentioning ${city}, subheadline about the business, two CTAs ("${ctaLabel}" + secondary), hero image area
+3. Stats bar: 3 trust indicators appropriate for ${industry} (years experience, customers served, rating etc.)
+4. ${navLabel} section: 3 cards for ${serviceList || "their main services"}, each with icon, title, description, learn more link
+5. Testimonial: one compelling customer quote with attribution
+6. CTA banner: gradient background using ${effectiveAccent}, bold headline, "${ctaLabel}" button
+7. Footer: business name, services list, contact info (address, phone, email), hours, copyright
+
+Color: use ${effectiveAccent} as the primary accent throughout — buttons, headings, icons, borders.
+Typography: modern, readable, pair a strong display font with clean body text.
+Quality: high-end, polished — this should look like it cost $10,000 to build.`;
 
   // Create project and generate screen
   const projectId = await createProject(`${businessName} — Exsisto`);
