@@ -1,70 +1,34 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { redirect } from "next/navigation";
 import styles from "./dashboard.module.css";
 import { DeployStatus } from "./DeployStatus";
 import { GenerateButton } from "./GenerateButton";
 
 export default async function DashboardPage() {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  // Fetch step by step to debug RLS issues
-  const { data: customer } = await supabase
-    .from("customers")
-    .select("id, email, full_name")
-    .eq("user_id", user.id)
-    .single();
-
-  if (!customer) redirect("/login");
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("customer_id", customer.id)
-    .single();
-
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("customer_id", customer.id)
-    .single();
-
-  const { data: blogPosts } = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("business_id", business?.id || "")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  const { data: socialPosts } = await supabase
-    .from("social_posts")
-    .select("*")
-    .eq("business_id", business?.id || "")
-    .order("created_at", { ascending: false })
-    .limit(6);
-
-  const { data: website } = await supabase
-    .from("websites")
-    .select("*")
-    .eq("business_id", business?.id || "")
-    .single();
-
-  // No business = show setup prompt
-  if (!business) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-soft)" }}>
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🚀</div>
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", marginBottom: "0.5rem" }}>Let&apos;s set up your account</h2>
-          <p style={{ color: "var(--text-mid)", marginBottom: "1.5rem" }}>Tell us about your business to get started.</p>
-          <a href="/onboarding" style={{ padding: "0.75rem 1.5rem", background: "var(--black)", color: "white", borderRadius: "var(--radius-sm)", textDecoration: "none", fontWeight: 600 }}>
-            Complete setup →
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // ── DEV MODE: auth bypassed, using mock data ──────────────────────────────
+  const business = {
+    id: "dev-business-id",
+    name: "Smith & Jones Law",
+    industry: "Law Firm",
+    city: "Newark",
+    state: "NJ",
+    phone: "(973) 555-0100",
+    email: "hello@smithjones.com",
+    description: "Smith & Jones Law is a New Jersey business law firm.",
+    tagline: "Strategic Counsel for NJ Businesses",
+    emoji: "⚖️",
+    website_url: null,
+    customer_id: "dev-customer-id",
+  };
+  const subscription = { plan: "growth" };
+  const blogPosts: any[] = [];
+  const socialPosts: any[] = [];
+  const website: any = {
+    meta_title: "Smith & Jones Law | Business Law in Newark, NJ",
+    meta_description: "Expert business law services for New Jersey entrepreneurs.",
+    keywords: ["business law Newark NJ", "contract attorney NJ", "LLC formation NJ"],
+    status: "live",
+    vercel_url: "https://exsisto.ai/preview",
+  };
+  // ── END DEV MODE ──────────────────────────────────────────────────────────
 
   const planColors: Record<string, string> = { starter: "#2563eb", growth: "#16a34a", premium: "#9333ea" };
   const planColor = planColors[subscription?.plan || "starter"];
