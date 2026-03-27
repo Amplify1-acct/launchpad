@@ -730,51 +730,68 @@ export default function PreviewPage() {
                 </div>
               </div>
 
-              <div style={{ marginBottom: "0.6rem" }}>
-                <label style={lbl}>Education</label>
-                <textarea value={member.education} onChange={e => setMember(i, "education", e.target.value)}
-                  placeholder={"e.g.\nHarvard Law School, J.D., 2004\nBoston College, B.A. Political Science, 2001"}
-                  rows={3}
-                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
-              </div>
+              {/* Industry-aware fields */}
+              {(() => {
+                const ind = form.industry.toLowerCase();
+                const isLegal = ind.includes("law") || ind.includes("attorney") || ind.includes("legal");
+                const isMedical = ind.includes("dental") || ind.includes("doctor") || ind.includes("medical") || ind.includes("chiro") || ind.includes("therapy") || ind.includes("therapist") || ind.includes("optom");
+                const isFinancial = ind.includes("financial") || ind.includes("accounting") || ind.includes("cpa") || ind.includes("advisor") || ind.includes("insurance");
+                const isProfessional = isLegal || isMedical || isFinancial;
 
-              <div style={{ marginBottom: "0.6rem" }}>
-                <label style={lbl}>Bar Admissions / Licenses</label>
-                <textarea value={member.barAdmissions} onChange={e => setMember(i, "barAdmissions", e.target.value)}
-                  placeholder={"e.g.\nNew Jersey State Bar, 2005\nNew York State Bar, 2006\nU.S. District Court, D.N.J."}
-                  rows={3}
-                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
-              </div>
+                return (<>
+                  {isProfessional && (
+                    <div style={{ marginBottom: "0.6rem" }}>
+                      <label style={lbl}>Education</label>
+                      <textarea value={member.education} onChange={e => setMember(i, "education", e.target.value)}
+                        placeholder={isLegal ? "e.g.\nHarvard Law School, J.D., 2004\nBoston College, B.A. Political Science, 2001" : isMedical ? "e.g.\nUniversity of Pennsylvania School of Dental Medicine, D.M.D., 2008" : "e.g.\nCFA Institute, CFA Charterholder\nWharton School, MBA, 2005"}
+                        rows={3}
+                        style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                  )}
 
-              <div style={{ marginBottom: "0.6rem" }}>
-                <label style={lbl}>Practice Areas / Specializations</label>
-                <input value={member.specializations} onChange={e => setMember(i, "specializations", e.target.value)}
-                  placeholder="e.g. Personal Injury, Medical Malpractice, Wrongful Death"
-                  style={{ ...inp, background: "#fff" }} />
-              </div>
+                  {(isLegal || isMedical) && (
+                    <div style={{ marginBottom: "0.6rem" }}>
+                      <label style={lbl}>{isLegal ? "Bar Admissions / Licenses" : "Licenses & Certifications"}</label>
+                      <textarea value={member.barAdmissions} onChange={e => setMember(i, "barAdmissions", e.target.value)}
+                        placeholder={isLegal ? "e.g.\nNew Jersey State Bar, 2005\nNew York State Bar, 2006" : "e.g.\nNJ Dental License #12345\nAmerican Board of Orthodontics"}
+                        rows={3}
+                        style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                  )}
 
-              <div style={{ marginBottom: "0.6rem" }}>
-                <label style={lbl}>Awards & Recognitions</label>
-                <textarea value={member.awards} onChange={e => setMember(i, "awards", e.target.value)}
-                  placeholder={"e.g.\nSuper Lawyers 2018–2024\nBest Lawyers in America 2020\nAV Preeminent® Rating, Martindale-Hubbell"}
-                  rows={3}
-                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
-              </div>
+                  <div style={{ marginBottom: "0.6rem" }}>
+                    <label style={lbl}>{isLegal ? "Practice Areas / Specializations" : isMedical ? "Specializations" : isFinancial ? "Areas of Focus" : "Specialties"} <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                    <input value={member.specializations} onChange={e => setMember(i, "specializations", e.target.value)}
+                      placeholder={isLegal ? "e.g. Personal Injury, Medical Malpractice, Wrongful Death" : isMedical ? "e.g. Cosmetic Dentistry, Pediatric Dentistry" : isFinancial ? "e.g. Retirement Planning, Estate Planning" : "e.g. Balayage, Color Correction, Bridal Styling"}
+                      style={{ ...inp, background: "#fff" }} />
+                  </div>
 
-              <div style={{ marginBottom: "0.6rem" }}>
-                <label style={lbl}>Publications / Media <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
-                <textarea value={member.publications} onChange={e => setMember(i, "publications", e.target.value)}
-                  placeholder="e.g. 'Understanding NJ Personal Injury Law' — NJ Law Journal, 2022 | Featured on NBC News discussing case outcomes"
-                  rows={3}
-                  style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
-              </div>
+                  <div style={{ marginBottom: "0.6rem" }}>
+                    <label style={lbl}>Awards & Recognitions <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                    <textarea value={member.awards} onChange={e => setMember(i, "awards", e.target.value)}
+                      placeholder={isLegal ? "e.g.\nSuper Lawyers 2018–2024\nBest Lawyers in America 2020" : isProfessional ? "e.g.\nTop Dentist, NJ Monthly 2023\nADA Member of Distinction" : "e.g.\nBehind the Chair Top Stylist 2023\nSalon Team of the Year"}
+                      rows={2}
+                      style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
 
-              <div>
-                <label style={lbl}>LinkedIn URL <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
-                <input value={member.linkedin} onChange={e => setMember(i, "linkedin", e.target.value)}
-                  placeholder="https://linkedin.com/in/name"
-                  style={{ ...inp, background: "#fff" }} />
-              </div>
+                  {isProfessional && (
+                    <div style={{ marginBottom: "0.6rem" }}>
+                      <label style={lbl}>Publications / Media <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                      <textarea value={member.publications} onChange={e => setMember(i, "publications", e.target.value)}
+                        placeholder="e.g. Featured in NJ Monthly, 2023 | Quoted in Forbes"
+                        rows={2}
+                        style={{ ...inp, background: "#fff", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                  )}
+
+                  <div>
+                    <label style={lbl}>LinkedIn URL <span style={{ fontWeight: 400, color: "#ccc" }}>— optional</span></label>
+                    <input value={member.linkedin} onChange={e => setMember(i, "linkedin", e.target.value)}
+                      placeholder="https://linkedin.com/in/name"
+                      style={{ ...inp, background: "#fff" }} />
+                  </div>
+                </>);
+              })()}
             </div>
           ))}
 
