@@ -583,8 +583,8 @@ export async function POST(request: Request) {
     const repoName = `exsisto-site-${slug}`;
     const projectName = `exsisto-${slug}`;
 
-    // Build the HTML
-    const html = buildSiteHTML(business, website || {});
+    // Use Stitch-generated HTML if available, otherwise fall back to template
+    const html = (website?.custom_html as string) || buildSiteHTML(business, website || {});
 
     // Push to GitHub
     await createRepo(repoName);
