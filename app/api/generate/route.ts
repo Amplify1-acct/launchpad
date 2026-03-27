@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   const { business_id } = await request.json();
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     .eq("business_id", business_id).eq("status", "pending");
 
   try {
-    // ── Step 1: Claude generates content ──────────────────────────────────
+    // Claude generates all content
     const contentRes = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 2000,
@@ -32,19 +32,23 @@ Description: ${business.description}
 Location: ${business.city}, ${business.state}
 Phone: ${business.phone || ""}
 
-Return ONLY valid JSON:
+Return ONLY valid JSON, no markdown:
 {
-  "tagline": "one-liner tagline",
-  "services": [{"name":"","description":"","icon":"emoji"}],
+  "tagline": "catchy one-liner tagline",
+  "services": [{"name":"Service Name","description":"Brief description","icon":"emoji"}],
   "stats": [{"value":"10+","label":"Years Experience"},{"value":"500+","label":"Happy Customers"},{"value":"100%","label":"Satisfaction"},{"value":"24/7","label":"Available"}],
-  "testimonials": [{"name":"","text":"","rating":5,"location":""}],
-  "meta_title": "under 60 chars",
-  "meta_description": "under 160 chars",
-  "keywords": ["kw1","kw2","kw3"],
-  "accent_color": "#hexcolor",
+  "testimonials": [{"name":"Customer Name","text":"testimonial","rating":5,"location":"City, ST"}],
+  "meta_title": "SEO title under 60 chars",
+  "meta_description": "SEO description under 160 chars",
+  "keywords": ["keyword1","keyword2","keyword3"],
+  "accent_color": "#hexcolor appropriate for this industry",
   "emoji": "single emoji",
   "blog_titles": ["Title 1","Title 2","Title 3"],
-  "social_posts": {"facebook":["p1","p2","p3"],"instagram":["p1 #tags","p2 #tags","p3 #tags"],"linkedin":["p1","p2","p3"]}
+  "social_posts": {
+    "facebook": ["post1","post2","post3"],
+    "instagram": ["post1 #tags","post2 #tags","post3 #tags"],
+    "linkedin": ["post1","post2","post3"]
+  }
 }` }],
     });
 
@@ -53,53 +57,10 @@ Return ONLY valid JSON:
     if (!jsonMatch) throw new Error("No JSON in Claude response");
     const generated = JSON.parse(jsonMatch[0]);
 
-    // ── Step 2: Claude + Stitch MCP generates 3 custom designs ────────────
-    const stitchPrompt = `You are helping generate website designs for a new Exsisto customer.
-
-Use the Stitch tools to:
-1. Create a new project titled "${business.name} — ${business.city}, ${business.state}"
-2. Generate a homepage screen using GEMINI_3_FLASH with this prompt: "Homepage for ${business.name}. ${business.description}. Located in ${business.city}, ${business.state}. Phone: ${business.phone || ""}. Tagline: ${generated.tagline}. Services: ${generated.services.slice(0,3).map((s: any) => s.name).join(", ")}."
-3. Generate 2 variants of that screen using REIMAGINE creative range, varying COLOR_SCHEME, LAYOUT, and TEXT_FONT
-4. Return the project ID and all 3 screen IDs and thumbnail URLs as JSON
-
-Return ONLY this JSON format when done:
-{
-  "project_id": "...",
-  "screens": [
-    {"id": "...", "thumbnail": "...", "label": "Style A"},
-    {"id": "...", "thumbnail": "...", "label": "Style B"},
-    {"id": "...", "thumbnail": "...", "label": "Style C"}
-  ]
-}`;
-
-    const stitchRes = await anthropic.messages.create({
-      model: "claude-opus-4-5-20251101",
-      max_tokens: 4000,
-      messages: [{ role: "user", content: stitchPrompt }],
-      mcp_servers: [
-        {
-          type: "url",
-          url: "https://stitch.googleapis.com/mcp",
-          name: "stitch",
-          authorization_token: process.env.STITCH_API_KEY,
-        }
-      ],
-    } as any);
-
-    // Parse the Stitch result
-    const stitchText = stitchRes.content
-      .filter((c: any) => c.type === "text")
-      .map((c: any) => c.text)
-      .join("");
-
-    const stitchJsonMatch = stitchText.match(/\{[\s\S]*"screens"[\s\S]*\}/);
-    if (!stitchJsonMatch) throw new Error("Stitch did not return valid screen data");
-    const stitchData = JSON.parse(stitchJsonMatch[0]);
-
-    // ── Step 3: Save everything to Supabase ───────────────────────────────
+    // Save content to Supabase — status = needs_design (Stitch designs generated separately)
     await supabase.from("websites").upsert({
       business_id,
-      status: "picking_template",
+      status: "needs_design",
       services: generated.services,
       stats: generated.stats,
       testimonials: generated.testimonials,
@@ -115,8 +76,6 @@ Return ONLY this JSON format when done:
         address: { "@type": "PostalAddress", addressLocality: business.city, addressRegion: business.state },
       },
       keywords: generated.keywords,
-      stitch_project_id: stitchData.project_id,
-      stitch_screens: stitchData.screens,
     }, { onConflict: "business_id" });
 
     await supabase.from("businesses").update({
@@ -125,7 +84,7 @@ Return ONLY this JSON format when done:
       emoji: generated.emoji,
     }).eq("id", business_id);
 
-    // Blog + social
+    // Blog posts
     await supabase.from("blog_posts").insert(
       generated.blog_titles.map((title: string) => ({
         business_id, title, status: "draft",
@@ -134,6 +93,7 @@ Return ONLY this JSON format when done:
       }))
     ).catch(() => {});
 
+    // Social posts
     const socialPosts: any[] = [];
     for (const platform of ["facebook", "instagram", "linkedin"] as const) {
       for (const caption of (generated.social_posts?.[platform] || [])) {
@@ -146,12 +106,7 @@ Return ONLY this JSON format when done:
       .update({ status: "completed", completed_at: new Date().toISOString() })
       .eq("business_id", business_id);
 
-    return NextResponse.json({
-      success: true,
-      stitch_project_id: stitchData.project_id,
-      template_options: stitchData.screens,
-      generated,
-    });
+    return NextResponse.json({ success: true, generated, status: "needs_design" });
 
   } catch (error: any) {
     console.error("[generate] Error:", error);
