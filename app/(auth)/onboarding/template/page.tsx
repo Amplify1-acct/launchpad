@@ -5,154 +5,86 @@ import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import styles from "./template.module.css";
 
-// Template options shown to customer based on their industry
-const TEMPLATES = [
+const STYLES = [
   {
-    id: "homeservices-clean",
-    name: "Clean & Trustworthy",
-    desc: "Professional, trust-forward design. Perfect for service businesses.",
-    color: "#16613a",
-    preview: "Green accent · White · Review-focused",
-    industries: ["plumbing", "electrical", "hvac", "cleaning", "landscaping", "construction", "home", "repair"],
+    id: "skeleton-bold",
+    name: "Bold",
+    tagline: "Dark, high-impact, built to convert",
+    desc: "Big headlines, dark background, orange or red accent. Works great for trades, auto, fitness, and any business that wants to make a strong first impression.",
+    preview: ["Dark background", "Condensed headlines", "Stats bar", "Grid services"],
+    color: "#e63000",
   },
   {
-    id: "fitness-bold",
-    name: "Bold & Energetic",
-    desc: "High-impact design built to convert. Great for gyms and active businesses.",
-    color: "#f04e23",
-    preview: "Orange accent · Dark · High energy",
-    industries: ["gym", "fitness", "trainer", "yoga", "sport", "crossfit"],
+    id: "skeleton-clean",
+    name: "Clean",
+    tagline: "Light, modern, professional",
+    desc: "White background, split hero, trust badges. Feels polished and approachable. Works for any industry — from auto shops to accountants.",
+    preview: ["White background", "Split hero layout", "Trust signals", "Step-by-step process"],
+    color: "#0066ff",
   },
   {
-    id: "restaurant-warm",
-    name: "Warm & Inviting",
-    desc: "Beautiful food-focused layout with rich imagery and a reservation form.",
+    id: "skeleton-warm",
+    name: "Warm",
+    tagline: "Story-driven, photo-forward",
+    desc: "Full-bleed photo hero, serif fonts, founder quote. Great for businesses with personality — restaurants, boutiques, specialty shops, craftspeople.",
+    preview: ["Full-bleed photo", "Serif typography", "Story section", "Founder quote"],
     color: "#c8892a",
-    preview: "Gold accent · Warm cream · Menu-focused",
-    industries: ["restaurant", "cafe", "bakery", "food", "bar", "dining"],
-  },
-  {
-    id: "realestate-luxury",
-    name: "Luxury & Modern",
-    desc: "Sophisticated design with property listings and an agent spotlight.",
-    color: "#b8966a",
-    preview: "Navy & gold · Premium feel · Listings-focused",
-    industries: ["real estate", "realtor", "property", "broker"],
-  },
-  {
-    id: "dental-clean",
-    name: "Clean & Clinical",
-    desc: "Modern healthcare design. Trusted, approachable, and conversion-optimized.",
-    color: "#0077cc",
-    preview: "Blue accent · White · Trust-focused",
-    industries: ["dental", "medical", "doctor", "clinic", "health"],
-  },
-  {
-    id: "financial-premium",
-    name: "Premium & Authoritative",
-    desc: "Commanding design for financial and professional services.",
-    color: "#c5973a",
-    preview: "Navy & gold · Dark · Data-forward",
-    industries: ["financial", "accounting", "wealth", "legal", "law", "insurance"],
-  },
-  {
-    id: "law-chambers",
-    name: "Heritage & Prestige",
-    desc: "Stately serif design with grayscale team photos and a classic feel.",
-    color: "#330608",
-    preview: "Burgundy & gold · Editorial · Law-focused",
-    industries: ["law", "attorney", "legal", "barrister"],
   },
 ];
 
-function getRecommendedTemplates(description: string): string[] {
-  const lower = description.toLowerCase();
-  const recommended: string[] = [];
-
-  for (const template of TEMPLATES) {
-    if (template.industries.some(ind => lower.includes(ind))) {
-      recommended.push(template.id);
-    }
-  }
-
-  // If no match, return all
-  return recommended.length > 0 ? recommended : TEMPLATES.map(t => t.id);
-}
+const messages = [
+  "Reading your business info...",
+  "Picking the right photos...",
+  "Writing your headline...",
+  "Crafting your service descriptions...",
+  "Building your about section...",
+  "Writing customer reviews...",
+  "Optimizing for SEO...",
+  "Putting it all together...",
+  "Almost done...",
+];
 
 export default function TemplatePage() {
   const [selected, setSelected] = useState<string | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [businessDesc, setBusinessDesc] = useState("");
   const [businessId, setBusinessId] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [msgIdx, setMsgIdx] = useState(0);
   const [step, setStep] = useState<"pick" | "generating" | "done">("pick");
-  const [generatingMessage, setGeneratingMessage] = useState("Building your site...");
+  const [error, setError] = useState("");
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    async function loadBusiness() {
+    async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
       const { data: customer } = await supabase
         .from("customers").select("id").eq("user_id", user.id).single();
       if (!customer) return;
-
       const { data: business } = await supabase
-        .from("businesses").select("id, description, industry").eq("customer_id", customer.id).single();
-      if (!business) return;
-
-      setBusinessId(business.id);
-      setBusinessDesc(business.description || business.industry || "");
+        .from("businesses").select("id").eq("customer_id", customer.id).single();
+      if (business) setBusinessId(business.id);
     }
-    loadBusiness();
+    load();
   }, []);
-
-  const recommended = getRecommendedTemplates(businessDesc);
-  // Only mark as recommended if we actually matched the industry
-  const hasMatch = recommended.length < TEMPLATES.length;
-  const sortedTemplates = [
-    ...TEMPLATES.filter(t => recommended.includes(t.id)),
-    ...TEMPLATES.filter(t => !recommended.includes(t.id)),
-  ];
-
-  const messages = [
-    "Analyzing your business...",
-    "Selecting the right design...",
-    "Writing your homepage copy...",
-    "Crafting your service descriptions...",
-    "Generating your about section...",
-    "Writing customer testimonials...",
-    "Optimizing for SEO...",
-    "Building your contact form...",
-    "Putting it all together...",
-    "Almost ready...",
-  ];
 
   async function handleGenerate() {
     if (!selected || !businessId) return;
     setGenerating(true);
     setStep("generating");
 
-    // Cycle through messages while generating
-    let msgIdx = 0;
-    const msgInterval = setInterval(() => {
-      msgIdx = (msgIdx + 1) % messages.length;
-      setGeneratingMessage(messages[msgIdx]);
-    }, 2500);
+    const interval = setInterval(() => {
+      setMsgIdx(i => (i + 1) % messages.length);
+    }, 3000);
 
     try {
       const res = await fetch("/api/generate-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          business_id: businessId,
-          template_override: selected,
-        }),
+        body: JSON.stringify({ business_id: businessId, template_override: selected }),
       });
 
-      clearInterval(msgInterval);
+      clearInterval(interval);
 
       if (!res.ok) {
         const err = await res.json();
@@ -160,10 +92,9 @@ export default function TemplatePage() {
       }
 
       setStep("done");
-      setTimeout(() => router.push("/dashboard"), 2000);
-
+      setTimeout(() => router.push("/dashboard"), 1500);
     } catch (err: any) {
-      clearInterval(msgInterval);
+      clearInterval(interval);
       setError(err.message);
       setStep("pick");
       setGenerating(false);
@@ -176,10 +107,9 @@ export default function TemplatePage() {
         <div className={styles.generatingWrap}>
           <div className={styles.spinner} />
           <h2 className={styles.generatingTitle}>Building your website</h2>
-          <p className={styles.generatingMsg}>{generatingMessage}</p>
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} />
-          </div>
+          <p className={styles.generatingMsg}>{messages[msgIdx]}</p>
+          <div className={styles.progressBar}><div className={styles.progressFill} /></div>
+          <p style={{fontSize:"13px",color:"#999",marginTop:"8px"}}>Usually takes about 30 seconds</p>
         </div>
       </div>
     );
@@ -191,7 +121,7 @@ export default function TemplatePage() {
         <div className={styles.generatingWrap}>
           <div className={styles.checkmark}>✓</div>
           <h2 className={styles.generatingTitle}>Your site is ready!</h2>
-          <p className={styles.generatingMsg}>Taking you to your dashboard...</p>
+          <p className={styles.generatingMsg}>Taking you to review it now...</p>
         </div>
       </div>
     );
@@ -201,44 +131,36 @@ export default function TemplatePage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.logo}>Exsisto<span>.</span></div>
-        <h1 className={styles.title}>Choose your style</h1>
+        <h1 className={styles.title}>Pick your style</h1>
         <p className={styles.subtitle}>
-          We'll generate a complete website in your chosen style — instantly, using your business info.
+          We'll write all the content for your specific business — services, headlines, reviews, SEO. You just pick the look.
         </p>
-        {hasMatch && (
-          <div className={styles.recommendedNote}>
-            ✦ Recommended for your industry shown first
-          </div>
-        )}
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
 
       <div className={styles.grid}>
-        {sortedTemplates.map((t) => {
-          const isRecommended = recommended.includes(t.id);
-          return (
-            <button
-              key={t.id}
-              className={`${styles.card} ${selected === t.id ? styles.selected : ""}`}
-              onClick={() => setSelected(t.id)}
-              style={{ "--accent": t.color } as React.CSSProperties}
-            >
-              {isRecommended && hasMatch && (
-                <div className={styles.recommendedBadge}>Recommended</div>
-              )}
-              <div className={styles.colorSwatch} style={{ background: t.color }} />
-              <div className={styles.cardBody}>
-                <div className={styles.cardName}>{t.name}</div>
-                <div className={styles.cardDesc}>{t.desc}</div>
-                <div className={styles.cardPreview}>{t.preview}</div>
+        {STYLES.map((s) => (
+          <button
+            key={s.id}
+            className={`${styles.card} ${selected === s.id ? styles.selected : ""}`}
+            onClick={() => setSelected(s.id)}
+            style={{ "--accent": s.color } as React.CSSProperties}
+          >
+            <div className={styles.colorSwatch} style={{ background: s.color }} />
+            <div className={styles.cardBody}>
+              <div className={styles.cardName}>{s.name}</div>
+              <div className={styles.cardTagline}>{s.tagline}</div>
+              <div className={styles.cardDesc}>{s.desc}</div>
+              <div className={styles.cardFeatures}>
+                {s.preview.map(f => (
+                  <span key={f} className={styles.featurePill}>{f}</span>
+                ))}
               </div>
-              {selected === t.id && (
-                <div className={styles.selectedCheck}>✓</div>
-              )}
-            </button>
-          );
-        })}
+            </div>
+            {selected === s.id && <div className={styles.selectedCheck}>✓</div>}
+          </button>
+        ))}
       </div>
 
       <div className={styles.footer}>
@@ -249,7 +171,9 @@ export default function TemplatePage() {
         >
           {generating ? "Generating..." : "Build my website →"}
         </button>
-        <p className={styles.footerNote}>Takes about 30 seconds. You can always change the style later.</p>
+        <p className={styles.footerNote}>
+          Not happy with it? You can request changes or switch styles after you see it.
+        </p>
       </div>
     </div>
   );
