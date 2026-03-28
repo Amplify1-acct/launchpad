@@ -228,18 +228,26 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
           <div style={{ fontWeight: 700, fontSize: 13, color: "#111", letterSpacing: "-0.01em" }}>{scenario.business}</div>
           <div style={{ background: ac, color: "#fff", padding: "5px 12px", fontSize: 9, fontWeight: 700, borderRadius: 20 }}>{scenario.cta}</div>
         </div>
-        {/* Centered hero */}
-        <div style={{ textAlign: "center", padding: "2.5rem 2rem 1.5rem", background: `linear-gradient(180deg, ${ac}08 0%, #fff 100%)` }}>
-          <div style={{ display: "inline-block", background: `${ac}15`, color: ac, fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", padding: "4px 12px", borderRadius: 20, marginBottom: 14 }}>
-            {scenario.city}
+        {/* Hero with image */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 220, background: `linear-gradient(180deg, ${ac}06 0%, #fff 100%)` }}>
+          <div style={{ padding: "2.5rem 1.5rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ display: "inline-block", background: `${ac}15`, color: ac, fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", padding: "4px 12px", borderRadius: 20, marginBottom: 14, width: "fit-content" }}>
+              {scenario.city}
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10 }}>
+              {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1]}</span>
+            </div>
+            <p style={{ fontSize: 10, color: "#666", lineHeight: 1.7, marginBottom: 16 }}>{scenario.heroCopy}</p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <span style={{ background: ac, color: "#fff", padding: "8px 18px", fontSize: 9, fontWeight: 700, borderRadius: 20 }}>{scenario.cta}</span>
+              <span style={{ border: `1px solid ${ac}`, color: ac, padding: "7px 16px", fontSize: 9, fontWeight: 600, borderRadius: 20 }}>Our Services</span>
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10 }}>
-            {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1]}</span>
-          </div>
-          <p style={{ fontSize: 10, color: "#666", lineHeight: 1.7, maxWidth: 280, margin: "0 auto 20px" }}>{scenario.heroCopy}</p>
-          <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-            <span style={{ background: ac, color: "#fff", padding: "8px 18px", fontSize: 9, fontWeight: 700, borderRadius: 20 }}>{scenario.cta}</span>
-            <span style={{ border: `1px solid ${ac}`, color: ac, padding: "7px 16px", fontSize: 9, fontWeight: 600, borderRadius: 20 }}>Our Services</span>
+          <div style={{ position: "relative", overflow: "hidden", borderRadius: "0 0 0 40px" }}>
+            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
+            <div style={{ position: "absolute", bottom: 16, left: 16, background: "#fff", borderRadius: 10, padding: "8px 12px", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#111" }}>⭐ 4.9 · 300+ Happy Patients</div>
+            </div>
           </div>
         </div>
         {/* Stats pills */}
@@ -266,10 +274,7 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
             ))}
           </div>
         </div>
-        {/* Photo strip */}
-        <div style={{ height: 100, overflow: "hidden" }}>
-          <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }} />
-        </div>
+
       </div>
     );
   }
