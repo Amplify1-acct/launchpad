@@ -24,7 +24,7 @@ function injectTokens(html: string, tokens: Record<string, string>): string {
   return result;
 }
 
-async function generateTokens(business: Record<string, any>): Promise<Record<string, string>> {
+async function generateTokens(business: Record<string, any>, revisionNotes?: string): Promise<Record<string, string>> {
   const prompt = `You are generating website content for a small business. Return ONLY valid JSON — no markdown, no backticks, no explanation.
 
 Business:
@@ -34,6 +34,12 @@ Business:
 - Phone: ${business.phone || ""}
 - Email: ${business.email || ""}
 
+${revisionNotes ? `
+REVISION REQUEST — This is a revision. The customer has already seen the site and wants these specific changes:
+"${revisionNotes}"
+
+You MUST apply these changes. They take priority over everything else. If they say change the color, change it. If they say rewrite the headline, rewrite it. Read their feedback carefully and reflect it in every relevant field.
+` : ""}
 Generate specific, realistic content for THIS business. Not generic. Use real industry terminology, real service names, real hero copy that feels like it was written for them.
 
 For hero images, pick a relevant Unsplash photo URL. Format: https://images.unsplash.com/photo-PHOTOID?w=1200&h=800&fit=crop&auto=format
@@ -176,7 +182,7 @@ export async function POST(request: Request) {
     }
 
     // Generate content tokens once — same content, 3 visual styles
-    const tokens = await generateTokens(business);
+    const tokens = await generateTokens(business, revision_notes);
 
     // If a specific template was requested, generate just that one
     const templatesToGenerate = template_override
@@ -194,14 +200,23 @@ export async function POST(request: Request) {
     // Save the first (or only) result as the active site
     const primary = htmlResults[0];
 
+    // If this is a revision, keep the existing template unless overridden
+    let finalTemplateName = primary.name;
+    if (revision_notes && !template_override) {
+      const { data: existing } = await supabase
+        .from("websites").select("template_name").eq("business_id", business_id).single();
+      if (existing?.template_name) finalTemplateName = existing.template_name;
+    }
+
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
       custom_html: primary.html,
-      template_name: primary.name,
+      template_name: finalTemplateName,
       generated_tokens: tokens,
       generated_at: new Date().toISOString(),
-      ...(revision_notes ? { revision_notes } : {}),
+      revision_notes: revision_notes || null,
+      revision_requested_at: revision_notes ? new Date().toISOString() : null,
     }, { onConflict: "business_id" });
 
     return NextResponse.json({
@@ -217,3 +232,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
