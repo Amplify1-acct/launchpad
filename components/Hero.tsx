@@ -39,9 +39,9 @@ export default function Hero() {
         </div>
 
         <h1 className={styles.h1}>
-          Your website, blog &amp;<br />
-          social media —<br />
-          <span className={styles.accent}>all handled.</span>
+          <div className={styles.line}>Your website,</div>
+          <div className={styles.line}>blog &amp; social</div>
+          <div className={`${styles.line} ${styles.accent}`}>all handled.</div>
         </h1>
 
         <p className={styles.sub}>
