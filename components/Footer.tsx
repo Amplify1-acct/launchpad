@@ -1,23 +1,35 @@
 import styles from "./Footer.module.css";
 
-const links = ["Privacy Policy", "Terms of Service", "Support", "Blog"];
+const links = [
+  { label: "Privacy Policy", href: "#" },
+  { label: "Terms of Service", href: "#" },
+  { label: "Support", href: "#" },
+  { label: "Blog", href: "/blog" },
+];
 
 export default function Footer() {
   return (
     <footer className={styles.footer}>
-      <div className={styles.logo}>
-        Exsisto<span>.</span>
+      <div className={styles.inner}>
+        <div className={styles.left}>
+          <div className={styles.logo}>
+            Exsisto<span className={styles.dot}>.</span>
+          </div>
+          <p className={styles.tagline}>Your business, brought to life.</p>
+        </div>
+
+        <nav className={styles.links}>
+          {links.map((l) => (
+            <a key={l.label} href={l.href}>
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <p className={styles.copy}>
+          © {new Date().getFullYear()} Exsisto
+        </p>
       </div>
-      <div className={styles.links}>
-        {links.map((l) => (
-          <a key={l} href="#">
-            {l}
-          </a>
-        ))}
-      </div>
-      <p className={styles.copy}>
-        © {new Date().getFullYear()} Exsisto · Your business, brought to life.
-      </p>
     </footer>
   );
 }
