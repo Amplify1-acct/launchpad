@@ -57,6 +57,23 @@ const SCENARIOS = [
     image: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1400&h=900&fit=crop&auto=format",
   },
   {
+    business: "The Tactile Gallery",
+    industry: "Artisan Bakery",
+    city: "Portland, OR",
+    services: ["Fresh Daily Breads", "Workshops", "Subscriptions"],
+    template: "bakery",
+    heroHeadline: "Gathered by the\nWarmth of the Hearth",
+    heroCopy: "A slow-risen collective of bakers, artists, and neighbors. We share more than just recipes — we share the table.",
+    stats: [["Daily", "Fresh Baked"], ["12+", "Workshops/mo"], ["500+", "Subscribers"]],
+    cta: "Visit Us",
+    navHighlight: "Community",
+    sectionLabel: "From Our Ovens",
+    sectionHeading: "What We Bake",
+    serviceDesc: "Slow-fermented, locally sourced, baked with intention every morning.",
+    accentColor: "#8B2500",
+    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1400&h=900&fit=crop&auto=format",
+  },
+  {
     business: "Summit Financial",
     industry: "Financial Advisory",
     city: "Denver, CO",
@@ -154,6 +171,69 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
       </div>
     );
   }
+
+  // Bakery template
+  if (scenario.template === "bakery") {
+    return (
+      <div style={{ fontFamily: "'Georgia', serif", background: "#faf6f1", height: "100%", overflowY: "auto", fontSize: 13 }}>
+        {/* Nav */}
+        <div style={{ background: "#faf6f1", borderBottom: "1px solid #e8ddd2", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
+          <div style={{ fontFamily: "Georgia, serif", fontWeight: 700, fontSize: 14, color: "#2c1810", fontStyle: "italic" }}>
+            {scenario.business}
+          </div>
+          <div style={{ display: "flex", gap: 20, fontSize: 10, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", color: "#8a7060" }}>
+            <span>Our Breads</span>
+            <span style={{ color: ac, fontWeight: 700, borderBottom: "1px solid currentColor", paddingBottom: 2 }}>{scenario.navHighlight}</span>
+            <span>Visit Us</span>
+            <span>Subscriptions</span>
+          </div>
+        </div>
+        {/* Hero - split layout */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 200, background: "#faf6f1" }}>
+          <div style={{ padding: "2.5rem 2rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontFamily: "Georgia, serif", fontSize: 26, color: ac, lineHeight: 1.2, fontWeight: 700, marginBottom: 12 }}>
+              <span>{scenario.heroHeadline.split("\n")[0]}</span><br/>
+              <em style={{ fontStyle: "italic" }}>{scenario.heroHeadline.split("\n")[1]}</em>
+            </div>
+            <p style={{ fontSize: 11, color: "#6b5a4e", lineHeight: 1.7, maxWidth: 220 }}>{scenario.heroCopy}</p>
+          </div>
+          <div style={{ position: "relative", overflow: "hidden", minHeight: 180 }}>
+            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, background: "rgba(44,24,16,0.85)", padding: "10px 14px", borderRadius: 2 }}>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontStyle: "italic", lineHeight: 1.5 }}>
+                "The table is where the soul of the community is fed."
+              </div>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.08em" }}>— The Baker's Note</div>
+            </div>
+          </div>
+        </div>
+        {/* Stats bar */}
+        <div style={{ background: ac, display: "flex", padding: "0.85rem 2rem" }}>
+          {scenario.stats.map(([v, l]: [string, string], i: number) => (
+            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < scenario.stats.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+              <div style={{ fontFamily: "Georgia, serif", fontSize: 17, color: "#fff", fontWeight: 700 }}>{v}</div>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+        {/* Services */}
+        <div style={{ padding: "2rem" }}>
+          <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 6 }}>{scenario.sectionLabel}</div>
+          <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#2c1810", marginBottom: 16, fontWeight: 700 }}>{scenario.sectionHeading}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+            {scenario.services.map((s: string, i: number) => (
+              <div key={i} style={{ background: "#fff", border: "1px solid #e8ddd2", padding: "1rem", borderRadius: 2 }}>
+                <div style={{ fontSize: 13, fontFamily: "Georgia, serif", fontWeight: 700, color: "#2c1810", marginBottom: 4 }}>{s}</div>
+                <div style={{ fontSize: 10, color: "#8a7060", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
+                <div style={{ fontSize: 9, color: ac, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 8 }}>Learn more →</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   // Trades template
   return (
