@@ -209,12 +209,12 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
         </div>
         {/* Stats bar */}
         <div style={{ background: ac, display: "flex", padding: "0.85rem 2rem" }}>
-          {scenario.stats.map(([v, l]: [string, string], i: number) => (
+          {scenario.stats.map((stat: string[], i: number) => { const [v, l] = stat; return (
             <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < scenario.stats.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
               <div style={{ fontFamily: "Georgia, serif", fontSize: 17, color: "#fff", fontWeight: 700 }}>{v}</div>
               <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
             </div>
-          ))}
+          ); })}
         </div>
         {/* Services */}
         <div style={{ padding: "2rem" }}>
