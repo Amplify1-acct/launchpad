@@ -5,7 +5,7 @@ import styles from "./Pricing.module.css";
 const plans = [
   {
     name: "Starter",
-    price: "$299",
+    price: "$99",
     period: "/mo",
     desc: "Get your business online fast.",
     features: [
@@ -21,7 +21,7 @@ const plans = [
   },
   {
     name: "Growth",
-    price: "$599",
+    price: "$299",
     period: "/mo",
     desc: "Everything you need to grow online.",
     features: [
@@ -39,7 +39,7 @@ const plans = [
   },
   {
     name: "Premium",
-    price: "$999",
+    price: "$599",
     period: "/mo",
     desc: "Full-service for established businesses.",
     features: [
