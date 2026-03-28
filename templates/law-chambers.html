@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-surface-variant": "#534342",
+          "surface-variant": "#e6e2dd",
+          "surface": "#fdf9f4",
+          "surface-container-low": "#f7f3ee",
+          "surface-container-high": "#ebe8e3",
+          "on-secondary": "#ffffff",
+          "outline": "#857372",
+          "secondary-fixed-dim": "#e9c176",
+          "surface-container-lowest": "#ffffff",
+          "on-tertiary-container": "#8294a9",
+          "outline-variant": "#d8c1c0",
+          "secondary-container": "#fed488",
+          "on-background": "#1c1c19",
+          "tertiary-container": "#1b2d3e",
+          "inverse-surface": "#31302d",
+          "surface-dim": "#ddd9d5",
+          "secondary": "#775a19",
+          "on-surface": "#1c1c19",
+          "tertiary": "#041829",
+          "background": "#fdf9f4",
+          "surface-bright": "#fdf9f4",
+          "primary": "#330608",
+          "secondary-fixed": "#ffdea5",
+          "surface-tint": "#8d4c4a",
+          "primary-fixed-dim": "#ffb3b0",
+          "on-tertiary-fixed-variant": "#36485b",
+          "primary-container": "#4e1a1a",
+          "surface-container-highest": "#e6e2dd",
+          "surface-container": "#f1ede8",
+          "on-primary": "#ffffff",
+        },
+        fontFamily: {
+          "headline": ["Noto Serif"],
+          "body": ["Newsreader"],
+          "label": ["Work Sans"]
+        },
+        borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+      },
+    },
+  }
+</script>
+<style>
+  .vertical-datum {
+    position: absolute; left: 12%; top: 0; bottom: 0;
+    width: 1px; background-color: #e9c176; opacity: 0.2; z-index: 10;
+  }
+  .text-shadow-hero { text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  body { -webkit-font-smoothing: antialiased; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body">
+
+<!-- Navigation -->
+<nav class="fixed top-0 z-50 w-full flex justify-between items-center px-12 py-6 bg-[#fdf9f4]/85 backdrop-blur-md shadow-[0_40px_40px_-5px_rgba(28,28,25,0.05)] transition-colors duration-500">
+  <div class="flex items-center gap-2">
+    <span class="font-headline text-2xl font-bold tracking-tighter text-[#330608]">{{business_name}}</span>
+  </div>
+  <div class="hidden md:flex gap-10 items-center">
+    <a class="font-headline text-lg tracking-tight text-[#330608] border-b border-[#775a19] pb-1" href="#">Home</a>
+    <a class="font-headline text-lg tracking-tight text-[#330608]/70 hover:text-[#330608] transition-colors duration-500" href="#">{{nav_practice_areas}}</a>
+    <a class="font-headline text-lg tracking-tight text-[#330608]/70 hover:text-[#330608] transition-colors duration-500" href="#">Partners</a>
+    <a class="font-headline text-lg tracking-tight text-[#330608]/70 hover:text-[#330608] transition-colors duration-500" href="#">Legacy</a>
+    <a class="font-headline text-lg tracking-tight text-[#330608]/70 hover:text-[#330608] transition-colors duration-500" href="#">Contact</a>
+  </div>
+  <button class="bg-primary text-on-primary px-8 py-3 font-label text-sm uppercase tracking-widest hover:bg-primary-container transition-colors duration-500">{{cta}}</button>
+</nav>
+
+<main class="relative">
+  <div class="vertical-datum hidden lg:block"></div>
+
+  <!-- Hero -->
+  <section class="relative h-screen flex items-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img class="w-full h-full object-cover brightness-[0.4]" src="{{hero_image_url}}" alt="{{business_name}}"/>
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/60 to-transparent"></div>
+    </div>
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-12 mt-12">
+      <p class="font-label text-secondary tracking-[0.3em] uppercase mb-6 text-sm">{{established_label}}</p>
+      <h1 class="font-headline text-6xl md:text-8xl text-on-primary leading-tight max-w-4xl font-bold tracking-tighter mb-8 text-shadow-hero">
+        {{hero_headline}}<br/>
+        <span class="italic text-secondary-fixed-dim">{{hero_headline_italic}}</span>
+      </h1>
+      <p class="text-on-primary/80 text-xl max-w-xl mb-12 font-body italic leading-relaxed">{{hero_subheadline}}</p>
+      <div class="flex gap-0">
+        <button class="bg-secondary text-on-secondary px-10 py-5 font-label text-sm uppercase tracking-widest hover:brightness-110 transition-all duration-500">{{cta_primary}}</button>
+        <button class="bg-primary text-on-primary px-10 py-5 font-label text-sm uppercase tracking-widest border-l border-on-primary/10 hover:bg-primary-container transition-all duration-500">{{cta_secondary}}</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="py-32 bg-surface">
+    <div class="max-w-7xl mx-auto px-12">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+        <div class="max-w-2xl">
+          <span class="font-label text-secondary text-xs tracking-widest uppercase mb-4 block">{{team_label}}</span>
+          <h2 class="font-headline text-5xl text-primary font-bold tracking-tight">{{team_heading}}</h2>
+        </div>
+        <p class="font-body text-on-surface-variant max-w-sm italic">{{team_description}}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-0 border-l border-secondary-fixed-dim/20">
+        <!-- Attorney 1 -->
+        <div class="group relative bg-surface-container-lowest p-10 hover:bg-primary transition-colors duration-700">
+          <div class="aspect-[3/4] mb-8 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+            <img class="w-full h-full object-cover" src="{{attorney_1_image_url}}" alt="{{attorney_1_name}}"/>
+          </div>
+          <h3 class="font-headline text-2xl text-primary group-hover:text-white transition-colors">{{attorney_1_name}}</h3>
+          <p class="font-label text-xs tracking-widest text-secondary mt-2 uppercase">{{attorney_1_title}}</p>
+          <div class="mt-6 border-t border-secondary-fixed-dim/20 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="font-body text-white/70 italic text-sm">"{{attorney_1_quote}}"</span>
+          </div>
+        </div>
+        <!-- Attorney 2 -->
+        <div class="group relative bg-surface-container-low p-10 hover:bg-primary transition-colors duration-700">
+          <div class="aspect-[3/4] mb-8 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+            <img class="w-full h-full object-cover" src="{{attorney_2_image_url}}" alt="{{attorney_2_name}}"/>
+          </div>
+          <h3 class="font-headline text-2xl text-primary group-hover:text-white transition-colors">{{attorney_2_name}}</h3>
+          <p class="font-label text-xs tracking-widest text-secondary mt-2 uppercase">{{attorney_2_title}}</p>
+          <div class="mt-6 border-t border-secondary-fixed-dim/20 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="font-body text-white/70 italic text-sm">"{{attorney_2_quote}}"</span>
+          </div>
+        </div>
+        <!-- Attorney 3 -->
+        <div class="group relative bg-surface-container-high p-10 hover:bg-primary transition-colors duration-700">
+          <div class="aspect-[3/4] mb-8 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+            <img class="w-full h-full object-cover" src="{{attorney_3_image_url}}" alt="{{attorney_3_name}}"/>
+          </div>
+          <h3 class="font-headline text-2xl text-primary group-hover:text-white transition-colors">{{attorney_3_name}}</h3>
+          <p class="font-label text-xs tracking-widest text-secondary mt-2 uppercase">{{attorney_3_title}}</p>
+          <div class="mt-6 border-t border-secondary-fixed-dim/20 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="font-body text-white/70 italic text-sm">"{{attorney_3_quote}}"</span>
+          </div>
+        </div>
+        <!-- Attorney 4 -->
+        <div class="group relative bg-surface-container-highest p-10 hover:bg-primary transition-colors duration-700">
+          <div class="aspect-[3/4] mb-8 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+            <img class="w-full h-full object-cover" src="{{attorney_4_image_url}}" alt="{{attorney_4_name}}"/>
+          </div>
+          <h3 class="font-headline text-2xl text-primary group-hover:text-white transition-colors">{{attorney_4_name}}</h3>
+          <p class="font-label text-xs tracking-widest text-secondary mt-2 uppercase">{{attorney_4_title}}</p>
+          <div class="mt-6 border-t border-secondary-fixed-dim/20 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="font-body text-white/70 italic text-sm">"{{attorney_4_quote}}"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Practice Areas -->
+  <section class="py-32 bg-surface-container">
+    <div class="max-w-7xl mx-auto px-12">
+      <div class="text-center mb-24">
+        <h2 class="font-headline text-6xl text-primary font-bold tracking-tighter mb-6 underline decoration-secondary decoration-1 underline-offset-[16px]">{{practice_areas_heading}}</h2>
+        <p class="font-body text-on-surface-variant max-w-2xl mx-auto text-lg leading-relaxed">{{practice_areas_subheading}}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+        <div class="bg-surface-container-lowest p-16 flex flex-col items-start hover:shadow-[0_40px_40px_-5px_rgba(28,28,25,0.05)] transition-shadow">
+          <div class="text-4xl text-secondary mb-8">⚖️</div>
+          <h3 class="font-headline text-2xl text-primary mb-4">{{practice_1_name}}</h3>
+          <p class="font-body text-on-surface-variant leading-relaxed">{{practice_1_description}}</p>
+          <a class="mt-10 font-label text-xs tracking-widest uppercase text-secondary border-b border-secondary/30 pb-1" href="#">{{practice_1_link_text}}</a>
+        </div>
+        <div class="bg-surface-container-lowest p-16 flex flex-col items-start hover:shadow-[0_40px_40px_-5px_rgba(28,28,25,0.05)] transition-shadow">
+          <div class="text-4xl text-secondary mb-8">🏛️</div>
+          <h3 class="font-headline text-2xl text-primary mb-4">{{practice_2_name}}</h3>
+          <p class="font-body text-on-surface-variant leading-relaxed">{{practice_2_description}}</p>
+          <a class="mt-10 font-label text-xs tracking-widest uppercase text-secondary border-b border-secondary/30 pb-1" href="#">{{practice_2_link_text}}</a>
+        </div>
+        <div class="bg-surface-container-lowest p-16 flex flex-col items-start hover:shadow-[0_40px_40px_-5px_rgba(28,28,25,0.05)] transition-shadow">
+          <div class="text-4xl text-secondary mb-8">📜</div>
+          <h3 class="font-headline text-2xl text-primary mb-4">{{practice_3_name}}</h3>
+          <p class="font-body text-on-surface-variant leading-relaxed">{{practice_3_description}}</p>
+          <a class="mt-10 font-label text-xs tracking-widest uppercase text-secondary border-b border-secondary/30 pb-1" href="#">{{practice_3_link_text}}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Staggered Content Block -->
+  <section class="py-32 bg-surface">
+    <div class="max-w-7xl mx-auto px-12 grid grid-cols-12 gap-0 items-center">
+      <div class="col-span-12 md:col-span-5 bg-primary p-20 relative z-20">
+        <h2 class="font-headline text-4xl text-on-primary mb-8 font-bold leading-tight">{{ethos_headline}}</h2>
+        <p class="font-body text-on-primary/70 mb-10 text-lg leading-relaxed italic">"{{ethos_quote}}"</p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-[1px] bg-secondary"></div>
+          <span class="font-label text-xs text-secondary tracking-widest uppercase">{{ethos_label}}</span>
+        </div>
+      </div>
+      <div class="col-span-12 md:col-span-7 -ml-0 md:-ml-20 relative h-[600px]">
+        <img class="w-full h-full object-cover" src="{{ethos_image_url}}" alt="{{business_name}}"/>
+        <div class="absolute inset-0 bg-secondary/10"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inquiry Form -->
+  <section class="py-32 bg-surface-container-low">
+    <div class="max-w-4xl mx-auto px-12 bg-surface-container-lowest p-20 shadow-[0_40px_40px_-5px_rgba(28,28,25,0.05)]">
+      <div class="text-center mb-16">
+        <span class="font-label text-secondary text-xs tracking-widest uppercase mb-4 block">{{contact_label}}</span>
+        <h2 class="font-headline text-4xl text-primary font-bold">{{contact_heading}}</h2>
+      </div>
+      <form class="space-y-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div class="flex flex-col">
+            <label class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant mb-2">Full Name</label>
+            <input class="bg-surface-container-highest border-0 border-b border-outline/30 px-0 py-4 focus:ring-0 focus:border-secondary font-body text-lg" placeholder="Full designation..." type="text"/>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant mb-2">Matter Classification</label>
+            <select class="bg-surface-container-highest border-0 border-b border-outline/30 px-0 py-4 focus:ring-0 focus:border-secondary font-body text-lg">
+              <option>{{practice_1_name}}</option>
+              <option>{{practice_2_name}}</option>
+              <option>{{practice_3_name}}</option>
+              <option>Other Matter</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <label class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant mb-2">The Particulars</label>
+          <textarea class="bg-surface-container-highest border-0 border-b border-outline/30 px-0 py-4 focus:ring-0 focus:border-secondary font-body text-lg resize-none" placeholder="Details of the matter requiring our attention..." rows="4"></textarea>
+        </div>
+        <div class="text-center pt-8">
+          <button class="bg-primary text-on-primary px-16 py-5 font-label text-sm uppercase tracking-[0.2em] hover:bg-primary-container transition-all duration-500" type="submit">{{cta}}</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-[#f1ede8] flex flex-col items-center gap-8 py-16 w-full">
+  <div class="font-headline text-xl italic text-[#775a19]">{{business_name}}</div>
+  <div class="flex gap-12">
+    <a class="font-sans uppercase text-[10px] tracking-widest text-[#330608]/60 hover:text-[#330608] underline decoration-[#775a19] underline-offset-4 transition-colors duration-300" href="#">Privacy Policy</a>
+    <a class="font-sans uppercase text-[10px] tracking-widest text-[#330608]/60 hover:text-[#330608] underline decoration-[#775a19] underline-offset-4 transition-colors duration-300" href="#">Terms of Service</a>
+    <a class="font-sans uppercase text-[10px] tracking-widest text-[#330608]/60 hover:text-[#330608] underline decoration-[#775a19] underline-offset-4 transition-colors duration-300" href="#">Disclaimer</a>
+  </div>
+  <div class="font-sans uppercase text-[10px] tracking-widest text-[#330608]/60 text-center">
+    © {{year}} {{business_name}}. All Rights Reserved. {{established_label}}.
+  </div>
+</footer>
+
+</body>
+</html>
