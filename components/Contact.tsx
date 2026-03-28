@@ -9,11 +9,6 @@ const infoItems = [
   { icon: "📧", label: "Email us directly", value: "hello@exsisto.ai" },
 ];
 
-const industries = [
-  "Retail", "Healthcare", "Real Estate",
-  "Restaurants", "Legal", "Construction",
-];
-
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,9 +23,7 @@ export default function Contact() {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,13 +36,14 @@ export default function Contact() {
   return (
     <section className={styles.section} id="contact">
       <div className={styles.inner}>
-        <div className={styles.info}>
-          <p className={styles.label}>Get started today</p>
+        {/* Left */}
+        <div className={styles.left}>
+          <span className={styles.label}>Get started today</span>
           <h2 className={styles.title}>Let's build your digital presence</h2>
           <p className={styles.sub}>
-            Fill out the form and we'll have a personalized plan ready for you
-            within one business day.
+            Fill out the form and we'll have a personalized plan ready within one business day.
           </p>
+
           <div className={styles.infoItems}>
             {infoItems.map((item) => (
               <div key={item.label} className={styles.infoItem}>
@@ -61,107 +55,111 @@ export default function Contact() {
               </div>
             ))}
           </div>
-          <div className={styles.trust}>
-            <div className={styles.trustTitle}>Trusted by businesses in</div>
-            <div className={styles.trustChips}>
-              {industries.map((ind) => (
-                <span key={ind} className={styles.chip}>{ind}</span>
-              ))}
-            </div>
-          </div>
         </div>
 
-        <div className={styles.formWrap}>
+        {/* Right - Form */}
+        <div className={styles.right}>
           {submitted ? (
             <div className={styles.success}>
               <div className={styles.successIcon}>✓</div>
-              <h3>You're all set!</h3>
-              <p>We'll be in touch within 24 hours with your custom plan.</p>
+              <h3 className={styles.successTitle}>You're on your way!</h3>
+              <p className={styles.successSub}>
+                We'll review your details and reach out within one business day with your personalized plan.
+              </p>
             </div>
           ) : (
-            <>
-              <h3 className={styles.formTitle}>Start your free consultation</h3>
-              <p className={styles.formSub}>No commitment. No credit card required.</p>
-              <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.row}>
-                  <div className={styles.group}>
-                    <label>First name</label>
-                    <input
-                      name="firstName"
-                      type="text"
-                      placeholder="Jane"
-                      value={form.firstName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className={styles.group}>
-                    <label>Last name</label>
-                    <input
-                      name="lastName"
-                      type="text"
-                      placeholder="Smith"
-                      value={form.lastName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className={styles.group}>
-                  <label>Business name</label>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.row}>
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>First name</label>
                   <input
-                    name="business"
-                    type="text"
-                    placeholder="Smith's Bakery"
-                    value={form.business}
+                    className={styles.input}
+                    name="firstName"
+                    value={form.firstName}
                     onChange={handleChange}
+                    placeholder="Jane"
                     required
                   />
                 </div>
-                <div className={styles.group}>
-                  <label>Email address</label>
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>Last name</label>
                   <input
-                    name="email"
-                    type="email"
-                    placeholder="jane@smithsbakery.com"
-                    value={form.email}
+                    className={styles.input}
+                    name="lastName"
+                    value={form.lastName}
                     onChange={handleChange}
+                    placeholder="Smith"
                     required
                   />
                 </div>
-                <div className={styles.group}>
-                  <label>What plan interests you?</label>
-                  <select
-                    name="plan"
-                    value={form.plan}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select a plan...</option>
-                    <option>Starter — $299/mo</option>
-                    <option>Growth — $599/mo</option>
-                    <option>Premium — $999/mo</option>
-                    <option>Not sure yet</option>
-                  </select>
-                </div>
-                <div className={styles.group}>
-                  <label>Tell us about your business</label>
-                  <textarea
-                    name="message"
-                    placeholder="What do you do, who are your customers, and what are your biggest goals online?"
-                    value={form.message}
-                    onChange={handleChange}
-                    rows={4}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className={styles.submit}
-                  disabled={loading}
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Business name</label>
+                <input
+                  className={styles.input}
+                  name="business"
+                  value={form.business}
+                  onChange={handleChange}
+                  placeholder="Smith's Plumbing Co."
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Email address</label>
+                <input
+                  className={styles.input}
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="jane@smithsplumbing.com"
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Plan you're interested in</label>
+                <select
+                  className={styles.input}
+                  name="plan"
+                  value={form.plan}
+                  onChange={handleChange}
                 >
-                  {loading ? "Sending..." : "Send my request →"}
-                </button>
-              </form>
-            </>
+                  <option value="">Select a plan…</option>
+                  <option value="starter">Starter — $299/mo</option>
+                  <option value="growth">Growth — $599/mo</option>
+                  <option value="premium">Premium — $999/mo</option>
+                  <option value="unsure">Not sure yet</option>
+                </select>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Tell us about your business <span className={styles.optional}>(optional)</span></label>
+                <textarea
+                  className={`${styles.input} ${styles.textarea}`}
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="What do you do, who do you serve, what's your biggest challenge online?"
+                  rows={4}
+                />
+              </div>
+
+              <button type="submit" className={styles.submit} disabled={loading}>
+                {loading ? (
+                  <span className={styles.spinner} />
+                ) : (
+                  <>
+                    Send message
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
           )}
         </div>
       </div>
