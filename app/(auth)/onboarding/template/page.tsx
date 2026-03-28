@@ -110,6 +110,8 @@ export default function TemplatePage() {
   }, []);
 
   const recommended = getRecommendedTemplates(businessDesc);
+  // Only mark as recommended if we actually matched the industry
+  const hasMatch = recommended.length < TEMPLATES.length;
   const sortedTemplates = [
     ...TEMPLATES.filter(t => recommended.includes(t.id)),
     ...TEMPLATES.filter(t => !recommended.includes(t.id)),
@@ -203,7 +205,7 @@ export default function TemplatePage() {
         <p className={styles.subtitle}>
           We'll generate a complete website in your chosen style — instantly, using your business info.
         </p>
-        {recommended.length < TEMPLATES.length && (
+        {hasMatch && (
           <div className={styles.recommendedNote}>
             ✦ Recommended for your industry shown first
           </div>
@@ -222,7 +224,7 @@ export default function TemplatePage() {
               onClick={() => setSelected(t.id)}
               style={{ "--accent": t.color } as React.CSSProperties}
             >
-              {isRecommended && (
+              {isRecommended && hasMatch && (
                 <div className={styles.recommendedBadge}>Recommended</div>
               )}
               <div className={styles.colorSwatch} style={{ background: t.color }} />
