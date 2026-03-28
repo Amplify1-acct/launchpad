@@ -44,7 +44,7 @@ const SCENARIOS = [
     industry: "Dental Office",
     city: "San Diego, CA",
     services: ["General Dentistry", "Teeth Whitening", "Invisalign"],
-    template: "professional",
+    template: "dental",
     heroHeadline: "Modern Dentistry\nin San Diego",
     heroCopy: "Coastal Dental Studio offers compassionate, comprehensive dental care for the whole family in a comfortable, modern setting.",
     stats: [["15+", "Years Practice"], ["3,000+", "Happy Patients"], ["99%", "Satisfaction"]],
@@ -78,7 +78,7 @@ const SCENARIOS = [
     industry: "Financial Advisory",
     city: "Denver, CO",
     services: ["Retirement Planning", "Investment Management", "Estate Planning"],
-    template: "professional",
+    template: "financial",
     heroHeadline: "Wealth Management\nfor Colorado Families",
     heroCopy: "Summit Financial helps individuals and families in Denver build, protect, and transfer wealth with personalized financial strategies.",
     stats: [["$200M+", "Assets Managed"], ["25+", "Years Experience"], ["300+", "Families Served"]],
@@ -105,65 +105,54 @@ const TOTAL = Object.values(STEP_DURATIONS).reduce((a, b) => a + b, 0);
 
 // ── Site preview mockup — editorial professional style ─────────────────────
 function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
-  const isProf = scenario.template === "professional";
   const ac = scenario.accentColor;
   const headLines = scenario.heroHeadline.split("\n");
 
-  if (isProf) {
+  // ── BAKERY: Warm editorial, split hero, serif, cream background ──────────
+  if (scenario.template === "bakery") {
     return (
-      <div style={{ fontFamily: "'Georgia', serif", background: "#f5f2ed", height: "100%", overflowY: "auto", fontSize: 13 }}>
-        {/* Nav */}
-        <div style={{ background: "#fff", borderBottom: "1px solid #e0dbd2", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
-          <div style={{ fontFamily: "Georgia, serif", fontWeight: 700, fontSize: 15, color: "#111" }}>
-            {scenario.business.split(" ")[0]} <em style={{ color: ac, fontStyle: "italic" }}>{scenario.business.split(" ").slice(1).join(" ")}</em>
-          </div>
-          <div style={{ display: "flex", gap: 20, fontSize: 10, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", color: "#6a6a62" }}>
-            <span>Home</span>
-            <span style={{ color: ac, fontWeight: 700 }}>{scenario.navHighlight}</span>
-            <span>About</span><span>Contact</span>
-            <span style={{ background: "#111", color: "#fff", padding: "4px 10px", borderRadius: 1, fontSize: 9 }}>{scenario.cta}</span>
+      <div style={{ fontFamily: "Georgia, serif", background: "#faf6f1", height: "100%", overflowY: "auto" }}>
+        <div style={{ background: "#faf6f1", borderBottom: "1px solid #e8ddd2", padding: "0 1.5rem", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
+          <div style={{ fontStyle: "italic", fontWeight: 700, fontSize: 13, color: "#2c1810" }}>{scenario.business}</div>
+          <div style={{ display: "flex", gap: 16, fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", color: "#8a7060" }}>
+            {["Our Breads", scenario.navHighlight, "Visit Us", "Subscriptions"].map((l, i) => (
+              <span key={i} style={{ color: i === 1 ? ac : undefined, borderBottom: i === 1 ? `1px solid ${ac}` : undefined, paddingBottom: i === 1 ? 2 : undefined }}>{l}</span>
+            ))}
           </div>
         </div>
-        {/* Hero */}
-        <div style={{ background: "#1a1a18", padding: "2.5rem 2rem", display: "flex", gap: "2rem", alignItems: "center" }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 10 }}>
-              {scenario.city} · Est. 2008
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+          <div style={{ padding: "2.5rem 1.5rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: 22, color: ac, lineHeight: 1.2, fontWeight: 700, marginBottom: 12 }}>
+              {headLines[0]}<br/><em>{headLines[1]}</em>
             </div>
-            <div style={{ fontFamily: "Georgia, serif", fontSize: 24, color: "#fff", lineHeight: 1.15, marginBottom: 12, fontWeight: 700 }}>
-              {headLines[0]}{headLines[1] ? <><br/>{headLines[1]}</> : null}
-            </div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, maxWidth: 280, marginBottom: 16 }}>
-              {scenario.heroCopy}
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <span style={{ background: ac, color: "#fff", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>{scenario.cta}</span>
-              <span style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)", padding: "7px 14px", fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>Our Services</span>
-            </div>
+            <p style={{ fontSize: 10, color: "#6b5a4e", lineHeight: 1.7, maxWidth: 200 }}>{scenario.heroCopy}</p>
+            <div style={{ marginTop: 16, display: "inline-block", background: ac, color: "#fff", padding: "6px 14px", fontSize: 9, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", width: "fit-content" }}>{scenario.cta}</div>
           </div>
-          <div style={{ width: 220, alignSelf: "stretch", borderRadius: 3, flexShrink: 0, overflow: "hidden", marginRight: "-2rem", marginTop: "-2.5rem", marginBottom: "-2.5rem" }}>
-            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.55 }} />
+          <div style={{ position: "relative", minHeight: 200, overflow: "hidden" }}>
+            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ position: "absolute", bottom: 12, left: 12, right: 12, background: "rgba(44,24,16,0.88)", padding: "8px 12px" }}>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.75)", fontStyle: "italic", lineHeight: 1.5 }}>"The table is where the soul of the community is fed."</div>
+              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", marginTop: 3, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>— The Baker's Note</div>
+            </div>
           </div>
         </div>
-        {/* Stats */}
-        <div style={{ background: ac, display: "flex", padding: "1rem 2rem" }}>
+        <div style={{ background: ac, display: "flex", padding: "0.75rem 1.5rem" }}>
           {scenario.stats.map(([v, l], i) => (
-            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < scenario.stats.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
-              <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#fff", fontWeight: 700 }}>{v}</div>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
+            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+              <div style={{ fontSize: 15, color: "#fff", fontWeight: 700 }}>{v}</div>
+              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.6)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </div>
-        {/* Services */}
-        <div style={{ padding: "2rem", background: "#f5f2ed" }}>
-          <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 6 }}>{scenario.sectionLabel}</div>
-          <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#111", marginBottom: 16, fontWeight: 700 }}>{scenario.sectionHeading}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+        <div style={{ padding: "1.5rem" }}>
+          <div style={{ fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 6 }}>{scenario.sectionLabel}</div>
+          <div style={{ fontSize: 16, color: "#2c1810", marginBottom: 12, fontWeight: 700 }}>{scenario.sectionHeading}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
             {scenario.services.map((s, i) => (
-              <div key={i} style={{ background: "#fff", border: "1px solid #e0dbd2", padding: "1rem", borderRadius: 2 }}>
-                <div style={{ fontSize: 13, fontFamily: "Georgia, serif", fontWeight: 700, color: "#111", marginBottom: 4 }}>{s}</div>
-                <div style={{ fontSize: 10, color: "#6a6a62", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
-                <div style={{ fontSize: 9, color: ac, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 8 }}>Learn more →</div>
+              <div key={i} style={{ background: "#fff", border: "1px solid #e8ddd2", padding: "0.75rem" }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2c1810", marginBottom: 3 }}>{s}</div>
+                <div style={{ fontSize: 9, color: "#8a7060", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
+                <div style={{ fontSize: 8, color: ac, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", marginTop: 6 }}>Learn more →</div>
               </div>
             ))}
           </div>
@@ -172,60 +161,57 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
     );
   }
 
-  // Bakery template
-  if (scenario.template === "bakery") {
+  // ── TRADES: Full-bleed dark hero, bold yellow/green accent, utility ───────
+  if (scenario.template === "trades") {
     return (
-      <div style={{ fontFamily: "'Georgia', serif", background: "#faf6f1", height: "100%", overflowY: "auto", fontSize: 13 }}>
-        {/* Nav */}
-        <div style={{ background: "#faf6f1", borderBottom: "1px solid #e8ddd2", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
-          <div style={{ fontFamily: "Georgia, serif", fontWeight: 700, fontSize: 14, color: "#2c1810", fontStyle: "italic" }}>
-            {scenario.business}
-          </div>
-          <div style={{ display: "flex", gap: 20, fontSize: 10, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", color: "#8a7060" }}>
-            <span>Our Breads</span>
-            <span style={{ color: ac, fontWeight: 700, borderBottom: "1px solid currentColor", paddingBottom: 2 }}>{scenario.navHighlight}</span>
-            <span>Visit Us</span>
-            <span>Subscriptions</span>
-          </div>
-        </div>
-        {/* Hero - split layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 200, background: "#faf6f1" }}>
-          <div style={{ padding: "2.5rem 2rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontFamily: "Georgia, serif", fontSize: 26, color: ac, lineHeight: 1.2, fontWeight: 700, marginBottom: 12 }}>
-              <span>{scenario.heroHeadline.split("\n")[0]}</span><br/>
-              <em style={{ fontStyle: "italic" }}>{scenario.heroHeadline.split("\n")[1]}</em>
+      <div style={{ fontFamily: "'Arial', sans-serif", background: "#f0f0ee", height: "100%", overflowY: "auto" }}>
+        {/* Full bleed hero */}
+        <div style={{ position: "relative", minHeight: 260, overflow: "hidden" }}>
+          <img src={scenario.image} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.3))" }} />
+          {/* Nav overlay */}
+          <div style={{ position: "relative", padding: "0 1.5rem", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+            <div style={{ fontWeight: 900, fontSize: 14, color: "#fff", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              {scenario.business.split(" ")[0]}<span style={{ color: ac }}>{scenario.business.split(" ").slice(1).join(" ")}</span>
             </div>
-            <p style={{ fontSize: 11, color: "#6b5a4e", lineHeight: 1.7, maxWidth: 220 }}>{scenario.heroCopy}</p>
+            <div style={{ background: ac, color: "#111", padding: "5px 12px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>{scenario.cta}</div>
           </div>
-          <div style={{ position: "relative", overflow: "hidden", minHeight: 180 }}>
-            <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, background: "rgba(44,24,16,0.85)", padding: "10px 14px", borderRadius: 2 }}>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontStyle: "italic", lineHeight: 1.5 }}>
-                "The table is where the soul of the community is fed."
-              </div>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.08em" }}>— The Baker's Note</div>
+          {/* Hero content */}
+          <div style={{ position: "relative", padding: "1.5rem" }}>
+            <div style={{ background: ac, color: "#111", display: "inline-block", padding: "2px 8px", fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Serving {scenario.city}</div>
+            <div style={{ fontWeight: 900, fontSize: 32, color: "#fff", textTransform: "uppercase", lineHeight: 1, letterSpacing: "-0.01em", marginBottom: 10 }}>
+              {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1] || ""}</span>
+            </div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", marginBottom: 16, lineHeight: 1.5, maxWidth: 260 }}>{scenario.heroCopy}</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <span style={{ background: ac, color: "#111", padding: "7px 16px", fontSize: 9, fontWeight: 800, textTransform: "uppercase" }}>{scenario.cta}</span>
+              <span style={{ border: "2px solid rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.6)", padding: "6px 14px", fontSize: 9, fontWeight: 700, textTransform: "uppercase" }}>Our Work</span>
             </div>
           </div>
         </div>
         {/* Stats bar */}
-        <div style={{ background: ac, display: "flex", padding: "0.85rem 2rem" }}>
-          {scenario.stats.map((stat: string[], i: number) => { const [v, l] = stat; return (
-            <div key={i} style={{ flex: 1, textAlign: "center", borderRight: i < scenario.stats.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
-              <div style={{ fontFamily: "Georgia, serif", fontSize: 17, color: "#fff", fontWeight: 700 }}>{v}</div>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
+        <div style={{ background: "#111", display: "flex" }}>
+          {scenario.stats.map(([v, l], i) => (
+            <div key={i} style={{ flex: 1, textAlign: "center", padding: "0.75rem", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
+              <div style={{ fontWeight: 900, fontSize: 18, color: ac, textTransform: "uppercase" }}>{v}</div>
+              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
             </div>
-          ); })}
+          ))}
         </div>
-        {/* Services */}
-        <div style={{ padding: "2rem" }}>
-          <div style={{ fontSize: 9, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 6 }}>{scenario.sectionLabel}</div>
-          <div style={{ fontFamily: "Georgia, serif", fontSize: 18, color: "#2c1810", marginBottom: 16, fontWeight: 700 }}>{scenario.sectionHeading}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-            {scenario.services.map((s: string, i: number) => (
-              <div key={i} style={{ background: "#fff", border: "1px solid #e8ddd2", padding: "1rem", borderRadius: 2 }}>
-                <div style={{ fontSize: 13, fontFamily: "Georgia, serif", fontWeight: 700, color: "#2c1810", marginBottom: 4 }}>{s}</div>
-                <div style={{ fontSize: 10, color: "#8a7060", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
-                <div style={{ fontSize: 9, color: ac, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 8 }}>Learn more →</div>
+        {/* Services - horizontal cards */}
+        <div style={{ padding: "1.5rem" }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 }}>
+            <div style={{ fontWeight: 900, fontSize: 14, textTransform: "uppercase", color: "#111" }}>{scenario.sectionHeading}</div>
+            <div style={{ fontSize: 8, color: ac, fontWeight: 800, textTransform: "uppercase" }}>All Services →</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {scenario.services.map((s, i) => (
+              <div key={i} style={{ background: "#fff", borderLeft: `3px solid ${ac}`, padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 11, textTransform: "uppercase", color: "#111" }}>{s}</div>
+                  <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>{scenario.serviceDesc}</div>
+                </div>
+                <div style={{ fontSize: 10, color: ac, fontWeight: 800 }}>→</div>
               </div>
             ))}
           </div>
@@ -234,57 +220,182 @@ function SiteMockup({ scenario }: { scenario: typeof SCENARIOS[0] }) {
     );
   }
 
-
-  // Trades template
-  return (
-    <div style={{ fontFamily: "'Barlow', sans-serif", background: "#f7f7f5", height: "100%", overflowY: "auto", fontSize: 13 }}>
-      <div style={{ background: "#111", padding: "0 2rem", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0 }}>
-        <div style={{ fontWeight: 900, fontSize: 15, color: "#fff", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          {scenario.business.split(" ")[0]}<span style={{ color: ac }}>{scenario.business.split(" ").slice(1).join(" ")}</span>
+  // ── DENTAL: Centered clean white, soft cards, minimal ────────────────────
+  if (scenario.template === "dental") {
+    return (
+      <div style={{ fontFamily: "'Helvetica Neue', sans-serif", background: "#fff", height: "100%", overflowY: "auto" }}>
+        <div style={{ background: "#fff", borderBottom: "1px solid #f0f0f0", padding: "0 1.5rem", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: "#111", letterSpacing: "-0.01em" }}>{scenario.business}</div>
+          <div style={{ background: ac, color: "#fff", padding: "5px 12px", fontSize: 9, fontWeight: 700, borderRadius: 20 }}>{scenario.cta}</div>
         </div>
-        <div style={{ display: "flex", gap: 20, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.45)" }}>
-          <span>Home</span><span style={{ color: ac, fontWeight: 800 }}>{scenario.navHighlight}</span><span>About</span>
-          <span style={{ background: ac, color: "#111", padding: "4px 10px", fontWeight: 800, borderRadius: 1 }}>{scenario.cta}</span>
-        </div>
-      </div>
-      <div style={{ background: "#111", padding: "2.5rem 2rem", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${scenario.image})`, backgroundSize: "cover", opacity: 0.15 }} />
-        <div style={{ position: "relative" }}>
-          <div style={{ background: ac, color: "#111", display: "inline-block", padding: "3px 10px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Serving {scenario.city}</div>
-          <div style={{ fontWeight: 900, fontSize: 28, color: "#fff", textTransform: "uppercase", lineHeight: 1.05, letterSpacing: "-0.01em", marginBottom: 12 }}>
-            {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1] || "Experts"}</span>
+        {/* Centered hero */}
+        <div style={{ textAlign: "center", padding: "2.5rem 2rem 1.5rem", background: `linear-gradient(180deg, ${ac}08 0%, #fff 100%)` }}>
+          <div style={{ display: "inline-block", background: `${ac}15`, color: ac, fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", padding: "4px 12px", borderRadius: 20, marginBottom: 14 }}>
+            {scenario.city}
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginBottom: 16, lineHeight: 1.5 }}>{scenario.heroCopy}</div>
-          <div style={{ display: "flex", gap: 10 }}>
-            <span style={{ background: ac, color: "#111", padding: "7px 16px", fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>{scenario.cta}</span>
-            <span style={{ border: "2px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)", padding: "6px 14px", fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>Our Work</span>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#111", lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10 }}>
+            {headLines[0]}<br/><span style={{ color: ac }}>{headLines[1]}</span>
+          </div>
+          <p style={{ fontSize: 10, color: "#666", lineHeight: 1.7, maxWidth: 280, margin: "0 auto 20px" }}>{scenario.heroCopy}</p>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+            <span style={{ background: ac, color: "#fff", padding: "8px 18px", fontSize: 9, fontWeight: 700, borderRadius: 20 }}>{scenario.cta}</span>
+            <span style={{ border: `1px solid ${ac}`, color: ac, padding: "7px 16px", fontSize: 9, fontWeight: 600, borderRadius: 20 }}>Our Services</span>
           </div>
         </div>
-      </div>
-      <div style={{ background: ac, display: "flex", padding: "0.85rem 2rem" }}>
-        {scenario.stats.map(([v, l], i) => (
-          <div key={i} style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontWeight: 900, fontSize: 17, color: "#111", textTransform: "uppercase" }}>{v}</div>
-            <div style={{ fontSize: 9, color: "rgba(0,0,0,0.5)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 1 }}>{l}</div>
-          </div>
-        ))}
-      </div>
-      <div style={{ padding: "1.5rem 2rem" }}>
-        <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: ac, fontWeight: 800, marginBottom: 6 }}>{scenario.sectionLabel}</div>
-        <div style={{ fontWeight: 900, fontSize: 18, textTransform: "uppercase", color: "#111", marginBottom: 14 }}>{scenario.sectionHeading}</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-          {scenario.services.map((s, i) => (
-            <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e0", padding: "1rem" }}>
-              <div style={{ fontWeight: 800, fontSize: 12, textTransform: "uppercase", color: "#111", marginBottom: 4 }}>{s}</div>
-              <div style={{ fontSize: 10, color: "#666", lineHeight: 1.5 }}>{scenario.serviceDesc}</div>
-              <div style={{ fontSize: 9, color: ac, fontWeight: 800, textTransform: "uppercase", marginTop: 8 }}>Learn more →</div>
+        {/* Stats pills */}
+        <div style={{ display: "flex", gap: 8, padding: "1rem 1.5rem", justifyContent: "center" }}>
+          {scenario.stats.map(([v, l], i) => (
+            <div key={i} style={{ background: "#f8f8f8", border: "1px solid #eee", borderRadius: 12, padding: "10px 16px", textAlign: "center", flex: 1 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: ac }}>{v}</div>
+              <div style={{ fontSize: 8, color: "#999", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
             </div>
           ))}
+        </div>
+        {/* Service cards — 3 across */}
+        <div style={{ padding: "0.5rem 1.5rem 1.5rem" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#111", marginBottom: 10, textAlign: "center" }}>{scenario.sectionHeading}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            {scenario.services.map((s, i) => (
+              <div key={i} style={{ background: "#f8f9ff", border: "1px solid #eef0ff", borderRadius: 10, padding: "1rem", textAlign: "center" }}>
+                <div style={{ width: 28, height: 28, background: `${ac}15`, borderRadius: "50%", margin: "0 auto 8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ width: 10, height: 10, background: ac, borderRadius: "50%" }} />
+                </div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#111", marginBottom: 3 }}>{s}</div>
+                <div style={{ fontSize: 8, color: "#999", lineHeight: 1.4 }}>{scenario.serviceDesc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Photo strip */}
+        <div style={{ height: 100, overflow: "hidden" }}>
+          <img src={scenario.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── FINANCIAL: Dark navy, data-forward, minimal, authoritative ────────────
+  if (scenario.template === "financial") {
+    return (
+      <div style={{ fontFamily: "'Helvetica Neue', sans-serif", background: "#f4f6f9", height: "100%", overflowY: "auto" }}>
+        {/* Dark nav */}
+        <div style={{ background: "#0f1f3d", padding: "0 1.5rem", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: "#fff", letterSpacing: "-0.01em" }}>{scenario.business}</div>
+          <div style={{ display: "flex", gap: 16, fontSize: 9, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {["Services", "About", "Contact"].map((l, i) => <span key={i}>{l}</span>)}
+            <span style={{ background: ac, color: "#fff", padding: "4px 10px", borderRadius: 2 }}>{scenario.cta}</span>
+          </div>
+        </div>
+        {/* Hero - left aligned, dark panel */}
+        <div style={{ background: "#0f1f3d", padding: "2rem 1.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: ac, marginBottom: 10 }}>{scenario.city}</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10 }}>
+              {headLines[0]}<br/>{headLines[1]}
+            </div>
+            <p style={{ fontSize: 9, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, marginBottom: 16 }}>{scenario.heroCopy}</p>
+            <span style={{ background: ac, color: "#fff", padding: "7px 16px", fontSize: 9, fontWeight: 700, borderRadius: 3 }}>{scenario.cta}</span>
+          </div>
+          {/* Stats grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {scenario.stats.map(([v, l], i) => (
+              <div key={i} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "12px" }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: ac }}>{v}</div>
+                <div style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 3 }}>{l}</div>
+              </div>
+            ))}
+            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "12px", gridColumn: "span 2" }}>
+              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.3)", marginBottom: 6 }}>Portfolio Performance</div>
+              <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 30 }}>
+                {[40,55,45,70,65,80,75,90,85,95].map((h, i) => (
+                  <div key={i} style={{ flex: 1, background: ac, height: `${h}%`, borderRadius: 2, opacity: i === 9 ? 1 : 0.4 }} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Services — horizontal list */}
+        <div style={{ padding: "1.5rem" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#0f1f3d", marginBottom: 12 }}>{scenario.sectionHeading}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {scenario.services.map((s, i) => (
+              <div key={i} style={{ background: "#fff", border: "1px solid #e8edf5", borderRadius: 6, padding: "12px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 32, height: 32, background: `${ac}12`, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <div style={{ width: 12, height: 12, background: ac, borderRadius: 2 }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#0f1f3d" }}>{s}</div>
+                  <div style={{ fontSize: 9, color: "#888", marginTop: 2 }}>{scenario.serviceDesc}</div>
+                </div>
+                <div style={{ fontSize: 9, color: ac, fontWeight: 700 }}>→</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── PROFESSIONAL (Law): Editorial sidebar, dark, serif ────────────────────
+  const ac2 = scenario.accentColor;
+  return (
+    <div style={{ fontFamily: "Georgia, serif", background: "#f5f2ed", height: "100%", overflowY: "auto", display: "grid", gridTemplateColumns: "72px 1fr", minHeight: "100%" }}>
+      {/* Vertical sidebar */}
+      <div style={{ background: "#1a1a18", display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem 0", gap: 20, position: "sticky", top: 0, height: "100%" }}>
+        <div style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10, fontWeight: 700, color: "#fff", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          {scenario.business.split(" ")[0]}
+        </div>
+        <div style={{ width: 1, flex: 1, background: "rgba(255,255,255,0.1)" }} />
+        {["H", "S", "A", "C"].map((l, i) => (
+          <div key={i} style={{ fontSize: 9, color: i === 1 ? ac2 : "rgba(255,255,255,0.3)", fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase" }}>{l}</div>
+        ))}
+        <div style={{ width: 1, flex: 1, background: "rgba(255,255,255,0.1)" }} />
+        <div style={{ width: 28, height: 28, background: ac2, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontSize: 8, color: "#fff", fontWeight: 800, fontFamily: "sans-serif" }}>→</div>
+        </div>
+      </div>
+      {/* Main content */}
+      <div>
+        {/* Hero */}
+        <div style={{ background: "#1a1a18", padding: "2rem 1.5rem", position: "relative", overflow: "hidden" }}>
+          <img src={scenario.image} alt="" style={{ position: "absolute", right: 0, top: 0, height: "100%", width: "45%", objectFit: "cover", opacity: 0.3 }} />
+          <div style={{ position: "relative" }}>
+            <div style={{ fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.15em", color: ac2, marginBottom: 10 }}>{scenario.city} · Est. 2008</div>
+            <div style={{ fontFamily: "Georgia, serif", fontSize: 22, color: "#fff", lineHeight: 1.15, marginBottom: 10, fontWeight: 700 }}>
+              {headLines[0]}<br/><em style={{ color: ac2 }}>{headLines[1]}</em>
+            </div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, maxWidth: 240, marginBottom: 16 }}>{scenario.heroCopy}</div>
+            <span style={{ background: ac2, color: "#fff", padding: "7px 16px", fontSize: 9, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>{scenario.cta}</span>
+          </div>
+        </div>
+        {/* Stats row */}
+        <div style={{ background: ac2, display: "flex" }}>
+          {scenario.stats.map(([v, l], i) => (
+            <div key={i} style={{ flex: 1, textAlign: "center", padding: "0.75rem", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+              <div style={{ fontSize: 16, color: "#fff", fontWeight: 700 }}>{v}</div>
+              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.6)", fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+        {/* Practice areas */}
+        <div style={{ padding: "1.5rem", background: "#f5f2ed" }}>
+          <div style={{ fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: ac2, marginBottom: 6 }}>{scenario.sectionLabel}</div>
+          <div style={{ fontSize: 16, color: "#111", marginBottom: 12, fontWeight: 700 }}>{scenario.sectionHeading}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            {scenario.services.map((s, i) => (
+              <div key={i} style={{ background: "#fff", border: "1px solid #e0dbd2", padding: "0.75rem" }}>
+                <div style={{ fontSize: 11, fontFamily: "Georgia, serif", fontWeight: 700, color: "#111", marginBottom: 3 }}>{s}</div>
+                <div style={{ fontSize: 9, color: "#6a6a62", lineHeight: 1.5, fontFamily: "sans-serif" }}>{scenario.serviceDesc}</div>
+                <div style={{ fontSize: 8, color: ac2, fontFamily: "sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 6 }}>Learn more →</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 // ── Main Demo component ────────────────────────────────────────────────────
 export default function Demo() {
