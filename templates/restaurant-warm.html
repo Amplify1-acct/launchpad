@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root { --cream: #faf7f2; --warm: #c8892a; --warm-light: #f5e8d0; --dark: #1c1208; --mid: #6b5a3e; }
+  body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--dark); -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(250,247,242,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid #ecddc8; z-index: 50; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--dark); letter-spacing: -0.01em; }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 400; letter-spacing: 0.04em; }
+  .nav-links a { text-decoration: none; color: var(--mid); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--dark); }
+  .btn-reserve { background: var(--warm); color: #fff; padding: 10px 22px; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; }
+  main { padding-top: 64px; }
+
+  /* Hero */
+  .hero { position: relative; height: 92vh; overflow: hidden; display: flex; align-items: flex-end; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,18,8,0.85) 0%, rgba(28,18,8,0.2) 60%, transparent 100%); }
+  .hero-content { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 0 40px 80px; width: 100%; }
+  .hero-tag { display: inline-block; background: var(--warm); color: #fff; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 12px; margin-bottom: 20px; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 700; color: #fff; line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 16px; max-width: 700px; }
+  .hero h1 em { color: #e8c96a; font-style: italic; }
+  .hero p { font-size: 16px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
+  .hero-ctas { display: flex; gap: 16px; align-items: center; }
+  .btn-hero-primary { background: var(--warm); color: #fff; padding: 14px 32px; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; border: none; cursor: pointer; }
+  .btn-hero-secondary { border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 13px 28px; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; background: none; cursor: pointer; }
+  .hero-info { display: flex; gap: 40px; margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .hero-info-item .label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+  .hero-info-item .value { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: #fff; }
+
+  /* Story */
+  .story { padding: 100px 40px; background: var(--cream); }
+  .story-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .story-img { position: relative; }
+  .story-img img { width: 100%; height: 520px; object-fit: cover; }
+  .story-quote { position: absolute; bottom: -24px; right: -24px; background: var(--warm); padding: 24px 28px; max-width: 260px; }
+  .story-quote p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #fff; line-height: 1.5; }
+  .story-quote cite { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); margin-top: 10px; display: block; font-style: normal; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warm); margin-bottom: 16px; display: block; }
+  .story h2 { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; color: var(--dark); line-height: 1.15; margin-bottom: 24px; }
+  .story p { font-size: 15px; color: var(--mid); line-height: 1.8; margin-bottom: 20px; }
+
+  /* Menu highlights */
+  .menu { padding: 100px 40px; background: var(--dark); }
+  .menu-inner { max-width: 1200px; margin: 0 auto; }
+  .menu h2 { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 60px; }
+  .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #2a1e0e; }
+  .menu-item { background: #1c1208; padding: 0; overflow: hidden; transition: background 0.3s; }
+  .menu-item:hover { background: #251a0a; }
+  .menu-item img { width: 100%; height: 220px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s; }
+  .menu-item:hover img { opacity: 1; }
+  .menu-item-body { padding: 24px; }
+  .menu-item .category { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--warm); margin-bottom: 8px; }
+  .menu-item .dish { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #fff; margin-bottom: 8px; }
+  .menu-item .desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 12px; }
+  .menu-item .price { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #e8c96a; font-weight: 600; }
+
+  /* Hours & Info */
+  .info { padding: 80px 40px; background: var(--warm-light); }
+  .info-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+  .info-block h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--dark); margin-bottom: 16px; }
+  .info-block p, .info-block a { font-size: 14px; color: var(--mid); line-height: 1.8; text-decoration: none; display: block; }
+
+  /* Contact / Reserve */
+  .reserve { padding: 100px 40px; background: var(--cream); border-top: 1px solid #ecddc8; }
+  .reserve-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .reserve h2 { font-family: 'Cormorant Garamond', serif; font-size: 48px; color: var(--dark); margin-bottom: 16px; }
+  .reserve p { font-size: 15px; color: var(--mid); margin-bottom: 40px; line-height: 1.7; }
+  .reserve-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+  .form-field input, .form-field select { border: 1px solid #ecddc8; background: #fff; padding: 12px 14px; font-size: 14px; font-family: 'Jost', sans-serif; color: var(--dark); outline: none; width: 100%; border-radius: 0; transition: border-color 0.2s; }
+  .form-field input:focus, .form-field select:focus { border-color: var(--warm); }
+  .form-field.full { grid-column: span 2; }
+  .btn-reserve-full { background: var(--warm); color: #fff; width: 100%; padding: 16px; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; border: none; cursor: pointer; margin-top: 8px; grid-column: span 2; }
+
+  footer { background: var(--dark); padding: 48px 40px; text-align: center; }
+  footer .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #fff; margin-bottom: 16px; }
+  footer .links { display: flex; justify-content: center; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+  footer .links a { text-decoration: none; color: rgba(255,255,255,0.35); }
+  footer .copy { font-size: 11px; color: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">{{business_name}}</div>
+    <div class="nav-links">
+      <a href="#" class="active">Menu</a>
+      <a href="#">Story</a>
+      <a href="#">Events</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="btn-reserve">{{cta}}</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <img src="{{hero_image_url}}" alt="{{business_name}}"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-tag">{{city}}, {{state}}</div>
+      <h1>{{hero_headline}}<br/><em>{{hero_headline_italic}}</em></h1>
+      <p>{{hero_subheadline}}</p>
+      <div class="hero-ctas">
+        <button class="btn-hero-primary">{{cta}}</button>
+        <button class="btn-hero-secondary">View Menu</button>
+      </div>
+      <div class="hero-info">
+        <div class="hero-info-item"><div class="label">Hours</div><div class="value">{{hours_short}}</div></div>
+        <div class="hero-info-item"><div class="label">Location</div><div class="value">{{address_short}}</div></div>
+        <div class="hero-info-item"><div class="label">Cuisine</div><div class="value">{{cuisine_type}}</div></div>
+        <div class="hero-info-item"><div class="label">Phone</div><div class="value">{{phone}}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="story">
+    <div class="story-inner">
+      <div class="story-img">
+        <img src="{{about_image_url}}" alt="{{business_name}}"/>
+        <div class="story-quote">
+          <p>"{{chef_quote}}"</p>
+          <cite>— {{chef_name}}, {{chef_title}}</cite>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">Our Story</span>
+        <h2>{{about_headline}}</h2>
+        <p>{{about_paragraph_1}}</p>
+        <p>{{about_paragraph_2}}</p>
+        <button style="background:none; border: 1px solid var(--warm); color: var(--warm); padding: 12px 28px; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin-top: 16px;">Meet The Team</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu Highlights -->
+  <section class="menu">
+    <div class="menu-inner">
+      <span class="eyebrow" style="color: var(--warm);">From Our Kitchen</span>
+      <h2>{{menu_heading}}</h2>
+      <div class="menu-grid">
+        <div class="menu-item"><img src="{{dish_1_image_url}}" alt="{{dish_1_name}}"/><div class="menu-item-body"><div class="category">{{dish_1_category}}</div><div class="dish">{{dish_1_name}}</div><div class="desc">{{dish_1_description}}</div><div class="price">{{dish_1_price}}</div></div></div>
+        <div class="menu-item"><img src="{{dish_2_image_url}}" alt="{{dish_2_name}}"/><div class="menu-item-body"><div class="category">{{dish_2_category}}</div><div class="dish">{{dish_2_name}}</div><div class="desc">{{dish_2_description}}</div><div class="price">{{dish_2_price}}</div></div></div>
+        <div class="menu-item"><img src="{{dish_3_image_url}}" alt="{{dish_3_name}}"/><div class="menu-item-body"><div class="category">{{dish_3_category}}</div><div class="dish">{{dish_3_name}}</div><div class="desc">{{dish_3_description}}</div><div class="price">{{dish_3_price}}</div></div></div>
+        <div class="menu-item"><img src="{{dish_4_image_url}}" alt="{{dish_4_name}}"/><div class="menu-item-body"><div class="category">{{dish_4_category}}</div><div class="dish">{{dish_4_name}}</div><div class="desc">{{dish_4_description}}</div><div class="price">{{dish_4_price}}</div></div></div>
+        <div class="menu-item"><img src="{{dish_5_image_url}}" alt="{{dish_5_name}}"/><div class="menu-item-body"><div class="category">{{dish_5_category}}</div><div class="dish">{{dish_5_name}}</div><div class="desc">{{dish_5_description}}</div><div class="price">{{dish_5_price}}</div></div></div>
+        <div class="menu-item"><img src="{{dish_6_image_url}}" alt="{{dish_6_name}}"/><div class="menu-item-body"><div class="category">{{dish_6_category}}</div><div class="dish">{{dish_6_name}}</div><div class="desc">{{dish_6_description}}</div><div class="price">{{dish_6_price}}</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info -->
+  <section class="info">
+    <div class="info-inner">
+      <div class="info-block">
+        <h3>Hours</h3>
+        <p>{{hours_weekday}}</p>
+        <p>{{hours_weekend}}</p>
+        <p>{{hours_closed}}</p>
+      </div>
+      <div class="info-block">
+        <h3>Location</h3>
+        <p>{{address}}</p>
+        <p>{{city}}, {{state}} {{zip}}</p>
+        <a href="#">Get Directions →</a>
+      </div>
+      <div class="info-block">
+        <h3>Reservations</h3>
+        <p>{{phone}}</p>
+        <p>{{email}}</p>
+        <a href="#">Book Online →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reserve -->
+  <section class="reserve">
+    <div class="reserve-inner">
+      <span class="eyebrow">Join Us</span>
+      <h2>{{contact_heading}}</h2>
+      <p>{{contact_description}}</p>
+      <form class="reserve-form">
+        <div class="form-field"><label>Name</label><input type="text" placeholder="Your name"/></div>
+        <div class="form-field"><label>Phone</label><input type="tel" placeholder="{{phone}}"/></div>
+        <div class="form-field"><label>Date</label><input type="date"/></div>
+        <div class="form-field"><label>Party Size</label><select><option>1-2 Guests</option><option>3-4 Guests</option><option>5-6 Guests</option><option>7+ Guests</option></select></div>
+        <div class="form-field full"><label>Special Requests</label><input type="text" placeholder="Allergies, occasions, preferences..."/></div>
+        <button class="btn-reserve-full">{{cta}}</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo">{{business_name}}</div>
+  <div class="links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Accessibility</a></div>
+  <div class="copy">© {{year}} {{business_name}}. {{address}}, {{city}}, {{state}}.</div>
+</footer>
+
+</body>
+</html>
