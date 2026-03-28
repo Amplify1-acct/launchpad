@@ -6,7 +6,8 @@ const plans = [
   {
     name: "Starter",
     price: "$299",
-    desc: "Perfect for getting your business online for the first time.",
+    period: "/mo",
+    desc: "Get your business online fast.",
     features: [
       "5-page professional website",
       "2 blog posts per month",
@@ -16,11 +17,13 @@ const plans = [
       "Monthly performance report",
     ],
     popular: false,
+    cta: "Get started",
   },
   {
     name: "Growth",
     price: "$599",
-    desc: "Ideal for businesses ready to grow their online presence fast.",
+    period: "/mo",
+    desc: "Everything you need to grow online.",
     features: [
       "10-page website + blog",
       "4 blog posts per month",
@@ -32,11 +35,13 @@ const plans = [
       "Priority support",
     ],
     popular: true,
+    cta: "Get started",
   },
   {
     name: "Premium",
     price: "$999",
-    desc: "Full-service digital presence for established businesses.",
+    period: "/mo",
+    desc: "Full-service for established businesses.",
     features: [
       "Unlimited pages + ecommerce",
       "Weekly blog posts",
@@ -48,54 +53,58 @@ const plans = [
       "Dedicated account manager",
     ],
     popular: false,
+    cta: "Get started",
   },
 ];
 
 export default function Pricing() {
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section className={styles.section} id="pricing">
       <div className={styles.inner}>
         <div className={styles.header}>
-          <p className={styles.label}>Simple, transparent pricing</p>
-          <h2 className={styles.title}>One flat monthly fee, no surprises</h2>
+          <span className={styles.label}>Pricing</span>
+          <h2 className={styles.title}>Simple, transparent pricing</h2>
           <p className={styles.sub}>
-            Website, blog, social, and SEO — all included. Pick your plan,
-            cancel any time.
+            No setup fees. No long-term contracts. Cancel anytime.
           </p>
         </div>
+
         <div className={styles.grid}>
           {plans.map((p) => (
-            <div
-              key={p.name}
-              className={`${styles.card} ${p.popular ? styles.popular : ""}`}
-            >
-              {p.popular && <div className={styles.popBadge}>Most popular</div>}
+            <div key={p.name} className={`${styles.card} ${p.popular ? styles.popular : ""}`}>
+              {p.popular && <div className={styles.popularBadge}>Most popular</div>}
               <div className={styles.planName}>{p.name}</div>
-              <div className={styles.price}>
-                {p.price}<span>/mo</span>
+              <div className={styles.priceRow}>
+                <span className={styles.price}>{p.price}</span>
+                <span className={styles.period}>{p.period}</span>
               </div>
-              <div className={styles.planDesc}>{p.desc}</div>
+              <p className={styles.planDesc}>{p.desc}</p>
               <ul className={styles.features}>
                 {p.features.map((f) => (
-                  <li key={f}>
-                    <div className={styles.check}>✓</div>
+                  <li key={f} className={styles.feature}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     {f}
                   </li>
                 ))}
               </ul>
               <button
-                className={`${styles.btn} ${p.popular ? styles.btnPrimary : ""}`}
+                className={p.popular ? styles.primaryBtn : styles.secondaryBtn}
                 onClick={() => scrollTo("contact")}
               >
-                Get started
+                {p.cta}
               </button>
             </div>
           ))}
         </div>
+
+        <p className={styles.note}>
+          All plans include a 14-day free trial. No credit card required.
+        </p>
       </div>
     </section>
   );
