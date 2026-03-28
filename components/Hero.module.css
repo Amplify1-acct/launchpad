@@ -71,12 +71,14 @@
 
 .h1 {
   font-family: 'Sora', 'DM Sans', system-ui, sans-serif;
-  font-size: clamp(40px, 6vw, 68px);
+  font-size: 48px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: -0.03em;
   color: var(--black);
   margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .accent {
@@ -289,4 +291,14 @@
   .for {
     justify-content: center;
   }
+}
+
+@media (max-width: 900px) {
+  .h1 { font-size: 40px; }
+}
+@media (max-width: 600px) {
+  .h1 { font-size: 30px; }
+}
+@media (max-width: 400px) {
+  .h1 { font-size: 26px; }
 }
