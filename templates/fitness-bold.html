@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root { --orange: #f04e23; --orange-light: #fff0eb; --dark: #0c0c0c; --dark-2: #141414; --mid: #6b7280; }
+  body { font-family: 'Barlow', sans-serif; background: #fff; color: var(--dark); -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(12,12,12,0.97); backdrop-filter: blur(16px); z-index: 50; }
+  .nav-inner { max-width: 1280px; margin: 0 auto; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
+  .logo span { color: var(--orange); }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); }
+  .nav-links a { text-decoration: none; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: #fff; }
+  .btn-orange { background: var(--orange); color: #fff; padding: 10px 22px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; border-radius: 4px; }
+  main { padding-top: 60px; }
+
+  /* Hero */
+  .hero { position: relative; height: 95vh; overflow: hidden; display: flex; align-items: center; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(105deg, rgba(12,12,12,0.88) 0%, rgba(12,12,12,0.5) 55%, rgba(12,12,12,0.15) 100%); }
+  .hero-content { position: relative; z-index: 10; max-width: 1280px; margin: 0 auto; padding: 0 40px; width: 100%; }
+  .hero-tag { display: inline-block; background: var(--orange); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 12px; margin-bottom: 20px; }
+  .hero h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 96px; font-weight: 900; color: #fff; line-height: 0.92; letter-spacing: -0.01em; text-transform: uppercase; margin-bottom: 24px; max-width: 700px; }
+  .hero h1 em { color: var(--orange); font-style: normal; }
+  .hero p { font-size: 17px; color: rgba(255,255,255,0.55); line-height: 1.65; margin-bottom: 36px; max-width: 440px; font-weight: 300; }
+  .hero-ctas { display: flex; gap: 14px; align-items: center; }
+  .btn-hero-primary { background: var(--orange); color: #fff; padding: 16px 36px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: none; cursor: pointer; }
+  .btn-hero-ghost { border: 1.5px solid rgba(255,255,255,0.25); color: #fff; padding: 15px 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: none; cursor: pointer; }
+  .hero-bottom { position: absolute; bottom: 0; left: 0; right: 0; background: var(--orange); }
+  .hero-bottom-inner { max-width: 1280px; margin: 0 auto; padding: 20px 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .hero-stat { text-align: center; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.2); }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat .val { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 900; color: #fff; line-height: 1; }
+  .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* Programs */
+  .programs { padding: 100px 40px; background: #fff; }
+  .programs-inner { max-width: 1280px; margin: 0 auto; }
+  .eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; display: block; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 900; color: var(--dark); text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 48px; line-height: 1; }
+  .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .program-card { position: relative; overflow: hidden; border-radius: 8px; cursor: pointer; }
+  .program-card img { width: 100%; height: 360px; object-fit: cover; transition: transform 0.5s; }
+  .program-card:hover img { transform: scale(1.05); }
+  .program-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,12,0.9) 0%, transparent 55%); }
+  .program-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; }
+  .program-tag { display: inline-block; background: var(--orange); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; margin-bottom: 8px; }
+  .program-name { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 800; color: #fff; text-transform: uppercase; line-height: 1; margin-bottom: 6px; }
+  .program-desc { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+
+  /* About */
+  .about { padding: 100px 40px; background: var(--dark); }
+  .about-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about img { width: 100%; height: 540px; object-fit: cover; border-radius: 8px; }
+  .about h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 56px; font-weight: 900; color: #fff; text-transform: uppercase; line-height: 0.95; margin-bottom: 24px; letter-spacing: -0.01em; }
+  .about h2 em { color: var(--orange); font-style: normal; }
+  .about p { font-size: 15px; color: rgba(255,255,255,0.45); line-height: 1.8; margin-bottom: 20px; font-weight: 300; }
+  .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px; }
+  .feature-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 500; }
+  .feature-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+
+  /* Trainers */
+  .trainers { padding: 100px 40px; background: #f4f5f7; }
+  .trainers-inner { max-width: 1280px; margin: 0 auto; }
+  .trainers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .trainer-card { background: #fff; border-radius: 8px; overflow: hidden; }
+  .trainer-card img { width: 100%; height: 260px; object-fit: cover; object-position: top; filter: grayscale(20%); transition: filter 0.3s; }
+  .trainer-card:hover img { filter: grayscale(0%); }
+  .trainer-body { padding: 18px 20px; }
+  .trainer-name { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; color: var(--dark); text-transform: uppercase; }
+  .trainer-spec { font-size: 12px; color: var(--orange); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .trainer-bio { font-size: 13px; color: var(--mid); margin-top: 8px; line-height: 1.6; }
+
+  /* Pricing */
+  .pricing { padding: 100px 40px; background: #fff; }
+  .pricing-inner { max-width: 1280px; margin: 0 auto; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .price-card { border: 2px solid #eaecf0; border-radius: 12px; padding: 36px; transition: border-color 0.2s; }
+  .price-card.featured { border-color: var(--orange); background: var(--dark); }
+  .price-card .plan { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .price-card .price { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 900; color: var(--dark); line-height: 1; margin-bottom: 4px; }
+  .price-card.featured .price { color: #fff; }
+  .price-card .period { font-size: 13px; color: var(--mid); margin-bottom: 24px; font-weight: 500; }
+  .price-card.featured .period { color: rgba(255,255,255,0.4); }
+  .price-card .features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .price-card .features li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--mid); }
+  .price-card.featured .features li { color: rgba(255,255,255,0.6); }
+  .price-card .features li::before { content: '✓'; color: var(--orange); font-weight: 700; }
+  .btn-plan { width: 100%; padding: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: 2px solid var(--dark); background: none; color: var(--dark); cursor: pointer; transition: all 0.2s; }
+  .btn-plan:hover { background: var(--dark); color: #fff; }
+  .btn-plan.featured { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  /* Contact */
+  .contact { padding: 100px 40px; background: var(--orange); }
+  .contact-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .contact h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 64px; font-weight: 900; color: #fff; text-transform: uppercase; line-height: 0.95; margin-bottom: 20px; }
+  .contact p { font-size: 17px; color: rgba(255,255,255,0.75); margin-bottom: 40px; font-weight: 300; }
+  .contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); }
+  .form-field input, .form-field select { background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); padding: 13px 14px; font-size: 14px; font-family: 'Barlow', sans-serif; color: #fff; outline: none; width: 100%; transition: border-color 0.2s; }
+  .form-field input::placeholder { color: rgba(255,255,255,0.4); }
+  .form-field input:focus, .form-field select:focus { border-color: rgba(255,255,255,0.7); }
+  .form-field select option { background: var(--dark); }
+  .form-field.full { grid-column: span 2; }
+  .btn-submit { background: #fff; color: var(--orange); width: 100%; padding: 16px; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; border: none; cursor: pointer; grid-column: span 2; margin-top: 8px; }
+
+  footer { background: var(--dark-2); padding: 48px 40px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 0.04em; }
+  .footer-logo span { color: var(--orange); }
+  .footer-links { display: flex; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.3); }
+  .footer-links a { text-decoration: none; color: rgba(255,255,255,0.3); }
+  .footer-copy { width: 100%; text-align: center; font-size: 12px; color: rgba(255,255,255,0.2); padding-top: 24px; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">{{business_name}}<span>.</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">Programs</a>
+      <a href="#">Trainers</a>
+      <a href="#">Pricing</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="btn-orange">{{cta}}</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <img src="{{hero_image_url}}" alt="{{business_name}}"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-tag">{{city}}, {{state}}</div>
+      <h1>{{hero_headline}}<br/><em>{{hero_highlight}}</em></h1>
+      <p>{{hero_subheadline}}</p>
+      <div class="hero-ctas">
+        <button class="btn-hero-primary">{{cta}}</button>
+        <button class="btn-hero-ghost">View Programs</button>
+      </div>
+    </div>
+    <div class="hero-bottom">
+      <div class="hero-bottom-inner">
+        <div class="hero-stat"><div class="val">{{stat_1_value}}</div><div class="lbl">{{stat_1_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_2_value}}</div><div class="lbl">{{stat_2_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_3_value}}</div><div class="lbl">{{stat_3_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_4_value}}</div><div class="lbl">{{stat_4_label}}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programs -->
+  <section class="programs">
+    <div class="programs-inner">
+      <span class="eyebrow">What We Offer</span>
+      <div class="section-title">{{programs_heading}}</div>
+      <div class="programs-grid">
+        <div class="program-card"><img src="{{program_1_image_url}}" alt="{{program_1_name}}"/><div class="program-overlay"></div><div class="program-content"><div class="program-tag">{{program_1_tag}}</div><div class="program-name">{{program_1_name}}</div><div class="program-desc">{{program_1_description}}</div></div></div>
+        <div class="program-card"><img src="{{program_2_image_url}}" alt="{{program_2_name}}"/><div class="program-overlay"></div><div class="program-content"><div class="program-tag">{{program_2_tag}}</div><div class="program-name">{{program_2_name}}</div><div class="program-desc">{{program_2_description}}</div></div></div>
+        <div class="program-card"><img src="{{program_3_image_url}}" alt="{{program_3_name}}"/><div class="program-overlay"></div><div class="program-content"><div class="program-tag">{{program_3_tag}}</div><div class="program-name">{{program_3_name}}</div><div class="program-desc">{{program_3_description}}</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about">
+    <div class="about-inner">
+      <img src="{{about_image_url}}" alt="{{business_name}}"/>
+      <div>
+        <span class="eyebrow">Our Story</span>
+        <h2>{{about_headline}}<br/><em>{{about_headline_2}}</em></h2>
+        <p>{{about_paragraph_1}}</p>
+        <p>{{about_paragraph_2}}</p>
+        <div class="about-features">
+          <div class="feature-item"><div class="feature-dot"></div>{{feature_1}}</div>
+          <div class="feature-item"><div class="feature-dot"></div>{{feature_2}}</div>
+          <div class="feature-item"><div class="feature-dot"></div>{{feature_3}}</div>
+          <div class="feature-item"><div class="feature-dot"></div>{{feature_4}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trainers -->
+  <section class="trainers">
+    <div class="trainers-inner">
+      <span class="eyebrow">The Team</span>
+      <div class="section-title">{{trainers_heading}}</div>
+      <div class="trainers-grid">
+        <div class="trainer-card"><img src="{{trainer_1_image_url}}" alt="{{trainer_1_name}}"/><div class="trainer-body"><div class="trainer-name">{{trainer_1_name}}</div><div class="trainer-spec">{{trainer_1_specialty}}</div><div class="trainer-bio">{{trainer_1_bio}}</div></div></div>
+        <div class="trainer-card"><img src="{{trainer_2_image_url}}" alt="{{trainer_2_name}}"/><div class="trainer-body"><div class="trainer-name">{{trainer_2_name}}</div><div class="trainer-spec">{{trainer_2_specialty}}</div><div class="trainer-bio">{{trainer_2_bio}}</div></div></div>
+        <div class="trainer-card"><img src="{{trainer_3_image_url}}" alt="{{trainer_3_name}}"/><div class="trainer-body"><div class="trainer-name">{{trainer_3_name}}</div><div class="trainer-spec">{{trainer_3_specialty}}</div><div class="trainer-bio">{{trainer_3_bio}}</div></div></div>
+        <div class="trainer-card"><img src="{{trainer_4_image_url}}" alt="{{trainer_4_name}}"/><div class="trainer-body"><div class="trainer-name">{{trainer_4_name}}</div><div class="trainer-spec">{{trainer_4_specialty}}</div><div class="trainer-bio">{{trainer_4_bio}}</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing">
+    <div class="pricing-inner">
+      <span class="eyebrow">Membership</span>
+      <div class="section-title">{{pricing_heading}}</div>
+      <div class="pricing-grid">
+        <div class="price-card"><div class="plan">{{plan_1_name}}</div><div class="price">{{plan_1_price}}</div><div class="period">per month</div><ul class="features"><li>{{plan_1_feature_1}}</li><li>{{plan_1_feature_2}}</li><li>{{plan_1_feature_3}}</li><li>{{plan_1_feature_4}}</li></ul><button class="btn-plan">Get Started</button></div>
+        <div class="price-card featured"><div class="plan">{{plan_2_name}}</div><div class="price">{{plan_2_price}}</div><div class="period">per month</div><ul class="features"><li>{{plan_2_feature_1}}</li><li>{{plan_2_feature_2}}</li><li>{{plan_2_feature_3}}</li><li>{{plan_2_feature_4}}</li><li>{{plan_2_feature_5}}</li></ul><button class="btn-plan featured">Get Started</button></div>
+        <div class="price-card"><div class="plan">{{plan_3_name}}</div><div class="price">{{plan_3_price}}</div><div class="period">per month</div><ul class="features"><li>{{plan_3_feature_1}}</li><li>{{plan_3_feature_2}}</li><li>{{plan_3_feature_3}}</li><li>{{plan_3_feature_4}}</li></ul><button class="btn-plan">Get Started</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact">
+    <div class="contact-inner">
+      <h2>{{contact_heading}}</h2>
+      <p>{{contact_description}}</p>
+      <form class="contact-form">
+        <div class="form-field"><label>Name</label><input type="text" placeholder="Your name"/></div>
+        <div class="form-field"><label>Email</label><input type="email" placeholder="your@email.com"/></div>
+        <div class="form-field"><label>Phone</label><input type="tel" placeholder="{{phone}}"/></div>
+        <div class="form-field"><label>Goal</label><select><option>Lose Weight</option><option>Build Muscle</option><option>Improve Fitness</option><option>Sport Specific</option></select></div>
+        <button class="btn-submit">{{cta}}</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{{business_name}}<span>.</span></div>
+    <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Accessibility</a></div>
+  </div>
+  <div class="footer-inner"><div class="footer-copy">© {{year}} {{business_name}}. All rights reserved. {{address}}, {{city}}, {{state}}.</div></div>
+</footer>
+
+</body>
+</html>
