@@ -31,7 +31,7 @@ export default function SignupPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <a href="/" className={styles.logo}>Launch<span>Pad</span></a>
+        <a href="/" className={styles.logo}>Exsisto<span>.</span></a>
         <h1 className={styles.title}>Let&apos;s get started</h1>
         <p className={styles.sub}>Your website, blog, social & SEO — handled.</p>
         {error && <div className={styles.error}>{error}</div>}
