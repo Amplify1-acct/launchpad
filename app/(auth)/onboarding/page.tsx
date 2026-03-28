@@ -67,7 +67,7 @@ export default function OnboardingPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <a href="/" className={styles.logo}>Launch<span>Pad</span></a>
+        <a href="/" className={styles.logo}>Exsisto<span>.</span></a>
 
         <div className={styles.steps}>
           {steps.map((s, i) => (
