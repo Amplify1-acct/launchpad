@@ -71,12 +71,14 @@
 
 .h1 {
   font-family: 'Sora', 'DM Sans', system-ui, sans-serif;
-  font-size: clamp(40px, 6vw, 68px);
+  font-size: 52px;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: -0.03em;
   color: var(--black);
   margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .accent {
@@ -290,3 +292,8 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 1024px) { .h1 { font-size: 44px; } }
+@media (max-width: 768px)  { .h1 { font-size: 36px; } }
+@media (max-width: 600px)  { .h1 { font-size: 28px; } }
+@media (max-width: 430px)  { .h1 { font-size: 22px; } }
