@@ -1,22 +1,119 @@
-.section { padding: 7rem 2rem; background: var(--white); }
-.inner { max-width: 1140px; margin: 0 auto; }
-.header { max-width: 580px; margin-bottom: 3.5rem; }
-.label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
-.title { font-family: var(--font-serif); font-size: 2.6rem; font-weight: 700; line-height: 1.15; color: var(--black); margin-bottom: 1rem; letter-spacing: -0.8px; }
-.sub { font-size: 1.05rem; color: var(--text-mid); line-height: 1.75; }
-.grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
-.card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; transition: all 0.2s; position: relative; overflow: hidden; }
-.card:hover { border-color: var(--gray-300); box-shadow: var(--shadow); transform: translateY(-3px); }
-.featured { border-color: var(--accent) !important; }
-.badge { position: absolute; top: 1.25rem; right: 1.25rem; background: var(--accent); color: white; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding: 3px 10px; border-radius: 100px; text-transform: uppercase; }
-.icon { width: 44px; height: 44px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 1.25rem; }
-.icon.blue   { background: var(--accent-subtle); }
-.icon.green  { background: #f0fdf4; }
-.icon.purple { background: #f5f3ff; }
-.icon.orange { background: #fff7ed; }
-.name { font-size: 17px; font-weight: 600; color: var(--black); margin-bottom: 0.5rem; }
-.desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 1.5rem; }
-.features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.features li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); }
-.check { width: 17px; height: 17px; border-radius: 50%; background: var(--accent-subtle); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
-@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+.section {
+  padding: 100px 24px;
+  background: var(--bg);
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--black);
+  margin-bottom: 14px;
+}
+
+.sub {
+  font-size: 17px;
+  color: var(--text-mid);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  padding: 36px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cardIcon {
+  font-size: 28px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.blue .cardIcon { background: #eff6ff; }
+.green .cardIcon { background: #f0fdf4; }
+.purple .cardIcon { background: #faf5ff; }
+.orange .cardIcon { background: #fff7ed; }
+
+.cardName {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--black);
+  margin-bottom: 10px;
+}
+
+.cardDesc {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.blue .feature svg { color: var(--accent); }
+.green .feature svg { color: #16a34a; }
+.purple .feature svg { color: #7c3aed; }
+.orange .feature svg { color: #ea580c; }
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
