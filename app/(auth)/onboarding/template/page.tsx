@@ -1,143 +1,195 @@
 "use client";
-
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+export const dynamic = "force-dynamic";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 import styles from "./template.module.css";
 
-interface TemplateOption {
-  id: string;
-  thumbnail: string;
-  label: string;
+// Template options shown to customer based on their industry
+const TEMPLATES = [
+  {
+    id: "homeservices-clean",
+    name: "Clean & Trustworthy",
+    desc: "Professional, trust-forward design. Perfect for service businesses.",
+    color: "#16613a",
+    preview: "Green accent · White · Review-focused",
+    industries: ["plumbing", "electrical", "hvac", "cleaning", "landscaping", "construction", "home", "repair"],
+  },
+  {
+    id: "fitness-bold",
+    name: "Bold & Energetic",
+    desc: "High-impact design built to convert. Great for gyms and active businesses.",
+    color: "#f04e23",
+    preview: "Orange accent · Dark · High energy",
+    industries: ["gym", "fitness", "trainer", "yoga", "sport", "crossfit"],
+  },
+  {
+    id: "restaurant-warm",
+    name: "Warm & Inviting",
+    desc: "Beautiful food-focused layout with rich imagery and a reservation form.",
+    color: "#c8892a",
+    preview: "Gold accent · Warm cream · Menu-focused",
+    industries: ["restaurant", "cafe", "bakery", "food", "bar", "dining"],
+  },
+  {
+    id: "realestate-luxury",
+    name: "Luxury & Modern",
+    desc: "Sophisticated design with property listings and an agent spotlight.",
+    color: "#b8966a",
+    preview: "Navy & gold · Premium feel · Listings-focused",
+    industries: ["real estate", "realtor", "property", "broker"],
+  },
+  {
+    id: "dental-clean",
+    name: "Clean & Clinical",
+    desc: "Modern healthcare design. Trusted, approachable, and conversion-optimized.",
+    color: "#0077cc",
+    preview: "Blue accent · White · Trust-focused",
+    industries: ["dental", "medical", "doctor", "clinic", "health"],
+  },
+  {
+    id: "financial-premium",
+    name: "Premium & Authoritative",
+    desc: "Commanding design for financial and professional services.",
+    color: "#c5973a",
+    preview: "Navy & gold · Dark · Data-forward",
+    industries: ["financial", "accounting", "wealth", "legal", "law", "insurance"],
+  },
+  {
+    id: "law-chambers",
+    name: "Heritage & Prestige",
+    desc: "Stately serif design with grayscale team photos and a classic feel.",
+    color: "#330608",
+    preview: "Burgundy & gold · Editorial · Law-focused",
+    industries: ["law", "attorney", "legal", "barrister"],
+  },
+];
+
+function getRecommendedTemplates(description: string): string[] {
+  const lower = description.toLowerCase();
+  const recommended: string[] = [];
+
+  for (const template of TEMPLATES) {
+    if (template.industries.some(ind => lower.includes(ind))) {
+      recommended.push(template.id);
+    }
+  }
+
+  // If no match, return all
+  return recommended.length > 0 ? recommended : TEMPLATES.map(t => t.id);
 }
 
-export default function TemplatePicker() {
+export default function TemplatePage() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [businessDesc, setBusinessDesc] = useState("");
+  const [businessId, setBusinessId] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [step, setStep] = useState<"pick" | "generating" | "done">("pick");
+  const [generatingMessage, setGeneratingMessage] = useState("Building your site...");
   const router = useRouter();
   const supabase = createClient();
-  const [options, setOptions] = useState<TemplateOption[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [businessId, setBusinessId] = useState<string | null>(null);
-  const [projectId, setProjectId] = useState<string | null>(null);
-  const [businessName, setBusinessName] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [loadingMsg, setLoadingMsg] = useState("Setting up your account…");
-  const [saving, setSaving] = useState(false);
-  const [previewing, setPreviewing] = useState<string | null>(null);
-  const generateCalled = useRef(false);
 
   useEffect(() => {
-    async function load() {
+    async function loadBusiness() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) return;
 
       const { data: customer } = await supabase
         .from("customers").select("id").eq("user_id", user.id).single();
-      if (!customer) { router.push("/onboarding"); return; }
+      if (!customer) return;
 
       const { data: business } = await supabase
-        .from("businesses").select("id, name").eq("customer_id", customer.id).single();
-      if (!business) { router.push("/onboarding"); return; }
+        .from("businesses").select("id, description, industry").eq("customer_id", customer.id).single();
+      if (!business) return;
 
       setBusinessId(business.id);
-      setBusinessName(business.name);
-
-      // Check if website record already has screens
-      const { data: website } = await supabase
-        .from("websites")
-        .select("stitch_project_id, stitch_screens, status")
-        .eq("business_id", business.id).single();
-
-      if (website?.stitch_screens?.length) {
-        // Already generated — show them
-        setOptions(website.stitch_screens);
-        setProjectId(website.stitch_project_id);
-        setLoading(false);
-        return;
-      }
-
-      // Trigger generation if not already done
-      if (!generateCalled.current) {
-        generateCalled.current = true;
-        setLoadingMsg("Generating your content…");
-        try {
-          await fetch("/api/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ business_id: business.id }),
-          });
-        } catch (e) {
-          console.error("Generate failed:", e);
-        }
-      }
-
-      // Poll for screens — they'll be saved by the admin design endpoint
-      setLoadingMsg("Designing your site (this takes ~60 seconds)…");
-      const interval = setInterval(async () => {
-        const { data: w } = await supabase
-          .from("websites")
-          .select("stitch_project_id, stitch_screens, status")
-          .eq("business_id", business.id).single();
-
-        if (w?.stitch_screens?.length) {
-          setOptions(w.stitch_screens);
-          setProjectId(w.stitch_project_id);
-          setLoading(false);
-          clearInterval(interval);
-        }
-      }, 3000);
-
-      // Timeout after 5 min
-      setTimeout(() => {
-        clearInterval(interval);
-        if (loading) {
-          setLoadingMsg("Taking longer than expected — check back soon.");
-        }
-      }, 300000);
-
-      return () => clearInterval(interval);
+      setBusinessDesc(business.description || business.industry || "");
     }
-    load();
+    loadBusiness();
   }, []);
 
-  async function handleSelect() {
-    if (!selected || !businessId) return;
-    setSaving(true);
-    try {
-      await supabase.from("businesses")
-        .update({ template_id: selected })
-        .eq("id", businessId);
+  const recommended = getRecommendedTemplates(businessDesc);
+  const sortedTemplates = [
+    ...TEMPLATES.filter(t => recommended.includes(t.id)),
+    ...TEMPLATES.filter(t => !recommended.includes(t.id)),
+  ];
 
-      await fetch("/api/deploy-site", {
+  const messages = [
+    "Analyzing your business...",
+    "Selecting the right design...",
+    "Writing your homepage copy...",
+    "Crafting your service descriptions...",
+    "Generating your about section...",
+    "Writing customer testimonials...",
+    "Optimizing for SEO...",
+    "Building your contact form...",
+    "Putting it all together...",
+    "Almost ready...",
+  ];
+
+  async function handleGenerate() {
+    if (!selected || !businessId) return;
+    setGenerating(true);
+    setStep("generating");
+
+    // Cycle through messages while generating
+    let msgIdx = 0;
+    const msgInterval = setInterval(() => {
+      msgIdx = (msgIdx + 1) % messages.length;
+      setGeneratingMessage(messages[msgIdx]);
+    }, 2500);
+
+    try {
+      const res = await fetch("/api/generate-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           business_id: businessId,
-          screen_id: selected,
-          project_id: projectId,
+          template_override: selected,
         }),
       });
 
-      router.push("/dashboard");
-    } catch (e) {
-      console.error(e);
-      setSaving(false);
+      clearInterval(msgInterval);
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Generation failed");
+      }
+
+      setStep("done");
+      setTimeout(() => router.push("/dashboard"), 2000);
+
+    } catch (err: any) {
+      clearInterval(msgInterval);
+      setError(err.message);
+      setStep("pick");
+      setGenerating(false);
     }
   }
 
-  if (loading) {
+  if (step === "generating") {
     return (
       <div className={styles.page}>
-        <div className={styles.header}>
-          <div className={styles.step}>Step 3 of 3</div>
-          <h1 className={styles.title}>Designing your site…</h1>
-          <p className={styles.subtitle}>
-            {businessName && <><strong>{businessName}</strong> — </>}
-            {loadingMsg}
-          </p>
+        <div className={styles.generatingWrap}>
           <div className={styles.spinner} />
+          <h2 className={styles.generatingTitle}>Building your website</h2>
+          <p className={styles.generatingMsg}>{generatingMessage}</p>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} />
+          </div>
         </div>
-        <div className={styles.skeletonGrid}>
-          {[0, 1, 2].map(i => <div key={i} className={styles.skeleton} />)}
+      </div>
+    );
+  }
+
+  if (step === "done") {
+    return (
+      <div className={styles.page}>
+        <div className={styles.generatingWrap}>
+          <div className={styles.checkmark}>✓</div>
+          <h2 className={styles.generatingTitle}>Your site is ready!</h2>
+          <p className={styles.generatingMsg}>Taking you to your dashboard...</p>
         </div>
       </div>
     );
@@ -146,56 +198,57 @@ export default function TemplatePicker() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.step}>Step 3 of 3</div>
-        <h1 className={styles.title}>Pick your style</h1>
+        <div className={styles.logo}>Exsisto<span>.</span></div>
+        <h1 className={styles.title}>Choose your style</h1>
         <p className={styles.subtitle}>
-          3 custom designs built just for <strong>{businessName}</strong>.
-          Pick the one that feels right.
+          We'll generate a complete website in your chosen style — instantly, using your business info.
         </p>
+        {recommended.length < TEMPLATES.length && (
+          <div className={styles.recommendedNote}>
+            ✦ Recommended for your industry shown first
+          </div>
+        )}
       </div>
 
+      {error && <div className={styles.error}>{error}</div>}
+
       <div className={styles.grid}>
-        {options.map((t) => (
-          <div
-            key={t.id}
-            className={`${styles.card} ${selected === t.id ? styles.selected : ""}`}
-            onClick={() => setSelected(t.id)}
-          >
-            <div className={styles.preview}>
-              <img src={t.thumbnail} alt={t.label} className={styles.thumb} />
-              {selected === t.id && <div className={styles.checkmark}>✓</div>}
-              <button
-                className={styles.previewBtn}
-                onClick={(e) => { e.stopPropagation(); setPreviewing(t.thumbnail); }}
-              >
-                Full preview
-              </button>
-            </div>
-            <div className={styles.info}>
-              <div className={styles.templateName}>{t.label}</div>
-            </div>
-          </div>
-        ))}
+        {sortedTemplates.map((t) => {
+          const isRecommended = recommended.includes(t.id);
+          return (
+            <button
+              key={t.id}
+              className={`${styles.card} ${selected === t.id ? styles.selected : ""}`}
+              onClick={() => setSelected(t.id)}
+              style={{ "--accent": t.color } as React.CSSProperties}
+            >
+              {isRecommended && (
+                <div className={styles.recommendedBadge}>Recommended</div>
+              )}
+              <div className={styles.colorSwatch} style={{ background: t.color }} />
+              <div className={styles.cardBody}>
+                <div className={styles.cardName}>{t.name}</div>
+                <div className={styles.cardDesc}>{t.desc}</div>
+                <div className={styles.cardPreview}>{t.preview}</div>
+              </div>
+              {selected === t.id && (
+                <div className={styles.selectedCheck}>✓</div>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.footer}>
         <button
-          className={styles.btn}
-          disabled={!selected || saving}
-          onClick={handleSelect}
+          className={styles.generateBtn}
+          onClick={handleGenerate}
+          disabled={!selected || generating}
         >
-          {saving ? "Building your site…" : "Use this design →"}
+          {generating ? "Generating..." : "Build my website →"}
         </button>
+        <p className={styles.footerNote}>Takes about 30 seconds. You can always change the style later.</p>
       </div>
-
-      {previewing && (
-        <div className={styles.modal} onClick={() => setPreviewing(null)}>
-          <div className={styles.modalInner} onClick={e => e.stopPropagation()}>
-            <button className={styles.modalClose} onClick={() => setPreviewing(null)}>✕</button>
-            <img src={previewing} alt="Preview" className={styles.modalImg} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
