@@ -11,6 +11,7 @@ export default function WebsitePreviewPage() {
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState(false);
   const [deploying, setDeploying] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [submittedFeedback, setSubmittedFeedback] = useState(false);
@@ -72,24 +73,39 @@ export default function WebsitePreviewPage() {
   async function handleFeedback() {
     if (!business || !feedback.trim()) return;
     setSubmittedFeedback(true);
+    setShowFeedback(false);
 
+    // Update status in Supabase
     await supabase.from("websites").update({
       status: "needs_revision",
       revision_notes: feedback,
       revision_requested_at: new Date().toISOString(),
     }).eq("business_id", business.id);
 
-    // Trigger regeneration with feedback
-    fetch("/api/generate-site", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        business_id: business.id,
-        revision_notes: feedback,
-      }),
-    });
+    // Show regenerating state
+    setApproving(true);
 
-    setTimeout(() => router.push("/dashboard"), 2000);
+    // Trigger regeneration and wait for it
+    try {
+      const res = await fetch("/api/generate-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_id: business.id,
+          template_name: website?.template_name,
+          revision_notes: feedback,
+        }),
+      });
+
+      if (res.ok) {
+        // Reload the page to show the new site
+        window.location.reload();
+      } else {
+        router.push("/dashboard");
+      }
+    } catch {
+      router.push("/dashboard");
+    }
   }
 
   const deviceWidths = {
@@ -154,9 +170,9 @@ export default function WebsitePreviewPage() {
           <button
             className={styles.approveBtn}
             onClick={handleApprove}
-            disabled={approving || deploying}
+            disabled={approving || deploying || submittedFeedback}
           >
-            {deploying ? "Deploying..." : approving ? "Approving..." : "✓ Approve & Go Live"}
+            {deploying ? "Deploying..." : approving && !submittedFeedback ? "Approving..." : submittedFeedback ? "Rebuilding..." : "✓ Approve & Go Live"}
           </button>
         </div>
       </div>
