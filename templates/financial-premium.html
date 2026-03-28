@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root { --navy: #0c1f3d; --navy-2: #142850; --gold: #c5973a; --gold-light: #f9f1e4; --gray: #f6f7f9; --mid: #6b7280; --border: #e5e7eb; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(12,31,61,0.97); backdrop-filter: blur(16px); z-index: 50; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'Libre Baskerville', serif; font-size: 18px; color: #fff; letter-spacing: -0.01em; }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); }
+  .nav-links a { text-decoration: none; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: #fff; }
+  .btn-gold { background: var(--gold); color: #fff; padding: 10px 22px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; border: none; cursor: pointer; }
+  main { padding-top: 64px; }
+
+  /* Hero */
+  .hero { background: var(--navy); padding: 100px 40px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(197,151,58,0.08) 0%, transparent 70%); border-radius: 50%; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
+  .hero-label { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .hero h1 { font-family: 'Libre Baskerville', serif; font-size: 52px; font-weight: 700; color: #fff; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 20px; }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p { font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.75; margin-bottom: 36px; font-weight: 300; }
+  .hero-ctas { display: flex; gap: 14px; }
+  .btn-hero-primary { background: var(--gold); color: #fff; padding: 14px 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; border: none; cursor: pointer; }
+  .btn-hero-ghost { border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); padding: 13px 28px; font-size: 13px; font-weight: 500; background: none; cursor: pointer; }
+  .hero-right { display: flex; flex-direction: column; gap: 16px; }
+  .metric-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .metric-label { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500; margin-bottom: 4px; }
+  .metric-val { font-family: 'Libre Baskerville', serif; font-size: 28px; color: #fff; font-weight: 700; }
+  .metric-change { font-size: 13px; color: #4ade80; font-weight: 600; }
+  .metric-bar { height: 3px; background: rgba(255,255,255,0.08); margin-top: 12px; border-radius: 2px; overflow: hidden; }
+  .metric-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; }
+
+  /* Services */
+  .services { padding: 100px 40px; }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; display: block; }
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: 40px; font-weight: 700; color: var(--navy); margin-bottom: 48px; letter-spacing: -0.02em; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .service-card { background: #fff; padding: 40px; transition: background 0.2s; }
+  .service-card:hover { background: var(--gray); }
+  .service-num { font-family: 'Libre Baskerville', serif; font-size: 13px; color: var(--gold); font-weight: 700; margin-bottom: 16px; }
+  .service-card h3 { font-family: 'Libre Baskerville', serif; font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+  .service-card p { font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 20px; }
+  .service-link { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); border-bottom: 1px solid var(--navy); padding-bottom: 2px; display: inline-block; }
+
+  /* Team -->
+  .team { background: var(--gray); padding: 100px 40px; border-top: 1px solid var(--border); }
+  .team-inner { max-width: 1200px; margin: 0 auto; }
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .advisor-card { background: #fff; border: 1px solid var(--border); padding: 0; overflow: hidden; }
+  .advisor-card img { width: 100%; height: 280px; object-fit: cover; object-position: top; filter: grayscale(20%); transition: filter 0.3s; }
+  .advisor-card:hover img { filter: grayscale(0%); }
+  .advisor-body { padding: 24px; }
+  .advisor-name { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+  .advisor-title { font-size: 12px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+  .advisor-creds { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .cred { background: var(--gray); border: 1px solid var(--border); font-size: 11px; color: var(--mid); padding: 3px 8px; font-weight: 600; }
+  .advisor-bio { font-size: 13px; color: var(--mid); margin-top: 12px; line-height: 1.65; }
+
+  /* Philosophy */
+  .philosophy { padding: 100px 40px; background: var(--gold-light); border-top: 1px solid #f0e4c8; }
+  .philosophy-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .philosophy img { width: 100%; height: 480px; object-fit: cover; }
+  .philosophy h2 { font-family: 'Libre Baskerville', serif; font-size: 40px; font-weight: 700; color: var(--navy); line-height: 1.15; margin-bottom: 20px; }
+  .philosophy p { font-size: 15px; color: #6b5a3e; line-height: 1.8; margin-bottom: 20px; }
+  .philosophy blockquote { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 18px; color: var(--navy); line-height: 1.6; border-left: 3px solid var(--gold); padding-left: 20px; margin: 32px 0; }
+  .philosophy cite { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-style: normal; }
+
+  /* Contact -->
+  .contact { padding: 100px 40px; background: var(--navy); }
+  .contact-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact h2 { font-family: 'Libre Baskerville', serif; font-size: 40px; color: #fff; margin-bottom: 16px; }
+  .contact p { font-size: 15px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 32px; font-weight: 300; }
+  .contact-info { display: flex; flex-direction: column; gap: 16px; }
+  .contact-info-item { display: flex; align-items: flex-start; gap: 12px; }
+  .contact-info-item .icon-box { width: 36px; height: 36px; background: rgba(197,151,58,0.15); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .contact-info-item .label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); margin-bottom: 2px; }
+  .contact-info-item .value { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; }
+  .contact-form { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 40px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .form-field label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); }
+  .form-field input, .form-field select, .form-field textarea { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.12); padding: 10px 0; font-size: 14px; font-family: 'DM Sans', sans-serif; color: #fff; outline: none; width: 100%; transition: border-color 0.2s; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-bottom-color: var(--gold); }
+  .form-field input::placeholder { color: rgba(255,255,255,0.2); }
+  .form-field select option { background: var(--navy-2); }
+  .form-field textarea { resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .btn-submit { background: var(--gold); color: #fff; width: 100%; padding: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; margin-top: 8px; }
+
+  footer { background: #080f1e; padding: 48px 40px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-family: 'Libre Baskerville', serif; font-size: 17px; color: #fff; }
+  .footer-logo span { color: var(--gold); }
+  .footer-links { display: flex; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.25); }
+  .footer-links a { text-decoration: none; color: rgba(255,255,255,0.25); }
+  .footer-copy { width: 100%; text-align: center; font-size: 11px; color: rgba(255,255,255,0.15); padding-top: 24px; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">{{business_name}}<span>.</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">Services</a>
+      <a href="#">Our Team</a>
+      <a href="#">Philosophy</a>
+      <a href="#">Insights</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="btn-gold">{{cta}}</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-label">{{city}}, {{state}} · {{established_label}}</div>
+        <h1>{{hero_headline}}<br/><em>{{hero_headline_italic}}</em></h1>
+        <p>{{hero_subheadline}}</p>
+        <div class="hero-ctas">
+          <button class="btn-hero-primary">{{cta}}</button>
+          <button class="btn-hero-ghost">Our Approach</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="metric-card">
+          <div><div class="metric-label">{{stat_1_label}}</div><div class="metric-val">{{stat_1_value}}</div><div class="metric-bar"><div class="metric-bar-fill" style="width:78%"></div></div></div>
+          <div class="metric-change">{{stat_1_change}}</div>
+        </div>
+        <div class="metric-card">
+          <div><div class="metric-label">{{stat_2_label}}</div><div class="metric-val">{{stat_2_value}}</div><div class="metric-bar"><div class="metric-bar-fill" style="width:65%"></div></div></div>
+          <div class="metric-change">{{stat_2_change}}</div>
+        </div>
+        <div class="metric-card">
+          <div><div class="metric-label">{{stat_3_label}}</div><div class="metric-val">{{stat_3_value}}</div><div class="metric-bar"><div class="metric-bar-fill" style="width:92%"></div></div></div>
+          <div class="metric-change">{{stat_3_change}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services">
+    <div class="services-inner">
+      <span class="eyebrow">What We Offer</span>
+      <div class="section-title">{{services_heading}}</div>
+      <div class="services-grid">
+        <div class="service-card"><div class="service-num">01</div><h3>{{service_1_name}}</h3><p>{{service_1_description}}</p><div class="service-link">Learn More →</div></div>
+        <div class="service-card"><div class="service-num">02</div><h3>{{service_2_name}}</h3><p>{{service_2_description}}</p><div class="service-link">Learn More →</div></div>
+        <div class="service-card"><div class="service-num">03</div><h3>{{service_3_name}}</h3><p>{{service_3_description}}</p><div class="service-link">Learn More →</div></div>
+        <div class="service-card"><div class="service-num">04</div><h3>{{service_4_name}}</h3><p>{{service_4_description}}</p><div class="service-link">Learn More →</div></div>
+        <div class="service-card"><div class="service-num">05</div><h3>{{service_5_name}}</h3><p>{{service_5_description}}</p><div class="service-link">Learn More →</div></div>
+        <div class="service-card"><div class="service-num">06</div><h3>{{service_6_name}}</h3><p>{{service_6_description}}</p><div class="service-link">Learn More →</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team">
+    <div class="team-inner">
+      <span class="eyebrow">Our Advisors</span>
+      <div class="section-title">{{team_heading}}</div>
+      <div class="team-grid">
+        <div class="advisor-card"><img src="{{advisor_1_image_url}}" alt="{{advisor_1_name}}"/><div class="advisor-body"><div class="advisor-name">{{advisor_1_name}}</div><div class="advisor-title">{{advisor_1_title}}</div><div class="advisor-creds"><span class="cred">{{advisor_1_credential_1}}</span><span class="cred">{{advisor_1_credential_2}}</span></div><div class="advisor-bio">{{advisor_1_bio}}</div></div></div>
+        <div class="advisor-card"><img src="{{advisor_2_image_url}}" alt="{{advisor_2_name}}"/><div class="advisor-body"><div class="advisor-name">{{advisor_2_name}}</div><div class="advisor-title">{{advisor_2_title}}</div><div class="advisor-creds"><span class="cred">{{advisor_2_credential_1}}</span><span class="cred">{{advisor_2_credential_2}}</span></div><div class="advisor-bio">{{advisor_2_bio}}</div></div></div>
+        <div class="advisor-card"><img src="{{advisor_3_image_url}}" alt="{{advisor_3_name}}"/><div class="advisor-body"><div class="advisor-name">{{advisor_3_name}}</div><div class="advisor-title">{{advisor_3_title}}</div><div class="advisor-creds"><span class="cred">{{advisor_3_credential_1}}</span><span class="cred">{{advisor_3_credential_2}}</span></div><div class="advisor-bio">{{advisor_3_bio}}</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy -->
+  <section class="philosophy">
+    <div class="philosophy-inner">
+      <img src="{{philosophy_image_url}}" alt="{{business_name}}"/>
+      <div>
+        <span class="eyebrow">Our Philosophy</span>
+        <h2>{{philosophy_headline}}</h2>
+        <p>{{philosophy_paragraph_1}}</p>
+        <blockquote>"{{philosophy_quote}}"<br/><cite>— {{founding_partner_name}}, {{founding_partner_title}}</cite></blockquote>
+        <p>{{philosophy_paragraph_2}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact">
+    <div class="contact-inner">
+      <div>
+        <span class="eyebrow" style="color: var(--gold);">Get In Touch</span>
+        <h2>{{contact_heading}}</h2>
+        <p>{{contact_description}}</p>
+        <div class="contact-info">
+          <div class="contact-info-item"><div class="icon-box">📍</div><div><div class="label">Office</div><div class="value">{{address}}, {{city}}, {{state}}</div></div></div>
+          <div class="contact-info-item"><div class="icon-box">📞</div><div><div class="label">Phone</div><div class="value">{{phone}}</div></div></div>
+          <div class="contact-info-item"><div class="icon-box">✉️</div><div><div class="label">Email</div><div class="value">{{email}}</div></div></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-field"><label>First Name</label><input type="text" placeholder="Your name"/></div>
+          <div class="form-field"><label>Last Name</label><input type="text" placeholder="Last name"/></div>
+        </div>
+        <div class="form-field"><label>Email Address</label><input type="email" placeholder="your@email.com"/></div>
+        <div class="form-field"><label>Area of Interest</label>
+          <select>
+            <option>{{service_1_name}}</option>
+            <option>{{service_2_name}}</option>
+            <option>{{service_3_name}}</option>
+            <option>{{service_4_name}}</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Assets Under Consideration</label>
+          <select>
+            <option>Under $250K</option>
+            <option>$250K – $1M</option>
+            <option>$1M – $5M</option>
+            <option>$5M+</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Message</label><textarea rows="3" placeholder="Tell us about your financial goals..."></textarea></div>
+        <button class="btn-submit">{{cta}}</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{{business_name}}<span>.</span></div>
+    <div class="footer-links"><a href="#">Privacy Policy</a><a href="#">Terms</a><a href="#">Disclosures</a><a href="#">ADV Form</a></div>
+  </div>
+  <div class="footer-inner"><div class="footer-copy">© {{year}} {{business_name}}. All rights reserved. {{address}}, {{city}}, {{state}}. Securities offered through {{broker_dealer}}. Investment advisory services offered through {{ria_name}}.</div></div>
+</footer>
+
+</body>
+</html>
