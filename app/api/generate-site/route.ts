@@ -74,23 +74,35 @@ function selectTemplate(industry: string): string {
 // ─── Template fetcher ──────────────────────────────────────────────────────
 
 async function fetchTemplate(templateName: string): Promise<string> {
-  const GH_TOKEN = process.env.GITHUB_TOKEN;
   const REPO = "Amplify1-acct/launchpad";
   const path = `templates/${templateName}.html`;
 
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/contents/${path}`,
-    {
-      headers: {
-        Authorization: `token ${GH_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    }
-  );
+  // Try raw GitHub URL first (works for public repos, no auth needed)
+  const rawUrl = `https://raw.githubusercontent.com/${REPO}/main/${path}`;
+  const rawRes = await fetch(rawUrl);
+  if (rawRes.ok) {
+    return rawRes.text();
+  }
 
-  if (!res.ok) throw new Error(`Template not found: ${templateName}`);
-  const data = await res.json();
-  return Buffer.from(data.content, "base64").toString("utf-8");
+  // Fallback to API with token
+  const GH_TOKEN = process.env.GITHUB_TOKEN;
+  if (GH_TOKEN) {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO}/contents/${path}`,
+      {
+        headers: {
+          Authorization: `token ${GH_TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      return Buffer.from(data.content, "base64").toString("utf-8");
+    }
+  }
+
+  throw new Error(`Template not found: ${templateName}`);
 }
 
 // ─── Token injector ────────────────────────────────────────────────────────
