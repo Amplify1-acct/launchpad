@@ -1,0 +1,248 @@
+"use client";
+export const dynamic = "force-dynamic";
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import styles from "./preview.module.css";
+
+export default function WebsitePreviewPage() {
+  const [website, setWebsite] = useState<any>(null);
+  const [business, setBusiness] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [approving, setApproving] = useState(false);
+  const [deploying, setDeploying] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [submittedFeedback, setSubmittedFeedback] = useState(false);
+  const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
+
+      const { data: customer } = await supabase
+        .from("customers").select("id").eq("user_id", user.id).single();
+      if (!customer) return;
+
+      const { data: biz } = await supabase
+        .from("businesses").select("*").eq("customer_id", customer.id).single();
+      if (!biz) return;
+      setBusiness(biz);
+
+      const { data: site } = await supabase
+        .from("websites").select("*").eq("business_id", biz.id).single();
+      setWebsite(site);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  async function handleApprove() {
+    if (!business || !website) return;
+    setApproving(true);
+
+    await supabase.from("websites").update({
+      status: "approved",
+      approved_at: new Date().toISOString(),
+    }).eq("business_id", business.id);
+
+    // Trigger deployment
+    setDeploying(true);
+    try {
+      const res = await fetch("/api/deploy-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: business.id }),
+      });
+      if (res.ok) {
+        router.push("/dashboard?deployed=true");
+      } else {
+        // Still update status and redirect even if deploy fails
+        router.push("/dashboard");
+      }
+    } catch {
+      router.push("/dashboard");
+    }
+  }
+
+  async function handleFeedback() {
+    if (!business || !feedback.trim()) return;
+    setSubmittedFeedback(true);
+
+    await supabase.from("websites").update({
+      status: "needs_revision",
+      revision_notes: feedback,
+      revision_requested_at: new Date().toISOString(),
+    }).eq("business_id", business.id);
+
+    // Trigger regeneration with feedback
+    fetch("/api/generate-site", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        business_id: business.id,
+        revision_notes: feedback,
+      }),
+    });
+
+    setTimeout(() => router.push("/dashboard"), 2000);
+  }
+
+  const deviceWidths = {
+    desktop: "100%",
+    tablet: "768px",
+    mobile: "390px",
+  };
+
+  if (loading) {
+    return (
+      <div className={styles.loading}>
+        <div className={styles.spinner} />
+        <p>Loading your site preview...</p>
+      </div>
+    );
+  }
+
+  if (!website?.custom_html) {
+    return (
+      <div className={styles.loading}>
+        <div className={styles.buildingIcon}>🔨</div>
+        <h2>Your site is still building</h2>
+        <p>Check back in a moment — it usually takes about 30 seconds.</p>
+        <button className={styles.backBtn} onClick={() => router.push("/dashboard")}>
+          ← Back to dashboard
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.page}>
+      {/* Top bar */}
+      <div className={styles.topBar}>
+        <div className={styles.topLeft}>
+          <button className={styles.backBtn} onClick={() => router.push("/dashboard")}>
+            ← Dashboard
+          </button>
+          <div className={styles.businessName}>{business?.name}</div>
+        </div>
+
+        <div className={styles.deviceToggle}>
+          {(["desktop", "tablet", "mobile"] as const).map(d => (
+            <button
+              key={d}
+              className={`${styles.deviceBtn} ${device === d ? styles.deviceBtnActive : ""}`}
+              onClick={() => setDevice(d)}
+            >
+              {d === "desktop" ? "🖥" : d === "tablet" ? "📱" : "📱"}
+              {d}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.topRight}>
+          <button
+            className={styles.feedbackBtn}
+            onClick={() => setShowFeedback(!showFeedback)}
+          >
+            Request changes
+          </button>
+          <button
+            className={styles.approveBtn}
+            onClick={handleApprove}
+            disabled={approving || deploying}
+          >
+            {deploying ? "Deploying..." : approving ? "Approving..." : "✓ Approve & Go Live"}
+          </button>
+        </div>
+      </div>
+
+      {/* Feedback panel */}
+      {showFeedback && (
+        <div className={styles.feedbackPanel}>
+          {submittedFeedback ? (
+            <div className={styles.feedbackSuccess}>
+              ✓ Feedback received — we're rebuilding your site with your changes.
+            </div>
+          ) : (
+            <>
+              <div className={styles.feedbackTitle}>What would you like to change?</div>
+              <textarea
+                className={styles.feedbackInput}
+                value={feedback}
+                onChange={e => setFeedback(e.target.value)}
+                placeholder="e.g. Change the headline to focus more on emergency services. Use a darker color scheme. Add a section about our 25 years of experience..."
+                rows={3}
+              />
+              <div className={styles.feedbackActions}>
+                <button className={styles.cancelBtn} onClick={() => setShowFeedback(false)}>Cancel</button>
+                <button
+                  className={styles.submitFeedbackBtn}
+                  onClick={handleFeedback}
+                  disabled={!feedback.trim()}
+                >
+                  Submit & Regenerate →
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Status badge */}
+      <div className={styles.statusBanner}>
+        <div className={styles.statusDot} />
+        <span>Preview ready — review your site below, then approve to go live</span>
+      </div>
+
+      {/* Preview frame */}
+      <div className={styles.previewOuter}>
+        <div
+          className={styles.previewFrame}
+          style={{ width: deviceWidths[device], maxWidth: "100%" }}
+        >
+          <iframe
+            ref={iframeRef}
+            srcDoc={website.custom_html}
+            className={styles.iframe}
+            title="Site Preview"
+            sandbox="allow-scripts allow-same-origin"
+          />
+        </div>
+      </div>
+
+      {/* Bottom action bar */}
+      <div className={styles.bottomBar}>
+        <div className={styles.bottomLeft}>
+          <div className={styles.bottomInfo}>
+            <div className={styles.templateBadge}>
+              Template: {website.template_name || "custom"}
+            </div>
+            <div className={styles.generatedAt}>
+              Generated {website.generated_at ? new Date(website.generated_at).toLocaleDateString() : "just now"}
+            </div>
+          </div>
+        </div>
+        <div className={styles.bottomRight}>
+          <button
+            className={styles.feedbackBtn}
+            onClick={() => setShowFeedback(true)}
+          >
+            ✏️ Request changes
+          </button>
+          <button
+            className={styles.approveBtn}
+            onClick={handleApprove}
+            disabled={approving || deploying}
+          >
+            {deploying ? "Deploying..." : "✓ Approve & Go Live"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
