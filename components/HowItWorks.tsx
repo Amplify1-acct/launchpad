@@ -2,24 +2,24 @@ import styles from "./HowItWorks.module.css";
 
 const steps = [
   {
-    num: "1",
-    title: "You fill out one short form",
-    desc: "Tell us your business name, industry, and what you do. Takes 3 minutes. That's the hardest part.",
+    num: "01",
+    title: "Fill out one short form",
+    desc: "Tell us your business name, what you do, and who you serve. Takes 3 minutes.",
   },
   {
-    num: "2",
-    title: "We build everything for you",
-    desc: "We design your website, write your first blog posts, and set up your social channels. You do nothing.",
+    num: "02",
+    title: "We build everything",
+    desc: "We design your site, write your content, and set up your social channels. You do nothing.",
   },
   {
-    num: "3",
-    title: "You review and say go",
-    desc: "We send you a preview. You approve it — or ask for tweaks. One click and it's live.",
+    num: "03",
+    title: "You approve & go live",
+    desc: "Review a preview of your site. One click and it's live.",
   },
   {
-    num: "4",
-    title: "It runs on autopilot forever",
-    desc: "Every week we write a new blog post and schedule your social posts. You never think about it again.",
+    num: "04",
+    title: "Autopilot, forever",
+    desc: "New blog posts and social content every single week — automatically.",
   },
 ];
 
@@ -28,18 +28,21 @@ export default function HowItWorks() {
     <section className={styles.section} id="how">
       <div className={styles.inner}>
         <div className={styles.header}>
-          <p className={styles.label}>The process</p>
-          <h2 className={styles.title}>Four steps. Three of them are ours.</h2>
+          <span className={styles.label}>The process</span>
+          <h2 className={styles.title}>Four steps.<br />Three of them are ours.</h2>
           <p className={styles.sub}>
-            No tech skills needed. No back-and-forth headaches. Just fill out a
-            short form and we handle everything from start to finish.
+            No tech skills. No back-and-forth. Just tell us about your business
+            and we handle the rest.
           </p>
         </div>
+
         <div className={styles.steps}>
-          <div className={styles.connector} />
-          {steps.map((s) => (
+          {steps.map((s, i) => (
             <div key={s.num} className={styles.step}>
-              <div className={styles.stepNum}>{s.num}</div>
+              <div className={styles.stepTop}>
+                <div className={styles.stepNum}>{s.num}</div>
+                {i < steps.length - 1 && <div className={styles.connector} />}
+              </div>
               <h3 className={styles.stepTitle}>{s.title}</h3>
               <p className={styles.stepDesc}>{s.desc}</p>
             </div>
