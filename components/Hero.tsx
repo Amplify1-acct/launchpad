@@ -1,134 +1,108 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import styles from "./Hero.module.css";
 
-const mockups = [
-  {
-    icon: "🌐",
-    color: "blue",
-    title: "Your Website",
-    sub: "Live in 48 hours",
-    fill: 72,
-    tags: ["Custom design", "SEO ready", "Mobile first"],
-  },
-  {
-    icon: "✍️",
-    color: "green",
-    title: "Weekly Blog Posts",
-    sub: "Published every Monday",
-    fill: 55,
-    tags: ["SEO optimized", "Your voice", "Auto publish"],
-  },
-  {
-    icon: "📱",
-    color: "amber",
-    title: "Social Media",
-    sub: "3–5 posts per week",
-    fill: 88,
-    tags: ["FB · IG · LinkedIn", "Scheduled", "Branded"],
-  },
-  {
-    icon: "🔍",
-    color: "orange",
-    title: "On-Page SEO",
-    sub: "Every page optimized",
-    fill: 64,
-    tags: ["Meta tags", "Schema markup", "Local SEO"],
-  },
+const STATS = [
+  { value: "48h", label: "Site live" },
+  { value: "4×", label: "More traffic" },
+  { value: "0", label: "Tech skills needed" },
+];
+
+const INDUSTRIES = [
+  "Law Firms", "Restaurants", "Dentists", "Contractors",
+  "Retailers", "Med Spas", "Gyms", "Real Estate",
 ];
 
 export default function Hero() {
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setActiveIdx(i => (i + 1) % INDUSTRIES.length), 1800);
+    return () => clearInterval(t);
+  }, []);
 
   return (
     <section className={styles.hero}>
+      <div className={styles.bg}>
+        <div className={styles.bgGrid} />
+        <div className={styles.bgGlow} />
+      </div>
+
       <div className={styles.inner}>
-        <div className={styles.left}>
-          <div className={styles.badge}>
-            <div className={styles.badgeDot} />
-            Your business, brought to life.
+        <div className={styles.badge}>
+          <span className={styles.badgeDot} />
+          Done-for-you digital presence
+        </div>
+
+        <h1 className={styles.h1}>
+          Your website, blog &amp;<br />
+          social media —<br />
+          <span className={styles.accent}>all handled.</span>
+        </h1>
+
+        <p className={styles.sub}>
+          Tell us about your business. We build everything.
+          You approve it. It runs on autopilot — forever.
+        </p>
+
+        <div className={styles.for}>
+          Built for{" "}
+          <span className={styles.rotator} key={activeIdx}>
+            {INDUSTRIES[activeIdx]}
+          </span>
+        </div>
+
+        <div className={styles.ctas}>
+          <button className={styles.primary} onClick={() => scrollTo("demo")}>
+            See it in action
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <button className={styles.secondary} onClick={() => scrollTo("pricing")}>
+            View pricing
+          </button>
+        </div>
+
+        <div className={styles.stats}>
+          {STATS.map(s => (
+            <div key={s.label} className={styles.stat}>
+              <div className={styles.statVal}>{s.value}</div>
+              <div className={styles.statLabel}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Floating cards */}
+      <div className={styles.cards}>
+        <div className={`${styles.card} ${styles.card1}`}>
+          <div className={styles.cardIcon}>🌐</div>
+          <div>
+            <div className={styles.cardTitle}>Website live</div>
+            <div className={styles.cardSub}>Riverside Dental Studio</div>
           </div>
-          <h1 className={styles.h1}>
-            Your Website, Blog,
-            Social &{" "}
-            <em className={styles.gold}>SEO.</em>
-            {" "}Handled.
-          </h1>
-          <p className={styles.sub}>
-            Other website builders make you do all the work yourself.
-            We do it <em className={styles.goldText}>for</em> you — your website built,
-            your blog written weekly, your social media posted automatically.
-            You just run your business.
-          </p>
-          <div className={styles.difyCta}>
-            <div className={styles.difyItem}>
-              <span className={styles.difyX}>✗</span>
-              <span className={styles.difyOld}>No dragging and dropping for hours</span>
-            </div>
-            <div className={styles.difyItem}>
-              <span className={styles.difyX}>✗</span>
-              <span className={styles.difyOld}>No writing your own blog posts</span>
-            </div>
-            <div className={styles.difyItem}>
-              <span className={styles.difyX}>✗</span>
-              <span className={styles.difyOld}>No figuring out social media</span>
-            </div>
-            <div className={styles.difyItem} style={{ marginTop: "0.5rem" }}>
-              <span className={styles.difyCheck}>✓</span>
-              <span className={styles.difyNew}>We build it, write it, post it, and rank it for you</span>
-            </div>
-          </div>
-          <div className={styles.btns}>
-            <button className={styles.btnPrimary} onClick={() => scrollTo("contact")}>
-              Get it done for me →
-            </button>
-            <button className={styles.btnOutline} onClick={() => scrollTo("how")}>
-              See how it works
-            </button>
-          </div>
-          <div className={styles.stats}>
-            {[
-              { num: "33M", label: "Small businesses need this" },
-              { num: "48hr", label: "Yours is live" },
-              { num: "0hrs", label: "Of your time required" },
-            ].map((s) => (
-              <div key={s.label}>
-                <div className={styles.statNum}>{s.num}</div>
-                <div className={styles.statLabel}>{s.label}</div>
-              </div>
-            ))}
+          <div className={styles.cardBadge}>Live</div>
+        </div>
+
+        <div className={`${styles.card} ${styles.card2}`}>
+          <div className={styles.cardIcon}>✍️</div>
+          <div>
+            <div className={styles.cardTitle}>Blog post published</div>
+            <div className={styles.cardSub}>"5 Signs You Need a Plumber"</div>
           </div>
         </div>
 
-        <div className={styles.right}>
-          {mockups.map((m) => (
-            <div key={m.title} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={`${styles.cardIcon} ${styles[m.color]}`}>
-                  {m.icon}
-                </div>
-                <div>
-                  <div className={styles.cardTitle}>{m.title}</div>
-                  <div className={styles.cardSub}>{m.sub}</div>
-                </div>
-              </div>
-              <div className={styles.bar}>
-                <div
-                  className={`${styles.barFill} ${styles[m.color]}`}
-                  style={{ width: `${m.fill}%` }}
-                />
-              </div>
-              <div className={styles.tags}>
-                {m.tags.map((t) => (
-                  <span key={t} className={`${styles.tag} ${styles[m.color]}`}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className={`${styles.card} ${styles.card3}`}>
+          <div className={styles.cardIcon}>📱</div>
+          <div>
+            <div className={styles.cardTitle}>12 posts scheduled</div>
+            <div className={styles.cardSub}>This week · FB, IG, LinkedIn</div>
+          </div>
         </div>
       </div>
     </section>
