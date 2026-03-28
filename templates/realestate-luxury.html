@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root { --navy: #0b1f3a; --gold: #b8966a; --gold-light: #f5ede0; --gray: #f4f5f7; --mid: #6b7280; }
+  body { font-family: 'Sora', sans-serif; background: #fff; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid #eaecf0; z-index: 50; }
+  .nav-inner { max-width: 1280px; margin: 0 auto; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 17px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 500; color: var(--mid); }
+  .nav-links a { text-decoration: none; color: var(--mid); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--navy); }
+  .btn-primary { background: var(--navy); color: #fff; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+  main { padding-top: 64px; }
+
+  /* Hero */
+  .hero { position: relative; height: 88vh; overflow: hidden; }
+  .hero img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(11,31,58,0.80) 0%, rgba(11,31,58,0.3) 60%, transparent 100%); }
+  .hero-content { position: absolute; inset: 0; display: flex; align-items: center; }
+  .hero-inner { max-width: 1280px; margin: 0 auto; padding: 0 40px; width: 100%; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(184,150,106,0.2); border: 1px solid rgba(184,150,106,0.4); color: #e8c96a; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 64px; font-weight: 700; color: #fff; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 20px; max-width: 600px; }
+  .hero h1 em { color: #e8c96a; font-style: italic; }
+  .hero p { font-size: 17px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 36px; max-width: 460px; font-weight: 300; }
+  .hero-ctas { display: flex; gap: 14px; }
+  .btn-gold { background: var(--gold); color: #fff; padding: 14px 32px; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+  .btn-ghost { border: 1.5px solid rgba(255,255,255,0.3); color: #fff; padding: 13px 28px; border-radius: 6px; font-size: 13px; font-weight: 500; background: none; cursor: pointer; }
+  .hero-stats { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(11,31,58,0.9); backdrop-filter: blur(12px); }
+  .hero-stats-inner { max-width: 1280px; margin: 0 auto; padding: 24px 40px; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .hero-stat { text-align: center; padding: 0 24px; border-right: 1px solid rgba(255,255,255,0.08); }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat .val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #fff; }
+  .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* Search */
+  .search { background: var(--gray); padding: 40px; }
+  .search-inner { max-width: 1280px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 28px 32px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 16px; align-items: end; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+  .search-field { display: flex; flex-direction: column; gap: 6px; }
+  .search-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #999; }
+  .search-field input, .search-field select { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: 'Sora', sans-serif; color: var(--navy); outline: none; transition: border-color 0.2s; }
+  .search-field input:focus, .search-field select:focus { border-color: var(--navy); }
+  .btn-search { background: var(--navy); color: #fff; padding: 12px 28px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; white-space: nowrap; }
+
+  /* Featured Listings */
+  .listings { padding: 100px 40px; }
+  .listings-inner { max-width: 1280px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; display: block; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--navy); margin-bottom: 48px; }
+  .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .listing-card { border-radius: 12px; overflow: hidden; border: 1px solid #eaecf0; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+  .listing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+  .listing-img { position: relative; height: 240px; overflow: hidden; }
+  .listing-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  .listing-card:hover .listing-img img { transform: scale(1.04); }
+  .listing-badge { position: absolute; top: 14px; left: 14px; background: var(--navy); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
+  .listing-body { padding: 20px 22px; }
+  .listing-price { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .listing-address { font-size: 14px; color: var(--mid); margin-bottom: 14px; }
+  .listing-details { display: flex; gap: 16px; font-size: 13px; color: var(--mid); font-weight: 500; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+  .listing-detail { display: flex; align-items: center; gap: 5px; }
+
+  /* Agent */
+  .agent { padding: 100px 40px; background: var(--navy); }
+  .agent-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .agent img { width: 100%; height: 560px; object-fit: cover; object-position: top; border-radius: 12px; }
+  .agent h2 { font-family: 'Playfair Display', serif; font-size: 44px; color: #fff; line-height: 1.15; margin-bottom: 20px; }
+  .agent h2 em { color: #e8c96a; }
+  .agent p { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.8; margin-bottom: 20px; font-weight: 300; }
+  .agent-creds { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+  .cred-chip { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 6px 14px; font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; }
+  .btn-agent { background: var(--gold); color: #fff; padding: 14px 32px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; margin-top: 32px; }
+
+  /* Contact */
+  .contact { padding: 100px 40px; background: var(--gold-light); }
+  .contact-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact h2 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--navy); margin-bottom: 16px; }
+  .contact p { font-size: 15px; color: var(--mid); line-height: 1.7; margin-bottom: 32px; }
+  .contact-info { display: flex; flex-direction: column; gap: 16px; }
+  .contact-info-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--navy); font-weight: 500; }
+  .contact-form { background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+  .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .form-field input, .form-field select, .form-field textarea { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-size: 14px; font-family: 'Sora', sans-serif; color: var(--navy); outline: none; width: 100%; transition: border-color 0.2s; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--navy); }
+  .form-field textarea { resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .btn-submit { background: var(--navy); color: #fff; width: 100%; padding: 14px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; margin-top: 8px; }
+
+  footer { background: var(--navy); padding: 48px 40px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-size: 17px; font-weight: 700; color: #fff; }
+  .footer-logo span { color: var(--gold); }
+  .footer-links { display: flex; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.35); }
+  .footer-links a { text-decoration: none; color: rgba(255,255,255,0.35); }
+  .footer-copy { width: 100%; text-align: center; font-size: 12px; color: rgba(255,255,255,0.2); padding-top: 24px; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">{{business_name}}<span>.</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">Buy</a>
+      <a href="#">Sell</a>
+      <a href="#">Listings</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="btn-primary">{{cta}}</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <img src="{{hero_image_url}}" alt="{{business_name}}"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-inner">
+        <div class="hero-tag">{{city}}, {{state}}</div>
+        <h1>{{hero_headline}}<br/><em>{{hero_highlight}}</em></h1>
+        <p>{{hero_subheadline}}</p>
+        <div class="hero-ctas">
+          <button class="btn-gold">{{cta}}</button>
+          <button class="btn-ghost">View Listings</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stats-inner">
+        <div class="hero-stat"><div class="val">{{stat_1_value}}</div><div class="lbl">{{stat_1_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_2_value}}</div><div class="lbl">{{stat_2_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_3_value}}</div><div class="lbl">{{stat_3_label}}</div></div>
+        <div class="hero-stat"><div class="val">{{stat_4_value}}</div><div class="lbl">{{stat_4_label}}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <section class="search">
+    <div class="search-inner">
+      <div class="search-field"><label>Location</label><input type="text" placeholder="{{city}}, {{state}}"/></div>
+      <div class="search-field"><label>Property Type</label><select><option>All Types</option><option>Single Family</option><option>Condo</option><option>Townhouse</option></select></div>
+      <div class="search-field"><label>Min Price</label><select><option>No Min</option><option>$250K</option><option>$500K</option><option>$1M</option></select></div>
+      <div class="search-field"><label>Beds</label><select><option>Any</option><option>1+</option><option>2+</option><option>3+</option><option>4+</option></select></div>
+      <button class="btn-search">Search</button>
+    </div>
+  </section>
+
+  <!-- Listings -->
+  <section class="listings">
+    <div class="listings-inner">
+      <span class="section-eyebrow">Featured Properties</span>
+      <div class="section-title">{{listings_heading}}</div>
+      <div class="listings-grid">
+        <div class="listing-card"><div class="listing-img"><img src="{{listing_1_image_url}}" alt="{{listing_1_address}}"/><div class="listing-badge">For Sale</div></div><div class="listing-body"><div class="listing-price">{{listing_1_price}}</div><div class="listing-address">{{listing_1_address}}</div><div class="listing-details"><div class="listing-detail">🛏 {{listing_1_beds}} Beds</div><div class="listing-detail">🚿 {{listing_1_baths}} Baths</div><div class="listing-detail">📐 {{listing_1_sqft}} sqft</div></div></div></div>
+        <div class="listing-card"><div class="listing-img"><img src="{{listing_2_image_url}}" alt="{{listing_2_address}}"/><div class="listing-badge">New</div></div><div class="listing-body"><div class="listing-price">{{listing_2_price}}</div><div class="listing-address">{{listing_2_address}}</div><div class="listing-details"><div class="listing-detail">🛏 {{listing_2_beds}} Beds</div><div class="listing-detail">🚿 {{listing_2_baths}} Baths</div><div class="listing-detail">📐 {{listing_2_sqft}} sqft</div></div></div></div>
+        <div class="listing-card"><div class="listing-img"><img src="{{listing_3_image_url}}" alt="{{listing_3_address}}"/><div class="listing-badge">For Sale</div></div><div class="listing-body"><div class="listing-price">{{listing_3_price}}</div><div class="listing-address">{{listing_3_address}}</div><div class="listing-details"><div class="listing-detail">🛏 {{listing_3_beds}} Beds</div><div class="listing-detail">🚿 {{listing_3_baths}} Baths</div><div class="listing-detail">📐 {{listing_3_sqft}} sqft</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agent -->
+  <section class="agent">
+    <div class="agent-inner">
+      <img src="{{agent_image_url}}" alt="{{agent_name}}"/>
+      <div>
+        <span class="section-eyebrow" style="color: var(--gold);">Your Agent</span>
+        <h2>{{agent_name}}<br/><em>{{agent_title}}</em></h2>
+        <p>{{agent_bio_1}}</p>
+        <p>{{agent_bio_2}}</p>
+        <div class="agent-creds">
+          <div class="cred-chip">{{credential_1}}</div>
+          <div class="cred-chip">{{credential_2}}</div>
+          <div class="cred-chip">{{credential_3}}</div>
+          <div class="cred-chip">{{years_experience}} Years Experience</div>
+        </div>
+        <button class="btn-agent">{{cta}}</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact">
+    <div class="contact-inner">
+      <div>
+        <span class="section-eyebrow">Let's Connect</span>
+        <h2>{{contact_heading}}</h2>
+        <p>{{contact_description}}</p>
+        <div class="contact-info">
+          <div class="contact-info-item">📍 {{address}}, {{city}}, {{state}}</div>
+          <div class="contact-info-item">📞 {{phone}}</div>
+          <div class="contact-info-item">✉️ {{email}}</div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-field"><label>First Name</label><input type="text" placeholder="Jane"/></div>
+          <div class="form-field"><label>Last Name</label><input type="text" placeholder="Smith"/></div>
+        </div>
+        <div class="form-field"><label>Email</label><input type="email" placeholder="jane@email.com"/></div>
+        <div class="form-field"><label>Phone</label><input type="tel" placeholder="{{phone}}"/></div>
+        <div class="form-field"><label>I'm Interested In</label><select><option>Buying</option><option>Selling</option><option>Both</option></select></div>
+        <div class="form-field"><label>Message</label><textarea rows="3" placeholder="Tell me what you're looking for..."></textarea></div>
+        <button class="btn-submit">{{cta}}</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{{business_name}}<span>.</span></div>
+    <div class="footer-links"><a href="#">Privacy Policy</a><a href="#">Terms</a><a href="#">Fair Housing</a></div>
+  </div>
+  <div class="footer-inner"><div class="footer-copy">© {{year}} {{business_name}}. All rights reserved. {{address}}, {{city}}, {{state}}. Licensed Real Estate Broker.</div></div>
+</footer>
+
+</body>
+</html>
