@@ -1,34 +1,36 @@
+import { redirect } from "next/navigation";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import styles from "./dashboard.module.css";
 import { DeployStatus } from "./DeployStatus";
 import { GenerateButton } from "./GenerateButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
-  // ── DEV MODE: auth bypassed, using mock data ──────────────────────────────
-  const business = {
-    id: "dev-business-id",
-    name: "Smith & Jones Law",
-    industry: "Law Firm",
-    city: "Newark",
-    state: "NJ",
-    phone: "(973) 555-0100",
-    email: "hello@smithjones.com",
-    description: "Smith & Jones Law is a New Jersey business law firm.",
-    tagline: "Strategic Counsel for NJ Businesses",
-    emoji: "⚖️",
-    website_url: null,
-    customer_id: "dev-customer-id",
-  };
-  const subscription = { plan: "growth" };
-  const blogPosts: any[] = [];
-  const socialPosts: any[] = [];
-  const website: any = {
-    meta_title: "Smith & Jones Law | Business Law in Newark, NJ",
-    meta_description: "Expert business law services for New Jersey entrepreneurs.",
-    keywords: ["business law Newark NJ", "contract attorney NJ", "LLC formation NJ"],
-    status: "live",
-    vercel_url: "https://exsisto.ai/preview",
-  };
-  // ── END DEV MODE ──────────────────────────────────────────────────────────
+  const supabase = await createServerSupabaseClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: customer } = await supabase
+    .from("customers").select("*").eq("user_id", user.id).single();
+  if (!customer) redirect("/onboarding");
+
+  const { data: business } = await supabase
+    .from("businesses").select("*").eq("customer_id", customer.id).single();
+  if (!business) redirect("/onboarding");
+
+  const { data: subscription } = await supabase
+    .from("subscriptions").select("*").eq("customer_id", customer.id).single();
+
+  const { data: website } = await supabase
+    .from("websites").select("*").eq("business_id", business.id).single();
+
+  const { data: blogPosts } = await supabase
+    .from("blog_posts").select("*").eq("business_id", business.id).order("created_at", { ascending: false }).limit(5);
+
+  const { data: socialPosts } = await supabase
+    .from("social_posts").select("*").eq("business_id", business.id).order("created_at", { ascending: false }).limit(9);
 
   const planColors: Record<string, string> = { starter: "#2563eb", growth: "#16a34a", premium: "#9333ea" };
   const planColor = planColors[subscription?.plan || "starter"];
@@ -58,8 +60,8 @@ export default async function DashboardPage() {
       <main className={styles.main}>
         <div className={styles.header}>
           <div>
-            <h1 className={styles.greeting}>{business.emoji || "🏆"} {business.name}</h1>
-            <p className={styles.subGreeting}>Your digital presence, handled.</p>
+            <h1 className={styles.greeting}>{business.name}</h1>
+            <p className={styles.subGreeting}>{business.city}{business.state ? `, ${business.state}` : ""} · Your digital presence, handled.</p>
           </div>
           <div className={styles.headerActions}>
             <GenerateButton businessId={business.id} hasWebsite={!!website} websiteStatus={website?.status || null} />
@@ -80,7 +82,7 @@ export default async function DashboardPage() {
             justifyContent: "space-between",
             marginBottom: "24px",
             boxShadow: "0 4px 20px rgba(0,102,255,0.25)",
-            flexWrap: "wrap",
+            flexWrap: "wrap" as const,
             gap: "16px",
           }}>
             <div>
@@ -91,26 +93,16 @@ export default async function DashboardPage() {
                 We built your site using your business info. Take a look and approve it to go live.
               </div>
             </div>
-            <a
-              href="/dashboard/preview"
-              style={{
-                background: "#fff",
-                color: "#0066ff",
-                fontWeight: 700,
-                fontSize: "14px",
-                padding: "10px 24px",
-                borderRadius: "8px",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
+            <a href="/dashboard/preview" style={{
+              background: "#fff", color: "#0066ff", fontWeight: 700,
+              fontSize: "14px", padding: "10px 24px", borderRadius: "8px",
+              textDecoration: "none", whiteSpace: "nowrap" as const, flexShrink: 0,
+            }}>
               Review & Approve →
             </a>
           </div>
         )}
 
-        {/* Live deployment status */}
         <DeployStatus
           businessId={business.id}
           initialStatus={website?.status || null}
@@ -119,10 +111,10 @@ export default async function DashboardPage() {
 
         <div className={styles.statusGrid}>
           {[
-            { icon: "🌐", label: "Website", detail: website?.status === "live" ? "Live & published" : "Building your site...", active: website?.status === "live", color: "#2563eb" },
+            { icon: "🌐", label: "Website", detail: website?.status === "live" ? "Live & published" : website?.status === "ready_for_review" ? "Ready to review" : "Building...", active: website?.status === "live", color: "#2563eb" },
             { icon: "✍️", label: "Blog posts", detail: `${blogPosts?.length || 0} posts ready`, active: (blogPosts?.length || 0) > 0, color: "#16a34a" },
             { icon: "📱", label: "Social media", detail: `${socialPosts?.length || 0} posts queued`, active: (socialPosts?.length || 0) > 0, color: "#f59e0b" },
-            { icon: "🔍", label: "On-page SEO", detail: website?.meta_title ? "Optimized" : "Generating...", active: !!website?.meta_title, color: "#f97316" },
+            { icon: "🔍", label: "SEO", detail: website?.meta_title ? "Optimized" : "Pending", active: !!website?.meta_title, color: "#f97316" },
           ].map((card) => (
             <div key={card.label} className={styles.statusCard}>
               <div className={styles.statusIcon} style={{ background: `${card.color}15` }}>{card.icon}</div>
@@ -140,13 +132,21 @@ export default async function DashboardPage() {
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <div className={styles.cardTitle}>🌐 Your website</div>
-              <span className={`${styles.badge} ${website?.status === "live" ? styles.badgeGreen : styles.badgeAmber}`}>
-                {website?.status || "Pending"}
+              <span className={`${styles.badge} ${website?.status === "live" ? styles.badgeGreen : website?.status === "ready_for_review" ? styles.badgeBlue : styles.badgeAmber}`}>
+                {website?.status === "ready_for_review" ? "Ready to review" : website?.status || "Pending"}
               </span>
             </div>
             <div className={styles.websitePreview}>
-              {website?.hero_image_url ? (
-                <div className={styles.websiteThumb} style={{ backgroundImage: `url(${website.hero_image_url})` }} />
+              {website?.status === "ready_for_review" ? (
+                <a href="/dashboard/preview" style={{ display: "block", textDecoration: "none" }}>
+                  <div className={styles.websitePlaceholder} style={{ background: "#f0f7ff", cursor: "pointer" }}>
+                    <div style={{ fontSize: "32px", marginBottom: "8px" }}>👀</div>
+                    <p style={{ color: "#0066ff", fontWeight: 600 }}>Click to review your site</p>
+                    <p style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
+                      Style: {website.template_name?.replace("skeleton-", "") || "custom"}
+                    </p>
+                  </div>
+                </a>
               ) : (
                 <div className={styles.websitePlaceholder}>
                   <div className={styles.buildingDots}><span /><span /><span /></div>
@@ -155,7 +155,9 @@ export default async function DashboardPage() {
               )}
             </div>
             <div className={styles.cardFooter}>
-              <span className={styles.cardFooterText}>{business.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com</span>
+              <span className={styles.cardFooterText}>
+                {website?.vercel_url || `${business.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`}
+              </span>
             </div>
           </div>
 
@@ -167,12 +169,12 @@ export default async function DashboardPage() {
             </div>
             {blogPosts && blogPosts.length > 0 ? (
               <div className={styles.postList}>
-                {blogPosts.map((post, i) => (
+                {blogPosts.map((post: any, i: number) => (
                   <div key={post.id} className={styles.postItem}>
                     <div className={styles.postNum}>{i + 1}</div>
                     <div className={styles.postInfo}>
                       <div className={styles.postTitle}>{post.title}</div>
-                      <div className={styles.postMeta}>~{post.word_count || 800} words · <span className={`${styles.postStatus} ${styles.amber}`}>{post.status}</span></div>
+                      <div className={styles.postMeta}>~{post.word_count || 800} words · {post.status}</div>
                     </div>
                   </div>
                 ))}
@@ -192,29 +194,11 @@ export default async function DashboardPage() {
               <div className={styles.cardTitle}>📱 Social media</div>
               <span className={`${styles.badge} ${styles.badgeAmber}`}>{socialPosts?.length || 0} queued</span>
             </div>
-            {socialPosts && socialPosts.length > 0 ? (
-              <div className={styles.socialGrid}>
-                {(["facebook", "instagram", "linkedin"] as const).map((platform) => {
-                  const posts = socialPosts.filter(p => p.platform === platform);
-                  const colors: Record<string, string> = { facebook: "#1877f2", instagram: "#e1306c", linkedin: "#0a66c2" };
-                  return (
-                    <div key={platform} className={styles.platformCard}>
-                      <div className={styles.platformHeader} style={{ background: colors[platform] }}>
-                        <span>{platform}</span>
-                        <span className={styles.platformCount}>{posts.length} posts</span>
-                      </div>
-                      {posts[0] && <div className={styles.platformCaption}>{posts[0].caption}</div>}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>📱</div>
-                <p>Setting up your social channels.</p>
-                <p className={styles.emptyMeta}>Facebook, Instagram & LinkedIn — ready to post.</p>
-              </div>
-            )}
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>📱</div>
+              <p>Setting up your social channels.</p>
+              <p className={styles.emptyMeta}>Facebook, Instagram & LinkedIn — ready to post.</p>
+            </div>
           </div>
 
           {/* SEO */}
@@ -229,13 +213,11 @@ export default async function DashboardPage() {
               <div className={styles.seoList}>
                 <div className={styles.seoItem}><div className={styles.seoItemCheck}>✓</div><div><div className={styles.seoItemLabel}>Meta title</div><div className={styles.seoItemValue}>{website.meta_title}</div></div></div>
                 {website.meta_description && <div className={styles.seoItem}><div className={styles.seoItemCheck}>✓</div><div><div className={styles.seoItemLabel}>Meta description</div><div className={styles.seoItemValue}>{website.meta_description}</div></div></div>}
-                {website.keywords && <div className={styles.seoItem}><div className={styles.seoItemCheck}>✓</div><div><div className={styles.seoItemLabel}>Keywords</div><div className={styles.seoKeywords}>{(website.keywords as string[]).map((kw: string) => <span key={kw} className={styles.seoKeyword}>{kw}</span>)}</div></div></div>}
               </div>
             ) : (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>🔍</div>
-                <p>Generating your SEO setup.</p>
-                <p className={styles.emptyMeta}>Meta titles, descriptions, schema & keywords.</p>
+                <p>SEO will generate with your website.</p>
               </div>
             )}
           </div>
