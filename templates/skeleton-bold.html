@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{meta_title}}</title>
+<meta name="description" content="{{meta_description}}"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:{{accent_color}};--dark:#0c0c0c;--dark2:#161616;--mid:#6b7280}
+body{font-family:'Barlow',sans-serif;background:#fff;color:var(--dark);-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(12,12,12,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:0.04em}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:none}
+@media(min-width:768px){.nav-links{display:flex;gap:28px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45)}.nav-links a{text-decoration:none;color:rgba(255,255,255,0.45);transition:color 0.2s}.nav-links a:hover{color:#fff}}
+.nav-cta{background:var(--accent);color:#fff;padding:9px 20px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:none;cursor:pointer;border-radius:4px;white-space:nowrap}
+
+/* HERO */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:var(--dark)}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.25}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,12,12,0.95) 0%,rgba(12,12,12,0.5) 100%)}
+.hero-content{position:relative;z-index:1;padding:80px 20px 40px;max-width:1200px;margin:0 auto;width:100%}
+.hero-label{display:inline-block;background:var(--accent);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;padding:4px 12px;margin-bottom:20px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(56px,14vw,120px);font-weight:900;color:#fff;line-height:0.92;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:24px}
+.hero h1 em{color:var(--accent);font-style:normal;display:block}
+.hero-sub{font-size:17px;color:rgba(255,255,255,0.55);line-height:1.65;margin-bottom:36px;max-width:480px;font-weight:300}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:56px}
+.btn-primary{background:var(--accent);color:#fff;padding:15px 32px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:none;cursor:pointer;flex:1;min-width:160px}
+.btn-ghost{border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:14px 28px;font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;background:none;cursor:pointer;flex:1;min-width:140px}
+
+/* STATS */
+.stats{background:var(--accent)}
+.stats-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr)}
+@media(min-width:600px){.stats-inner{grid-template-columns:repeat(4,1fr)}}
+.stat{padding:20px;text-align:center;border-right:1px solid rgba(255,255,255,0.2)}
+.stat:nth-child(2n){border-right:none}
+@media(min-width:600px){.stat:nth-child(2n){border-right:1px solid rgba(255,255,255,0.2)}.stat:last-child{border-right:none}}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;line-height:1}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;font-weight:500}
+
+/* SERVICES */
+.services{padding:80px 20px}
+.services-inner{max-width:1200px;margin:0 auto}
+.section-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:block}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:900;color:var(--dark);text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:40px;line-height:1}
+.services-grid{display:grid;grid-template-columns:1fr;gap:2px;background:#e5e7eb}
+@media(min-width:600px){.services-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.services-grid{grid-template-columns:repeat(3,1fr)}}
+.service-card{background:#fff;padding:32px;transition:background 0.2s}
+.service-card:hover{background:#f9f9f9}
+.service-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:0.1em;margin-bottom:12px}
+.service-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--dark);text-transform:uppercase;margin-bottom:8px}
+.service-desc{font-size:14px;color:var(--mid);line-height:1.65}
+
+/* ABOUT */
+.about{background:var(--dark);padding:80px 20px}
+.about-inner{max-width:1200px;margin:0 auto}
+.about-img{width:100%;height:280px;object-fit:cover;margin-bottom:32px;display:block}
+@media(min-width:768px){.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}.about-img{height:480px;margin-bottom:0}}
+.about h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,7vw,52px);font-weight:900;color:#fff;text-transform:uppercase;line-height:0.95;margin-bottom:20px;letter-spacing:-0.01em}
+.about h2 em{color:var(--accent);font-style:normal}
+.about p{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:16px;font-weight:300}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px}
+.feature{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.65);font-weight:500}
+.feature-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
+
+/* REVIEWS */
+.reviews{padding:80px 20px;background:#f4f5f7}
+.reviews-inner{max-width:1200px;margin:0 auto}
+.reviews-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:40px}
+@media(min-width:600px){.reviews-grid{grid-template-columns:repeat(3,1fr)}}
+.review-card{background:#fff;padding:24px;border-radius:4px}
+.review-stars{color:var(--accent);font-size:14px;margin-bottom:12px}
+.review-text{font-size:14px;color:var(--dark);line-height:1.7;margin-bottom:14px;font-style:italic}
+.reviewer{display:flex;align-items:center;gap:10px}
+.reviewer-avatar{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.reviewer-name{font-size:13px;font-weight:700;color:var(--dark)}
+.reviewer-detail{font-size:11px;color:var(--mid)}
+
+/* CONTACT */
+.contact{padding:80px 20px;background:var(--accent)}
+.contact-inner{max-width:1000px;margin:0 auto;text-align:center}
+.contact h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,10vw,72px);font-weight:900;color:#fff;text-transform:uppercase;line-height:0.95;margin-bottom:16px}
+.contact p{font-size:16px;color:rgba(255,255,255,0.75);margin-bottom:36px;font-weight:300}
+.contact-form{display:grid;grid-template-columns:1fr;gap:12px;text-align:left;max-width:600px;margin:0 auto}
+@media(min-width:600px){.contact-form{grid-template-columns:1fr 1fr}}
+.form-field{display:flex;flex-direction:column;gap:5px}
+.form-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6)}
+.form-field input,.form-field select,.form-field textarea{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);padding:13px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#fff;outline:none;width:100%;-webkit-appearance:none;transition:border-color 0.2s}
+.form-field input::placeholder{color:rgba(255,255,255,0.4)}
+.form-field input:focus,.form-field select:focus{border-color:rgba(255,255,255,0.7)}
+.form-field select option{background:var(--dark)}
+.form-field.full{grid-column:span 2}
+.btn-submit{background:#fff;color:var(--accent);width:100%;padding:15px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;border:none;cursor:pointer;grid-column:span 2;margin-top:4px}
+
+/* FOOTER */
+footer{background:var(--dark);padding:32px 20px;text-align:center;border-top:1px solid #1e1e1e}
+.footer-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:12px}
+.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;justify-content:center;gap:20px;font-size:12px;margin-bottom:12px;flex-wrap:wrap}
+.footer-links a{text-decoration:none;color:rgba(255,255,255,0.3);transition:color 0.2s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:11px;color:rgba(255,255,255,0.2);line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">{{business_name}}<span>.</span></div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">{{cta}}</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <img class="hero-bg" src="{{hero_image_url}}" alt="{{business_name}}"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label">{{city}}, {{state}}</div>
+    <h1>{{hero_line_1}}<em>{{hero_line_2}}</em></h1>
+    <p class="hero-sub">{{hero_subheadline}}</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">{{cta}}</button>
+      <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Our Services</button>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-val">{{stat_1_value}}</div><div class="stat-lbl">{{stat_1_label}}</div></div>
+    <div class="stat"><div class="stat-val">{{stat_2_value}}</div><div class="stat-lbl">{{stat_2_label}}</div></div>
+    <div class="stat"><div class="stat-val">{{stat_3_value}}</div><div class="stat-lbl">{{stat_3_label}}</div></div>
+    <div class="stat"><div class="stat-val">{{stat_4_value}}</div><div class="stat-lbl">{{stat_4_label}}</div></div>
+  </div>
+</div>
+
+<section id="services" class="services">
+  <div class="services-inner">
+    <span class="section-eyebrow">What We Do</span>
+    <div class="section-title">{{services_heading}}</div>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-num">01</div><div class="service-name">{{service_1_name}}</div><div class="service-desc">{{service_1_description}}</div></div>
+      <div class="service-card"><div class="service-num">02</div><div class="service-name">{{service_2_name}}</div><div class="service-desc">{{service_2_description}}</div></div>
+      <div class="service-card"><div class="service-num">03</div><div class="service-name">{{service_3_name}}</div><div class="service-desc">{{service_3_description}}</div></div>
+      <div class="service-card"><div class="service-num">04</div><div class="service-name">{{service_4_name}}</div><div class="service-desc">{{service_4_description}}</div></div>
+      <div class="service-card"><div class="service-num">05</div><div class="service-name">{{service_5_name}}</div><div class="service-desc">{{service_5_description}}</div></div>
+      <div class="service-card"><div class="service-num">06</div><div class="service-name">{{service_6_name}}</div><div class="service-desc">{{service_6_description}}</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="about">
+  <div class="about-inner">
+    <img class="about-img" src="{{about_image_url}}" alt="{{business_name}}"/>
+    <div>
+      <span class="section-eyebrow" style="color:rgba(255,255,255,0.4)">Our Story</span>
+      <h2>{{about_headline}}<em>{{about_headline_2}}</em></h2>
+      <p>{{about_paragraph_1}}</p>
+      <p>{{about_paragraph_2}}</p>
+      <div class="about-features">
+        <div class="feature"><div class="feature-dot"></div>{{feature_1}}</div>
+        <div class="feature"><div class="feature-dot"></div>{{feature_2}}</div>
+        <div class="feature"><div class="feature-dot"></div>{{feature_3}}</div>
+        <div class="feature"><div class="feature-dot"></div>{{feature_4}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews" class="reviews">
+  <div class="reviews-inner">
+    <span class="section-eyebrow">What People Say</span>
+    <div class="section-title">{{reviews_heading}}</div>
+    <div class="reviews-grid">
+      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"{{review_1_text}}"</div><div class="reviewer"><div class="reviewer-avatar">{{review_1_initials}}</div><div><div class="reviewer-name">{{review_1_name}}</div><div class="reviewer-detail">{{review_1_detail}}</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"{{review_2_text}}"</div><div class="reviewer"><div class="reviewer-avatar">{{review_2_initials}}</div><div><div class="reviewer-name">{{review_2_name}}</div><div class="reviewer-detail">{{review_2_detail}}</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"{{review_3_text}}"</div><div class="reviewer"><div class="reviewer-avatar">{{review_3_initials}}</div><div><div class="reviewer-name">{{review_3_name}}</div><div class="reviewer-detail">{{review_3_detail}}</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="contact-inner">
+    <h2>{{contact_heading}}</h2>
+    <p>{{contact_description}}</p>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-field"><label>Name</label><input type="text" placeholder="Your name" required/></div>
+      <div class="form-field"><label>Phone</label><input type="tel" placeholder="{{phone}}"/></div>
+      <div class="form-field"><label>Email</label><input type="email" placeholder="your@email.com" required/></div>
+      <div class="form-field"><label>Service</label><select><option>{{service_1_name}}</option><option>{{service_2_name}}</option><option>{{service_3_name}}</option><option>{{service_4_name}}</option><option>Other</option></select></div>
+      <div class="form-field full"><label>Message</label><input type="text" placeholder="Tell us what you need..."/></div>
+      <button type="submit" class="btn-submit">{{cta}}</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">{{business_name}}<span>.</span></div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="tel:{{phone_raw}}">{{phone}}</a></div>
+  <div class="footer-copy">© {{year}} {{business_name}} · {{address}}, {{city}}, {{state}}</div>
+</footer>
+
+<script>
+function handleSubmit(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('.btn-submit');
+  btn.textContent='✓ Sent!';
+  setTimeout(()=>{btn.textContent='{{cta}}';e.target.reset()},3000);
+}
+</script>
+</body>
+</html>
