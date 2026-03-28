@@ -69,6 +69,47 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Site ready for review banner */}
+        {website?.status === "ready_for_review" && (
+          <div style={{
+            background: "linear-gradient(135deg, #0066ff 0%, #0052cc 100%)",
+            borderRadius: "16px",
+            padding: "20px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "24px",
+            boxShadow: "0 4px 20px rgba(0,102,255,0.25)",
+            flexWrap: "wrap",
+            gap: "16px",
+          }}>
+            <div>
+              <div style={{ fontSize: "16px", fontWeight: 700, color: "#fff", marginBottom: "4px" }}>
+                🎉 Your website is ready to review!
+              </div>
+              <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)" }}>
+                We built your site using your business info. Take a look and approve it to go live.
+              </div>
+            </div>
+            <a
+              href="/dashboard/preview"
+              style={{
+                background: "#fff",
+                color: "#0066ff",
+                fontWeight: 700,
+                fontSize: "14px",
+                padding: "10px 24px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              Review & Approve →
+            </a>
+          </div>
+        )}
+
         {/* Live deployment status */}
         <DeployStatus
           businessId={business.id}
