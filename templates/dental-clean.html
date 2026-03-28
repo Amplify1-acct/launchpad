@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{business_name}} | {{tagline}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root { --blue: #0077cc; --blue-light: #e8f4ff; --blue-mid: #b3d9ff; --dark: #0a1628; --gray: #f4f7fb; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--dark); -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid #e8eef5; z-index: 50; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; color: var(--dark); letter-spacing: -0.02em; }
+  .logo span { color: var(--blue); }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 500; }
+  .nav-links a { text-decoration: none; color: #666; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--dark); }
+  .btn-primary { background: var(--blue); color: #fff; padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+  main { padding-top: 64px; }
+
+  /* Hero */
+  .hero { background: var(--gray); padding: 80px 40px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--blue); border-radius: 50%; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700; color: var(--dark); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+  .hero h1 em { color: var(--blue); font-style: italic; }
+  .hero p { font-size: 16px; color: #666; line-height: 1.7; margin-bottom: 32px; }
+  .hero-ctas { display: flex; gap: 12px; align-items: center; margin-bottom: 40px; }
+  .btn-secondary { border: 1.5px solid #ddd; color: var(--dark); padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 600; background: none; cursor: pointer; }
+  .hero-trust { display: flex; gap: 24px; }
+  .trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #888; font-weight: 500; }
+  .trust-icon { font-size: 18px; }
+  .hero-img { position: relative; }
+  .hero-img img { width: 100%; border-radius: 20px; object-fit: cover; height: 520px; }
+  .hero-card { position: absolute; bottom: 24px; left: -24px; background: #fff; border-radius: 16px; padding: 16px 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; }
+  .hero-card .rating { font-size: 22px; font-weight: 700; color: var(--dark); }
+  .hero-card .stars { color: #f59e0b; font-size: 14px; }
+  .hero-card .label { font-size: 11px; color: #888; font-weight: 500; }
+
+  /* Services */
+  .services { padding: 100px 40px; }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--dark); margin-bottom: 48px; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .service-card { background: var(--gray); border-radius: 16px; padding: 32px; transition: transform 0.2s, box-shadow 0.2s; }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,119,204,0.1); }
+  .service-icon { font-size: 32px; margin-bottom: 16px; }
+  .service-card h3 { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+  .service-card p { font-size: 14px; color: #666; line-height: 1.65; }
+
+  /* About */
+  .about { background: var(--dark); padding: 100px 40px; }
+  .about-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about img { width: 100%; border-radius: 16px; height: 480px; object-fit: cover; }
+  .about h2 { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 20px; }
+  .about p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 24px; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+  .stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; }
+  .stat-box .val { font-size: 28px; font-weight: 700; color: var(--blue); font-family: 'Playfair Display', serif; }
+  .stat-box .lbl { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; font-weight: 500; }
+
+  /* Team */
+  .team { padding: 100px 40px; background: var(--gray); }
+  .team-inner { max-width: 1200px; margin: 0 auto; }
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .team-card { background: #fff; border-radius: 16px; overflow: hidden; transition: transform 0.2s; }
+  .team-card:hover { transform: translateY(-4px); }
+  .team-card img { width: 100%; height: 280px; object-fit: cover; object-position: top; }
+  .team-card-body { padding: 20px 24px; }
+  .team-card .name { font-size: 18px; font-weight: 700; color: var(--dark); }
+  .team-card .cred { font-size: 12px; color: var(--blue); font-weight: 600; margin-top: 2px; }
+  .team-card .bio { font-size: 13px; color: #888; margin-top: 8px; line-height: 1.6; }
+
+  /* Contact */
+  .contact { padding: 100px 40px; background: #fff; border-top: 1px solid #eef2f7; }
+  .contact-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact h2 { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
+  .contact p { font-size: 15px; color: #666; line-height: 1.7; margin-bottom: 32px; }
+  .contact-info { display: flex; flex-direction: column; gap: 16px; }
+  .contact-info-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #555; }
+  .contact-info-item .icon { width: 40px; height: 40px; background: var(--blue-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-field label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; }
+  .form-field input, .form-field select, .form-field textarea { border: 1.5px solid #e8eef5; border-radius: 10px; padding: 12px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--dark); outline: none; width: 100%; transition: border-color 0.2s; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--blue); }
+  .form-field textarea { resize: none; }
+  .btn-submit { background: var(--blue); color: #fff; width: 100%; padding: 14px; border-radius: 100px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; margin-top: 8px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  footer { background: var(--dark); padding: 48px 40px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
+  .footer-logo span { color: var(--blue); }
+  .footer-links { display: flex; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.4); }
+  .footer-links a { text-decoration: none; color: rgba(255,255,255,0.4); transition: color 0.2s; }
+  .footer-links a:hover { color: #fff; }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); width: 100%; text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">{{business_name}}<span>.</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">Services</a>
+      <a href="#">Our Team</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="btn-primary">{{cta}}</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge">{{city}}, {{state}}</div>
+        <h1>{{hero_headline}}<br/><em>{{hero_highlight}}</em></h1>
+        <p>{{hero_subheadline}}</p>
+        <div class="hero-ctas">
+          <button class="btn-primary">{{cta}}</button>
+          <button class="btn-secondary">Learn More</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item"><span class="trust-icon">✓</span> {{trust_1}}</div>
+          <div class="trust-item"><span class="trust-icon">✓</span> {{trust_2}}</div>
+          <div class="trust-item"><span class="trust-icon">✓</span> {{trust_3}}</div>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="{{hero_image_url}}" alt="{{business_name}}"/>
+        <div class="hero-card">
+          <div>
+            <div class="rating">{{review_rating}}</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#0a1628;">{{review_count}} Reviews</div>
+            <div class="label">Google Verified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services">
+    <div class="services-inner">
+      <div class="section-eyebrow">What We Offer</div>
+      <div class="section-title">{{services_heading}}</div>
+      <div class="services-grid">
+        <div class="service-card"><div class="service-icon">🦷</div><h3>{{service_1_name}}</h3><p>{{service_1_description}}</p></div>
+        <div class="service-card"><div class="service-icon">✨</div><h3>{{service_2_name}}</h3><p>{{service_2_description}}</p></div>
+        <div class="service-card"><div class="service-icon">🔬</div><h3>{{service_3_name}}</h3><p>{{service_3_description}}</p></div>
+        <div class="service-card"><div class="service-icon">😊</div><h3>{{service_4_name}}</h3><p>{{service_4_description}}</p></div>
+        <div class="service-card"><div class="service-icon">🛡️</div><h3>{{service_5_name}}</h3><p>{{service_5_description}}</p></div>
+        <div class="service-card"><div class="service-icon">👶</div><h3>{{service_6_name}}</h3><p>{{service_6_description}}</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about">
+    <div class="about-inner">
+      <img src="{{about_image_url}}" alt="{{business_name}} office"/>
+      <div>
+        <div class="section-eyebrow" style="color:#4da6ff;">Our Story</div>
+        <h2>{{about_headline}}</h2>
+        <p>{{about_paragraph_1}}</p>
+        <p>{{about_paragraph_2}}</p>
+        <div class="about-stats">
+          <div class="stat-box"><div class="val">{{stat_1_value}}</div><div class="lbl">{{stat_1_label}}</div></div>
+          <div class="stat-box"><div class="val">{{stat_2_value}}</div><div class="lbl">{{stat_2_label}}</div></div>
+          <div class="stat-box"><div class="val">{{stat_3_value}}</div><div class="lbl">{{stat_3_label}}</div></div>
+          <div class="stat-box"><div class="val">{{stat_4_value}}</div><div class="lbl">{{stat_4_label}}</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team">
+    <div class="team-inner">
+      <div class="section-eyebrow">Who We Are</div>
+      <div class="section-title">{{team_heading}}</div>
+      <div class="team-grid">
+        <div class="team-card"><img src="{{doctor_1_image_url}}" alt="{{doctor_1_name}}"/><div class="team-card-body"><div class="name">{{doctor_1_name}}</div><div class="cred">{{doctor_1_credentials}}</div><div class="bio">{{doctor_1_bio}}</div></div></div>
+        <div class="team-card"><img src="{{doctor_2_image_url}}" alt="{{doctor_2_name}}"/><div class="team-card-body"><div class="name">{{doctor_2_name}}</div><div class="cred">{{doctor_2_credentials}}</div><div class="bio">{{doctor_2_bio}}</div></div></div>
+        <div class="team-card"><img src="{{doctor_3_image_url}}" alt="{{doctor_3_name}}"/><div class="team-card-body"><div class="name">{{doctor_3_name}}</div><div class="cred">{{doctor_3_credentials}}</div><div class="bio">{{doctor_3_bio}}</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact">
+    <div class="contact-inner">
+      <div>
+        <div class="section-eyebrow">Get In Touch</div>
+        <h2>{{contact_heading}}</h2>
+        <p>{{contact_description}}</p>
+        <div class="contact-info">
+          <div class="contact-info-item"><div class="icon">📍</div><div>{{address}}, {{city}}, {{state}} {{zip}}</div></div>
+          <div class="contact-info-item"><div class="icon">📞</div><div>{{phone}}</div></div>
+          <div class="contact-info-item"><div class="icon">✉️</div><div>{{email}}</div></div>
+          <div class="contact-info-item"><div class="icon">🕐</div><div>{{hours}}</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="form-row">
+          <div class="form-field"><label>First Name</label><input type="text" placeholder="Jane"/></div>
+          <div class="form-field"><label>Last Name</label><input type="text" placeholder="Smith"/></div>
+        </div>
+        <div class="form-field"><label>Email</label><input type="email" placeholder="jane@email.com"/></div>
+        <div class="form-field"><label>Phone</label><input type="tel" placeholder="{{phone}}"/></div>
+        <div class="form-field"><label>Service Needed</label>
+          <select>
+            <option>{{service_1_name}}</option>
+            <option>{{service_2_name}}</option>
+            <option>{{service_3_name}}</option>
+            <option>{{service_4_name}}</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Message</label><textarea rows="3" placeholder="Anything we should know before your visit?"></textarea></div>
+        <button class="btn-submit">{{cta}}</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{{business_name}}<span>.</span></div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-copy">© {{year}} {{business_name}}. All rights reserved. {{address}}, {{city}}, {{state}}.</div>
+  </div>
+</footer>
+
+</body>
+</html>
