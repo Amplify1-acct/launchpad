@@ -39,8 +39,7 @@ export default function Hero() {
         </div>
 
         <h1 className={styles.h1}>
-          Your website, blog &amp;<br />
-          social media —<br />
+          Website, Blog &amp; Social —<br />
           <span className={styles.accent}>all handled.</span>
         </h1>
 
