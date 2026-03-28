@@ -128,9 +128,9 @@ export default function Contact() {
                   onChange={handleChange}
                 >
                   <option value="">Select a plan…</option>
-                  <option value="starter">Starter — $299/mo</option>
-                  <option value="growth">Growth — $599/mo</option>
-                  <option value="premium">Premium — $999/mo</option>
+                  <option value="starter">Starter — $99/mo</option>
+                  <option value="growth">Growth — $299/mo</option>
+                  <option value="premium">Premium — $599/mo</option>
                   <option value="unsure">Not sure yet</option>
                 </select>
               </div>
