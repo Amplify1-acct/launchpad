@@ -336,3 +336,63 @@
 .buildingIcon {
   font-size: 40px;
 }
+
+@media (max-width: 768px) {
+  .topBar {
+    height: auto;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .topLeft {
+    flex: none;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .deviceToggle {
+    display: none;
+  }
+
+  .topRight {
+    flex: none;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .feedbackBtn {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .approveBtn {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .feedbackPanel {
+    padding: 12px;
+  }
+
+  .bottomBar {
+    height: auto;
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .bottomRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .previewOuter {
+    padding: 8px;
+  }
+}
