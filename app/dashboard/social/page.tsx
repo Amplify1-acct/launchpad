@@ -238,9 +238,7 @@ export default function SocialPage() {
                       <span className={styles.postDate}>
                         📅 {new Date(post.scheduled_for).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
-                      {post.post_type && (
-                        <span className={styles.postType}>{post.post_type.replace(/_/g, " ")}</span>
-                      )}
+
                     </div>
                   </div>
 
