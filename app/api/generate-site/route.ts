@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase-server";
+import { generateBusinessPhoto } from "@/lib/nano-banana";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -225,6 +226,17 @@ export async function POST(request: Request) {
     const templatesToGenerate = template_override
       ? [template_override]
       : SKELETONS;
+
+    // Generate custom AI photos for this business (Option A)
+    console.log(`Generating AI photos for ${business.name}...`);
+    const [heroUrl, aboutUrl] = await Promise.all([
+      generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
+      generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
+    ]);
+
+    // Override the Claude-generated image URLs with AI-generated ones
+    if (heroUrl) tokens.hero_image_url = heroUrl;
+    if (aboutUrl) tokens.about_image_url = aboutUrl;
 
     // Fetch all templates in parallel
     const htmlResults = await Promise.all(
