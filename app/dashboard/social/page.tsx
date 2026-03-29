@@ -286,8 +286,11 @@ export default function SocialPage() {
                   )}
 
                   {post.image_url && (
-                    <div className={styles.postImage}>
-                      <img src={post.image_url} alt="Post visual" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                    <div className={styles.postImage} style={{
+                      aspectRatio: post.platform === "tiktok" ? "9/16" : post.platform === "instagram" ? "1/1" : "16/9",
+                      maxHeight: post.platform === "tiktok" ? "320px" : post.platform === "instagram" ? "280px" : "200px",
+                    }}>
+                      <img src={post.image_url} alt="Post visual" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       <div className={styles.platformBadge} style={{ background: PLATFORM_COLORS[post.platform] }}>{post.platform}</div>
                       {post.status === "scheduled" && <div className={styles.approvedBadge}>✓ Approved</div>}
                     </div>
