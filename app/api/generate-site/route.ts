@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase-server";
 import { generateBusinessPhoto } from "@/lib/nano-banana";
+import { generateStitchImages, injectStitchImages } from "@/lib/stitch-images";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -20,7 +21,6 @@ function injectTokens(html: string, tokens: Record<string, string>): string {
   for (const [key, value] of Object.entries(tokens)) {
     result = result.replace(new RegExp(`{{${key}}}`, "g"), value || "");
   }
-  // Clear any remaining unfilled tokens
   result = result.replace(/{{[a-z_]+}}/g, "");
   return result;
 }
@@ -30,8 +30,6 @@ async function generateTokens(
   revisionNotes?: string,
   existingTokens?: Record<string, string>
 ): Promise<Record<string, string>> {
-
-  // For revisions: start from existing tokens and only change what was requested
   const isRevision = !!(revisionNotes && existingTokens && Object.keys(existingTokens).length > 0);
 
   const prompt = isRevision
@@ -65,127 +63,60 @@ Business:
 - Phone: ${business.phone || ""}
 - Email: ${business.email || ""}
 
-Generate specific, realistic content for THIS business. Not generic. Use real industry terminology, real service names, real hero copy that feels like it was written for them.
+Generate specific, realistic content for THIS business. Not generic. Not placeholder.
 
-For hero images, pick a relevant Unsplash photo URL. Format: https://images.unsplash.com/photo-PHOTOID?w=1200&h=800&fit=crop&auto=format
-
-Return exactly this JSON:
+Return this exact JSON structure:
 {
-  "business_name": "${business.name}",
-  "meta_title": "SEO title under 60 chars",
-  "meta_description": "SEO description under 160 chars",
-  "accent_color": "#hexcolor that fits this industry and feels professional",
+  "business_name": "exact business name",
+  "tagline": "compelling 4-8 word tagline specific to this business",
+  "hero_headline": "powerful headline for hero section",
+  "hero_subtext": "2 sentence description of what makes this business special",
+  "hero_image_url": "https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1200&h=700&fit=crop",
+  "about_image_url": "https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
+  "about_headline": "headline for about section",
+  "about_paragraph_1": "2-3 sentences about the business history and mission",
+  "about_paragraph_2": "2-3 sentences about what sets them apart",
+  "service_1_name": "first service name",
+  "service_1_description": "one sentence description",
+  "service_2_name": "second service name",
+  "service_2_description": "one sentence description",
+  "service_3_name": "third service name",
+  "service_3_description": "one sentence description",
+  "service_4_name": "fourth service name",
+  "service_4_description": "one sentence description",
+  "stat_1_number": "20+",
+  "stat_1_label": "Years Experience",
+  "stat_2_number": "500+",
+  "stat_2_label": "Projects Completed",
+  "stat_3_number": "100%",
+  "stat_3_label": "Satisfaction Rate",
+  "testimonial_1_text": "realistic glowing review",
+  "testimonial_1_name": "First Last",
+  "testimonial_1_title": "Customer type",
+  "testimonial_2_text": "realistic glowing review",
+  "testimonial_2_name": "First Last",
+  "testimonial_2_title": "Customer type",
+  "testimonial_3_text": "realistic glowing review",
+  "testimonial_3_name": "First Last",
+  "testimonial_3_title": "Customer type",
   "city": "${business.city || ""}",
   "state": "${business.state || ""}",
   "phone": "${business.phone || ""}",
-  "phone_raw": "${business.phone || ""}",
   "email": "${business.email || ""}",
-  "address": "${business.address || ""}",
-  "year": "2026",
-  "cta": "Short action CTA like Get a Free Quote or Schedule Service",
-  "hero_headline": "Bold 3-5 word headline for this business",
-  "hero_line_1": "First line of headline",
-  "hero_line_2": "Second line (the punchy part)",
-  "hero_highlight": "2-3 word emphasis phrase",
-  "hero_headline_italic": "Italic/poetic version of the tagline",
-  "hero_subheadline": "2-sentence description of what makes this business great",
-  "hero_image_url": "A real Unsplash photo URL relevant to this specific business. For classic car/auto restoration use photo IDs like: 1552519507, 1493238792, 1568772585, 1542362567, 1609521263, 1583121274, 1533473359. Format: https://images.unsplash.com/photo-XXXXXXXXXX?w=1200&h=800&fit=crop&auto=format",
-  "about_image_url": "A real Unsplash photo URL relevant to this specific business. Pick a different photo from hero_image_url. For classic car/auto restoration use: 1489824904, 1547245324, 1486262715, 1619642751, 1580274455. Format: https://images.unsplash.com/photo-XXXXXXXXXX?w=800&h=600&fit=crop&auto=format",
-  "about_headline": "About section headline",
-  "about_headline_2": "Second line of about headline",
-  "about_paragraph_1": "2-3 sentences about the business history and mission",
-  "about_paragraph_2": "2-3 sentences about approach and values",
-  "founder_quote": "A quote from the founder about their passion (1-2 sentences)",
-  "founder_name": "Owner Name",
-  "founder_title": "Owner / Founder",
-  "why_headline": "Why Choose Us headline",
-  "why_description": "2 sentences on why this business is the best choice",
-  "trust_1": "Licensed & Insured",
-  "trust_2": "Free Estimates",
-  "trust_3": "Satisfaction Guaranteed",
-  "review_rating": "4.9",
-  "review_count": "150",
-  "hours": "Mon–Fri 8am–6pm, Sat 9am–4pm",
-  "hours_short": "Mon–Sat 8am–6pm",
-  "stat_1_value": "15+",
-  "stat_1_label": "Years in Business",
-  "stat_2_value": "500+",
-  "stat_2_label": "Happy Customers",
-  "stat_3_value": "100%",
-  "stat_3_label": "Satisfaction Rate",
-  "stat_4_value": "5★",
-  "stat_4_label": "Average Rating",
-  "services_heading": "Our Services",
-  "service_1_name": "Primary service name",
-  "service_1_description": "2-sentence description",
-  "service_1_icon": "relevant emoji",
-  "service_1_category": "Category label",
-  "service_2_name": "Second service",
-  "service_2_description": "2-sentence description",
-  "service_2_icon": "relevant emoji",
-  "service_2_category": "Category label",
-  "service_3_name": "Third service",
-  "service_3_description": "2-sentence description",
-  "service_3_icon": "relevant emoji",
-  "service_3_category": "Category label",
-  "service_4_name": "Fourth service",
-  "service_4_description": "2-sentence description",
-  "service_4_icon": "relevant emoji",
-  "service_4_category": "Category label",
-  "service_5_name": "Fifth service",
-  "service_5_description": "2-sentence description",
-  "service_5_icon": "relevant emoji",
-  "service_5_category": "Category label",
-  "service_6_name": "Sixth service",
-  "service_6_description": "2-sentence description",
-  "service_6_icon": "relevant emoji",
-  "service_6_category": "Category label",
-  "feature_1": "Key differentiator 1 (short phrase)",
-  "feature_2": "Key differentiator 2",
-  "feature_3": "Key differentiator 3",
-  "feature_4": "Key differentiator 4",
-  "feature_1_title": "Feature title",
-  "feature_1_description": "Brief explanation",
-  "feature_2_title": "Feature title",
-  "feature_2_description": "Brief explanation",
-  "feature_3_title": "Feature title",
-  "feature_3_description": "Brief explanation",
-  "process_heading": "How It Works",
-  "step_1_title": "Step 1 title",
-  "step_1_description": "Brief description",
-  "step_2_title": "Step 2 title",
-  "step_2_description": "Brief description",
-  "step_3_title": "Step 3 title",
-  "step_3_description": "Brief description",
-  "step_4_title": "Step 4 title",
-  "step_4_description": "Brief description",
-  "reviews_heading": "What Our Customers Say",
-  "review_1_text": "Realistic 2-sentence customer review for this type of business",
-  "review_1_name": "First Last",
-  "review_1_initials": "FL",
-  "review_1_detail": "City, ST · 2 weeks ago",
-  "review_2_text": "Another realistic 2-sentence review",
-  "review_2_name": "First Last",
-  "review_2_initials": "FL",
-  "review_2_detail": "City, ST · 1 month ago",
-  "review_3_text": "A third realistic 2-sentence review",
-  "review_3_name": "First Last",
-  "review_3_initials": "FL",
-  "review_3_detail": "City, ST · 3 months ago",
-  "contact_heading": "Get In Touch",
-  "contact_description": "2-sentence invitation to contact this business"
+  "accent_color": "#991b1b",
+  "cta_text": "Get Free Estimate",
+  "footer_tagline": "short tagline for footer"
 }`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 4000,
+    model: "claude-sonnet-4-5",
+    max_tokens: 2000,
     messages: [{ role: "user", content: prompt }],
   });
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON in Claude response");
-  return JSON.parse(jsonMatch[0]);
+  const clean = text.replace(/```json|```/g, "").trim();
+  return JSON.parse(clean);
 }
 
 export async function POST(request: Request) {
@@ -199,15 +130,24 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
+    // Fetch business + customer plan in one go
     const { data: business, error: bizErr } = await supabase
-      .from("businesses").select("*").eq("id", business_id).single();
+      .from("businesses")
+      .select("*, customers(plan)")
+      .eq("id", business_id)
+      .single();
 
     if (bizErr || !business) {
       return NextResponse.json({ error: "Business not found" }, { status: 404 });
     }
 
-    // Generate content tokens once — same content, 3 visual styles
-    // For revisions, fetch existing tokens so Claude only changes what was requested
+    // Determine plan — default to starter
+    const plan: "starter" | "pro" | "premium" =
+      (business.customers?.plan as "starter" | "pro" | "premium") || "starter";
+
+    console.log(`Generating site for ${business.name} on ${plan} plan`);
+
+    // Fetch existing tokens for revisions
     let existingTokens: Record<string, string> | undefined;
     if (revision_notes) {
       const { data: existingSite } = await supabase
@@ -220,36 +160,66 @@ export async function POST(request: Request) {
       }
     }
 
+    // Generate content tokens (same for all plans)
     const tokens = await generateTokens(business, revision_notes, existingTokens);
 
-    // If a specific template was requested, generate just that one
-    const templatesToGenerate = template_override
-      ? [template_override]
-      : SKELETONS;
+    // ── IMAGE STRATEGY BY PLAN ─────────────────────────────────────────────
+    let stitchImages = null;
+    let heroUrl: string | null = null;
+    let aboutUrl: string | null = null;
 
-    // Generate custom AI photos for this business (Option A)
-    console.log(`Generating AI photos for ${business.name}...`);
-    const [heroUrl, aboutUrl] = await Promise.all([
-      generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
-      generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
-    ]);
+    if (plan === "pro" || plan === "premium") {
+      // Pro + Premium: Try Stitch AI image generation
+      console.log(`Generating Stitch AI images for ${plan} plan...`);
+      stitchImages = await generateStitchImages(
+        business.name,
+        business.description || business.industry || "business",
+        business.city || ""
+      );
 
-    // Override the Claude-generated image URLs with AI-generated ones
+      if (stitchImages) {
+        heroUrl = stitchImages.hero;
+        aboutUrl = stitchImages.card1;
+        console.log("✓ Stitch images generated");
+      } else {
+        // Fallback to Pexels if Stitch fails
+        console.log("Stitch unavailable, falling back to Pexels...");
+        [heroUrl, aboutUrl] = await Promise.all([
+          generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
+          generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
+        ]);
+      }
+    } else {
+      // Starter: Pexels only
+      console.log("Starter plan — using Pexels...");
+      [heroUrl, aboutUrl] = await Promise.all([
+        generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
+        generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
+      ]);
+    }
+
+    // Inject image URLs into tokens
     if (heroUrl) tokens.hero_image_url = heroUrl;
     if (aboutUrl) tokens.about_image_url = aboutUrl;
 
-    // Fetch all templates in parallel
+    // ── TEMPLATE GENERATION ────────────────────────────────────────────────
+    const templatesToGenerate = template_override ? [template_override] : SKELETONS;
+
     const htmlResults = await Promise.all(
       templatesToGenerate.map(async (name) => {
         const html = await fetchTemplate(name);
-        return { name, html: injectTokens(html, tokens) };
+        let injected = injectTokens(html, tokens);
+        // For Pro+, also inject Stitch gallery images if available
+        if (stitchImages) {
+          injected = injectStitchImages(injected, stitchImages);
+        }
+        return { name, html: injected };
       })
     );
 
-    // Save the first (or only) result as the active site
     const primary = htmlResults[0];
 
-    // If this is a revision, keep the existing template unless overridden
+    // Keep existing template name on revisions
     let finalTemplateName = primary.name;
     if (revision_notes && !template_override) {
       const { data: existing } = await supabase
@@ -257,6 +227,7 @@ export async function POST(request: Request) {
       if (existing?.template_name) finalTemplateName = existing.template_name;
     }
 
+    // Save to DB — including plan and stitch image URLs
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
@@ -266,13 +237,19 @@ export async function POST(request: Request) {
       generated_at: new Date().toISOString(),
       revision_notes: revision_notes || null,
       revision_requested_at: revision_notes ? new Date().toISOString() : null,
+      plan,
+      stitch_hero_url: stitchImages?.hero || null,
+      stitch_card1_url: stitchImages?.card1 || null,
+      stitch_card2_url: stitchImages?.card2 || null,
+      image_source: stitchImages ? "stitch" : "pexels",
     }, { onConflict: "business_id" });
 
     return NextResponse.json({
       success: true,
+      plan,
+      image_source: stitchImages ? "stitch" : "pexels",
       template: primary.name,
       tokens_generated: Object.keys(tokens).length,
-      // Return all variants for the picker to show
       variants: htmlResults.map(r => ({ name: r.name, html: r.html })),
     });
 
@@ -281,5 +258,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-
