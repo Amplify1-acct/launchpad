@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase";
 import styles from "./social.module.css";
+import MobileNav from "@/components/MobileNav";
 
 type Platform = "all" | "facebook" | "instagram" | "linkedin";
 type Post = {
@@ -337,28 +338,7 @@ export default function SocialPage() {
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className={styles.mobileNav}>
-        <a href="/dashboard" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>⚡</span>
-          <span className={styles.mobileNavLabel}>Home</span>
-        </a>
-        <a href="/dashboard/website" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>🌐</span>
-          <span className={styles.mobileNavLabel}>Website</span>
-        </a>
-        <a href="/dashboard/blog" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>✍️</span>
-          <span className={styles.mobileNavLabel}>Blog</span>
-        </a>
-        <a href="/dashboard/social" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>📱</span>
-          <span className={styles.mobileNavLabel}>Social</span>
-        </a>
-        <a href="/dashboard/settings" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>⚙️</span>
-          <span className={styles.mobileNavLabel}>Settings</span>
-        </a>
-      </nav>
+      <MobileNav />
     </div>
   );
 }
