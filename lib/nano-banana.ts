@@ -182,7 +182,7 @@ function buildPrompts(name: string, description: string, type: string, index: nu
 
     const location = SCENIC_LOCATIONS[index % SCENIC_LOCATIONS.length];
 
-    const photoPrefix = "RAW photo, DSLR, shot on Canon EOS R5, 50mm lens, f/2.8, natural lighting, ultra-realistic, hyperrealistic, photorealistic, 8K resolution, professional photography, no illustration, no painting, no CGI, no render —";
+    const photoPrefix = "A real photograph taken with a Canon EOS R5, 85mm f/1.4 lens, ISO 400, shot by a professional automotive photographer for a major car magazine. Film grain, natural imperfections, lens flare, real depth of field. NOT a render, NOT CGI, NOT illustrated, NOT digital art. A real photo that could appear in Motor Trend or Road & Track magazine. Hyper-realistic, photographic realism only —";
     return [
       `${photoPrefix} ${carName} ${location}. Stunning paint, gleaming chrome, showroom condition. Every reflection and detail crystal clear.`,
       `${photoPrefix} close-up detail of a ${carName} — chrome bumper, polished paint with perfect reflections, authentic patina. Shot with macro lens, razor sharp focus.`,
@@ -223,7 +223,7 @@ function buildPrompts(name: string, description: string, type: string, index: nu
   }
 
   // Generic business
-  const photoPrefix = "RAW photo, DSLR, shot on Canon EOS R5, natural lighting, ultra-realistic, hyperrealistic, photorealistic, 8K resolution, professional photography, no illustration —";
+  const photoPrefix = "A real photograph taken with a Canon EOS R5, natural lighting, ISO 400, shot by a professional photographer. Film grain, natural imperfections, real depth of field. NOT a render, NOT CGI, NOT illustrated. A real photo that could appear in a professional business publication. Hyper-realistic, photographic realism only —";
   return [
     `${photoPrefix} professional business environment for ${name}. Clean, modern, welcoming atmosphere.`,
     `${photoPrefix} team of skilled professionals at work. Confident, approachable. Clean modern environment.`,
