@@ -10,7 +10,6 @@ type Post = {
   platform: "facebook" | "instagram" | "linkedin";
   caption: string;
   image_url: string | null;
-  post_type: string;
   status: string;
   scheduled_for: string;
 };
