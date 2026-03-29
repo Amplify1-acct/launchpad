@@ -3,16 +3,16 @@ const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
 // Industry-specific Pexels search queries
 const SEARCH_QUERIES: Record<string, string[]> = {
   auto: [
-    "classic car restoration",
-    "vintage muscle car",
-    "classic american car",
-    "antique car restoration shop",
-    "vintage corvette",
-    "classic mustang",
-    "vintage dodge charger",
-    "old car garage restoration",
-    "classic car chrome detail",
-    "muscle car highway",
+    "vintage car restoration garage",
+    "classic car mechanic workshop",
+    "antique automobile restoration",
+    "old vintage car engine restoration",
+    "classic car bodywork paint shop",
+    "vintage automobile chrome detail",
+    "old car restoration before after",
+    "classic car show vintage automobile",
+    "vintage car interior restoration",
+    "antique car polishing detailing",
   ],
   restaurant: [
     "restaurant food plating",
@@ -86,14 +86,19 @@ export async function generateBusinessPhoto(
 
   const industryKey = getIndustryKey(businessDescription);
   const queries = SEARCH_QUERIES[industryKey] || SEARCH_QUERIES.default;
-  const query = queries[index % queries.length];
+  // Use different query per post AND per platform to get real variety
+  // index already includes platform offset (0, 100, 200) from generate-social
+  const queryIndex = index % queries.length;
+  const query = queries[queryIndex];
+  // Use a random page offset so we don't always get the same photos
+  const pageNum = (Math.floor(index / queries.length) % 3) + 1;
 
   // Orientation based on platform
   const orientation = platform === "tiktok" ? "portrait" :
     platform === "instagram" ? "square" : "landscape";
 
   try {
-    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=${orientation}&page=${Math.floor(index / queries.length) + 1}`;
+    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=${orientation}&page=${pageNum}`;
     const res = await fetch(url, {
       headers: { Authorization: PEXELS_API_KEY },
     });
@@ -111,7 +116,9 @@ export async function generateBusinessPhoto(
     }
 
     // Pick a photo based on index for variety
-    const photo = photos[index % photos.length];
+    // Pick a different photo within results using a secondary index
+    const photoIndex = Math.floor(index / queries.length) % photos.length;
+    const photo = photos[photoIndex];
 
     // Return appropriate size
     if (platform === "tiktok") return photo.src.portrait || photo.src.large;
