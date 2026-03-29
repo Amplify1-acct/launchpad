@@ -143,6 +143,9 @@ export default function WebsitePreviewPage() {
     );
   }
 
+  // For live sites, handleApprove means "redeploy with changes"
+  // The function already handles this correctly via /api/deploy-site
+
   return (
     <div className={styles.page}>
       {/* Top bar */}
@@ -174,13 +177,24 @@ export default function WebsitePreviewPage() {
           >
             Request changes
           </button>
-          <button
-            className={styles.approveBtn}
-            onClick={handleApprove}
-            disabled={approving || deploying || submittedFeedback}
-          >
-            {deploying ? "Deploying..." : approving && !submittedFeedback ? "Approving..." : submittedFeedback ? "Rebuilding..." : "✓ Approve & Go Live"}
-          </button>
+          {website?.status !== "live" && website?.status !== "approved" ? (
+            <button
+              className={styles.approveBtn}
+              onClick={handleApprove}
+              disabled={approving || deploying || submittedFeedback}
+            >
+              {deploying ? "Deploying..." : approving && !submittedFeedback ? "Approving..." : submittedFeedback ? "Rebuilding..." : "✓ Approve & Go Live"}
+            </button>
+          ) : (
+            <button
+              className={styles.approveBtn}
+              onClick={handleApprove}
+              disabled={approving || deploying || submittedFeedback}
+              style={{background: submittedFeedback ? "#666" : "#16a34a"}}
+            >
+              {deploying ? "Deploying..." : submittedFeedback ? "Rebuilding..." : "↑ Push Changes Live"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -218,8 +232,24 @@ export default function WebsitePreviewPage() {
 
       {/* Status badge */}
       <div className={styles.statusBanner}>
-        <div className={styles.statusDot} />
-        <span>Preview ready — review your site below, then approve to go live</span>
+        <div className={styles.statusDot} style={{
+          background: website?.status === "live" ? "#16a34a" : "#f59e0b"
+        }} />
+        <span>
+          {website?.status === "live"
+            ? `Your site is live${website.vercel_url ? ` at ${website.vercel_url}` : ""} — request changes below to update it`
+            : "Preview ready — review your site below, then approve to go live"}
+        </span>
+        {website?.status === "live" && website?.vercel_url && (
+          <a
+            href={website.vercel_url}
+            target="_blank"
+            rel="noreferrer"
+            style={{marginLeft:"auto",fontSize:"12px",color:"#4ade80",textDecoration:"none",fontWeight:600,whiteSpace:"nowrap"}}
+          >
+            View live site ↗
+          </a>
+        )}
       </div>
 
       {/* Preview frame */}
@@ -260,12 +290,13 @@ export default function WebsitePreviewPage() {
           <button
             className={styles.approveBtn}
             onClick={handleApprove}
-            disabled={approving || deploying}
+            disabled={approving || deploying || submittedFeedback}
           >
-            {deploying ? "Deploying..." : "✓ Approve & Go Live"}
+            {deploying ? "Deploying..." : submittedFeedback ? "Rebuilding..." : website?.status === "live" || website?.status === "approved" ? "↑ Push Changes Live" : "✓ Approve & Go Live"}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
