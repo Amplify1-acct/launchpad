@@ -137,29 +137,31 @@ export default async function DashboardPage() {
                 {website?.status === "ready_for_review" ? "Ready to review" : website?.status || "Pending"}
               </span>
             </div>
-            <div className={styles.websitePreview}>
+            <div className={styles.websitePreview} style={{height:"140px"}}>
               {website?.custom_html ? (
-                <a href="/dashboard/preview" style={{ display: "block", textDecoration: "none" }}>
+                <a href="/dashboard/preview" style={{ display: "block", textDecoration: "none", height: "100%" }}>
                   <div className={styles.websitePlaceholder} style={{
                     background: website.status === "live" ? "#f0fdf4" : "#f0f7ff",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    height: "100%",
                   }}>
-                    <div style={{ fontSize: "32px", marginBottom: "8px" }}>
+                    <div style={{ fontSize: "28px", marginBottom: "6px" }}>
                       {website.status === "live" ? "🌐" : "👀"}
                     </div>
                     <p style={{
                       color: website.status === "live" ? "#16a34a" : "#0066ff",
-                      fontWeight: 600
+                      fontWeight: 600,
+                      fontSize: "14px",
                     }}>
                       {website.status === "live" ? "Live — click to edit" : "Ready to review"}
                     </p>
-                    <p style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
+                    <p style={{ fontSize: "11px", color: "#888", marginTop: "3px" }}>
                       {website.template_name?.replace("skeleton-", "") || "custom"} style
                     </p>
                   </div>
                 </a>
               ) : (
-                <div className={styles.websitePlaceholder}>
+                <div className={styles.websitePlaceholder} style={{height:"100%"}}>
                   <div className={styles.buildingDots}><span /><span /><span /></div>
                   <p>Building your website...</p>
                 </div>
@@ -224,7 +226,7 @@ export default async function DashboardPage() {
               <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
                 {(["facebook","instagram","tiktok"] as const).map(platform => {
                   const posts = socialPosts.filter((p:any) => p.platform === platform);
-                  const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",tiktok:"#0a66c2"};
+                  const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",tiktok:"#010101"};
                   if (posts.length === 0) return null;
                   return (
                     <a key={platform} href="/dashboard/social" style={{textDecoration:"none"}}>
