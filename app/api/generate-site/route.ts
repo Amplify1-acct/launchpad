@@ -24,8 +24,38 @@ function injectTokens(html: string, tokens: Record<string, string>): string {
   return result;
 }
 
-async function generateTokens(business: Record<string, any>, revisionNotes?: string): Promise<Record<string, string>> {
-  const prompt = `You are generating website content for a small business. Return ONLY valid JSON — no markdown, no backticks, no explanation.
+async function generateTokens(
+  business: Record<string, any>,
+  revisionNotes?: string,
+  existingTokens?: Record<string, string>
+): Promise<Record<string, string>> {
+
+  // For revisions: start from existing tokens and only change what was requested
+  const isRevision = !!(revisionNotes && existingTokens && Object.keys(existingTokens).length > 0);
+
+  const prompt = isRevision
+    ? `You are updating a website for a small business. The customer has seen their site and wants specific changes. Return ONLY valid JSON — no markdown, no backticks, no explanation.
+
+Business: ${business.name} (${business.description || business.industry})
+Location: ${business.city || ""}, ${business.state || ""}
+
+CUSTOMER FEEDBACK:
+"${revisionNotes}"
+
+CRITICAL RULES:
+1. Start with the EXISTING tokens below and return them as-is
+2. ONLY modify the fields that are directly related to what the customer asked for
+3. Do NOT change colors, images, services, or any other content unless the customer specifically mentioned it
+4. If they said "change the headline" — only change hero_headline, hero_line_1, hero_line_2, hero_highlight, hero_headline_italic
+5. If they said "rewrite the about section" — only change about_headline, about_paragraph_1, about_paragraph_2
+6. If they said "change the color" — only change accent_color
+7. Everything else stays exactly the same
+
+EXISTING TOKENS (copy these and only modify what the customer asked to change):
+${JSON.stringify(existingTokens, null, 2)}
+
+Return the complete JSON with your targeted changes applied.`
+    : `You are generating website content for a small business. Return ONLY valid JSON — no markdown, no backticks, no explanation.
 
 Business:
 - Name: ${business.name}
@@ -34,12 +64,6 @@ Business:
 - Phone: ${business.phone || ""}
 - Email: ${business.email || ""}
 
-${revisionNotes ? `
-REVISION REQUEST — This is a revision. The customer has already seen the site and wants these specific changes:
-"${revisionNotes}"
-
-You MUST apply these changes. They take priority over everything else. If they say change the color, change it. If they say rewrite the headline, rewrite it. Read their feedback carefully and reflect it in every relevant field.
-` : ""}
 Generate specific, realistic content for THIS business. Not generic. Use real industry terminology, real service names, real hero copy that feels like it was written for them.
 
 For hero images, pick a relevant Unsplash photo URL. Format: https://images.unsplash.com/photo-PHOTOID?w=1200&h=800&fit=crop&auto=format
@@ -182,7 +206,20 @@ export async function POST(request: Request) {
     }
 
     // Generate content tokens once — same content, 3 visual styles
-    const tokens = await generateTokens(business, revision_notes);
+    // For revisions, fetch existing tokens so Claude only changes what was requested
+    let existingTokens: Record<string, string> | undefined;
+    if (revision_notes) {
+      const { data: existingSite } = await supabase
+        .from("websites")
+        .select("generated_tokens")
+        .eq("business_id", business_id)
+        .single();
+      if (existingSite?.generated_tokens) {
+        existingTokens = existingSite.generated_tokens as Record<string, string>;
+      }
+    }
+
+    const tokens = await generateTokens(business, revision_notes, existingTokens);
 
     // If a specific template was requested, generate just that one
     const templatesToGenerate = template_override
@@ -232,4 +269,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 
