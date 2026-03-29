@@ -1,6 +1,5 @@
 import { createAdminClient } from "@/lib/supabase-server";
 import { generateBusinessPhoto } from "@/lib/nano-banana";
-import { generateStitchImages, injectStitchImages } from "@/lib/stitch-images";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -33,57 +32,47 @@ async function generateTokens(
   const isRevision = !!(revisionNotes && existingTokens && Object.keys(existingTokens).length > 0);
 
   const prompt = isRevision
-    ? `You are updating a website for a small business. The customer has seen their site and wants specific changes. Return ONLY valid JSON — no markdown, no backticks, no explanation.
+    ? `You are updating a website for a small business. Return ONLY valid JSON — no markdown, no backticks.
 
 Business: ${business.name} (${business.description || business.industry})
 Location: ${business.city || ""}, ${business.state || ""}
 
-CUSTOMER FEEDBACK:
-"${revisionNotes}"
+CUSTOMER FEEDBACK: "${revisionNotes}"
 
-CRITICAL RULES:
-1. Start with the EXISTING tokens below and return them as-is
-2. ONLY modify the fields that are directly related to what the customer asked for
-3. Do NOT change colors, images, services, or any other content unless the customer specifically mentioned it
-4. If they said "change the headline" — only change hero_headline, hero_line_1, hero_line_2, hero_highlight, hero_headline_italic
-5. If they said "rewrite the about section" — only change about_headline, about_paragraph_1, about_paragraph_2
-6. If they said "change the color" — only change accent_color
-7. Everything else stays exactly the same
+RULES: Start with existing tokens, only modify what was asked for.
 
-EXISTING TOKENS (copy these and only modify what the customer asked to change):
+EXISTING TOKENS:
 ${JSON.stringify(existingTokens, null, 2)}
 
-Return the complete JSON with your targeted changes applied.`
-    : `You are generating website content for a small business. Return ONLY valid JSON — no markdown, no backticks, no explanation.
+Return complete JSON with targeted changes.`
+    : `Generate website content for a small business. Return ONLY valid JSON — no markdown, no backticks.
 
 Business:
 - Name: ${business.name}
-- Industry/Description: ${business.description || business.industry}
+- Industry: ${business.description || business.industry}
 - City: ${business.city || ""}, ${business.state || ""}
 - Phone: ${business.phone || ""}
 - Email: ${business.email || ""}
 
-Generate specific, realistic content for THIS business. Not generic. Not placeholder.
-
-Return this exact JSON structure:
+Return this JSON:
 {
-  "business_name": "exact business name",
-  "tagline": "compelling 4-8 word tagline specific to this business",
-  "hero_headline": "powerful headline for hero section",
-  "hero_subtext": "2 sentence description of what makes this business special",
+  "business_name": "${business.name}",
+  "tagline": "compelling 4-8 word tagline",
+  "hero_headline": "powerful hero headline",
+  "hero_subtext": "2 sentence value proposition",
   "hero_image_url": "https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1200&h=700&fit=crop",
   "about_image_url": "https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-  "about_headline": "headline for about section",
-  "about_paragraph_1": "2-3 sentences about the business history and mission",
+  "about_headline": "about section headline",
+  "about_paragraph_1": "2-3 sentences about history and mission",
   "about_paragraph_2": "2-3 sentences about what sets them apart",
-  "service_1_name": "first service name",
-  "service_1_description": "one sentence description",
-  "service_2_name": "second service name",
-  "service_2_description": "one sentence description",
-  "service_3_name": "third service name",
-  "service_3_description": "one sentence description",
-  "service_4_name": "fourth service name",
-  "service_4_description": "one sentence description",
+  "service_1_name": "first service",
+  "service_1_description": "one sentence",
+  "service_2_name": "second service",
+  "service_2_description": "one sentence",
+  "service_3_name": "third service",
+  "service_3_description": "one sentence",
+  "service_4_name": "fourth service",
+  "service_4_description": "one sentence",
   "stat_1_number": "20+",
   "stat_1_label": "Years Experience",
   "stat_2_number": "500+",
@@ -92,20 +81,20 @@ Return this exact JSON structure:
   "stat_3_label": "Satisfaction Rate",
   "testimonial_1_text": "realistic glowing review",
   "testimonial_1_name": "First Last",
-  "testimonial_1_title": "Customer type",
+  "testimonial_1_title": "customer role",
   "testimonial_2_text": "realistic glowing review",
   "testimonial_2_name": "First Last",
-  "testimonial_2_title": "Customer type",
+  "testimonial_2_title": "customer role",
   "testimonial_3_text": "realistic glowing review",
   "testimonial_3_name": "First Last",
-  "testimonial_3_title": "Customer type",
+  "testimonial_3_title": "customer role",
   "city": "${business.city || ""}",
   "state": "${business.state || ""}",
   "phone": "${business.phone || ""}",
   "email": "${business.email || ""}",
   "accent_color": "#991b1b",
   "cta_text": "Get Free Estimate",
-  "footer_tagline": "short tagline for footer"
+  "footer_tagline": "short footer tagline"
 }`;
 
   const response = await anthropic.messages.create({
@@ -130,7 +119,7 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
-    // Fetch business + customer plan in one go
+    // Fetch business + customer plan
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
       .select("*, customers(plan)")
@@ -141,13 +130,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Business not found" }, { status: 404 });
     }
 
-    // Determine plan — default to starter
     const plan: "starter" | "pro" | "premium" =
-      (business.customers?.plan as "starter" | "pro" | "premium") || "starter";
+      (business.customers?.plan as any) || "starter";
 
     console.log(`Generating site for ${business.name} on ${plan} plan`);
 
-    // Fetch existing tokens for revisions
+    // For revisions, fetch existing tokens
     let existingTokens: Record<string, string> | undefined;
     if (revision_notes) {
       const { data: existingSite } = await supabase
@@ -160,66 +148,59 @@ export async function POST(request: Request) {
       }
     }
 
-    // Generate content tokens (same for all plans)
     const tokens = await generateTokens(business, revision_notes, existingTokens);
 
-    // ── IMAGE STRATEGY BY PLAN ─────────────────────────────────────────────
-    let stitchImages = null;
+    // ── IMAGE STRATEGY ────────────────────────────────────────────────────
+    // For Pro/Premium: check if Claude has already stored Stitch image URLs
+    // via /api/generate-images (called before this endpoint by the onboarding flow)
     let heroUrl: string | null = null;
     let aboutUrl: string | null = null;
+    let imageSource = "pexels";
 
     if (plan === "pro" || plan === "premium") {
-      // Pro + Premium: Try Stitch AI image generation
-      console.log(`Generating Stitch AI images for ${plan} plan...`);
-      stitchImages = await generateStitchImages(
-        business.name,
-        business.description || business.industry || "business",
-        business.city || ""
-      );
+      // Check for pre-stored Stitch images (set by Claude via /api/generate-images)
+      const { data: existingWebsite } = await supabase
+        .from("websites")
+        .select("stitch_hero_url, stitch_card1_url, image_source")
+        .eq("business_id", business_id)
+        .single();
 
-      if (stitchImages) {
-        heroUrl = stitchImages.hero;
-        aboutUrl = stitchImages.card1;
-        console.log("✓ Stitch images generated");
+      if (existingWebsite?.stitch_hero_url) {
+        heroUrl = existingWebsite.stitch_hero_url;
+        aboutUrl = existingWebsite.stitch_card1_url;
+        imageSource = "stitch";
+        console.log("✓ Using pre-generated Stitch images");
       } else {
-        // Fallback to Pexels if Stitch fails
-        console.log("Stitch unavailable, falling back to Pexels...");
+        // Fall back to Pexels if Stitch images not yet generated
+        console.log("No Stitch images found, using Pexels fallback...");
         [heroUrl, aboutUrl] = await Promise.all([
           generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
           generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
         ]);
       }
     } else {
-      // Starter: Pexels only
-      console.log("Starter plan — using Pexels...");
+      // Starter: Pexels
       [heroUrl, aboutUrl] = await Promise.all([
         generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
         generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
       ]);
     }
 
-    // Inject image URLs into tokens
     if (heroUrl) tokens.hero_image_url = heroUrl;
     if (aboutUrl) tokens.about_image_url = aboutUrl;
 
-    // ── TEMPLATE GENERATION ────────────────────────────────────────────────
+    // ── GENERATE TEMPLATES ────────────────────────────────────────────────
     const templatesToGenerate = template_override ? [template_override] : SKELETONS;
 
     const htmlResults = await Promise.all(
       templatesToGenerate.map(async (name) => {
         const html = await fetchTemplate(name);
-        let injected = injectTokens(html, tokens);
-        // For Pro+, also inject Stitch gallery images if available
-        if (stitchImages) {
-          injected = injectStitchImages(injected, stitchImages);
-        }
-        return { name, html: injected };
+        return { name, html: injectTokens(html, tokens) };
       })
     );
 
     const primary = htmlResults[0];
 
-    // Keep existing template name on revisions
     let finalTemplateName = primary.name;
     if (revision_notes && !template_override) {
       const { data: existing } = await supabase
@@ -227,7 +208,6 @@ export async function POST(request: Request) {
       if (existing?.template_name) finalTemplateName = existing.template_name;
     }
 
-    // Save to DB — including plan and stitch image URLs
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
@@ -238,16 +218,13 @@ export async function POST(request: Request) {
       revision_notes: revision_notes || null,
       revision_requested_at: revision_notes ? new Date().toISOString() : null,
       plan,
-      stitch_hero_url: stitchImages?.hero || null,
-      stitch_card1_url: stitchImages?.card1 || null,
-      stitch_card2_url: stitchImages?.card2 || null,
-      image_source: stitchImages ? "stitch" : "pexels",
+      image_source: imageSource,
     }, { onConflict: "business_id" });
 
     return NextResponse.json({
       success: true,
       plan,
-      image_source: stitchImages ? "stitch" : "pexels",
+      image_source: imageSource,
       template: primary.name,
       tokens_generated: Object.keys(tokens).length,
       variants: htmlResults.map(r => ({ name: r.name, html: r.html })),
