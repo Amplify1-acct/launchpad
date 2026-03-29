@@ -19,7 +19,7 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [stateName, setStateName] = useState("");
-  const [plan, setPlan] = useState<"starter" | "growth" | "premium">("growth");
+  const [plan, setPlan] = useState<"starter" | "pro" | "growth" | "premium">("pro");
 
   async function handleFinish() {
     setLoading(true);
@@ -129,9 +129,9 @@ export default function OnboardingPage() {
             <p>Start with a 7-day free trial. Cancel any time.</p>
             <div className={styles.plans}>
               {[
-                { id: "starter" as const, name: "Starter", price: "$299", features: ["5-page website", "2 blog posts/mo", "Social media setup", "On-page SEO"] },
-                { id: "growth" as const, name: "Growth", price: "$599", popular: true, features: ["10-page website", "4 blog posts/mo", "20 social posts/mo", "Full SEO suite"] },
-                { id: "premium" as const, name: "Premium", price: "$999", features: ["Unlimited pages", "Weekly blog posts", "Daily social posts", "SEO + ads setup"] },
+                { id: "starter" as const, name: "Starter", price: "$49", features: ["5-page website", "2 blog posts/mo", "Social media", "Pexels photos"] },
+                { id: "pro" as const, name: "Pro", price: "$99", popular: true, features: ["5-page website", "4 blog posts/mo", "20 social posts/mo", "AI-generated photos"] },
+                { id: "premium" as const, name: "Premium", price: "$199", features: ["Custom Stitch design", "Weekly blog posts", "Daily social posts", "Unique AI site"] },
               ].map(p => (
                 <div key={p.id} className={`${styles.plan} ${plan === p.id ? styles.planActive : ""}`} onClick={() => setPlan(p.id)}>
                   {p.popular && <div className={styles.popular}>Most popular</div>}
