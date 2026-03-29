@@ -1,16 +1,9 @@
 import { createAdminClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "exsisto-internal-2026";
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 export const maxDuration = 90;
 
-/**
- * POST /api/admin/generate
- * Called by Claude MCP after generating Stitch images.
- * Looks up customer by email → finds business → stores images → triggers generate-site.
- */
 export async function POST(request: Request) {
   const secret = request.headers.get("x-internal-secret");
   if (secret !== INTERNAL_SECRET) {
@@ -30,7 +23,6 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
-    // Look up customer
     const { data: customer, error: custErr } = await supabase
       .from("customers")
       .select("id, email")
@@ -41,7 +33,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Customer not found: ${custErr?.message}` }, { status: 404 });
     }
 
-    // Look up plan from subscriptions
     const { data: sub } = await supabase
       .from("subscriptions")
       .select("plan")
@@ -50,10 +41,9 @@ export async function POST(request: Request) {
 
     const plan = (sub?.plan as string) || "starter";
 
-    // Look up business
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
-      .select("id, name, description, industry, city, state, phone, email")
+      .select("id, name")
       .eq("customer_id", customer.id)
       .single();
 
@@ -61,7 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Business not found: ${bizErr?.message}` }, { status: 404 });
     }
 
-    // Store Stitch images on website record
+    // Store Stitch images
     await supabase.from("websites").upsert({
       business_id: business.id,
       stitch_hero_url: hero_url || null,
@@ -71,7 +61,7 @@ export async function POST(request: Request) {
       plan,
     }, { onConflict: "business_id" });
 
-    // Trigger generate-site with internal secret to bypass auth
+    // Trigger generate-site
     const origin = new URL(request.url).origin;
     const genRes = await fetch(`${origin}/api/generate-site`, {
       method: "POST",
@@ -92,7 +82,7 @@ export async function POST(request: Request) {
       business_name: business.name,
       image_source: hero_url ? "stitch" : "pexels",
       site_generated: genData.success || false,
-      site_tokens: genData.tokens_generated || 0,
+      tokens: genData.tokens_generated || 0,
     });
 
   } catch (err) {
