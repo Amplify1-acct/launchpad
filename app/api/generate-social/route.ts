@@ -207,13 +207,12 @@ Return this exact structure:
       platform: string,
       offset: number
     ) => {
-      const hours: Record<string, number> = { facebook: 10, instagram: 12, tiktok: 8 };
-      // Use time-based seed so regenerated posts always get fresh photos
+      const hours: Record<string, number> = { facebook: 10, instagram: 12, tiktok: 19 };
       const timeSeed = Math.floor(Date.now() / 1000);
-      return (posts || []).slice(0, perPlatform).map((p, i) => {
+      return Promise.all((posts || []).slice(0, perPlatform).map(async (p, i) => {
         const scheduledFor = new Date(now);
         scheduledFor.setDate(now.getDate() + 1 + Math.round(i * (30 / perPlatform)));
-        scheduledFor.setHours(hours[platform] + (i % 2), 0, 0, 0);
+        scheduledFor.setHours(hours[platform] || 10, 0, 0, 0);
         return {
           caption: p.caption,
           post_type: p.post_type,
@@ -227,14 +226,15 @@ Return this exact structure:
           ),
           scheduled_for: scheduledFor.toISOString(),
         };
-      });
+      }));
     };
 
-    return {
-      facebook: processPlatform(result.facebook || [], "facebook", 0),
-      instagram: processPlatform(result.instagram || [], "instagram", 100),
-      tiktok: processPlatform(result.tiktok || [], "tiktok", 200),
-    };
+    const [facebook, instagram, tiktok] = await Promise.all([
+      processPlatform(result.facebook || [], "facebook", 0),
+      processPlatform(result.instagram || [], "instagram", 100),
+      processPlatform(result.tiktok || [], "tiktok", 200),
+    ]);
+    return { facebook, instagram, tiktok };
   } catch (e) {
     console.error("Error generating posts:", e);
     return { facebook: [], instagram: [], tiktok: [] };
