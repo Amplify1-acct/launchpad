@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateBusinessPhoto } from "@/lib/nano-banana";
 import Anthropic from "@anthropic-ai/sdk";
 import { createAdminClient } from "@/lib/supabase-server";
 
@@ -148,7 +149,8 @@ function getPhotoUrl(description: string, index: number, platform: string): stri
 async function generateAllPosts(
   business: Record<string, any>,
   tokens: Record<string, any> | null,
-  perPlatform: number
+  perPlatform: number,
+  business_id: string
 ): Promise<{
   facebook: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
   instagram: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
@@ -200,7 +202,7 @@ Return this exact structure:
     const now = new Date();
     const description = business.description || business.industry || "";
 
-    const processPlatform = (
+    const processPlatform = async (
       posts: Array<{ caption: string; post_type: string }>,
       platform: string,
       offset: number
@@ -215,7 +217,14 @@ Return this exact structure:
         return {
           caption: p.caption,
           post_type: p.post_type,
-          image_url: getPhotoUrl(description, timeSeed + i + offset, platform),
+          image_url: await generateBusinessPhoto(
+            business.name,
+            description,
+            "social",
+            platform as "facebook" | "instagram" | "tiktok",
+            business_id,
+            timeSeed + i + offset
+          ),
           scheduled_for: scheduledFor.toISOString(),
         };
       });
