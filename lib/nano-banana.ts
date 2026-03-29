@@ -1,7 +1,8 @@
 import { createAdminClient } from "@/lib/supabase-server";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
+// gemini-2.5-flash-image is GA and supports aspect ratios
+const IMAGE_MODEL = "gemini-2.5-flash-image";
 
 export async function generateImage(prompt: string, aspectRatio: "1:1" | "16:9" | "9:16" = "16:9"): Promise<string | null> {
   if (!GEMINI_API_KEY) {
@@ -21,7 +22,9 @@ export async function generateImage(prompt: string, aspectRatio: "1:1" | "16:9" 
           }],
           generationConfig: {
             responseModalities: ["IMAGE"],
-            aspectRatio,
+            imageConfig: {
+              aspectRatio,
+            },
           },
         }),
       }
@@ -34,13 +37,15 @@ export async function generateImage(prompt: string, aspectRatio: "1:1" | "16:9" 
     }
 
     const data = await res.json();
-    const part = data.candidates?.[0]?.content?.parts?.[0];
+    // Find image part — could be at any index
+    const parts = data.candidates?.[0]?.content?.parts || [];
+    const imagePart = parts.find((p: any) => p.inlineData?.data);
 
-    if (part?.inlineData?.data) {
-      // Return as base64 data URL
-      return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+    if (imagePart?.inlineData?.data) {
+      return `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
     }
 
+    console.warn("No image in Gemini response:", JSON.stringify(data).slice(0, 300));
     return null;
   } catch (e) {
     console.error("Nano Banana generation failed:", e);
