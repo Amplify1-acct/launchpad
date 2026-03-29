@@ -285,7 +285,7 @@ export async function POST(request: Request) {
       if (count === 0) continue;
 
       // Generate just this platform's posts
-      const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, count);
+      const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, count, business_id);
       const platformPosts = platform === "facebook" ? fb : platform === "instagram" ? ig : li;
       rows.push(...platformPosts.map(p => toRow(p, platform)));
     }
