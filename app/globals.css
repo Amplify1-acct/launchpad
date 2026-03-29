@@ -70,3 +70,14 @@ img { max-width: 100%; display: block; }
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Mobile bottom nav — hidden on desktop, shown on mobile */
+.mobile-nav-bar {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-nav-bar {
+    display: flex !important;
+  }
+}
