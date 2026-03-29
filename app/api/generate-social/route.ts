@@ -312,7 +312,7 @@ export async function POST(request: Request) {
       .from("social_posts").delete()
       .eq("business_id", business_id).eq("status", "queued");
 
-    const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, defaultPerPlatform);
+    const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, defaultPerPlatform, business_id);
 
     const rows = [
       ...fb.map(p => toRow(p, "facebook")),
