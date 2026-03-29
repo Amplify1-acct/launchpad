@@ -122,7 +122,7 @@ export async function POST(request: Request) {
     // Fetch business + customer plan
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
-      .select("*, customers(plan)")
+      .select("*, subscriptions(plan)")
       .eq("id", business_id)
       .single();
 
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
     }
 
     const plan: "starter" | "pro" | "premium" =
-      (business.customers?.plan as any) || "starter";
+      (business.subscriptions?.plan as any) || "starter";
 
     console.log(`Generating site for ${business.name} on ${plan} plan`);
 
