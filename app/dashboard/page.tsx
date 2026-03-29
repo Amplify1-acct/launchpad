@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import styles from "./dashboard.module.css";
+import MobileNav from "@/components/MobileNav";
 import { DeployStatus } from "./DeployStatus";
 import { GenerateButton } from "./GenerateButton";
 
@@ -242,29 +243,7 @@ export default async function DashboardPage() {
         </div>
       </main>
 
-      {/* Mobile bottom nav */}
-      <nav className={styles.mobileNav}>
-        <a href="/dashboard" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>⚡</span>
-          <span className={styles.mobileNavLabel}>Home</span>
-        </a>
-        <a href="/dashboard/website" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>🌐</span>
-          <span className={styles.mobileNavLabel}>Website</span>
-        </a>
-        <a href="/dashboard/blog" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>✍️</span>
-          <span className={styles.mobileNavLabel}>Blog</span>
-        </a>
-        <a href="/dashboard/social" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>📱</span>
-          <span className={styles.mobileNavLabel}>Social</span>
-        </a>
-        <a href="/dashboard/settings" className={styles.mobileNavItem}>
-          <span className={styles.mobileNavIcon}>⚙️</span>
-          <span className={styles.mobileNavLabel}>Settings</span>
-        </a>
-      </nav>
+      <MobileNav />
     </div>
   );
 }
