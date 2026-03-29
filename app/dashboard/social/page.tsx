@@ -5,10 +5,10 @@ import { createClient } from "@/lib/supabase";
 import styles from "./social.module.css";
 import MobileNav from "@/components/MobileNav";
 
-type Platform = "all" | "facebook" | "instagram" | "linkedin";
+type Platform = "all" | "facebook" | "instagram" | "tiktok";
 type Post = {
   id: string;
-  platform: "facebook" | "instagram" | "linkedin";
+  platform: "facebook" | "instagram" | "tiktok";
   caption: string;
   image_url: string | null;
   status: string;
@@ -18,7 +18,7 @@ type Post = {
 const PLATFORM_COLORS = {
   facebook: "#1877f2",
   instagram: "#e1306c",
-  linkedin: "#0a66c2",
+  tiktok: "#010101",
 };
 
 export default function SocialPage() {
@@ -58,7 +58,7 @@ export default function SocialPage() {
   const counts = {
     facebook: posts.filter(p => p.platform === "facebook").length,
     instagram: posts.filter(p => p.platform === "instagram").length,
-    linkedin: posts.filter(p => p.platform === "linkedin").length,
+    tiktok: posts.filter(p => p.platform === "tiktok").length,
   };
 
   function toggleSelect(id: string) {
@@ -111,7 +111,7 @@ export default function SocialPage() {
       const platformCounts = {
         facebook: selectedPosts.filter(p => p.platform === "facebook").length,
         instagram: selectedPosts.filter(p => p.platform === "instagram").length,
-        linkedin: selectedPosts.filter(p => p.platform === "linkedin").length,
+        tiktok: selectedPosts.filter(p => p.platform === "tiktok").length,
       };
       // Delete selected posts first
       await supabase.from("social_posts").delete().in("id", Array.from(selected));
@@ -213,7 +213,7 @@ export default function SocialPage() {
               <div className={styles.generatingDesc}>
                 {regeneratingSelected
                   ? "Claude is rewriting only the posts you selected. Everything else stays the same."
-                  : "Claude is generating 30 days of posts for Facebook, Instagram, and LinkedIn."}
+                  : "Claude is generating 30 days of posts for Facebook, Instagram, and TikTok."}
               </div>
             </div>
           </div>
@@ -223,14 +223,14 @@ export default function SocialPage() {
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>📱</div>
             <h2>No posts yet</h2>
-            <p>Click "Generate Posts" to create a full month of content for Facebook, Instagram, and LinkedIn.</p>
+            <p>Click "Generate Posts" to create a full month of content for Facebook, Instagram, and TikTok.</p>
           </div>
         )}
 
         {posts.length > 0 && (
           <>
             <div className={styles.platformSummary}>
-              {(["facebook", "instagram", "linkedin"] as const).map(p => (
+              {(["facebook", "instagram", "tiktok"] as const).map(p => (
                 <div key={p} className={styles.platformCard} style={{ borderTop: `3px solid ${PLATFORM_COLORS[p]}` }}>
                   <div className={styles.platformName} style={{ color: PLATFORM_COLORS[p] }}>{p}</div>
                   <div className={styles.platformCount}>{counts[p]} posts</div>
@@ -243,7 +243,7 @@ export default function SocialPage() {
 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap" as const, gap: "12px" }}>
               <div className={styles.filterTabs}>
-                {(["all", "facebook", "instagram", "linkedin"] as const).map(tab => (
+                {(["all", "facebook", "instagram", "tiktok"] as const).map(tab => (
                   <button
                     key={tab}
                     className={`${styles.filterTab} ${filter === tab ? styles.filterTabActive : ""}`}
