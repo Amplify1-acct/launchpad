@@ -1,80 +1,91 @@
 import { createAdminClient } from "@/lib/supabase-server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-// gemini-2.5-flash-image is GA and supports aspect ratios
-const IMAGE_MODEL = "gemini-2.5-flash-image";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 export async function generateImage(prompt: string, aspectRatio: "1:1" | "16:9" | "9:16" = "16:9"): Promise<string | null> {
-  if (!GEMINI_API_KEY) {
-    console.warn("GEMINI_API_KEY not set — falling back to Unsplash");
+  if (!OPENAI_API_KEY) {
+    console.warn("OPENAI_API_KEY not set — falling back to Unsplash");
     return null;
   }
 
+  // Map aspect ratio to DALL-E 3 sizes
+  const sizeMap: Record<string, string> = {
+    "1:1": "1024x1024",
+    "16:9": "1792x1024",
+    "9:16": "1024x1792",
+  };
+  const size = sizeMap[aspectRatio] || "1792x1024";
+
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }],
-          generationConfig: {
-            responseModalities: ["IMAGE"],
-            imageConfig: {
-              aspectRatio,
-            },
-          },
-        }),
-      }
-    );
+    const res = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "dall-e-3",
+        prompt,
+        n: 1,
+        size,
+        quality: "standard",
+        response_format: "url",
+      }),
+    });
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("Gemini image error:", err);
+      console.error("DALL-E 3 error:", err);
       return null;
     }
 
     const data = await res.json();
-    // Find image part — could be at any index
-    const parts = data.candidates?.[0]?.content?.parts || [];
-    const imagePart = parts.find((p: any) => p.inlineData?.data);
-
-    if (imagePart?.inlineData?.data) {
-      return `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
+    const url = data.data?.[0]?.url;
+    if (!url) {
+      console.warn("No URL in DALL-E response");
+      return null;
     }
 
-    console.warn("No image in Gemini response:", JSON.stringify(data).slice(0, 300));
-    return null;
+    // Return the URL directly — DALL-E gives us a CDN URL good for 1 hour
+    // We need to fetch and upload to Supabase for persistence
+    return url;
   } catch (e) {
-    console.error("Nano Banana generation failed:", e);
+    console.error("DALL-E 3 generation failed:", e);
     return null;
   }
 }
 
-// Upload base64 image to Supabase Storage and return public URL
+// Upload image (URL or base64) to Supabase Storage and return public URL
 export async function uploadGeneratedImage(
-  base64DataUrl: string,
+  imageSource: string,
   businessId: string,
   filename: string
 ): Promise<string | null> {
   try {
     const supabase = createAdminClient();
+    let buffer: Buffer;
+    let mimeType = "image/png";
 
-    // Convert base64 to buffer
-    const base64 = base64DataUrl.split(",")[1];
-    const mimeType = base64DataUrl.split(";")[0].split(":")[1];
-    const buffer = Buffer.from(base64, "base64");
-    const ext = mimeType.split("/")[1] || "jpg";
+    if (imageSource.startsWith("data:")) {
+      // base64 data URL
+      const base64 = imageSource.split(",")[1];
+      mimeType = imageSource.split(";")[0].split(":")[1];
+      buffer = Buffer.from(base64, "base64");
+    } else {
+      // Regular URL (from DALL-E) — fetch it
+      const imgRes = await fetch(imageSource);
+      if (!imgRes.ok) throw new Error(`Failed to fetch image: ${imgRes.status}`);
+      const arrayBuffer = await imgRes.arrayBuffer();
+      buffer = Buffer.from(arrayBuffer);
+      mimeType = imgRes.headers.get("content-type") || "image/png";
+    }
+
+    const ext = mimeType.split("/")[1]?.split("+")[0] || "png";
     const path = `generated/${businessId}/${filename}.${ext}`;
 
     const { error } = await supabase.storage
       .from("site-assets")
-      .upload(path, buffer, {
-        contentType: mimeType,
-        upsert: true,
-      });
+      .upload(path, buffer, { contentType: mimeType, upsert: true });
 
     if (error) {
       console.error("Upload error:", error);
