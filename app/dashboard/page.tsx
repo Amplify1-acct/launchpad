@@ -211,13 +211,45 @@ export default async function DashboardPage() {
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <div className={styles.cardTitle}>📱 Social media</div>
-              <span className={`${styles.badge} ${styles.badgeAmber}`}>{socialPosts?.length || 0} queued</span>
+              <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+                <span className={`${styles.badge} ${(socialPosts?.length || 0) > 0 ? styles.badgeGreen : styles.badgeAmber}`}>
+                  {socialPosts?.length || 0} posts
+                </span>
+                <a href="/dashboard/social" style={{fontSize:"12px",fontWeight:700,color:"var(--accent)",textDecoration:"none"}}>
+                  Manage →
+                </a>
+              </div>
             </div>
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>📱</div>
-              <p>Setting up your social channels.</p>
-              <p className={styles.emptyMeta}>Facebook, Instagram & LinkedIn — ready to post.</p>
-            </div>
+            {socialPosts && socialPosts.length > 0 ? (
+              <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
+                {(["facebook","instagram","linkedin"] as const).map(platform => {
+                  const posts = socialPosts.filter((p:any) => p.platform === platform);
+                  const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",linkedin:"#0a66c2"};
+                  if (posts.length === 0) return null;
+                  return (
+                    <a key={platform} href="/dashboard/social" style={{textDecoration:"none"}}>
+                      <div style={{border:"1px solid var(--border)",borderRadius:"8px",overflow:"hidden"}}>
+                        <div style={{background:colors[platform],padding:"5px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <span style={{color:"#fff",fontSize:"11px",fontWeight:700,textTransform:"capitalize"}}>{platform}</span>
+                          <span style={{color:"rgba(255,255,255,0.7)",fontSize:"11px"}}>{posts.length} posts</span>
+                        </div>
+                        <div style={{padding:"8px 10px",fontSize:"12px",color:"var(--text-mid)",lineHeight:1.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+                          {(posts[0] as any).caption}
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            ) : (
+              <a href="/dashboard/social" style={{textDecoration:"none"}}>
+                <div className={styles.emptyState} style={{cursor:"pointer",background:"var(--bg-soft)",borderRadius:"8px",border:"1px dashed var(--border)"}}>
+                  <div className={styles.emptyIcon}>📱</div>
+                  <p>Generate your social posts</p>
+                  <p className={styles.emptyMeta}>Facebook, Instagram & LinkedIn — click to get started</p>
+                </div>
+              </a>
+            )}
           </div>
 
           {/* SEO */}
