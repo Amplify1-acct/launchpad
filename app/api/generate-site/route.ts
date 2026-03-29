@@ -109,6 +109,10 @@ Return this JSON:
 }
 
 export async function POST(request: Request) {
+  // Allow internal calls (from admin/generate, Claude pipeline) with secret header
+  const internalSecret = request.headers.get("x-internal-secret");
+  const isInternal = internalSecret === (process.env.INTERNAL_API_SECRET || "exsisto-internal-2026");
+
   try {
     const body = await request.json();
     const { business_id, template_override, revision_notes } = body;
