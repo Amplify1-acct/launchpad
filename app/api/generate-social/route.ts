@@ -201,10 +201,20 @@ export async function POST(request: Request) {
   // Generate all 3 platforms in ONE Claude call — much faster
   const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, perPlatform);
 
+  // Strip post_type — not a DB column, just used internally for photo selection
+  const toRow = (p: { caption: string; image_url: string; post_type: string; scheduled_for: string }, platform: string) => ({
+    business_id,
+    platform: platform as "facebook" | "instagram" | "linkedin",
+    caption: p.caption,
+    image_url: p.image_url,
+    scheduled_for: p.scheduled_for,
+    status: "queued" as const,
+  });
+
   const rows = [
-    ...fb.map(p => ({ ...p, business_id, platform: "facebook" as const, status: "queued" as const })),
-    ...ig.map(p => ({ ...p, business_id, platform: "instagram" as const, status: "queued" as const })),
-    ...li.map(p => ({ ...p, business_id, platform: "linkedin" as const, status: "queued" as const })),
+    ...fb.map(p => toRow(p, "facebook")),
+    ...ig.map(p => toRow(p, "instagram")),
+    ...li.map(p => toRow(p, "linkedin")),
   ];
 
   const { data: inserted, error } = await supabase
