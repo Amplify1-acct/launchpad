@@ -137,13 +137,23 @@ export default async function DashboardPage() {
               </span>
             </div>
             <div className={styles.websitePreview}>
-              {website?.status === "ready_for_review" ? (
+              {website?.custom_html ? (
                 <a href="/dashboard/preview" style={{ display: "block", textDecoration: "none" }}>
-                  <div className={styles.websitePlaceholder} style={{ background: "#f0f7ff", cursor: "pointer" }}>
-                    <div style={{ fontSize: "32px", marginBottom: "8px" }}>👀</div>
-                    <p style={{ color: "#0066ff", fontWeight: 600 }}>Click to review your site</p>
+                  <div className={styles.websitePlaceholder} style={{
+                    background: website.status === "live" ? "#f0fdf4" : "#f0f7ff",
+                    cursor: "pointer"
+                  }}>
+                    <div style={{ fontSize: "32px", marginBottom: "8px" }}>
+                      {website.status === "live" ? "🌐" : "👀"}
+                    </div>
+                    <p style={{
+                      color: website.status === "live" ? "#16a34a" : "#0066ff",
+                      fontWeight: 600
+                    }}>
+                      {website.status === "live" ? "Live — click to edit" : "Ready to review"}
+                    </p>
                     <p style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
-                      Style: {website.template_name?.replace("skeleton-", "") || "custom"}
+                      {website.template_name?.replace("skeleton-", "") || "custom"} style
                     </p>
                   </div>
                 </a>
@@ -154,10 +164,18 @@ export default async function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className={styles.cardFooter}>
+            <div className={styles.cardFooter} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span className={styles.cardFooterText}>
                 {website?.vercel_url || `${business.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`}
               </span>
+              {website?.custom_html && (
+                <a href="/dashboard/preview" style={{
+                  fontSize: "12px", fontWeight: 700, color: "#0066ff",
+                  textDecoration: "none"
+                }}>
+                  {website.status === "live" ? "Edit →" : "Review →"}
+                </a>
+              )}
             </div>
           </div>
 
