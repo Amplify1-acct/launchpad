@@ -182,13 +182,14 @@ function buildPrompts(name: string, description: string, type: string, index: nu
 
     const location = SCENIC_LOCATIONS[index % SCENIC_LOCATIONS.length];
 
+    const photoPrefix = "RAW photo, DSLR, shot on Canon EOS R5, 50mm lens, f/2.8, natural lighting, ultra-realistic, hyperrealistic, photorealistic, 8K resolution, professional photography, no illustration, no painting, no CGI, no render —";
     return [
-      `Photorealistic professional automotive photo of a perfectly restored ${carName} ${location}. Stunning paint, gleaming chrome, showroom condition. Cinematic lighting, high resolution.`,
-      `Close-up detail shot of a pristine ${carName} — chrome bumper, hood ornament, polished paint reflecting the surroundings. Studio quality automotive photography, dramatic lighting.`,
-      `${carName} being expertly restored in a professional classic car restoration shop. Mechanic in foreground, gleaming body panels visible. Authentic workshop atmosphere. Photorealistic.`,
-      `Interior of a beautifully restored ${carName} — original leather seats, chrome dashboard gauges, wooden steering wheel. Warm nostalgic lighting. Photorealistic.`,
-      `${carName} parked at golden hour, long shadows, warm California light. The paint glows. Empty road behind it. Cinematic automotive photography.`,
-      `Before and after restoration: rusty weathered ${carName} on left, fully restored gleaming version on right. Split composition showing the transformation. Photorealistic.`,
+      `${photoPrefix} ${carName} ${location}. Stunning paint, gleaming chrome, showroom condition. Every reflection and detail crystal clear.`,
+      `${photoPrefix} close-up detail of a ${carName} — chrome bumper, polished paint with perfect reflections, authentic patina. Shot with macro lens, razor sharp focus.`,
+      `${photoPrefix} ${carName} in a professional restoration shop. Mechanic working on the engine bay, tools on workbench, shop lights overhead. Documentary style photography.`,
+      `${photoPrefix} interior of a ${carName} — original leather seats, chrome instrument cluster, wooden steering wheel, period-correct details. Warm ambient light.`,
+      `${photoPrefix} ${carName} at golden hour on an empty California road. Long shadows, warm light on the paint, heat shimmer on the asphalt. Magazine cover quality.`,
+      `${photoPrefix} ${carName} at a classic car show, people admiring it in background, bokeh background, sharp foreground. Shot on 85mm portrait lens.`,
     ];
   }
 
@@ -222,9 +223,10 @@ function buildPrompts(name: string, description: string, type: string, index: nu
   }
 
   // Generic business
+  const photoPrefix = "RAW photo, DSLR, shot on Canon EOS R5, natural lighting, ultra-realistic, hyperrealistic, photorealistic, 8K resolution, professional photography, no illustration —";
   return [
-    `Professional business environment for ${name}. Clean, modern, welcoming. High quality photorealistic photography.`,
-    `Team of professionals at work. Confident, skilled, approachable. Clean modern office. Photorealistic.`,
+    `${photoPrefix} professional business environment for ${name}. Clean, modern, welcoming atmosphere.`,
+    `${photoPrefix} team of skilled professionals at work. Confident, approachable. Clean modern environment.`,
   ];
 }
 
