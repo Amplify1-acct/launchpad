@@ -58,3 +58,47 @@
 .planFeatures { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .planFeatures li { font-size: 0.8rem; color: var(--text-mid); }
 .trial { font-size: 0.8rem; color: var(--text-light); text-align: center; margin-top: 1rem; }
+
+@media (max-width: 600px) {
+  .page {
+    padding: 1.5rem 1rem;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .steps {
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .stepItem {
+    font-size: 0.75rem;
+  }
+
+  .stepItem:not(:last-child)::after {
+    margin: 0 4px;
+  }
+
+  .plans {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr 72px;
+  }
+
+  .btnRow {
+    flex-direction: column-reverse;
+  }
+
+  .btnRow .btnOutline,
+  .btnRow .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
