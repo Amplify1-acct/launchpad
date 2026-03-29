@@ -23,26 +23,30 @@ const POST_TYPES = [
 // Curated Unsplash photo IDs by industry — direct URLs, always work
 const PHOTO_LIBRARY: Record<string, string[]> = {
   auto: [
-    // Classic muscle cars
-    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop&auto=format",
-    // Vintage car restoration workshop
-    "https://images.unsplash.com/photo-1493238792000-8113da705763?w=800&h=600&fit=crop&auto=format",
-    // Classic american muscle
-    "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop&auto=format",
-    // Vintage car chrome detail
-    "https://images.unsplash.com/photo-1542362567-b07e54358753?w=800&h=600&fit=crop&auto=format",
-    // Classic car show
-    "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&h=600&fit=crop&auto=format",
-    // Mechanic working on classic engine
-    "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop&auto=format",
-    // Vintage car interior
-    "https://images.unsplash.com/photo-1547245324-d777c6f05e80?w=800&h=600&fit=crop&auto=format",
-    // Classic car paint detail
-    "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&h=600&fit=crop&auto=format",
-    // Old American car on road
-    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&h=600&fit=crop&auto=format",
-    // Classic car engine bay
-    "https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=800&h=600&fit=crop&auto=format",
+    // Vintage classic car on road — verified
+    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=600&fit=crop&auto=format",
+    // Classic muscle car — verified
+    "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800&h=600&fit=crop&auto=format",
+    // Vintage American car — verified
+    "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&h=600&fit=crop&auto=format",
+    // Classic car exterior — verified
+    "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800&h=600&fit=crop&auto=format",
+    // Retro classic car — verified
+    "https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=800&h=600&fit=crop&auto=format",
+    // Classic car detail — verified
+    "https://images.unsplash.com/photo-1541348263662-e068662d82af?w=800&h=600&fit=crop&auto=format",
+    // Vintage car chrome — verified
+    "https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=800&h=600&fit=crop&auto=format",
+    // Classic American muscle — verified
+    "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop&auto=format",
+    // Old car restoration — verified
+    "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&h=600&fit=crop&auto=format",
+    // Classic car show — verified
+    "https://images.unsplash.com/photo-1476525223214-c31ff100e1ae?w=800&h=600&fit=crop&auto=format",
+    // Vintage car front — verified
+    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&h=600&fit=crop&auto=format",
+    // Classic car paint — verified
+    "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&h=600&fit=crop&auto=format",
   ],
   restaurant: [
     "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&auto=format",
