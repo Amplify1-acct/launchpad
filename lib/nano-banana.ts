@@ -113,39 +113,102 @@ export async function generateBusinessPhoto(
   return getFallbackPhoto(businessDescription, aspectRatio, index);
 }
 
+function extractCarDetails(description: string): { year: string; make: string; model: string } | null {
+  // Try to extract year (4 digits starting with 19 or 20)
+  const yearMatch = description.match(/\b(19[2-9]\d|20[0-2]\d)\b/);
+  const year = yearMatch ? yearMatch[1] : "";
+
+  // Common makes
+  const makes = ["chevrolet", "chevy", "ford", "dodge", "pontiac", "buick", "oldsmobile", "mercury",
+    "cadillac", "lincoln", "chrysler", "packard", "studebaker", "hudson", "desoto",
+    "ferrari", "porsche", "jaguar", "triumph", "mg", "austin", "healey", "aston martin",
+    "mercedes", "bmw", "alfa romeo"];
+  const lower = description.toLowerCase();
+  const foundMake = makes.find(m => lower.includes(m));
+  const make = foundMake ? foundMake.charAt(0).toUpperCase() + foundMake.slice(1) : "";
+
+  // Common models
+  const models = ["corvette", "mustang", "camaro", "charger", "challenger", "chevelle", "nova",
+    "impala", "el camino", "gto", "firebird", "trans am", "barracuda", "cuda",
+    "roadrunner", "super bee", "skylark", "cutlass", "442", "judge", "shelby",
+    "cobra", "boss", "mach 1", "thunderbird", "galaxie", "fairlane",
+    "cougar", "cyclone", "torino", "bel air", "tri five", "biscayne"];
+  const foundModel = models.find(m => lower.includes(m));
+  const model = foundModel ? foundModel.charAt(0).toUpperCase() + foundModel.slice(1) : "";
+
+  if (year || make || model) {
+    return { year, make, model };
+  }
+  return null;
+}
+
+const SCENIC_LOCATIONS = [
+  "driving down Pacific Coast Highway California at golden hour, ocean in background",
+  "parked at a scenic California coastal overlook, Pacific Ocean in background, sunset",
+  "cruising through a sun-drenched desert highway in the American Southwest",
+  "parked in front of a classic 1960s diner on Route 66",
+  "driving through rolling hills with autumn colors",
+  "at a classic car show on a sunny day, crowds admiring it",
+  "in a pristine showroom under dramatic studio lighting",
+  "parked on a palm-lined boulevard in Los Angeles",
+];
+
 function buildPrompts(name: string, description: string, type: string, index: number): string[] {
   const lower = description.toLowerCase();
+  const car = extractCarDetails(description);
 
-  if (lower.includes("classic") || lower.includes("restoration") || lower.includes("vintage") || lower.includes("car") || lower.includes("auto")) {
+  if (lower.includes("classic") || lower.includes("restoration") || lower.includes("vintage") ||
+      lower.includes("car") || lower.includes("auto") || lower.includes("muscle") || car) {
+
+    const carName = car
+      ? [car.year, car.make, car.model].filter(Boolean).join(" ")
+      : "classic American muscle car";
+
+    const location = SCENIC_LOCATIONS[index % SCENIC_LOCATIONS.length];
+
     return [
-      `Professional photo of a beautifully restored classic American muscle car, gleaming paint, chrome details, shot in a clean garage workshop. Photorealistic, high quality, dramatic lighting.`,
-      `Vintage 1960s or 1970s automobile being restored in a professional auto shop. Mechanic working on the engine bay. Tools visible, authentic workshop atmosphere. Photorealistic.`,
-      `Close-up detail shot of polished chrome on a classic vintage car. Reflections of the garage visible. Studio quality automotive photography.`,
-      `Fully restored classic American car on display, showroom quality finish, dramatic studio lighting. Deep rich paint color. Photorealistic automotive photography.`,
-      `Before and after style: one side showing a rusty vintage car, other side showing it fully restored to mint condition. Split composition. Photorealistic.`,
-      `Interior of a classic 1960s muscle car — leather seats, chrome dashboard, steering wheel. Restoration quality. Warm nostalgic lighting. Photorealistic.`,
+      `Photorealistic professional automotive photo of a perfectly restored ${carName} ${location}. Stunning paint, gleaming chrome, showroom condition. Cinematic lighting, high resolution.`,
+      `Close-up detail shot of a pristine ${carName} — chrome bumper, hood ornament, polished paint reflecting the surroundings. Studio quality automotive photography, dramatic lighting.`,
+      `${carName} being expertly restored in a professional classic car restoration shop. Mechanic in foreground, gleaming body panels visible. Authentic workshop atmosphere. Photorealistic.`,
+      `Interior of a beautifully restored ${carName} — original leather seats, chrome dashboard gauges, wooden steering wheel. Warm nostalgic lighting. Photorealistic.`,
+      `${carName} parked at golden hour, long shadows, warm California light. The paint glows. Empty road behind it. Cinematic automotive photography.`,
+      `Before and after restoration: rusty weathered ${carName} on left, fully restored gleaming version on right. Split composition showing the transformation. Photorealistic.`,
     ];
   }
 
   if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe")) {
     return [
-      `Beautiful restaurant interior with warm lighting, set tables, inviting atmosphere. Professional food photography style.`,
-      `Exquisitely plated dish on a white plate, restaurant quality, soft bokeh background. Professional food photography.`,
-      `Bustling restaurant kitchen with chefs at work. Dynamic, professional, authentic.`,
+      `Beautiful restaurant interior with warm lighting, set tables, inviting atmosphere. Professional food photography style. Photorealistic.`,
+      `Exquisitely plated dish on a white plate, restaurant quality, soft bokeh background. Professional food photography. Photorealistic.`,
+      `Bustling restaurant kitchen with chefs at work. Dynamic, professional, authentic. Photorealistic.`,
     ];
   }
 
   if (lower.includes("gym") || lower.includes("fitness")) {
     return [
-      `Modern gym interior with weights and equipment, motivating atmosphere. Professional fitness photography.`,
-      `Person working out with weights in a professional gym. Dramatic lighting, motivating composition.`,
+      `Modern gym interior with weights and equipment, motivating atmosphere. Dramatic lighting. Professional fitness photography. Photorealistic.`,
+      `Person working out with weights in a professional gym. Dynamic pose, dramatic lighting. Photorealistic.`,
     ];
   }
 
-  // Generic professional business
+  if (lower.includes("dental") || lower.includes("medical")) {
+    return [
+      `Modern dental office interior, clean and welcoming, professional lighting. Photorealistic.`,
+      `Friendly dentist with patient in a clean modern dental office. Professional, reassuring. Photorealistic.`,
+    ];
+  }
+
+  if (lower.includes("plumb") || lower.includes("hvac") || lower.includes("electric")) {
+    return [
+      `Professional tradesperson working on a home repair job. Clean uniform, proper tools, confident. Photorealistic.`,
+      `Satisfied homeowner at their front door greeting a uniformed service technician. Sunny day. Photorealistic.`,
+    ];
+  }
+
+  // Generic business
   return [
-    `Professional business photo for ${name}. ${description}. High quality, photorealistic, professional lighting.`,
-    `Team of professionals at work for a ${description} business. Clean, modern, professional photography.`,
+    `Professional business environment for ${name}. Clean, modern, welcoming. High quality photorealistic photography.`,
+    `Team of professionals at work. Confident, skilled, approachable. Clean modern office. Photorealistic.`,
   ];
 }
 
