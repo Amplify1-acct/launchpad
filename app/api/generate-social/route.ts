@@ -23,12 +23,26 @@ const POST_TYPES = [
 // Curated Unsplash photo IDs by industry — direct URLs, always work
 const PHOTO_LIBRARY: Record<string, string[]> = {
   auto: [
+    // Classic muscle cars
+    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop&auto=format",
+    // Vintage car restoration workshop
+    "https://images.unsplash.com/photo-1493238792000-8113da705763?w=800&h=600&fit=crop&auto=format",
+    // Classic american muscle
+    "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop&auto=format",
+    // Vintage car chrome detail
+    "https://images.unsplash.com/photo-1542362567-b07e54358753?w=800&h=600&fit=crop&auto=format",
+    // Classic car show
+    "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&h=600&fit=crop&auto=format",
+    // Mechanic working on classic engine
     "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=600&fit=crop&auto=format",
+    // Vintage car interior
+    "https://images.unsplash.com/photo-1547245324-d777c6f05e80?w=800&h=600&fit=crop&auto=format",
+    // Classic car paint detail
+    "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&h=600&fit=crop&auto=format",
+    // Old American car on road
+    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&h=600&fit=crop&auto=format",
+    // Classic car engine bay
+    "https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=800&h=600&fit=crop&auto=format",
   ],
   restaurant: [
     "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&auto=format",
@@ -88,7 +102,11 @@ function getPhotoUrl(description: string, index: number, platform: string): stri
   const lower = description.toLowerCase();
   let photos = PHOTO_LIBRARY.default;
 
-  if (lower.includes("auto") || lower.includes("car") || lower.includes("vehicle") || lower.includes("restoration")) {
+  if (
+    lower.includes("classic") || lower.includes("restoration") || lower.includes("vintage") ||
+    lower.includes("muscle") || lower.includes("antique") || lower.includes("old car") ||
+    lower.includes("auto") || lower.includes("car") || lower.includes("vehicle")
+  ) {
     photos = PHOTO_LIBRARY.auto;
   } else if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe") || lower.includes("dining")) {
     photos = PHOTO_LIBRARY.restaurant;
