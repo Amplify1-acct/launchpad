@@ -241,3 +241,13 @@
     padding: 28px 20px;
   }
 }
+
+@media (max-width: 640px) {
+  .inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sticky {
+    position: static !important;
+  }
+}
