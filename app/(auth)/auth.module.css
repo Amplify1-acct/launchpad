@@ -65,3 +65,20 @@
 .switch a { color: var(--accent); font-weight: 500; text-decoration: none; }
 .terms { font-size: 0.8rem; color: var(--text-light); margin-top: 1rem; text-align: center; }
 .terms a { color: var(--text-mid); }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .fieldRow {
+    flex-direction: column;
+  }
+}
