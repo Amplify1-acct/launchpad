@@ -78,7 +78,7 @@ export default function TemplatePage() {
     }, 3000);
 
     try {
-      const res = await fetch("/api/generate-site", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ business_id: businessId, template_override: selected }),
