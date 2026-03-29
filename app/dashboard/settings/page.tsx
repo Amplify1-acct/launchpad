@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import MobileNav from "@/components/MobileNav";
@@ -43,7 +43,7 @@ const PLATFORMS = [
   },
 ];
 
-export default function SettingsPage() {
+function SettingsInner() {
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
   const [business, setBusiness] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -241,5 +241,13 @@ export default function SettingsPage() {
 
       <MobileNav />
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SettingsInner />
+    </Suspense>
   );
 }
