@@ -235,7 +235,7 @@ export default async function DashboardPage() {
                           <span style={{color:"#fff",fontSize:"11px",fontWeight:700,textTransform:"capitalize"}}>{platform}</span>
                           <span style={{color:"rgba(255,255,255,0.7)",fontSize:"11px"}}>{posts.length} posts</span>
                         </div>
-                        <div style={{padding:"8px 10px",fontSize:"12px",color:"var(--text-mid)",lineHeight:1.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+                        <div style={{padding:"8px 10px",fontSize:"12px",color:"var(--text-mid)",lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
                           {(posts[0] as any).caption}
                         </div>
                       </div>
