@@ -51,6 +51,13 @@ export default function WebsitePreviewPage() {
       approved_at: new Date().toISOString(),
     }).eq("business_id", business.id);
 
+    // Trigger social post generation in background (fire and forget)
+    fetch("/api/generate-social", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ business_id: business.id }),
+    });
+
     // Trigger deployment
     setDeploying(true);
     try {
