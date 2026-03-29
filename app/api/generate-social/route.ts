@@ -84,7 +84,7 @@ const PHOTO_LIBRARY: Record<string, string[]> = {
   ],
 };
 
-function getPhotoUrl(description: string, index: number): string {
+function getPhotoUrl(description: string, index: number, platform: string): string {
   const lower = description.toLowerCase();
   let photos = PHOTO_LIBRARY.default;
 
@@ -108,7 +108,19 @@ function getPhotoUrl(description: string, index: number): string {
     photos = PHOTO_LIBRARY.financial;
   }
 
-  return photos[index % photos.length];
+  // Get base photo URL and set correct dimensions per platform
+  const baseUrl = photos[index % photos.length];
+
+  if (platform === "tiktok") {
+    // TikTok: 9:16 vertical (1080x1920)
+    return baseUrl.replace("w=800&h=600", "w=608&h=1080");
+  } else if (platform === "instagram") {
+    // Instagram: 1:1 square (1080x1080)
+    return baseUrl.replace("w=800&h=600", "w=800&h=800");
+  } else {
+    // Facebook: 16:9 landscape (1200x630)
+    return baseUrl.replace("w=800&h=600", "w=1200&h=630");
+  }
 }
 
 async function generateAllPosts(
