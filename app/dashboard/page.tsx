@@ -222,9 +222,9 @@ export default async function DashboardPage() {
             </div>
             {socialPosts && socialPosts.length > 0 ? (
               <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
-                {(["facebook","instagram","linkedin"] as const).map(platform => {
+                {(["facebook","instagram","tiktok"] as const).map(platform => {
                   const posts = socialPosts.filter((p:any) => p.platform === platform);
-                  const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",linkedin:"#0a66c2"};
+                  const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",tiktok:"#0a66c2"};
                   if (posts.length === 0) return null;
                   return (
                     <a key={platform} href="/dashboard/social" style={{textDecoration:"none"}}>
@@ -246,7 +246,7 @@ export default async function DashboardPage() {
                 <div className={styles.emptyState} style={{cursor:"pointer",background:"var(--bg-soft)",borderRadius:"8px",border:"1px dashed var(--border)"}}>
                   <div className={styles.emptyIcon}>📱</div>
                   <p>Generate your social posts</p>
-                  <p className={styles.emptyMeta}>Facebook, Instagram & LinkedIn — click to get started</p>
+                  <p className={styles.emptyMeta}>Facebook, Instagram & TikTok — click to get started</p>
                 </div>
               </a>
             )}
