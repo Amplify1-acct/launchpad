@@ -193,7 +193,7 @@ Return this exact structure:
         return {
           caption: p.caption,
           post_type: p.post_type,
-          image_url: getPhotoUrl(description, timeSeed + i + offset),
+          image_url: getPhotoUrl(description, timeSeed + i + offset, platform),
           scheduled_for: scheduledFor.toISOString(),
         };
       });
