@@ -20,60 +20,95 @@ const POST_TYPES = [
   { type: "cta", prompt: "Warm call to action — invite people to reach out. Not pushy, just welcoming." },
 ];
 
-// Unsplash photo topics by industry keyword
-function getPhotoTopic(description: string, postType: string): string {
+// Curated Unsplash photo IDs by industry — direct URLs, always work
+const PHOTO_LIBRARY: Record<string, string[]> = {
+  auto: [
+    "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=600&fit=crop&auto=format",
+  ],
+  restaurant: [
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop&auto=format",
+  ],
+  fitness: [
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=800&h=600&fit=crop&auto=format",
+  ],
+  plumbing: [
+    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=600&fit=crop&auto=format",
+  ],
+  dental: [
+    "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1588776814546-1ffedfd9b8ea?w=800&h=600&fit=crop&auto=format",
+  ],
+  law: [
+    "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&auto=format",
+  ],
+  realestate: [
+    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop&auto=format",
+  ],
+  landscaping: [
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=600&fit=crop&auto=format",
+  ],
+  financial: [
+    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=600&fit=crop&auto=format",
+  ],
+  default: [
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&auto=format",
+  ],
+};
+
+function getPhotoUrl(description: string, index: number): string {
   const lower = description.toLowerCase();
+  let photos = PHOTO_LIBRARY.default;
 
-  // Industry-specific photo searches
-  if (lower.includes("auto") || lower.includes("car") || lower.includes("vehicle")) {
-    const topics = ["classic car restoration workshop", "vintage automobile engine", "auto mechanic garage", "classic muscle car", "car detailing professional"];
-    return topics[Math.floor(Math.random() * topics.length)];
-  }
-  if (lower.includes("plumb") || lower.includes("pipe") || lower.includes("drain")) {
-    return ["plumber working", "modern bathroom plumbing", "pipe repair professional"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe")) {
-    return ["restaurant kitchen chef", "beautiful food plating", "cozy cafe interior"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("gym") || lower.includes("fitness") || lower.includes("trainer")) {
-    return ["gym workout weights", "personal training session", "fitness motivation"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("dental") || lower.includes("dentist")) {
-    return ["dental office modern", "dentist patient care", "healthy smile teeth"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("law") || lower.includes("attorney") || lower.includes("legal")) {
-    return ["law office professional", "attorney consultation", "justice legal books"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("real estate") || lower.includes("realtor") || lower.includes("property")) {
-    return ["luxury home exterior", "real estate agent", "modern house interior"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("garden")) {
-    return ["professional landscaping", "beautiful garden design", "lawn care maintenance"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("clean")) {
-    return ["professional cleaning service", "spotless home interior", "cleaning team"][Math.floor(Math.random() * 3)];
-  }
-  if (lower.includes("financ") || lower.includes("account") || lower.includes("tax")) {
-    return ["financial advisor meeting", "business accounting office", "financial planning"][Math.floor(Math.random() * 3)];
+  if (lower.includes("auto") || lower.includes("car") || lower.includes("vehicle") || lower.includes("restoration")) {
+    photos = PHOTO_LIBRARY.auto;
+  } else if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe") || lower.includes("dining")) {
+    photos = PHOTO_LIBRARY.restaurant;
+  } else if (lower.includes("gym") || lower.includes("fitness") || lower.includes("trainer") || lower.includes("workout")) {
+    photos = PHOTO_LIBRARY.fitness;
+  } else if (lower.includes("plumb") || lower.includes("pipe") || lower.includes("drain") || lower.includes("hvac")) {
+    photos = PHOTO_LIBRARY.plumbing;
+  } else if (lower.includes("dental") || lower.includes("dentist") || lower.includes("medical")) {
+    photos = PHOTO_LIBRARY.dental;
+  } else if (lower.includes("law") || lower.includes("attorney") || lower.includes("legal")) {
+    photos = PHOTO_LIBRARY.law;
+  } else if (lower.includes("real estate") || lower.includes("realtor") || lower.includes("property")) {
+    photos = PHOTO_LIBRARY.realestate;
+  } else if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("garden")) {
+    photos = PHOTO_LIBRARY.landscaping;
+  } else if (lower.includes("financ") || lower.includes("account") || lower.includes("tax") || lower.includes("wealth")) {
+    photos = PHOTO_LIBRARY.financial;
   }
 
-  // Post type fallbacks
-  const fallbacks: Record<string, string> = {
-    behind_the_scenes: "professional team working",
-    tip: "business expertise knowledge",
-    local: "small town main street community",
-    results: "happy customer satisfaction",
-    trust: "professional handshake trust",
-    cta: "small business owner welcoming",
-  };
-
-  return fallbacks[postType] || "small business professional service";
-}
-
-function buildUnsplashUrl(topic: string, seed: number): string {
-  // Use Unsplash source API — free, no key needed
-  const encoded = encodeURIComponent(topic);
-  return `https://source.unsplash.com/800x600/?${encoded}&sig=${seed}`;
+  return photos[index % photos.length];
 }
 
 async function generateAllPosts(
@@ -141,12 +176,10 @@ Return this exact structure:
         const scheduledFor = new Date(now);
         scheduledFor.setDate(now.getDate() + 1 + Math.round(i * (30 / perPlatform)));
         scheduledFor.setHours(hours[platform] + (i % 2), 0, 0, 0);
-        const photoTopic = getPhotoTopic(description, p.post_type);
-        const seed = Date.now() + i + offset;
         return {
           caption: p.caption,
           post_type: p.post_type,
-          image_url: buildUnsplashUrl(photoTopic, seed),
+          image_url: getPhotoUrl(description, i + offset),
           scheduled_for: scheduledFor.toISOString(),
         };
       });
