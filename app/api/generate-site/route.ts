@@ -123,10 +123,10 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
-    // Fetch business + customer plan
+    // Fetch business
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
-      .select("*, subscriptions(plan)")
+      .select("*")
       .eq("id", business_id)
       .single();
 
@@ -134,8 +134,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Business not found" }, { status: 404 });
     }
 
+    // Fetch plan from subscriptions (businesses → customers → subscriptions)
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("plan")
+      .eq("customer_id", business.customer_id)
+      .single();
+
     const plan: "starter" | "pro" | "premium" =
-      (business.subscriptions?.plan as any) || "starter";
+      ((sub?.plan as string) as "starter" | "pro" | "premium") || "starter";
 
     console.log(`Generating site for ${business.name} on ${plan} plan`);
 
