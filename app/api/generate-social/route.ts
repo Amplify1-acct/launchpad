@@ -172,6 +172,8 @@ Return this exact structure:
       offset: number
     ) => {
       const hours: Record<string, number> = { facebook: 10, instagram: 12, linkedin: 8 };
+      // Use time-based seed so regenerated posts always get fresh photos
+      const timeSeed = Math.floor(Date.now() / 1000);
       return (posts || []).slice(0, perPlatform).map((p, i) => {
         const scheduledFor = new Date(now);
         scheduledFor.setDate(now.getDate() + 1 + Math.round(i * (30 / perPlatform)));
@@ -179,7 +181,7 @@ Return this exact structure:
         return {
           caption: p.caption,
           post_type: p.post_type,
-          image_url: getPhotoUrl(description, i + offset),
+          image_url: getPhotoUrl(description, timeSeed + i + offset),
           scheduled_for: scheduledFor.toISOString(),
         };
       });
@@ -197,44 +199,31 @@ Return this exact structure:
 }
 
 export async function POST(request: Request) {
-  const { business_id } = await request.json();
+  const body = await request.json();
+  const { business_id, replace_only, platform_counts } = body;
+
   if (!business_id) {
     return NextResponse.json({ error: "business_id required" }, { status: 400 });
   }
 
   const supabase = createAdminClient();
 
-  // Fetch business
   const { data: business } = await supabase
     .from("businesses").select("*").eq("id", business_id).single();
-
   if (!business) {
     return NextResponse.json({ error: "Business not found" }, { status: 404 });
   }
 
-  // Fetch website tokens for branding context
   const { data: website } = await supabase
     .from("websites").select("generated_tokens, template_name").eq("business_id", business_id).single();
-
   const tokens = website?.generated_tokens || null;
 
-  // Fetch subscription for post count
   const { data: subscription } = await supabase
     .from("subscriptions").select("plan").eq("customer_id", business.customer_id).single();
-
   const plan = subscription?.plan || "starter";
   const totalPosts = plan === "premium" ? 18 : plan === "growth" ? 12 : 9;
-  const perPlatform = Math.floor(totalPosts / 3);
+  const defaultPerPlatform = Math.floor(totalPosts / 3);
 
-  // Clear existing queued posts
-  await supabase
-    .from("social_posts").delete()
-    .eq("business_id", business_id).eq("status", "queued");
-
-  // Generate all 3 platforms in ONE Claude call — much faster
-  const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, perPlatform);
-
-  // Strip post_type — not a DB column, just used internally for photo selection
   const toRow = (p: { caption: string; image_url: string; post_type: string; scheduled_for: string }, platform: string) => ({
     business_id,
     platform: platform as "facebook" | "instagram" | "linkedin",
@@ -244,22 +233,60 @@ export async function POST(request: Request) {
     status: "queued" as const,
   });
 
-  const rows = [
-    ...fb.map(p => toRow(p, "facebook")),
-    ...ig.map(p => toRow(p, "instagram")),
-    ...li.map(p => toRow(p, "linkedin")),
-  ];
+  if (replace_only && platform_counts) {
+    // Selective regeneration — only generate as many posts as were deleted per platform
+    const rows: any[] = [];
 
-  const { data: inserted, error } = await supabase
-    .from("social_posts").insert(rows).select();
+    for (const platform of ["facebook", "instagram", "linkedin"] as const) {
+      const count = platform_counts[platform] || 0;
+      if (count === 0) continue;
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+      // Generate just this platform's posts
+      const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, count);
+      const platformPosts = platform === "facebook" ? fb : platform === "instagram" ? ig : li;
+      rows.push(...platformPosts.map(p => toRow(p, platform)));
+    }
+
+    if (rows.length === 0) {
+      return NextResponse.json({ success: true, count: 0 });
+    }
+
+    const { data: inserted, error } = await supabase
+      .from("social_posts").insert(rows).select();
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      count: inserted?.length || 0,
+      replace_only: true,
+    });
+
+  } else {
+    // Full regeneration — clear all queued posts and regenerate everything
+    await supabase
+      .from("social_posts").delete()
+      .eq("business_id", business_id).eq("status", "queued");
+
+    const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, defaultPerPlatform);
+
+    const rows = [
+      ...fb.map(p => toRow(p, "facebook")),
+      ...ig.map(p => toRow(p, "instagram")),
+      ...li.map(p => toRow(p, "linkedin")),
+    ];
+
+    const { data: inserted, error } = await supabase
+      .from("social_posts").insert(rows).select();
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      count: inserted?.length || 0,
+      breakdown: { facebook: fb.length, instagram: ig.length, linkedin: li.length },
+    });
   }
-
-  return NextResponse.json({
-    success: true,
-    count: inserted?.length || 0,
-    breakdown: { facebook: fb.length, instagram: ig.length, linkedin: li.length },
-  });
 }
