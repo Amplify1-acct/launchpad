@@ -118,7 +118,7 @@ async function generateAllPosts(
 ): Promise<{
   facebook: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
   instagram: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
-  linkedin: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
+  tiktok: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
 }> {
   const brandContext = tokens ? `Brand context from their website:
 - Headline: ${tokens.hero_headline || tokens.hero_line_1 || ""}
@@ -140,7 +140,7 @@ Write ${perPlatform} posts for EACH platform. Make them specific to this busines
 
 Facebook style: Conversational, 2-3 sentences, 2-3 hashtags, question to spark engagement.
 Instagram style: Hook first line, visual language, 4-5 hashtags, 1-2 emojis.
-LinkedIn style: Professional insight, no emojis, 1-2 hashtags, 3-4 sentences.
+TikTok style: Professional insight, no emojis, 1-2 hashtags, 3-4 sentences.
 
 Post types to cover: ${postTypes}
 
@@ -148,7 +148,7 @@ Return this exact structure:
 {
   "facebook": [{"caption": "...", "post_type": "intro"}, ...],
   "instagram": [{"caption": "...", "post_type": "intro"}, ...],
-  "linkedin": [{"caption": "...", "post_type": "intro"}, ...]
+  "tiktok": [{"caption": "...", "post_type": "intro"}, ...]
 }`;
 
   try {
@@ -160,7 +160,7 @@ Return this exact structure:
 
     const raw = res.content[0].type === "text" ? res.content[0].text : "{}";
     const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) return { facebook: [], instagram: [], linkedin: [] };
+    if (!match) return { facebook: [], instagram: [], tiktok: [] };
 
     const result = JSON.parse(match[0]);
     const now = new Date();
@@ -171,7 +171,7 @@ Return this exact structure:
       platform: string,
       offset: number
     ) => {
-      const hours: Record<string, number> = { facebook: 10, instagram: 12, linkedin: 8 };
+      const hours: Record<string, number> = { facebook: 10, instagram: 12, tiktok: 8 };
       // Use time-based seed so regenerated posts always get fresh photos
       const timeSeed = Math.floor(Date.now() / 1000);
       return (posts || []).slice(0, perPlatform).map((p, i) => {
@@ -190,11 +190,11 @@ Return this exact structure:
     return {
       facebook: processPlatform(result.facebook || [], "facebook", 0),
       instagram: processPlatform(result.instagram || [], "instagram", 100),
-      linkedin: processPlatform(result.linkedin || [], "linkedin", 200),
+      tiktok: processPlatform(result.tiktok || [], "tiktok", 200),
     };
   } catch (e) {
     console.error("Error generating posts:", e);
-    return { facebook: [], instagram: [], linkedin: [] };
+    return { facebook: [], instagram: [], tiktok: [] };
   }
 }
 
@@ -226,7 +226,7 @@ export async function POST(request: Request) {
 
   const toRow = (p: { caption: string; image_url: string; post_type: string; scheduled_for: string }, platform: string) => ({
     business_id,
-    platform: platform as "facebook" | "instagram" | "linkedin",
+    platform: platform as "facebook" | "instagram" | "tiktok",
     caption: p.caption,
     image_url: p.image_url,
     scheduled_for: p.scheduled_for,
@@ -237,12 +237,12 @@ export async function POST(request: Request) {
     // Selective regeneration — only generate as many posts as were deleted per platform
     const rows: any[] = [];
 
-    for (const platform of ["facebook", "instagram", "linkedin"] as const) {
+    for (const platform of ["facebook", "instagram", "tiktok"] as const) {
       const count = platform_counts[platform] || 0;
       if (count === 0) continue;
 
       // Generate just this platform's posts
-      const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, count);
+      const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, count);
       const platformPosts = platform === "facebook" ? fb : platform === "instagram" ? ig : li;
       rows.push(...platformPosts.map(p => toRow(p, platform)));
     }
@@ -269,12 +269,12 @@ export async function POST(request: Request) {
       .from("social_posts").delete()
       .eq("business_id", business_id).eq("status", "queued");
 
-    const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, defaultPerPlatform);
+    const { facebook: fb, instagram: ig, tiktok: li } = await generateAllPosts(business, tokens, defaultPerPlatform);
 
     const rows = [
       ...fb.map(p => toRow(p, "facebook")),
       ...ig.map(p => toRow(p, "instagram")),
-      ...li.map(p => toRow(p, "linkedin")),
+      ...li.map(p => toRow(p, "tiktok")),
     ];
 
     const { data: inserted, error } = await supabase
@@ -286,7 +286,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       count: inserted?.length || 0,
-      breakdown: { facebook: fb.length, instagram: ig.length, linkedin: li.length },
+      breakdown: { facebook: fb.length, instagram: ig.length, tiktok: li.length },
     });
   }
 }
