@@ -211,9 +211,9 @@
 /* Post image */
 .postImage {
   position: relative;
-  height: 200px;
   background: #f1f5f9;
   overflow: hidden;
+  /* height controlled by inline aspectRatio per platform */
 }
 
 .postImage img {
