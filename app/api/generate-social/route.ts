@@ -76,93 +76,90 @@ function buildUnsplashUrl(topic: string, seed: number): string {
   return `https://source.unsplash.com/800x600/?${encoded}&sig=${seed}`;
 }
 
-async function generatePostsForPlatform(
-  platform: "facebook" | "instagram" | "linkedin",
+async function generateAllPosts(
   business: Record<string, any>,
   tokens: Record<string, any> | null,
-  count: number
-): Promise<Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>> {
+  perPlatform: number
+): Promise<{
+  facebook: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
+  instagram: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
+  linkedin: Array<{ caption: string; image_url: string; post_type: string; scheduled_for: string }>;
+}> {
+  const brandContext = tokens ? `Brand context from their website:
+- Headline: ${tokens.hero_headline || tokens.hero_line_1 || ""}
+- Services: ${tokens.service_1_name}, ${tokens.service_2_name}, ${tokens.service_3_name}
+- Trust signals: ${tokens.trust_1}, ${tokens.trust_2}
+- About: ${(tokens.about_paragraph_1 || "").slice(0, 120)}` : "";
 
-  const platformGuide = {
-    facebook: "Conversational and warm. 2-4 sentences. Can end with a question to spark comments. 2-3 hashtags at the end. Feels like a local business owner talking to their community.",
-    instagram: "Hook in the first line — make people stop scrolling. Visual and descriptive language. 4-6 relevant hashtags. 1-2 emojis max. Short punchy sentences.",
-    linkedin: "Professional and insight-led. Position as an expert. Share genuine perspective. 1-2 hashtags. No emojis. 3-5 sentences. Reads like a business owner, not a marketer.",
-  }[platform];
+  const postTypes = POST_TYPES.slice(0, perPlatform).map(pt => pt.type).join(", ");
 
-  // Use website tokens for branding context if available
-  const brandContext = tokens ? `
-Brand voice & style from their website:
-- Tagline: ${tokens.tagline || tokens.hero_headline || ""}
-- Key services: ${tokens.service_1_name}, ${tokens.service_2_name}, ${tokens.service_3_name}
-- Trust signals: ${tokens.trust_1}, ${tokens.trust_2}, ${tokens.trust_3}
-- Stats they're proud of: ${tokens.stat_1_value} ${tokens.stat_1_label}, ${tokens.stat_2_value} ${tokens.stat_2_label}
-- Tone from their about section: ${(tokens.about_paragraph_1 || "").slice(0, 100)}
-` : "";
-
-  const postTypeInstructions = POST_TYPES.slice(0, count)
-    .map((pt, i) => `Post ${i + 1} (${pt.type}): ${pt.prompt}`)
-    .join("\n");
-
-  const prompt = `Write exactly ${count} ${platform} posts for this business. Make them genuine, specific, and varied — they should sound like a real business owner, not a marketing agency.
+  const prompt = `Write social media posts for this business. Return ONLY valid JSON, no markdown.
 
 Business: ${business.name}
-Industry/Description: ${business.description || business.industry}
+Industry: ${business.description || business.industry}
 Location: ${business.city}, ${business.state}
 Phone: ${business.phone || ""}
 ${brandContext}
 
-Platform style: ${platformGuide}
+Write ${perPlatform} posts for EACH platform. Make them specific to this business, not generic.
 
-Write one post per type below:
-${postTypeInstructions}
+Facebook style: Conversational, 2-3 sentences, 2-3 hashtags, question to spark engagement.
+Instagram style: Hook first line, visual language, 4-5 hashtags, 1-2 emojis.
+LinkedIn style: Professional insight, no emojis, 1-2 hashtags, 3-4 sentences.
 
-Rules:
-- Each post must be meaningfully different — different angle, different service, different tone
-- Specific to ${business.name} — not generic small business content
-- Never fabricate customer quotes or testimonials
-- Include the business name or location naturally in at least 3 posts
-- Phone number (${business.phone || ""}) in the CTA post only
+Post types to cover: ${postTypes}
 
-Return ONLY a valid JSON array, no markdown, no explanation:
-[{"caption": "...", "post_type": "intro"}, {"caption": "...", "post_type": "service_spotlight"}, ...]`;
+Return this exact structure:
+{
+  "facebook": [{"caption": "...", "post_type": "intro"}, ...],
+  "instagram": [{"caption": "...", "post_type": "intro"}, ...],
+  "linkedin": [{"caption": "...", "post_type": "intro"}, ...]
+}`;
 
   try {
     const res = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 4000,
       messages: [{ role: "user", content: prompt }],
     });
 
-    const raw = res.content[0].type === "text" ? res.content[0].text : "[]";
-    const match = raw.match(/\[[\s\S]*\]/);
-    if (!match) return [];
+    const raw = res.content[0].type === "text" ? res.content[0].text : "{}";
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return { facebook: [], instagram: [], linkedin: [] };
 
-    const posts = JSON.parse(match[0]) as Array<{ caption: string; post_type: string }>;
+    const result = JSON.parse(match[0]);
     const now = new Date();
     const description = business.description || business.industry || "";
 
-    return posts.slice(0, count).map((p, i) => {
-      // Schedule posts: start tomorrow, spread over 30 days
-      const scheduledFor = new Date(now);
-      scheduledFor.setDate(now.getDate() + 1 + Math.round(i * (30 / count)));
-
-      // Stagger post times by platform so they don't all post at once
+    const processPlatform = (
+      posts: Array<{ caption: string; post_type: string }>,
+      platform: string,
+      offset: number
+    ) => {
       const hours: Record<string, number> = { facebook: 10, instagram: 12, linkedin: 8 };
-      scheduledFor.setHours(hours[platform] + (i % 2), 0, 0, 0);
+      return (posts || []).slice(0, perPlatform).map((p, i) => {
+        const scheduledFor = new Date(now);
+        scheduledFor.setDate(now.getDate() + 1 + Math.round(i * (30 / perPlatform)));
+        scheduledFor.setHours(hours[platform] + (i % 2), 0, 0, 0);
+        const photoTopic = getPhotoTopic(description, p.post_type);
+        const seed = Date.now() + i + offset;
+        return {
+          caption: p.caption,
+          post_type: p.post_type,
+          image_url: buildUnsplashUrl(photoTopic, seed),
+          scheduled_for: scheduledFor.toISOString(),
+        };
+      });
+    };
 
-      const photoTopic = getPhotoTopic(description, p.post_type);
-      const seed = Date.now() + i + (platform === "facebook" ? 0 : platform === "instagram" ? 100 : 200);
-
-      return {
-        caption: p.caption,
-        post_type: p.post_type,
-        image_url: buildUnsplashUrl(photoTopic, seed),
-        scheduled_for: scheduledFor.toISOString(),
-      };
-    });
+    return {
+      facebook: processPlatform(result.facebook || [], "facebook", 0),
+      instagram: processPlatform(result.instagram || [], "instagram", 100),
+      linkedin: processPlatform(result.linkedin || [], "linkedin", 200),
+    };
   } catch (e) {
-    console.error(`Error generating ${platform} posts:`, e);
-    return [];
+    console.error("Error generating posts:", e);
+    return { facebook: [], instagram: [], linkedin: [] };
   }
 }
 
@@ -193,7 +190,7 @@ export async function POST(request: Request) {
     .from("subscriptions").select("plan").eq("customer_id", business.customer_id).single();
 
   const plan = subscription?.plan || "starter";
-  const totalPosts = plan === "premium" ? 30 : plan === "growth" ? 21 : 12;
+  const totalPosts = plan === "premium" ? 18 : plan === "growth" ? 12 : 9;
   const perPlatform = Math.floor(totalPosts / 3);
 
   // Clear existing queued posts
@@ -201,12 +198,8 @@ export async function POST(request: Request) {
     .from("social_posts").delete()
     .eq("business_id", business_id).eq("status", "queued");
 
-  // Generate all 3 platforms in parallel
-  const [fb, ig, li] = await Promise.all([
-    generatePostsForPlatform("facebook", business, tokens, perPlatform),
-    generatePostsForPlatform("instagram", business, tokens, perPlatform),
-    generatePostsForPlatform("linkedin", business, tokens, perPlatform),
-  ]);
+  // Generate all 3 platforms in ONE Claude call — much faster
+  const { facebook: fb, instagram: ig, linkedin: li } = await generateAllPosts(business, tokens, perPlatform);
 
   const rows = [
     ...fb.map(p => ({ ...p, business_id, platform: "facebook" as const, status: "queued" as const })),
