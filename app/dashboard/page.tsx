@@ -137,27 +137,47 @@ export default async function DashboardPage() {
                 {website?.status === "ready_for_review" ? "Ready to review" : website?.status || "Pending"}
               </span>
             </div>
-            <div className={styles.websitePreview} style={{height:"140px"}}>
+            <div style={{position:"relative",height:"180px",borderRadius:"8px",overflow:"hidden",border:"1px solid var(--border)"}}>
               {website?.custom_html ? (
-                <a href="/dashboard/preview" style={{ display: "block", textDecoration: "none", height: "100%" }}>
-                  <div className={styles.websitePlaceholder} style={{
-                    background: website.status === "live" ? "#f0fdf4" : "#f0f7ff",
-                    cursor: "pointer",
-                    height: "100%",
-                  }}>
-                    <div style={{ fontSize: "28px", marginBottom: "6px" }}>
-                      {website.status === "live" ? "🌐" : "👀"}
-                    </div>
-                    <p style={{
-                      color: website.status === "live" ? "#16a34a" : "#0066ff",
-                      fontWeight: 600,
-                      fontSize: "14px",
+                <a href="/dashboard/preview" style={{display:"block",height:"100%",textDecoration:"none"}}>
+                  {/* Scaled iframe preview */}
+                  <div style={{position:"relative",width:"100%",height:"100%",overflow:"hidden",background:"#fff"}}>
+                    <iframe
+                      srcDoc={website.custom_html}
+                      style={{
+                        width:"1280px",
+                        height:"960px",
+                        border:"none",
+                        transform:"scale(0.28)",
+                        transformOrigin:"top left",
+                        pointerEvents:"none",
+                        position:"absolute",
+                        top:0,
+                        left:0,
+                      }}
+                      sandbox="allow-scripts"
+                      title="Site preview"
+                    />
+                    {/* Clickable overlay with status badge */}
+                    <div style={{
+                      position:"absolute",
+                      inset:0,
+                      background:"linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)",
+                      display:"flex",
+                      alignItems:"flex-end",
+                      padding:"10px 12px",
                     }}>
-                      {website.status === "live" ? "Live — click to edit" : "Ready to review"}
-                    </p>
-                    <p style={{ fontSize: "11px", color: "#888", marginTop: "3px" }}>
-                      {website.template_name?.replace("skeleton-", "") || "custom"} style
-                    </p>
+                      <span style={{
+                        background: website.status === "live" ? "#16a34a" : "#0066ff",
+                        color:"#fff",
+                        fontSize:"11px",
+                        fontWeight:700,
+                        padding:"3px 10px",
+                        borderRadius:"100px",
+                      }}>
+                        {website.status === "live" ? "● Live" : "● Ready to review"}
+                      </span>
+                    </div>
                   </div>
                 </a>
               ) : (
@@ -227,16 +247,18 @@ export default async function DashboardPage() {
                 {(["facebook","instagram","tiktok"] as const).map(platform => {
                   const posts = socialPosts.filter((p:any) => p.platform === platform);
                   const colors: Record<string,string> = {facebook:"#1877f2",instagram:"#e1306c",tiktok:"#010101"};
-                  if (posts.length === 0) return null;
+                  const icons: Record<string,string> = {facebook:"f",instagram:"📷",tiktok:"♪"};
                   return (
                     <a key={platform} href="/dashboard/social" style={{textDecoration:"none"}}>
                       <div style={{border:"1px solid var(--border)",borderRadius:"8px",overflow:"hidden"}}>
                         <div style={{background:colors[platform],padding:"5px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          <span style={{color:"#fff",fontSize:"11px",fontWeight:700,textTransform:"capitalize"}}>{platform}</span>
-                          <span style={{color:"rgba(255,255,255,0.7)",fontSize:"11px"}}>{posts.length} posts</span>
+                          <span style={{color:"#fff",fontSize:"11px",fontWeight:700,textTransform:"capitalize",display:"flex",alignItems:"center",gap:"5px"}}>
+                            {platform}
+                          </span>
+                          <span style={{color:"rgba(255,255,255,0.8)",fontSize:"11px",fontWeight:600}}>{posts.length} posts</span>
                         </div>
-                        <div style={{padding:"8px 10px",fontSize:"12px",color:"var(--text-mid)",lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
-                          {(posts[0] as any).caption}
+                        <div style={{padding:"7px 10px",fontSize:"12px",color:posts.length > 0 ? "var(--text-mid)" : "var(--text-light)",lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",fontStyle:posts.length === 0 ? "italic" : "normal"}}>
+                          {posts.length > 0 ? (posts[0] as any).caption : "No posts yet — click to generate"}
                         </div>
                       </div>
                     </a>
