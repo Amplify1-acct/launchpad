@@ -549,3 +549,134 @@
 
 .generateBtn:hover { opacity: 0.9; }
 .generateBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* =============================================
+   MOBILE RESPONSIVE — dashboard
+   ============================================= */
+
+/* Bottom nav bar on mobile */
+.mobileNav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    padding-bottom: 64px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    margin-left: 0;
+    max-width: 100vw;
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .greeting {
+    font-size: 1.4rem;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .headerActions a,
+  .headerActions button {
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+
+  .statusCard {
+    padding: 0.75rem;
+    gap: 8px;
+  }
+
+  .statusLabel { font-size: 0.7rem; }
+  .statusDetail { font-size: 0.8rem; }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  /* Mobile bottom nav */
+  .mobileNav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    z-index: 50;
+    padding: 0;
+  }
+
+  .mobileNavItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .mobileNavItem.active {
+    color: var(--accent);
+  }
+
+  .mobileNavIcon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .mobileNavLabel {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .viewSiteBtn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .statusGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statusDot {
+    display: none;
+  }
+}
