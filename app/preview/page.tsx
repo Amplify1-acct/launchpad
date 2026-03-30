@@ -529,6 +529,70 @@ function StepAbout({ biz, onNext, onBack }: {
   );
 }
 
+
+// Premium placeholder for industries without a matching template
+function buildPremiumPlaceholderHTML(biz: BizInfo, ai: AIContent): string {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#0a0a14;color:#fff;min-height:100vh;}
+nav{padding:20px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-0.5px;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-cta{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;}
+.hero{min-height:85vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;}
+.hero-left{padding:80px 56px;}
+.hero-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#6366f1;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.hero-tag::before{content:'';width:24px;height:1px;background:#6366f1;}
+.hero-h1{font-size:52px;font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;background:linear-gradient(135deg,#fff 60%,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-p{font-size:16px;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:32px;max-width:400px;}
+.btns{display:flex;gap:12px;}
+.btn-p{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:700;}
+.btn-s{border:1.5px solid rgba(255,255,255,0.2);color:#fff;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;}
+.hero-right{height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81,#1e40af);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;text-align:center;}
+.ph-icon{font-size:64px;margin-bottom:24px;}
+.ph-title{font-size:20px;font-weight:800;margin-bottom:12px;color:rgba(255,255,255,0.9);}
+.ph-sub{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;max-width:240px;margin-bottom:24px;}
+.ph-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:8px 20px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.stats{display:flex;gap:0;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);}
+.stat{flex:1;padding:28px;text-align:center;border-right:1px solid rgba(255,255,255,0.08);}
+.stat:last-child{border-right:none;}
+.stat-n{font-size:28px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-l{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+.powered{text-align:center;padding:20px;font-size:11px;color:rgba(255,255,255,0.3);}
+.powered span{color:#6366f1;font-weight:700;}
+</style></head><body>
+<nav>
+  <div class="nav-logo">${biz.name}</div>
+  <div class="nav-cta">${biz.phone || "Contact Us"}</div>
+</nav>
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">✦ ${biz.city}</div>
+    <h1 class="hero-h1">${ai.headline}</h1>
+    <p class="hero-p">${ai.subtext}</p>
+    <div class="btns">
+      <div class="btn-p">Get Started →</div>
+      <div class="btn-s">Learn More</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="ph-icon">📸</div>
+    <div class="ph-title">Your Custom AI Photos</div>
+    <div class="ph-sub">Professional images tailored to ${biz.name} — generated after sign-up</div>
+    <div class="ph-badge">✦ Included with Premium</div>
+  </div>
+</div>
+<div class="stats">
+  <div class="stat"><div class="stat-n">AI</div><div class="stat-l">Custom Design</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">AI Images</div></div>
+  <div class="stat"><div class="stat-n">48h</div><div class="stat-l">Site Live</div></div>
+  <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Content Monthly</div></div>
+</div>
+<div class="powered">Powered by <span>Exsisto Premium</span> · $599/mo</div>
+</body></html>`;
+}
+
 // ─── STEP 2: DESIGN PICKER ────────────────────────────────────────────────────
 function StepDesign({
   biz, ai, loadingAI, onNext, onBack
@@ -608,7 +672,10 @@ function StepDesign({
             {/* Preview iframe */}
             <div className="design-preview-wrap" onClick={e => { e.stopPropagation(); setFullscreen(d.id); }}>
               {d.id === "premium" ? (
-                <iframe src={stitchUrl} className="design-iframe" title="Premium preview" />
+                <iframe
+                  srcDoc={usePlaceholder ? buildPremiumPlaceholderHTML(biz, content) : undefined}
+                  src={usePlaceholder ? undefined : stitchUrl}
+                  className="design-iframe" title="Premium preview" />
               ) : (
                 <iframe
                   srcDoc={d.id === "starter" ? starterHTML : proHTML}
@@ -636,14 +703,17 @@ function StepDesign({
             <div className="fs-modal-bar">
               <span>{designs.find(d => d.id === fullscreen)?.label} Preview — {biz.name}</span>
               <div style={{ display: "flex", gap: "8px" }}>
-                {fullscreen === "premium" && (
+                {fullscreen === "premium" && !usePlaceholder && (
                   <a href={stitchUrl} target="_blank" rel="noreferrer" className="btn-ghost btn-sm">Open ↗</a>
                 )}
                 <button className="btn-ghost btn-sm" onClick={() => setFullscreen(null)}>✕ Close</button>
               </div>
             </div>
             {fullscreen === "premium" ? (
-              <iframe src={stitchUrl} className="fs-iframe" title="Full preview" />
+              <iframe
+                srcDoc={usePlaceholder ? buildPremiumPlaceholderHTML(biz, content) : undefined}
+                src={usePlaceholder ? undefined : stitchUrl}
+                className="fs-iframe" title="Full preview" />
             ) : (
               <iframe
                 srcDoc={fullscreen === "starter" ? starterHTML : proHTML}
