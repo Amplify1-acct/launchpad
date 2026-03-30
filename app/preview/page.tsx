@@ -125,7 +125,7 @@ footer{padding:22px 72px;background:#f5f5f5;display:flex;justify-content:space-b
 </style></head><body>
 <nav><div class="nav-logo">${biz.name}</div><a class="nav-cta" href="#">${biz.phone || "Call Us"}</a></nav>
 <div class="hero">
-  <img src="${hero}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+  <img src="${hero || ''}" style="${hero ? '' : 'background:#1a1a2e;min-height:100%;'}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag">${biz.city} · Professional Service</div>
@@ -517,18 +517,22 @@ function StepDesign({
   const hasLibraryImages = !!IMAGES[biz.industry];
   useEffect(() => {
     if (!hasLibraryImages) {
-      const query = biz.customIndustry || biz.industry || "small business";
-      fetch(`/api/pexels-search?query=${encodeURIComponent(query)}&per_page=4`)
+      const query = biz.customIndustry || biz.industry || "small business professional";
+      fetch(`/api/pexels-search?q=${encodeURIComponent(query)}&o=landscape`)
         .then(r => r.json())
         .then(data => {
-          const urls = (data.photos || []).map((p: {src: {large: string}}) => p.src.large);
+          const urls = (data.photos || []).map((p: {landscape?: string; square?: string}) => p.landscape || p.square || "").filter(Boolean);
           if (urls.length > 0) setPexelsImgs(urls);
         })
         .catch(() => {});
     }
   }, [biz.industry, biz.customIndustry, hasLibraryImages]);
 
-  const imgs = hasLibraryImages ? getImgs(biz.industry) : (pexelsImgs.length > 0 ? pexelsImgs : getImgs("auto"));
+  const imgs = hasLibraryImages 
+    ? getImgs(biz.industry) 
+    : pexelsImgs.length > 0 
+      ? pexelsImgs 
+      : []; // empty array shows grey placeholder while loading
   const templateId = getTemplate(biz.industry);
   const stitchUrl = `https://www.exsisto.ai/stitch-templates/${templateId}.html`;
 
