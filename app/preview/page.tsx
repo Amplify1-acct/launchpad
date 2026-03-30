@@ -10,7 +10,13 @@ interface BizInfo {
   differentiator?: string; stat1Label?: string; stat1Value?: string;
   stat2Label?: string; stat2Value?: string;
 }
-interface AIContent { headline: string; tagline: string; subtext: string; }
+interface AIContent {
+  headline: string; tagline: string; subtext: string;
+  serviceHeadline?: string; aboutText?: string;
+  stat1?: string; stat1Label?: string;
+  stat2?: string; stat2Label?: string;
+  services?: string[];
+}
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const INDUSTRIES = [
@@ -203,8 +209,8 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
     <h1 class="hero-h1">${ai.headline}</h1>
     <p class="hero-p">${ai.subtext}</p>
     <div class="stats">
-      <div><div class="stat-n">20+</div><div class="stat-l">Years</div></div>
-      <div><div class="stat-n">500+</div><div class="stat-l">Clients</div></div>
+      <div><div class="stat-n">${ai.stat1 || "20+"}</div><div class="stat-l">${ai.stat1Label || "Years"}</div></div>
+      <div><div class="stat-n">${ai.stat2 || "500+"}</div><div class="stat-l">${ai.stat2Label || "Clients"}</div></div>
       <div><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
       <div><div class="stat-n">Free</div><div class="stat-l">Estimate</div></div>
     </div>
@@ -741,13 +747,13 @@ export default function PreviewPage() {
         )}
         {step === 2 && biz && (
           <StepDesign biz={biz} ai={ai} loadingAI={loadingAI}
-            onNext={pid => { setPlanId(pid); setStep(2); }}
-            onBack={() => setStep(0)} />
+            onNext={pid => { setPlanId(pid); setStep(4); }}
+            onBack={() => setStep(2)} />
         )}
-        {step === 3 && planId && (
+        {step === 3 && planId && biz && (
           <StepPlan selectedDesign={planId}
-            onNext={pid => { setPlanId(pid); setStep(3); }}
-            onBack={() => setStep(1)} />
+            onNext={pid => { setPlanId(pid); setStep(4); }}
+            onBack={() => setStep(2)} />
         )}
         {step === 4 && biz && planId && (
           <StepSignup biz={biz} planId={planId} onBack={() => setStep(2)} />
