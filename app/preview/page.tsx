@@ -543,7 +543,7 @@ function StepDesign({
   const [fullscreen, setFullscreen] = useState<string | null>(null);
 
   // For industries not in our library, show gradient placeholders
-
+  const hasLibraryImages = !!IMAGES[biz.industry];
   const imgs = hasLibraryImages ? getImgs(biz.industry) : [];
   const usePlaceholder = !hasLibraryImages;
   const templateId = getTemplate(biz.industry);
