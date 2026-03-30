@@ -593,14 +593,6 @@ function StepDesign({
           <div className="ai-bar-sub">{content.tagline}</div>
         </div>
       )}
-
-      {loadingPexels && (
-        <div className="pexels-loading">
-          <div className="pexels-spinner"></div>
-          <span>Finding photos for {biz.customIndustry || biz.industry}…</span>
-        </div>
-      )}
-      <div className="designs-grid" style={{opacity: loadingPexels ? 0.3 : 1, pointerEvents: loadingPexels ? 'none' : 'auto'}}>
         {designs.map((d, idx) => (
           <div key={d.id}
             className={`design-card ${selected === d.id ? "selected" : ""} ${d.id === "pro" ? "popular" : ""}`}
