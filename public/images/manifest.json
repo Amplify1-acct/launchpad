@@ -26,5 +26,19 @@
       "url": "https://www.exsisto.ai/images/restaurant/card_2.jpg",
       "desc": "Black truffle pasta close-up"
     }
+  },
+  "gym": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/gym/hero_1.jpg",
+      "desc": "Athlete deadlift dramatic backlight chalk"
+    },
+    "card_1": {
+      "url": "https://www.exsisto.ai/images/gym/card_1.jpg",
+      "desc": "Premium gym equipment rack polished steel"
+    },
+    "card_2": {
+      "url": "https://www.exsisto.ai/images/gym/card_2.jpg",
+      "desc": "Trainer coaching client pull-ups bright gym"
+    }
   }
 }
