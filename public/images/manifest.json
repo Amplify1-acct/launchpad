@@ -12,5 +12,19 @@
       "url": "https://www.exsisto.ai/images/auto/card_2.jpg",
       "desc": "Mechanic reupholstering vintage car leather"
     }
+  },
+  "restaurant": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/restaurant/hero_1.jpg",
+      "desc": "Chef plating gourmet Italian dish"
+    },
+    "card_1": {
+      "url": "https://www.exsisto.ai/images/restaurant/card_1.jpg",
+      "desc": "Candlelit fine dining interior"
+    },
+    "card_2": {
+      "url": "https://www.exsisto.ai/images/restaurant/card_2.jpg",
+      "desc": "Black truffle pasta close-up"
+    }
   }
 }
