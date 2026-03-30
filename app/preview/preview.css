@@ -674,3 +674,19 @@
   font-size: 11px; font-weight: 700; color: #9090a8;
   margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
 }
+
+/* Pexels loading state */
+.pexels-loading {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; margin-bottom: 16px;
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 10px; font-size: 13px; color: #9090a8;
+}
+.pexels-spinner {
+  width: 18px; height: 18px; flex-shrink: 0;
+  border: 2px solid rgba(99,102,241,0.3);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
