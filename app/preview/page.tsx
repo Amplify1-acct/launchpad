@@ -593,6 +593,7 @@ function StepDesign({
           <div className="ai-bar-sub">{content.tagline}</div>
         </div>
       )}
+      <div className="designs-grid">
         {designs.map((d, idx) => (
           <div key={d.id}
             className={`design-card ${selected === d.id ? "selected" : ""} ${d.id === "pro" ? "popular" : ""}`}
@@ -626,6 +627,7 @@ function StepDesign({
             </div>
           </div>
         ))}
+      </div>
       </div>
 
       {/* Fullscreen modal */}
