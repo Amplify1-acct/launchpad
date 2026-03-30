@@ -613,3 +613,64 @@
   .designs-grid { grid-template-columns: 1fr; }
   .plan-grid { grid-template-columns: 1fr; }
 }
+
+/* ── STEP 2: ABOUT ──────────────────────────────────────────────────────────── */
+.form-textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+.field-hint {
+  font-size: 10px; color: #555568; margin-top: 5px;
+}
+.label-hint {
+  font-size: 10px; color: #9090a8; font-weight: 400;
+  text-transform: none; letter-spacing: 0; margin-left: 6px;
+}
+
+/* Service chips */
+.service-chips {
+  display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px;
+}
+.service-chip {
+  background: #1a1a24; border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 100px; padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: #9090a8;
+  cursor: pointer; transition: all 0.12s; font-family: inherit;
+}
+.service-chip:hover { border-color: rgba(99,102,241,0.4); color: #f1f1f5; }
+.service-chip.active {
+  border-color: #6366f1; background: rgba(99,102,241,0.12); color: #6366f1;
+}
+
+/* Custom service input row */
+.custom-service-row {
+  display: flex; gap: 8px; margin-top: 6px;
+}
+.custom-service-row .form-input { flex: 1; }
+.btn-add {
+  background: rgba(99,102,241,0.12); border: 1.5px solid rgba(99,102,241,0.3);
+  color: #6366f1; border-radius: 8px; padding: 10px 16px;
+  font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  white-space: nowrap; transition: all 0.12s;
+}
+.btn-add:hover { background: rgba(99,102,241,0.2); }
+
+/* Custom chips (user-added services) */
+.custom-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 100px; padding: 4px 10px 4px 14px;
+  font-size: 12px; color: #6366f1; margin-top: 6px; margin-right: 6px;
+}
+.custom-chip button {
+  background: none; border: none; color: #6366f1; cursor: pointer;
+  font-size: 12px; padding: 0; line-height: 1;
+}
+
+/* Stat inputs */
+.stat-input-wrap { flex: 1; }
+.stat-input-label {
+  font-size: 11px; font-weight: 700; color: #9090a8;
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
