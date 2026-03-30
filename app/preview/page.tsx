@@ -4,7 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
-interface BizInfo { name: string; industry: string; city: string; phone: string; customIndustry?: string; }
+interface BizInfo {
+  name: string; industry: string; city: string; phone: string; customIndustry?: string;
+  description?: string; services?: string[]; yearsInBusiness?: string;
+  differentiator?: string; stat1Label?: string; stat1Value?: string;
+  stat2Label?: string; stat2Value?: string;
+}
 interface AIContent { headline: string; tagline: string; subtext: string; }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -245,7 +250,7 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
 
 // ─── STEP BAR ─────────────────────────────────────────────────────────────────
 function StepBar({ step }: { step: number }) {
-  const steps = ["Your Info", "Pick a Design", "Choose Plan", "Go Live"];
+  const steps = ["Your Info", "About You", "Pick a Design", "Choose Plan", "Go Live"];
   return (
     <div className="step-bar">
       {steps.map((s, i) => (
@@ -319,6 +324,143 @@ function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
       )}
       {error && <div className="error-msg">{error}</div>}
       <button className="btn-primary btn-lg" onClick={submit}>See My Designs →</button>
+    </div>
+  );
+}
+
+
+// ─── STEP 2: ABOUT YOUR BUSINESS ─────────────────────────────────────────────
+function StepAbout({ biz, onNext, onBack }: {
+  biz: BizInfo;
+  onNext: (extra: Partial<BizInfo>) => void;
+  onBack: () => void;
+}) {
+  const suggestions = SERVICE_SUGGESTIONS[biz.industry] || SERVICE_SUGGESTIONS["other"] || [];
+  const statSuggestions = STAT_SUGGESTIONS[biz.industry] || [{label:"Years in Business",placeholder:"e.g. 10"},{label:"Jobs Completed",placeholder:"e.g. 500+"}];
+
+  const [description, setDescription] = useState(biz.description || "");
+  const [services, setServices] = useState<string[]>(biz.services || []);
+  const [customService, setCustomService] = useState("");
+  const [yearsInBusiness, setYearsInBusiness] = useState(biz.yearsInBusiness || "");
+  const [differentiator, setDifferentiator] = useState(biz.differentiator || "");
+  const [stat1Value, setStat1Value] = useState(biz.stat1Value || "");
+  const [stat2Value, setStat2Value] = useState(biz.stat2Value || "");
+  const [error, setError] = useState("");
+
+  const indLabel = biz.customIndustry || biz.industry;
+
+  function toggleService(s: string) {
+    setServices(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
+  }
+
+  function addCustomService() {
+    const trimmed = customService.trim();
+    if (trimmed && !services.includes(trimmed)) {
+      setServices(prev => [...prev, trimmed]);
+      setCustomService("");
+    }
+  }
+
+  function submit() {
+    if (!description.trim()) return setError("Please tell us what you do — this helps us write your website");
+    if (services.length === 0) return setError("Select at least one service");
+    setError("");
+    onNext({
+      description,
+      services,
+      yearsInBusiness,
+      differentiator,
+      stat1Label: statSuggestions[0]?.label,
+      stat1Value,
+      stat2Label: statSuggestions[1]?.label,
+      stat2Value,
+    });
+  }
+
+  return (
+    <div className="step-content">
+      <div className="step-header">
+        <h2>Tell us more about {biz.name}</h2>
+        <p>This helps us write real content for your site — takes 2 minutes</p>
+      </div>
+
+      {/* Description */}
+      <div className="form-group">
+        <label>What do you do? *</label>
+        <textarea
+          className="form-input form-textarea"
+          placeholder={`Describe your ${indLabel} business in 2-3 sentences. What makes you great? Who do you serve?`}
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          rows={3}
+        />
+        <div className="field-hint">{description.length} characters · Aim for 50-200</div>
+      </div>
+
+      {/* Services */}
+      <div className="form-group">
+        <label>Your Services * <span className="label-hint">Pick all that apply</span></label>
+        <div className="service-chips">
+          {suggestions.map(s => (
+            <button key={s}
+              className={`service-chip ${services.includes(s) ? "active" : ""}`}
+              onClick={() => toggleService(s)}>
+              {services.includes(s) ? "✓ " : ""}{s}
+            </button>
+          ))}
+        </div>
+        <div className="custom-service-row">
+          <input className="form-input" type="text" placeholder="Add your own service..."
+            value={customService}
+            onChange={e => setCustomService(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && addCustomService()} />
+          <button className="btn-add" onClick={addCustomService}>+ Add</button>
+        </div>
+        {services.filter(s => !suggestions.includes(s)).map(s => (
+          <div key={s} className="custom-chip">
+            <span>✓ {s}</span>
+            <button onClick={() => setServices(prev => prev.filter(x => x !== s))}>✕</button>
+          </div>
+        ))}
+      </div>
+
+      {/* Years + Differentiator */}
+      <div className="form-row">
+        <div className="form-group">
+          <label>Years in Business</label>
+          <input className="form-input" type="text" placeholder="e.g. 15"
+            value={yearsInBusiness} onChange={e => setYearsInBusiness(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label>What makes you different?</label>
+          <input className="form-input" type="text"
+            placeholder="e.g. Family-owned, same-day service, 5-star rated..."
+            value={differentiator} onChange={e => setDifferentiator(e.target.value)} />
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="form-group">
+        <label>Your Numbers <span className="label-hint">Optional — shown on your site</span></label>
+        <div className="form-row">
+          <div className="stat-input-wrap">
+            <div className="stat-input-label">{statSuggestions[0]?.label}</div>
+            <input className="form-input" type="text" placeholder={statSuggestions[0]?.placeholder}
+              value={stat1Value} onChange={e => setStat1Value(e.target.value)} />
+          </div>
+          <div className="stat-input-wrap">
+            <div className="stat-input-label">{statSuggestions[1]?.label}</div>
+            <input className="form-input" type="text" placeholder={statSuggestions[1]?.placeholder}
+              value={stat2Value} onChange={e => setStat2Value(e.target.value)} />
+          </div>
+        </div>
+      </div>
+
+      {error && <div className="error-msg">{error}</div>}
+      <div className="step-actions">
+        <button className="btn-ghost" onClick={onBack}>← Back</button>
+        <button className="btn-primary btn-lg" onClick={submit}>See My Designs →</button>
+      </div>
     </div>
   );
 }
@@ -562,16 +704,22 @@ export default function PreviewPage() {
   const [ai, setAI] = useState<AIContent | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
 
-  async function onInfo(b: BizInfo) {
+  function onInfo(b: BizInfo) {
     setBiz(b);
     setStep(1);
+  }
+
+  async function onAbout(extra: Partial<BizInfo>) {
+    const fullBiz = { ...biz!, ...extra };
+    setBiz(fullBiz);
+    setStep(2);
     setLoadingAI(true);
     setAI(null);
     try {
       const res = await fetch("/api/generate-preview-content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(b),
+        body: JSON.stringify(fullBiz),
       });
       const data = await res.json();
       setAI(data);
@@ -589,16 +737,19 @@ export default function PreviewPage() {
         <StepBar step={step} />
         {step === 0 && <StepInfo onNext={onInfo} />}
         {step === 1 && biz && (
+          <StepAbout biz={biz} onNext={onAbout} onBack={() => setStep(0)} />
+        )}
+        {step === 2 && biz && (
           <StepDesign biz={biz} ai={ai} loadingAI={loadingAI}
             onNext={pid => { setPlanId(pid); setStep(2); }}
             onBack={() => setStep(0)} />
         )}
-        {step === 2 && planId && (
+        {step === 3 && planId && (
           <StepPlan selectedDesign={planId}
             onNext={pid => { setPlanId(pid); setStep(3); }}
             onBack={() => setStep(1)} />
         )}
-        {step === 3 && biz && planId && (
+        {step === 4 && biz && planId && (
           <StepSignup biz={biz} planId={planId} onBack={() => setStep(2)} />
         )}
       </div>
