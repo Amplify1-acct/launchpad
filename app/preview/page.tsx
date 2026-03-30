@@ -87,27 +87,38 @@ function getImgs(industryId: string) {
 
 function getTemplate(industryId: string) {
   const ind = INDUSTRIES.find(i => i.id === industryId);
-  return ind?.template || "auto";
+  // For "other" or unknown, use plumbing template (clean blue, neutral, professional)
+  if (!ind || ind.id === "other") return "plumbing";
+  return ind.template;
 }
 
 
 // Placeholder for industries without library images
 const PLACEHOLDER_IMG_HTML = `<div style="width:100%;height:100%;min-height:500px;
-  background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#1e40af 100%);
+  background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e40af 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:rgba(255,255,255,0.85);font-family:Inter,sans-serif;text-align:center;padding:48px;">
-  <div style="font-size:52px;margin-bottom:20px;opacity:0.9;">✦</div>
-  <div style="font-size:20px;font-weight:800;margin-bottom:12px;letter-spacing:-0.5px;">Your Custom AI Images</div>
-  <div style="font-size:14px;line-height:1.8;max-width:260px;opacity:0.7;">
-    Professional photos created specifically for your business — generated when you sign up
+  color:rgba(255,255,255,0.9);font-family:Inter,sans-serif;text-align:center;padding:48px;">
+  <div style="font-size:48px;margin-bottom:18px;">📸</div>
+  <div style="font-size:18px;font-weight:800;margin-bottom:10px;letter-spacing:-0.3px;">
+    Your Custom Photos Go Here
+  </div>
+  <div style="font-size:13px;line-height:1.8;max-width:240px;opacity:0.75;margin-bottom:20px;">
+    After you sign up, we generate professional AI photos tailored specifically to your business
+  </div>
+  <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);
+    border-radius:100px;padding:8px 20px;font-size:12px;font-weight:700;letter-spacing:0.5px;">
+    ✦ Included with every plan
   </div>
 </div>`;
 
 const PLACEHOLDER_CARD_HTML = (n: number) => `<div style="width:100%;height:240px;
-  background:linear-gradient(135deg,#1e1b4b ${n*15}%,#312e81 ${40+n*10}%,#1e40af 100%);
-  border-radius:12px;display:flex;align-items:center;justify-content:center;
-  color:rgba(255,255,255,0.6);font-size:13px;font-weight:700;font-family:Inter,sans-serif;
-  letter-spacing:1px;text-transform:uppercase;">✦ AI Image ${n}</div>`;
+  background:linear-gradient(135deg,#1e1b4b ${n*12}%,#312e81 ${40+n*8}%,#1e40af 100%);
+  border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.8);font-size:12px;font-weight:700;font-family:Inter,sans-serif;
+  letter-spacing:1px;gap:8px;">
+  <span style="font-size:24px;">📸</span>
+  <span>Your Photo ${n}</span>
+</div>`;
 
 // Build Starter layout HTML (hand-coded, 1 image)
 function buildStarterHTML(biz: BizInfo, ai: AIContent, imgs: string[], usePlaceholder = false): string {
@@ -530,32 +541,11 @@ function StepDesign({
 }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [fullscreen, setFullscreen] = useState<string | null>(null);
-  const [pexelsImgs, setPexelsImgs] = useState<string[]>([]);
-  const [loadingPexels, setLoadingPexels] = useState(false);
 
-  // For industries not in our library, fetch from Pexels
-  const hasLibraryImages = !!IMAGES[biz.industry];
-  useEffect(() => {
-    if (!hasLibraryImages) {
-      setLoadingPexels(true);
-      const query = biz.customIndustry || biz.industry || "small business professional";
-      fetch(`/api/pexels-search?q=${encodeURIComponent(query)}&o=landscape`)
-        .then(r => r.json())
-        .then(data => {
-          const urls = (data.photos || []).map((p: {landscape?: string; square?: string}) => p.landscape || p.square || "").filter(Boolean);
-          if (urls.length > 0) setPexelsImgs(urls);
-          setLoadingPexels(false);
-        })
-        .catch(() => { setLoadingPexels(false); });
-    }
-  }, [biz.industry, biz.customIndustry, hasLibraryImages]);
+  // For industries not in our library, show gradient placeholders
 
-  const imgs = hasLibraryImages 
-    ? getImgs(biz.industry) 
-    : pexelsImgs.length > 0 
-      ? pexelsImgs 
-      : []; // empty array shows grey placeholder while loading
-  const usePlaceholder = !hasLibraryImages && pexelsImgs.length === 0;
+  const imgs = hasLibraryImages ? getImgs(biz.industry) : [];
+  const usePlaceholder = !hasLibraryImages;
   const templateId = getTemplate(biz.industry);
   const stitchUrl = `https://www.exsisto.ai/stitch-templates/${templateId}.html`;
 
