@@ -335,6 +335,40 @@ function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
 }
 
 
+
+// ─── SERVICE & STAT SUGGESTIONS (module-level) ───────────────────────────────
+const SERVICE_SUGGESTIONS: Record<string, string[]> = {
+  auto:        ["Full Restoration","Custom Paint & Bodywork","Engine Rebuilds","Chrome & Detailing","Panel Fabrication","Classic Car Storage"],
+  restaurant:  ["Dine-In","Takeout & Delivery","Private Events","Catering","Bar & Cocktails","Weekend Brunch"],
+  gym:         ["Personal Training","Group Fitness Classes","Nutrition Coaching","Strength & Conditioning","Yoga & Pilates","Recovery & Wellness"],
+  plumbing:    ["Emergency Repairs","Drain Cleaning","Water Heater Install","Pipe Replacement","Bathroom Remodels","Leak Detection"],
+  dental:      ["General Dentistry","Teeth Whitening","Invisalign","Dental Implants","Emergency Care","Cosmetic Bonding"],
+  law:         ["Personal Injury","Criminal Defense","Family Law","Estate Planning","Business Law","Free Consultations"],
+  salon:       ["Cuts & Color","Keratin Treatments","Hair Extensions","Balayage","Bridal Hair","Scalp Treatments"],
+  realestate:  ["Buyer Representation","Seller Services","Luxury Homes","Investment Properties","First-Time Buyers","Market Analysis"],
+  pet:         ["Dog Grooming","Cat Grooming","Boarding","Daycare","Obedience Training","Mobile Grooming"],
+  hvac:        ["AC Installation","Heating Repair","Duct Cleaning","Maintenance Plans","Emergency Service","Smart Thermostats"],
+  bakery:      ["Artisan Breads","Custom Cakes","Pastries & Croissants","Wedding Cakes","Gluten-Free Options","Coffee Bar"],
+  landscaping: ["Lawn Mowing","Landscape Design","Irrigation Systems","Tree & Shrub Trimming","Leaf Removal","Snow Plowing"],
+  other:       ["Core Service","Consultation","Custom Work","Maintenance","Installation","Emergency Service"],
+};
+
+const STAT_SUGGESTIONS: Record<string, Array<{label: string; placeholder: string}>> = {
+  auto:        [{label:"Years in Business",placeholder:"e.g. 20"},{label:"Cars Restored",placeholder:"e.g. 500+"}],
+  restaurant:  [{label:"Years Open",placeholder:"e.g. 12"},{label:"Happy Diners",placeholder:"e.g. 10,000+"}],
+  gym:         [{label:"Years Open",placeholder:"e.g. 8"},{label:"Members",placeholder:"e.g. 300+"}],
+  plumbing:    [{label:"Years in Business",placeholder:"e.g. 15"},{label:"Jobs Completed",placeholder:"e.g. 2,000+"}],
+  dental:      [{label:"Years in Practice",placeholder:"e.g. 20"},{label:"Patients Served",placeholder:"e.g. 5,000+"}],
+  law:         [{label:"Years in Practice",placeholder:"e.g. 18"},{label:"Cases Won",placeholder:"e.g. 400+"}],
+  salon:       [{label:"Years in Business",placeholder:"e.g. 10"},{label:"Happy Clients",placeholder:"e.g. 2,000+"}],
+  realestate:  [{label:"Years in Business",placeholder:"e.g. 15"},{label:"Homes Sold",placeholder:"e.g. 200+"}],
+  pet:         [{label:"Years in Business",placeholder:"e.g. 8"},{label:"Pets Groomed",placeholder:"e.g. 5,000+"}],
+  hvac:        [{label:"Years in Business",placeholder:"e.g. 20"},{label:"Systems Installed",placeholder:"e.g. 1,000+"}],
+  bakery:      [{label:"Years Baking",placeholder:"e.g. 12"},{label:"Items Made Daily",placeholder:"e.g. 200+"}],
+  landscaping: [{label:"Years in Business",placeholder:"e.g. 15"},{label:"Lawns Maintained",placeholder:"e.g. 150+"}],
+  other:       [{label:"Years in Business",placeholder:"e.g. 10"},{label:"Clients Served",placeholder:"e.g. 500+"}],
+};
+
 // ─── STEP 2: ABOUT YOUR BUSINESS ─────────────────────────────────────────────
 function StepAbout({ biz, onNext, onBack }: {
   biz: BizInfo;
