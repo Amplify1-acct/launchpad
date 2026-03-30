@@ -61,8 +61,16 @@ const PLANS = [
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
+// Maps industries without their own images to the best visual match
+const IMAGE_FALLBACK: Record<string, string> = {
+  bakery:      "restaurant",   // food photography works
+  landscaping: "realestate",   // outdoor/property shots work better than plumbing
+  other:       "auto",         // dark editorial works as neutral
+};
+
 function getImgs(industryId: string) {
-  return IMAGES[industryId] || IMAGES["plumbing"] || [];
+  const key = IMAGES[industryId] ? industryId : (IMAGE_FALLBACK[industryId] || "auto");
+  return IMAGES[key] || IMAGES["auto"] || [];
 }
 
 function getTemplate(industryId: string) {
@@ -336,10 +344,12 @@ function StepDesign({
     tagline: "Quality service you can count on.",
     subtext: `Serving ${biz.city} with professional, reliable service. Contact us today for a free estimate.`,
   };
+  const indLabel = INDUSTRIES.find(i => i.id === biz.industry)?.label || biz.industry;
   const content: AIContent = {
-    headline: ai?.headline || fallbackAI.headline,
-    tagline: ai?.tagline || fallbackAI.tagline,
-    subtext: ai?.subtext || fallbackAI.subtext,
+    headline: (ai?.headline && ai.headline !== "undefined") ? ai.headline : fallbackAI.headline,
+    tagline: (ai?.tagline && ai.tagline !== "undefined") ? ai.tagline : fallbackAI.tagline,
+    subtext: (ai?.subtext && ai.subtext !== "undefined") ? ai.subtext 
+      : `Trusted ${indLabel.toLowerCase()} services in ${biz.city}. Licensed, insured, and committed to excellence.`,
   };
 
   const starterHTML = buildStarterHTML(biz, content, imgs);
