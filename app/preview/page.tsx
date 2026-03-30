@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
-interface BizInfo { name: string; industry: string; city: string; phone: string; }
+interface BizInfo { name: string; industry: string; city: string; phone: string; customIndustry?: string; }
 interface AIContent { headline: string; tagline: string; subtext: string; }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -259,6 +259,7 @@ function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
   function submit() {
     if (!form.name.trim()) return setError("Business name is required");
     if (!form.industry) return setError("Please select your industry");
+    if (form.industry === "other" && !form.customIndustry?.trim()) return setError("Please describe your business type");
     if (!form.city.trim()) return setError("City is required");
     setError("");
     onNext(form);
@@ -300,6 +301,14 @@ function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
             value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
         </div>
       </div>
+      {form.industry === "other" && (
+        <div className="form-group">
+          <label>Describe your business *</label>
+          <input className="form-input" type="text" placeholder="e.g. Wedding Photography, Food Truck, Dog Training..."
+            value={form.customIndustry || ""}
+            onChange={e => setForm(f => ({ ...f, customIndustry: e.target.value }))} />
+        </div>
+      )}
       {error && <div className="error-msg">{error}</div>}
       <button className="btn-primary btn-lg" onClick={submit}>See My Designs →</button>
     </div>
@@ -327,7 +336,11 @@ function StepDesign({
     tagline: "Quality service you can count on.",
     subtext: `Serving ${biz.city} with professional, reliable service. Contact us today for a free estimate.`,
   };
-  const content = ai || fallbackAI;
+  const content: AIContent = {
+    headline: ai?.headline || fallbackAI.headline,
+    tagline: ai?.tagline || fallbackAI.tagline,
+    subtext: ai?.subtext || fallbackAI.subtext,
+  };
 
   const starterHTML = buildStarterHTML(biz, content, imgs);
   const proHTML = buildProHTML(biz, content, imgs);
