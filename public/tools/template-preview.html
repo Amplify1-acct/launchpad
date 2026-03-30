@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Exsisto — Template Preview Lab v7</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0f;--surface:#111118;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);
+  --accent:#6366f1;--gold:#f59e0b;--green:#10b981;--red:#ef4444;
+  --text:#f1f1f5;--mid:#9090a8;--dim:#555568;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);flex-shrink:0;}
+.logo{font-size:15px;font-weight:800;}.logo span{color:var(--accent);}
+.tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--mid);font-family:'JetBrains Mono',monospace;}
+.app{display:flex;flex:1;overflow:hidden;}
+
+/* Sidebar */
+.sidebar{width:260px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.si{padding:14px;flex:1;}
+.sl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:7px;font-family:'JetBrains Mono',monospace;}
+.sg{margin-bottom:14px;}
+.div{height:1px;background:var(--border);margin:12px 0;}
+
+/* Industry buttons */
+.bg{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.bb{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:7px 8px;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;text-align:left;transition:all 0.12s;display:flex;align-items:center;gap:5px;font-family:'Sora',sans-serif;}
+.bb:hover{border-color:var(--accent);color:var(--text);}
+.bb.active{border-color:var(--accent);background:rgba(99,102,241,0.12);color:var(--accent);}
+
+/* Image strip */
+.img-strip{display:flex;gap:5px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:thin;}
+.img-strip img{width:64px;height:46px;object-fit:cover;border-radius:5px;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;}
+
+/* Pricing */
+.pg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
+.pb{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:8px 4px;font-size:10px;font-weight:700;color:var(--mid);cursor:pointer;text-align:center;transition:all 0.12s;font-family:'Sora',sans-serif;}
+.pb .price{font-size:13px;font-weight:800;display:block;margin-bottom:1px;}
+.pb.active.s{border-color:var(--green);background:rgba(16,185,129,0.1);color:var(--green);}
+.pb.active.p{border-color:var(--accent);background:rgba(99,102,241,0.12);color:var(--accent);}
+.pb.active.pr{border-color:var(--gold);background:rgba(245,158,11,0.1);color:var(--gold);}
+.plan-desc{margin-top:8px;font-size:10px;color:var(--dim);line-height:1.6;}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.toolbar{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;}
+.tl{display:flex;align-items:center;gap:10px;}
+.pname{font-size:13px;font-weight:700;}
+.psub{font-size:10px;color:var(--mid);margin-top:1px;}
+.tier-b{padding:3px 9px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.t-s{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2);}
+.t-p{background:rgba(99,102,241,0.1);color:var(--accent);border:1px solid rgba(99,102,241,0.2);}
+.t-pr{background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.2);}
+.stitch-b{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 9px;border-radius:4px;background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.25);}
+.open-btn{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;text-decoration:none;}
+
+/* Preview */
+.preview-area{flex:1;overflow:hidden;position:relative;background:#f0f0f5;}
+.preview-area iframe{width:100%;height:100%;border:none;display:block;background:#fff;}
+.empty-st{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--dim);gap:12px;font-size:13px;}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Ex<span>sisto</span> · <span style="color:var(--mid);font-weight:400;">Template Preview Lab</span> <span style="color:var(--dim);font-size:11px;margin-left:4px;">v7</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="stitch-b">✦ Real Stitch Templates</div>
+    <div class="tag">$99 Starter · $299 Pro · $599 Premium</div>
+  </div>
+</header>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="si">
+      <div class="sg">
+        <div class="sl">Industry</div>
+        <div class="bg" id="industry-btns"></div>
+      </div>
+
+      <div class="sg" id="img-section" style="display:none;">
+        <div class="sl">Stitch Images <span id="img-count" style="color:var(--accent);"></span></div>
+        <div class="img-strip" id="img-strip"></div>
+      </div>
+
+      <div class="div"></div>
+
+      <div class="sg">
+        <div class="sl">Plan / Price</div>
+        <div class="pg">
+          <button class="pb s active" onclick="setPlan('starter',this)"><span class="price">$99</span>Starter</button>
+          <button class="pb p" onclick="setPlan('pro',this)"><span class="price">$299</span>Pro</button>
+          <button class="pb pr" onclick="setPlan('premium',this)"><span class="price">$599</span>Premium ✦</button>
+        </div>
+        <div class="plan-desc" id="plan-desc">Starter · Clean hand-coded layout · 1 Stitch AI hero image</div>
+      </div>
+
+      <div class="div"></div>
+
+      <div class="sg">
+        <div class="sl">✦ Open Live Template</div>
+        <div id="live-link-area" style="font-size:11px;color:var(--dim);">Select an industry first</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <div class="tl">
+        <div>
+          <div class="pname" id="p-name">Select an industry →</div>
+          <div class="psub" id="p-sub">Choose an industry on the left to see a live preview</div>
+        </div>
+        <div class="tier-b t-s" id="tier-b">● Starter $99</div>
+        <div class="stitch-b">✦ Stitch AI</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a class="open-btn" id="open-btn" href="#" target="_blank" style="background:var(--surface2);color:var(--mid);border:1px solid var(--border);">Open Stitch ↗</a>
+      </div>
+    </div>
+    <div class="preview-area" id="preview-area">
+      <div class="empty-st">
+        <div style="font-size:32px;">✦</div>
+        <div>Pick an industry to see the preview</div>
+        <div style="font-size:11px;color:var(--dim);">$99 Starter · $299 Pro · $599 Premium all show different layouts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const INDUSTRIES = [
+  {id:'auto',      name:"Matty's Automotive",   emoji:'🚗', sub:'Classic Car Restoration · Clark, NJ',       phone:'(732) 555-0192', services:['Full Restoration','Custom Paint','Panel Fab','Chrome Work'],       tagline:'Restoring Classics Since 2004'},
+  {id:'restaurant',name:"La Bella Cucina",       emoji:'🍝', sub:'Italian Fine Dining · Hoboken, NJ',        phone:'(201) 555-0134', services:['Dine-In','Private Events','Catering','Wine Bar'],                 tagline:'Authentic Italian, Every Night'},
+  {id:'gym',       name:"Iron Peak Fitness",     emoji:'💪', sub:'Premium Gym · Summit, NJ',                 phone:'(908) 555-0178', services:['Personal Training','Group Classes','Nutrition','Recovery'],       tagline:'Where Champions Are Made'},
+  {id:'plumbing',  name:"FlowRight Plumbing",    emoji:'🔧', sub:'Plumbing Services · Westfield, NJ',        phone:'(908) 555-0112', services:['Emergency Repair','Installation','Drain Cleaning','Water Heat'], tagline:'Fast. Clean. Reliable.'},
+  {id:'dental',    name:"Bright Smile Dental",   emoji:'🦷', sub:'Dental Practice · Scotch Plains, NJ',      phone:'(908) 555-0156', services:['General Care','Whitening','Invisalign','Implants'],               tagline:'Your Smile, Our Priority'},
+  {id:'law',       name:"Morgan & Associates",   emoji:'⚖️', sub:'Law Firm · Newark, NJ',                    phone:'(973) 555-0189', services:['Personal Injury','Criminal Defense','Family Law','Estates'],    tagline:'Unwavering Defense. Exceptional Results.'},
+  {id:'salon',     name:"Velvet Studio",         emoji:'✂️', sub:'Hair Salon · Westfield, NJ',               phone:'(908) 555-0167', services:['Cuts & Color','Keratin','Extensions','Bridal'],                  tagline:'Where Beauty Begins'},
+  {id:'realestate',name:"Summit Realty Group",   emoji:'🏠', sub:'Real Estate · Summit, NJ',                 phone:'(908) 555-0145', services:['Buy','Sell','Luxury Homes','Investment'],                        tagline:'Your Legacy, Found.'},
+  {id:'pet',       name:"Happy Paws Pet Care",   emoji:'🐾', sub:'Pet Care · Cranford, NJ',                  phone:'(908) 555-0123', services:['Grooming','Boarding','Daycare','Training'],                      tagline:'Where Every Tail Tells a Story'},
+  {id:'hvac',      name:"Cool Breeze HVAC",      emoji:'❄️', sub:'HVAC Services · Union, NJ',                phone:'(908) 555-0134', services:['AC Install','Heating Repair','Duct Cleaning','Maintenance'],    tagline:'Precision Climate Engineering'},
+];
+
+const MANIFEST = {
+  auto: ["https://lh3.googleusercontent.com/aida-public/AB6AXuB1C5DRn1V7PTWJ5C3peAzS5XRATD1-_I_V1zvK1gAruW_KPod1F9uKJNvgaA4nbvEEj0gsUIJH_31KcT9sjEFKB3A8T9mmloZFPwQxmYrtbAnR7iCHRaUqd99X8e8ULR6HvFnZUXaJRdrPYSuq1RCMCYIidiP_I-LAy5vNBBeAWgdelt5cVvKoT_Td9g5JpSPAziCXp9QpjhQljGZ9qBy6XkDafSvgYMLUR0v-kGyDDVlgZHoUZI9UV-ylA7bAX-kNnRwbB4iywO7v"],
+  restaurant: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCvZLqWp4vcBq3WgdR1v4lm0V-Qvv60o516WggmsiMePqV24UjlJFw76Maw2-xQL1O2uq72IMybEO73HmeNdq_YzzOpxC433PT13z6STlsJ3ILrRGais9KfUAHH4vLqpuGdI1_o4yHOifu3A1PaaS9Rr_Re6C9ijjcxZx_7z_NgyT3He22bBREJjWeMqv099xbGD716bTgOEhizQTdoMcbrUjXAO3qcbEgD7nxgAJ_VX9Hkay6pzzx4QzJX6UiB7afiA3lDzsxDPr_L", "https://lh3.googleusercontent.com/aida-public/AB6AXuCNiALvKNYkWsiRoW_fZfI7deDmFw8VG03jwNmIPVtmUGJXKBvMZjd530zf1A7DIkHhc4yMj8dHlJmfYj8A9Wg4AoGNw1nw2-G_-yV9nkXlUCRE8OGHbi0EcSR_4W5EAPV-a37j9r34xsCBbwEGxLwdUKDFNS9ObR1jl4LggL4Byq0MrLzgo027a_X5tGXhShIm1LMpBxGDoPATgV8AsdXVE5YAqlVWS1kK-JNFZIKHtQc-edVWXEpVPC5f8R8tuN73_Js9JQDzCoWu"],
+  gym: ["https://lh3.googleusercontent.com/aida-public/AB6AXuDXmVVa4eIKi9cTBj0xQk_hCyO7VFXbqgW1xpTNArtzMR10-zDGFQpPVlHzEzLGP4X407w5YQyjekIxVbd5PISRUPtue4hJ1yi3i6OpGQbJIe7X5o4SC0PxbeEYzpZavi-8XAiPVUltgvLwpWSqxkyFcBi10Re1MflzKNF-83AszsmuPtxsyRJsQQd2N9D4d8GQ-NGBdp_fL7EjcIitWKAO1BTOuGhr-E_sg8id2-Mxw21kuJQ-nIKbmy7mjYpfRvGCyD2JU8pq0ELf", "https://lh3.googleusercontent.com/aida-public/AB6AXuAammkUU2LRwUD8jaYXakwvODFHgqpcBGiiL4kFdvgOSUxZo12wKJOFdtnNMSXh9UGiMLl5g9b_Cf_p-jWzMfKk04138bKhQBc42CP9lYzJnKni12Z_IbsMqtSO3bdgYi7HPQzHA4U60sw0joxAAKRcJ2BBiQgNA4wXfIq01FqX7dH7hI_u7JRZIdS7wpQ3xr4bEfp9Qa8Ei-LZKqM6BHlVmGFoFHbkYWucCYo1VMSWTfFjvJoeC4bpxs3Jz4CNYAJ0hEKlDKERPNd1", "https://lh3.googleusercontent.com/aida-public/AB6AXuAw_4KplwHDWnIYq9MtPzWvgzuMGwGhd6arLFWqeUXHFW3tuSJ9jqMRX-GdlutnwkZd2qIFlhKy0gsRpfjDFQfEzWZ-_2MfOJq5iSu6qG4FGxkOxtCxfVKk0F5P5M-_GpJvghEjnNoDMVG05jeWNuDQ72hecHJiCGFhG7Uk8KVnqws-1R-_zaVNPCp42rnjd6Jm3FuIAHcdVy0qWQQC7fttKPofPhOZbISU5WcgaeUz1TZ1z_bm7HTqxvvzakiCzIQQUPQEK2-h1vcg"],
+  plumbing: ["https://lh3.googleusercontent.com/aida-public/AB6AXuBLx4WzaQZniruzjEUzfNZAFP1YleKAvggn_len6ed_c4bihLu0avfrHa9ULtBo1ogCuZwXSjmGGlJ14T4mbuegnQD7RwdT9UVYy-7oE7vHI2kYIsB8B7eOZ3rlVGRTjfk5u8dur4uWOHG4CQEB7ndtLm5ft534abnjwRIfX5iSUDCdYS0Ym5uixYXqTHFiXu83sX8uAL9OAHluuySsVFF-Cg8AYYlBh1jAiI7s1mS1QUKhOO_hZ0qAC15ikjt5MClUA89gcHsqXo4q"],
+  dental: ["https://lh3.googleusercontent.com/aida-public/AB6AXuAnZsieQO3kVch-WVq6qQv4DIHNp0G1k1KByxaRmfwgs1UX58vW9FtkDrTKOVl5sO_kWGVyy3sR0BWX_12q5TcM-BI87lN1LFMHSdHtQI7pDlQ_8Z5ZE5uF5B3qjAlHLDosVbuL9t37sd1VXWHxuON3LqqbZAvyZOUsPmNNHQQcmLDKMaq-0fQXFEDPSGAJnL8PZGMBMBIFIdsoZNkSe6FDlk1SRJt4WefJJ6iPhc22fob35XmtCNKYOGJ9rXQ5PKE0TyDGUDMMDftz"],
+  law: ["https://lh3.googleusercontent.com/aida-public/AB6AXuA2bmKC-l0xAsSJpZgDVcecdYLTZCxOVeyCRR88CGcsZ-uI7Z_bL-suNkV6cEAcQ8O3a27t3JNOBScb5Wfw_YzpmlyyTAQJAlW1tMyUyS9PpfjvuziSQusEHlsMX2PSfd2ClgW9QVpxbTCJcy4jiSelqeO8kWkh5tWaINWmRtxyHasnpmWF1VomlI5jDDUZGRURNf80Q5UFVHfRyTwenMP8FXUJcZo-SGFH_iEbWK46RN_eytiiOOyHQ-UcDURSWO80kMLFnp8qe5cO"],
+  salon: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCV6cptu5FbhGSQpbgdCfvxL50LSjc51732h2ycMtiXJaZZMm-AnURhinPNGSf5jMZikJ6iCf6I6TrGgnztYkQTahjXX4S8Nhkh7oB4qKMMzrODRtsUo3Lv7Lb2DiHzfi_2PzuynUZwGlCHmrPn3HAjvLkrhDx59igJq-YdfJexhTY7VBhdQMRymLBeWo0kOS4usUPK7qfEuu4_J0rRh5PQz2c8cjgcJfAqWQYxJJruc0kvCg2_2j3hTIchtkFDyayMxxqmZIODZNtK", "https://lh3.googleusercontent.com/aida-public/AB6AXuDKmd9r72ThsqINEYrhXn7Dl35asOP1B3z-UQMxtsOFPOEVPp7BWSiQ4uf5eOqgdHNqMcHe7ieNLQuLJlHHPG6mmG08cPTZG-DxUA_viBkS6yloCwYCo6ncm0nYOVU61z2repGVboKSjpJTw8Gm4dGzHxFCIYXXjHtM0axMqD4SH1NO0Pn-qqXwMvhD8eGjxMV-Wb50DI3zH0YFSsDhwpnoUTmIpiTi9GeNlVR0t8eqJoO0SDBwjwtyqlHO5EV-Z9zcmbuY0YdgWDoK", "https://lh3.googleusercontent.com/aida-public/AB6AXuCHdut4WgTG8rr5b6Teg62LqjfczkJhTT7dKowTY5hTHTjBb_nyb05u78ru0CLjz6WZekpFutx9l1rYJ8CddyECofzDWuX7_1LDh5U1g3BGAoLRYR5KnwFe65-7EAynpJNl8xNwrkesJfgP2RMCm5NAjEbM3jhKRw4WDYO7STyEdv3okgs9dB_hRu52VJm0cXgb6E13rdr6M8hjiLSwv7f6YmGMwSIMXZFnRC9ezbt-KvFGXzPD18-D1OLreiXiZ3rQYqDfVZgYm4fY"],
+  realestate: ["https://lh3.googleusercontent.com/aida-public/AB6AXuDGTPjhpEEgeVyvIzI98rWuhnE3IutU3zbdSg-CS7N-HUjn-ju9WtKHVpuK3TFHRTyxmqzj8RL2PT2ZxW4I-dfKBxN9mJa636mwi2GZAfd_gVXcGY50vyxMI1fylMyqqYGgjUmUEPH8OlGV9kdi-8GHWStXFF7oshPRVn_KHkEFC_P0pCmWaJHmDdWBnpJHi_UyJsbaE50pvH17nwK2Incu-ZdbPU7C8yjrrbv4BdzGjTZYIP3u-Gs9qY9aBFMoUJn-KuP4BcInfQkg", "https://lh3.googleusercontent.com/aida-public/AB6AXuDvYIZryBCbR6HZuapKt-IdeyNMSM1SnFr3bNgqHiyV2KY-xAZozEdFYpsXSI_RUpTI6xOPVmy77nti4XJ-hAWVSvuszsSCDho5caB3yznlUV7TNJ8nS_Lw3KeASHp0nhmbtE5MHN8MEknS2o4h-k__Ffn7fyKs7NS7qjd3ahIpTJlmD_6DCuMX_2aIPiUrKJEgH3kxZarL7YCpDoyvMXbgslfgqsVYMU5IOUHB-foUPMtmM2OLtX9b9xrP-QCuhrSYF2ZphLaTu95a", "https://lh3.googleusercontent.com/aida-public/AB6AXuAB35rkEC4mDZDR_x8_1qloNGZYZY-ojQiGBMA_MoUMt54iXM-4me_wbbkW_jaROIjh2eXnRYnUrYxRwlhYi7LCuuS6ckVCmdcS5Qw7I8u0z4jUP4yik1WsaQFhUUQ2tl8DEWLPmYomEaVyCj2nRhfDv-Gdoc33de-VIajRkXp6UtbHrVdJv47mAlGj98NpR3vUdmA4V6h-2BZt1nzoteZwDYLlpSGajuWvwDBp4yWLZsr5sVFbhY3E_feGb8NtKQwkYvaKVpqYQvDu", "https://lh3.googleusercontent.com/aida-public/AB6AXuB9mC6OlU08Gn_MihZVur_WnNn8apZCILFqwiwOPr_9aE6ehPKVP-iasLHhomTe1kB8HShJKTpv4qAICN_4KChfhOE7jv5wRYoHAIJswgG_bD8nAtdkTjHuTL47pZALC1Vb79M-SpTkD9QPJWbKYYxu_vIBY69R-TlE45qfonY2M9M7Y8g6N2FJWJ328b-VZ4SI2Vt04q2RG_gHwiwAFKDZuxpJOsUo9yguZoVYIjQ_dnQ5kwDkKBqCA1-Cld_bRahx9EFw2fC7FfXe"],
+  pet: ["https://lh3.googleusercontent.com/aida-public/AB6AXuAakjrronShuhDi9C1NBElTHzyP3VMzJ9G5Dctjcl92TxRxYkyFiZOPO8yrf9V-eT2J6xmdWJ79cKZz7ZmwBXATymwPf4PxgiUHfCidSgGAK_tkyDTrQhF7Jd2eS7Q63P-FvX-XxCNENgIURqu-7veVfS-TUUcGqcglUXT2szDd_EZy2DPCgMt8jMgGFLtR_L5eYJvAM2PXfKZBsZ-UuUdqQswfyBsCmhZHDMRfGjw5mbNHyKCVbpVV9yEk9kHH5jSHnXW7jp4jEzOi", "https://lh3.googleusercontent.com/aida-public/AB6AXuCPZKctAkhk4vS5sjiUkXbEhxvPuIXf1QYIWgGO5yxP9zpP8bypgYZyl0dd1kGxdDwWeedzu9Dfayw1fZdE9vs8P7vRk70LnfTWVuJEHDY8Zt3Jt_RQ7JkzRF9dlA5H3sM9IJjU4p1r8T2lNq0vWo09MS_3zlMPAG3Z2N99AOyCnuEuU3fnXcHVt6vgoLZuYmNx3dopxCBC5UUOZMf_RxcgL5T6fUdg4eOHE8yhZzQFC99mLEezfRm-t_h4Ij9oUVXpOcMfojTUGOVw", "https://lh3.googleusercontent.com/aida-public/AB6AXuCk-ZxVr8p4mmJTJMfS_JCw_4Xa-Es7NVCnhfiZq_ULRmRz_-fbp_9-3fLmTTetdH4uyGJ339r_v8Ab8L1OXRRTA8poE-VW7fRlDkE3w-v4M8hZGxzKg8pMBaInBO-0ItvKuP2Gku7ok3Tz3GZWaqkQwcxfj00jHecXJ8NC8Ty3lQCN8M4F0h-2Q_4YwuXygMSbRaFGFcmLY9xYDhdSdzyM4F6HkLINPc3STCrfd6Bs4q92VZG059HlM6rrE5lUM7vB9TOvhJxbR8-L", "https://lh3.googleusercontent.com/aida-public/AB6AXuBTK0wTaoSltYZLeQD3X5AUR3gKf8RI7b6hecV2pEiBwVjrIHAXaUoAS6m6W7Qq545KCPN_s8D0YmqUMCpA-urpF2jLcztb9EkqHtXZIHWPhEbAgBTiFBipOazgn5D7J6a6YqV7P7iWqiHs839dONkBjHM6_C2CFV5uiMZwPjVqI-IJqUe_cOBkOI9xPCaQI15e6BOGf5Ai2xQAyozfcYFqnXoefm_C0S1MgmqnEcFhspUWMtzVj1XSbEXJNuMWuATpt36yowjGiJn0"],
+  hvac: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCJrlkie16uVtFbV6_FAmWBgX5BGTEyUNyBq_lFZscmNGnkGrTVVXrO0IXStJXQWGI6itzZWubrhF1q_YTfyRbLBVusaQJAB1K-Aj2XmG3zTJL6jk_8GXSsoZAvsklJBpokDxVQeRRGmz0jHJef3CxtxjsiJy5AZwZuMUDUpfShNxYb2_aPlFpIImIwSbb44v1Dg838ppf5P4T_9TcGiX6o9711_y-wfyTgwRZNO1iwmD9K2B5ygSzzkKzsuIfWq1vwtPi88BE_hvdv", "https://lh3.googleusercontent.com/aida-public/AB6AXuD8GBkkRx8ALxrDMnQichwC0-t8NYrb6k3SLuZOuEcj2yd67FtLT24KP-Dtz46ZhSan8qXGaHcJD-UUyA5HIVJ8gXxjLVlhDK-T9cf73FU9aCRgwBeBNY28WzbjyIx6Ox4V9nsL8Oe0Ju2D8kcopf7tzuLdfuHxt0AChKAmyGJRc1njodsW3D-gWQKU3lDKYZNe7CYhmu_wOIzGskJQp098e2F_DHcRUiXMGZOFbqMGveavHhgLIoe7ErJ50Gk1G5mNdp9NC791XeA1"],
+};
+
+const PLAN_D = {
+  starter: "Starter $99/mo — Clean hand-coded layout · 1 Stitch AI hero image · Fast & professional",
+  pro:     "Pro $299/mo — Richer layout with gallery & stats sections · 3 Stitch AI images",
+  premium: "Premium $599/mo — Full Stitch AI-generated design · 5 images · All sections",
+};
+
+const TIER_LABELS = {starter:'● Starter $99', pro:'● Pro $299', premium:'● Premium $599'};
+const TIER_CLASSES = {starter:'t-s', pro:'t-p', premium:'t-pr'};
+
+let cur = null;
+let curPlan = 'starter';
+
+// Build industry buttons
+const btnGrid = document.getElementById('industry-btns');
+INDUSTRIES.forEach(ind => {
+  const btn = document.createElement('button');
+  btn.className = 'bb';
+  btn.innerHTML = `${ind.emoji} ${ind.id.charAt(0).toUpperCase()+ind.id.slice(1)}`;
+  btn.onclick = () => { document.querySelectorAll('.bb').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); cur=ind; render(); };
+  btnGrid.appendChild(btn);
+});
+
+function setPlan(plan, btn) {
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  curPlan = plan;
+  document.getElementById('plan-desc').textContent = PLAN_D[plan];
+  if (cur) render();
+}
+
+function render() {
+  const ind = cur;
+  const imgs = MANIFEST[ind.id] || [];
+  const hero = imgs[0] || '';
+  const card1 = imgs[1] || imgs[0] || '';
+  const card2 = imgs[2] || imgs[0] || '';
+
+  // Update sidebar images
+  const imgSection = document.getElementById('img-section');
+  const imgStrip = document.getElementById('img-strip');
+  imgStrip.innerHTML = '';
+  if (imgs.length) {
+    imgSection.style.display = '';
+    document.getElementById('img-count').textContent = `(${imgs.length})`;
+    imgs.forEach(url => { const img = document.createElement('img'); img.src=url; imgStrip.appendChild(img); });
+  } else { imgSection.style.display='none'; }
+
+  // Update toolbar
+  document.getElementById('p-name').textContent = `${ind.emoji} ${ind.name}`;
+  document.getElementById('p-sub').textContent = ind.sub;
+  const tb = document.getElementById('tier-b');
+  tb.textContent = TIER_LABELS[curPlan];
+  tb.className = `tier-b ${TIER_CLASSES[curPlan]}`;
+
+  // Update live link
+  const stitchUrl = `https://www.exsisto.ai/stitch-templates/${ind.id}.html`;
+  document.getElementById('open-btn').href = stitchUrl;
+  document.getElementById('live-link-area').innerHTML = `<a href="${stitchUrl}" target="_blank" style="color:var(--gold);font-size:11px;font-weight:600;text-decoration:none;">↗ ${ind.name} Stitch Template</a>`;
+
+  // Render the right layout
+  let html = '';
+  if (curPlan === 'premium') {
+    // Premium: load real Stitch template in iframe
+    document.getElementById('preview-area').innerHTML = `<div class="empty-st"><div class="spin"></div><div>Loading ${ind.name}…</div></div>`;
+    setTimeout(() => {
+      document.getElementById('preview-area').innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.src = stitchUrl;
+      iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+      document.getElementById('preview-area').appendChild(iframe);
+    }, 200);
+    return;
+  } else if (curPlan === 'starter') {
+    html = starterLayout(ind, hero);
+  } else {
+    html = proLayout(ind, hero, card1, card2);
+  }
+
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+  document.getElementById('preview-area').innerHTML = '';
+  document.getElementById('preview-area').appendChild(iframe);
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+}
+
+function starterLayout(ind, hero) {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;color:#111;background:#fff;}
+nav{position:sticky;top:0;z-index:99;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);padding:16px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;}
+.nav-logo{font-size:18px;font-weight:800;letter-spacing:-0.5px;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:13px;font-weight:500;color:#666;text-decoration:none;}
+.nav-cta{background:#111;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;}
+/* Hero — full bleed image with text overlay */
+.hero{position:relative;height:85vh;overflow:hidden;}
+.hero img{width:100%;height:100%;object-fit:cover;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,0.75) 45%, rgba(0,0,0,0.1));}
+.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 72px;}
+.hero-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:rgba(255,255,255,0.6);margin-bottom:16px;}
+.hero-h1{font-size:48px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1.5px;max-width:580px;margin-bottom:20px;}
+.hero-p{font-size:16px;color:rgba(255,255,255,0.75);max-width:480px;line-height:1.7;margin-bottom:32px;}
+.hero-btns{display:flex;gap:12px;}
+.btn-white{background:#fff;color:#111;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;}
+.btn-ghost{border:2px solid rgba(255,255,255,0.4);color:#fff;padding:14px 24px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;}
+/* Services */
+.services{padding:64px 72px;background:#fafafa;}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:#999;margin-bottom:10px;}
+.section-h2{font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:40px;}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.svc-card{background:#fff;border-radius:12px;padding:24px;border:1px solid #f0f0f0;}
+.svc-icon{width:40px;height:40px;background:#111;border-radius:8px;margin-bottom:14px;}
+.svc-name{font-size:14px;font-weight:700;}
+/* CTA */
+.cta{background:#111;padding:56px 72px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+.cta h2{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.cta p{font-size:14px;color:rgba(255,255,255,0.5);margin-top:4px;}
+.cta-phone{background:#fff;color:#111;padding:16px 32px;border-radius:8px;font-size:16px;font-weight:800;text-decoration:none;}
+footer{background:#f5f5f5;padding:24px 72px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#999;}
+.powered{color:#6366f1;font-weight:700;}
+</style></head><body>
+<nav>
+  <div class="nav-logo">${ind.name}</div>
+  <div class="nav-links">
+    ${ind.services.slice(0,3).map(s=>`<a href="#">${s}</a>`).join('')}
+    <a class="nav-cta" href="#">${ind.phone}</a>
+  </div>
+</nav>
+<div class="hero">
+  <img src="${hero}" onerror="this.style.background='#222';this.removeAttribute('src')"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">${ind.sub}</div>
+    <h1 class="hero-h1">${ind.tagline}</h1>
+    <p class="hero-p">Professional ${ind.services[0].toLowerCase()} services in ${ind.sub.split('·')[1]?.trim() || 'New Jersey'}. Licensed, insured, and trusted by the community.</p>
+    <div class="hero-btns">
+      <a class="btn-white" href="#">Get Free Estimate →</a>
+      <a class="btn-ghost" href="#">Our Services</a>
+    </div>
+  </div>
+</div>
+<section class="services">
+  <div class="section-label">What We Do</div>
+  <h2 class="section-h2">Our Services</h2>
+  <div class="svc-grid">
+    ${ind.services.map(s=>`<div class="svc-card"><div class="svc-icon"></div><div class="svc-name">${s}</div></div>`).join('')}
+  </div>
+</section>
+<section class="cta">
+  <div><h2>Ready to get started?</h2><p>${ind.sub} · Free estimates</p></div>
+  <a class="cta-phone" href="tel:${ind.phone}">${ind.phone}</a>
+</section>
+<footer>
+  <span>${ind.name} · ${ind.sub.split('·')[1]?.trim()}</span>
+  <span>Powered by <span class="powered">Exsisto Starter</span> · $99/mo</span>
+</footer>
+</body></html>`;
+}
+
+function proLayout(ind, hero, card1, card2) {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;color:#111;background:#fff;}
+nav{position:sticky;top:0;z-index:99;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);padding:16px 56px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;}
+.nav-logo{font-size:18px;font-weight:800;letter-spacing:-0.5px;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:13px;font-weight:500;color:#666;text-decoration:none;}
+.nav-cta{background:#111;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;}
+/* Split hero */
+.hero{display:grid;grid-template-columns:45% 55%;min-height:88vh;}
+.hero-left{padding:80px 56px;display:flex;flex-direction:column;justify-content:center;background:#fff;}
+.hero-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#999;margin-bottom:20px;}
+.hero-h1{font-size:50px;font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;}
+.hero-p{font-size:16px;color:#555;line-height:1.8;margin-bottom:28px;max-width:420px;}
+.stats{display:flex;gap:24px;margin-bottom:32px;padding:18px 22px;background:#f9f9f9;border-radius:10px;}
+.stat-num{font-size:22px;font-weight:900;}
+.stat-lbl{font-size:10px;color:#999;margin-top:2px;text-transform:uppercase;letter-spacing:1px;}
+.hero-btns{display:flex;gap:12px;}
+.btn-dark{background:#111;color:#fff;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.15);}
+.btn-outline{border:2px solid #e5e5e5;color:#333;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;}
+.hero-right{position:relative;overflow:hidden;}
+.hero-right img{width:100%;height:100%;object-fit:cover;min-height:500px;}
+.hero-badge{position:absolute;bottom:28px;left:28px;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);padding:16px 20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.hero-badge-n{font-size:22px;font-weight:900;}
+.hero-badge-l{font-size:10px;color:#999;margin-top:2px;}
+/* Services */
+.services{padding:72px 56px;background:#f9f9f9;}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#999;margin-bottom:10px;text-align:center;}
+.section-h2{font-size:34px;font-weight:800;letter-spacing:-1px;text-align:center;margin-bottom:44px;}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1000px;margin:0 auto;}
+.svc-card{background:#fff;border-radius:12px;padding:26px 20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+.svc-icon{width:44px;height:44px;background:#111;border-radius:8px;margin:0 auto 14px;}
+.svc-name{font-size:13px;font-weight:700;}
+/* Gallery */
+.gallery{padding:72px 56px;background:#fff;}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;max-width:1060px;margin:32px auto 0;}
+.gallery-grid img{width:100%;height:260px;object-fit:cover;border-radius:12px;}
+.gallery-grid img.tall{height:260px;}
+/* Testimonials */
+.testimonials{padding:64px 56px;background:#f9f9f9;}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1060px;margin:32px auto 0;}
+.t-card{background:#fff;border-radius:12px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.t-card p{font-size:14px;color:#444;line-height:1.8;font-style:italic;margin-bottom:18px;}
+.t-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.t-role{font-size:11px;color:#999;margin-top:3px;}
+/* CTA */
+.cta{background:#111;padding:60px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+.cta h2{font-size:30px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.cta p{font-size:14px;color:rgba(255,255,255,0.5);margin-top:4px;}
+.cta-phone{background:#fff;color:#111;padding:16px 36px;border-radius:8px;font-size:16px;font-weight:800;text-decoration:none;}
+footer{background:#f0f0f0;padding:24px 56px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#999;}
+.powered{color:#6366f1;font-weight:700;}
+</style></head><body>
+<nav>
+  <div class="nav-logo">${ind.name}</div>
+  <div class="nav-links">
+    ${ind.services.slice(0,3).map(s=>`<a href="#">${s}</a>`).join('')}
+    <a class="nav-cta" href="#">Call Now</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">${ind.sub}</div>
+    <h1 class="hero-h1">${ind.tagline}</h1>
+    <p class="hero-p">Trusted by hundreds of families across New Jersey. Professional, licensed, and committed to excellence in every job.</p>
+    <div class="stats">
+      <div><div class="stat-num">20+</div><div class="stat-lbl">Years</div></div>
+      <div><div class="stat-num">500+</div><div class="stat-lbl">Clients</div></div>
+      <div><div class="stat-num">4.9★</div><div class="stat-lbl">Rating</div></div>
+      <div><div class="stat-num">Free</div><div class="stat-lbl">Estimate</div></div>
+    </div>
+    <div class="hero-btns">
+      <a class="btn-dark" href="#">Get Free Estimate →</a>
+      <a class="btn-outline" href="#">View Our Work</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="${hero}" onerror="this.style.background='#eee';this.removeAttribute('src')"/>
+    <div class="hero-badge">
+      <div class="hero-badge-n">★ 4.9</div>
+      <div class="hero-badge-l">200+ Five-Star Reviews</div>
+    </div>
+  </div>
+</div>
+<section class="services">
+  <div class="section-label">What We Do</div>
+  <h2 class="section-h2">Our Services</h2>
+  <div class="svc-grid">
+    ${ind.services.map(s=>`<div class="svc-card"><div class="svc-icon"></div><div class="svc-name">${s}</div></div>`).join('')}
+  </div>
+</section>
+<section class="gallery">
+  <div class="section-label" style="text-align:center;">Our Work</div>
+  <h2 class="section-h2">See the Results</h2>
+  <div class="gallery-grid">
+    <img src="${hero}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
+    <img src="${card1}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
+    <img src="${card2}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
+  </div>
+</section>
+<section class="testimonials">
+  <div class="section-label" style="text-align:center;">Reviews</div>
+  <h2 class="section-h2">What Clients Say</h2>
+  <div class="t-grid">
+    <div class="t-card"><p>"Absolutely incredible service. Couldn't be happier with the results — truly exceeded my expectations."</p><div class="t-name">Sarah J.</div><div class="t-role">Local Resident</div></div>
+    <div class="t-card"><p>"Fast, professional, and fair pricing. They treated my home like their own. Highly recommend to anyone."</p><div class="t-name">Michael R.</div><div class="t-role">Homeowner</div></div>
+    <div class="t-card"><p>"The team was on time, clean, and thorough. I've used them twice now and will keep coming back."</p><div class="t-name">Elena V.</div><div class="t-role">Repeat Customer</div></div>
+  </div>
+</section>
+<section class="cta">
+  <div><h2>Ready to get started?</h2><p>${ind.sub} · Free estimates · Licensed & insured</p></div>
+  <a class="cta-phone" href="tel:${ind.phone}">${ind.phone}</a>
+</section>
+<footer>
+  <span>${ind.name} · ${ind.sub.split('·')[1]?.trim()}</span>
+  <span>Powered by <span class="powered">Exsisto Pro</span> · $299/mo</span>
+</footer>
+</body></html>`;
+}
+
+// Build buttons
+INDUSTRIES.forEach(ind => {
+  const btns = document.querySelectorAll('.bb');
+  // already built above
+});
+</script>
+</body>
+</html>
