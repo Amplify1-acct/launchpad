@@ -555,6 +555,7 @@ function StepDesign({
     : pexelsImgs.length > 0 
       ? pexelsImgs 
       : []; // empty array shows grey placeholder while loading
+  const usePlaceholder = !hasLibraryImages && pexelsImgs.length === 0;
   const templateId = getTemplate(biz.industry);
   const stitchUrl = `https://www.exsisto.ai/stitch-templates/${templateId}.html`;
 
