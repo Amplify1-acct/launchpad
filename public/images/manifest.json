@@ -40,5 +40,23 @@
       "url": "https://www.exsisto.ai/images/gym/card_2.jpg",
       "desc": "Trainer coaching client pull-ups bright gym"
     }
+  },
+  "plumbing": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/plumbing/hero_1.jpg",
+      "desc": "Professional plumber copper pipes kitchen"
+    }
+  },
+  "dental": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/dental/hero_1.jpg",
+      "desc": "Friendly dentist with smiling patient"
+    }
+  },
+  "law": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/law/hero_1.jpg",
+      "desc": "Confident attorney dramatic window light law books"
+    }
   }
 }
