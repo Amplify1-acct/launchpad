@@ -21,13 +21,19 @@ export async function POST(req: Request) {
     stat1Value = "",
     stat2Label = "Clients Served",
     stat2Value = "",
-  } = body as Record<string, string & string[]>;
+  } = body as {
+    name?: string; industry?: string; city?: string; phone?: string;
+    customIndustry?: string; description?: string; services?: string[];
+    yearsInBusiness?: string; differentiator?: string;
+    stat1Label?: string; stat1Value?: string;
+    stat2Label?: string; stat2Value?: string;
+  };
 
   const industryLabel = industry === "other"
     ? (customIndustry || "business")
     : (industry || "business");
 
-  const serviceList = Array.isArray(services) ? services.slice(0, 6).join(", ") : "";
+  const serviceList = Array.isArray(services) ? (services as string[]).slice(0, 6).join(", ") : "";
 
   const fallback = {
     headline: `${name} — ${city}\'s Trusted ${industryLabel} Professionals`,
