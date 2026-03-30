@@ -1,6 +1,6 @@
 "use client";
 import "./preview.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -470,7 +470,7 @@ function StepAbout({ biz, onNext, onBack }: {
         <div className="form-group">
           <label>Years in Business</label>
           <input className="form-input" type="text" placeholder="e.g. 15"
-            value={yearsInBusiness} onChange={e => setYearsInBusiness(e.target.value)} />
+            value={yearsInBusiness} onChange={e => { setYearsInBusiness(e.target.value); setStat1Value(e.target.value); }} />
         </div>
         <div className="form-group">
           <label>What makes you different?</label>
@@ -480,20 +480,13 @@ function StepAbout({ biz, onNext, onBack }: {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats - only show the second stat since years is already captured above */}
       <div className="form-group">
-        <label>Your Numbers <span className="label-hint">Optional — shown on your site</span></label>
-        <div className="form-row">
-          <div className="stat-input-wrap">
-            <div className="stat-input-label">{statSuggestions[0]?.label}</div>
-            <input className="form-input" type="text" placeholder={statSuggestions[0]?.placeholder}
-              value={stat1Value} onChange={e => setStat1Value(e.target.value)} />
-          </div>
-          <div className="stat-input-wrap">
-            <div className="stat-input-label">{statSuggestions[1]?.label}</div>
-            <input className="form-input" type="text" placeholder={statSuggestions[1]?.placeholder}
-              value={stat2Value} onChange={e => setStat2Value(e.target.value)} />
-          </div>
+        <label>Your Best Stat <span className="label-hint">Optional — shown on your site</span></label>
+        <div className="stat-input-wrap">
+          <div className="stat-input-label">{statSuggestions[1]?.label}</div>
+          <input className="form-input" type="text" placeholder={statSuggestions[1]?.placeholder}
+            value={stat2Value} onChange={e => setStat2Value(e.target.value)} />
         </div>
       </div>
 
@@ -518,7 +511,24 @@ function StepDesign({
 }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [fullscreen, setFullscreen] = useState<string | null>(null);
-  const imgs = getImgs(biz.industry);
+  const [pexelsImgs, setPexelsImgs] = useState<string[]>([]);
+
+  // For industries not in our library, fetch from Pexels
+  const hasLibraryImages = !!IMAGES[biz.industry];
+  useEffect(() => {
+    if (!hasLibraryImages) {
+      const query = biz.customIndustry || biz.industry || "small business";
+      fetch(`/api/pexels-search?query=${encodeURIComponent(query)}&per_page=4`)
+        .then(r => r.json())
+        .then(data => {
+          const urls = (data.photos || []).map((p: {src: {large: string}}) => p.src.large);
+          if (urls.length > 0) setPexelsImgs(urls);
+        })
+        .catch(() => {});
+    }
+  }, [biz.industry, biz.customIndustry, hasLibraryImages]);
+
+  const imgs = hasLibraryImages ? getImgs(biz.industry) : (pexelsImgs.length > 0 ? pexelsImgs : getImgs("auto"));
   const templateId = getTemplate(biz.industry);
   const stitchUrl = `https://www.exsisto.ai/stitch-templates/${templateId}.html`;
 
