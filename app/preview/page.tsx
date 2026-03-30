@@ -272,7 +272,7 @@ function StepBar({ step }: { step: number }) {
 
 // ─── STEP 1: INFO ─────────────────────────────────────────────────────────────
 function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
-  const [form, setForm] = useState<BizInfo>({ name: "", industry: "", city: "", phone: "" });
+  const [form, setForm] = useState<BizInfo>({ name: "", industry: "", city: "", phone: "", customIndustry: "" });
   const [error, setError] = useState("");
 
   function submit() {
@@ -329,7 +329,7 @@ function StepInfo({ onNext }: { onNext: (b: BizInfo) => void }) {
         </div>
       )}
       {error && <div className="error-msg">{error}</div>}
-      <button className="btn-primary btn-lg" onClick={submit}>See My Designs →</button>
+      <button className="btn-primary btn-lg" onClick={submit}>Next: About You →</button>
     </div>
   );
 }
@@ -499,7 +499,7 @@ function StepAbout({ biz, onNext, onBack }: {
       {error && <div className="error-msg">{error}</div>}
       <div className="step-actions">
         <button className="btn-ghost" onClick={onBack}>← Back</button>
-        <button className="btn-primary btn-lg" onClick={submit}>See My Designs →</button>
+        <button className="btn-primary btn-lg" onClick={submit}>Next: About You →</button>
       </div>
     </div>
   );
