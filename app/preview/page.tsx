@@ -628,7 +628,6 @@ function StepDesign({
           </div>
         ))}
       </div>
-      </div>
 
       {/* Fullscreen modal */}
       {fullscreen && (
