@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Exsisto — Image Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0f;--surface:#111118;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);
+  --accent:#6366f1;--gold:#f59e0b;--green:#10b981;--red:#ef4444;
+  --text:#f1f1f5;--mid:#9090a8;--dim:#555568;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.logo{font-size:15px;font-weight:800;}.logo span{color:var(--accent);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.flag-count{font-size:11px;font-weight:700;background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);padding:4px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;}
+.export-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.export-btn:hover{opacity:0.85;}
+
+/* Filter bar */
+.filterbar{padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.fb-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-right:4px;font-family:'JetBrains Mono',monospace;}
+.fb-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;transition:all 0.12s;font-family:'Sora',sans-serif;}
+.fb-btn:hover{border-color:var(--accent);color:var(--text);}
+.fb-btn.active{border-color:var(--accent);background:rgba(99,102,241,0.12);color:var(--accent);}
+.fb-btn.flagged-filter.active{border-color:var(--red);background:rgba(239,68,68,0.1);color:var(--red);}
+.sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+/* Content */
+.content{padding:24px;}
+
+.industry-section{margin-bottom:40px;}
+.industry-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.industry-title{font-size:13px;font-weight:700;}
+.industry-count{font-size:10px;color:var(--mid);font-family:'JetBrains Mono',monospace;}
+.industry-flag-count{font-size:10px;font-weight:700;color:var(--red);display:none;}
+.industry-flag-count.visible{display:inline;}
+
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+
+.img-card{background:var(--surface);border:2px solid var(--border);border-radius:10px;overflow:hidden;transition:all 0.15s;position:relative;}
+.img-card:hover{border-color:rgba(255,255,255,0.15);}
+.img-card.flagged{border-color:var(--red);background:rgba(239,68,68,0.04);}
+.img-card.approved{border-color:var(--green);background:rgba(16,185,129,0.04);}
+.img-card.hidden{display:none;}
+
+.img-wrap{position:relative;overflow:hidden;}
+.img-wrap img{width:100%;height:180px;object-fit:cover;display:block;background:var(--surface2);transition:opacity 0.2s;}
+.img-card.flagged .img-wrap img{opacity:0.4;}
+
+.flag-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s;background:rgba(0,0,0,0.3);}
+.img-card:hover .flag-overlay{opacity:1;}
+.flag-overlay-icon{font-size:32px;}
+
+/* Status badge on image */
+.status-badge{position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.status-badge.flagged{background:rgba(239,68,68,0.9);color:#fff;}
+.status-badge.approved{background:rgba(16,185,129,0.9);color:#fff;}
+
+.img-info{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.img-meta{flex:1;min-width:0;}
+.img-industry{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);}
+.img-num{font-size:11px;color:var(--mid);margin-top:2px;font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.action-btns{display:flex;gap:5px;flex-shrink:0;}
+.action-btn{width:30px;height:30px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.12s;}
+.action-btn:hover{transform:scale(1.1);}
+.action-btn.flag-btn:hover,.action-btn.flag-btn.active{border-color:var(--red);background:rgba(239,68,68,0.15);}
+.action-btn.approve-btn:hover,.action-btn.approve-btn.active{border-color:var(--green);background:rgba(16,185,129,0.15);}
+
+/* Export modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:560px;max-width:95vw;max-height:80vh;overflow-y:auto;}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:4px;}
+.modal-sub{font-size:11px;color:var(--mid);margin-bottom:20px;}
+.modal-section{margin-bottom:18px;}
+.modal-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
+.flag-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:6px;margin-bottom:5px;}
+.flag-item img{width:48px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0;}
+.flag-item-info{flex:1;min-width:0;}
+.flag-item-ind{font-size:11px;font-weight:700;color:var(--red);}
+.flag-item-url{font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.empty-flags{color:var(--dim);font-size:12px;text-align:center;padding:20px;}
+.modal-close{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--mid);cursor:pointer;font-family:'Sora',sans-serif;margin-top:16px;width:100%;}
+.copy-btn{background:var(--accent);border:none;border-radius:6px;padding:8px 16px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:'Sora',sans-serif;margin-top:8px;width:100%;}
+
+/* Empty state */
+.empty-industry{color:var(--dim);font-size:12px;padding:16px 0;}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:12px;padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
+.stat{font-size:11px;color:var(--mid);}
+.stat strong{color:var(--text);font-weight:700;}
+.stat.red strong{color:var(--red);}
+.stat.green strong{color:var(--green);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Ex<span>sisto</span> · Image Review</div>
+  <div class="header-right">
+    <div class="flag-count" id="flag-count">0 flagged</div>
+    <button class="export-btn" onclick="openExport()">Export Report →</button>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat">Total: <strong id="stat-total">0</strong></div>
+  <div class="stat green">Approved: <strong id="stat-approved">0</strong></div>
+  <div class="stat red">Flagged: <strong id="stat-flagged">0</strong></div>
+  <div class="stat">Unreviewed: <strong id="stat-unreviewed">0</strong></div>
+</div>
+
+<div class="filterbar">
+  <span class="fb-label">Filter:</span>
+  <button class="fb-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="fb-btn flagged-filter" onclick="setFilter('flagged',this)">🚩 Flagged</button>
+  <button class="fb-btn" onclick="setFilter('approved',this)">✅ Approved</button>
+  <button class="fb-btn" onclick="setFilter('unreviewed',this)">⬜ Unreviewed</button>
+  <div class="sep"></div>
+  <span class="fb-label">Industry:</span>
+  <div id="industry-filters"></div>
+</div>
+
+<div class="content" id="content"></div>
+
+<!-- Export Modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeExport()">
+  <div class="modal">
+    <div class="modal-title">🚩 Flagged Images Report</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <button class="copy-btn" onclick="copyReport()">📋 Copy JSON for Regeneration</button>
+    <button class="modal-close" onclick="closeExport()">Close</button>
+  </div>
+</div>
+
+<script>
+// ---- DATA ----
+const MANIFEST = {
+  auto:       ["https://lh3.googleusercontent.com/aida-public/AB6AXuB1C5DRn1V7PTWJ5C3peAzS5XRATD1-_I_V1zvK1gAruW_KPod1F9uKJNvgaA4nbvEEj0gsUIJH_31KcT9sjEFKB3A8T9mmloZFPwQxmYrtbAnR7iCHRaUqd99X8e8ULR6HvFnZUXaJRdrPYSuq1RCMCYIidiP_I-LAy5vNBBeAWgdelt5cVvKoT_Td9g5JpSPAziCXp9QpjhQljGZ9qBy6XkDafSvgYMLUR0v-kGyDDVlgZHoUZI9UV-ylA7bAX-kNnRwbB4iywO7v"],
+  restaurant: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCvZLqWp4vcBq3WgdR1v4lm0V-Qvv60o516WggmsiMePqV24UjlJFw76Maw2-xQL1O2uq72IMybEO73HmeNdq_YzzOpxC433PT13z6STlsJ3ILrRGais9KfUAHH4vLqpuGdI1_o4yHOifu3A1PaaS9Rr_Re6C9ijjcxZx_7z_NgyT3He22bBREJjWeMqv099xbGD716bTgOEhizQTdoMcbrUjXAO3qcbEgD7nxgAJ_VX9Hkay6pzzx4QzJX6UiB7afiA3lDzsxDPr_L","https://lh3.googleusercontent.com/aida-public/AB6AXuCNiALvKNYkWsiRoW_fZfI7deDmFw8VG03jwNmIPVtmUGJXKBvMZjd530zf1A7DIkHhc4yMj8dHlJmfYj8A9Wg4AoGNw1nw2-G_-yV9nkXlUCRE8OGHbi0EcSR_4W5EAPV-a37j9r34xsCBbwEGxLwdUKDFNS9ObR1jl4LggL4Byq0MrLzgo027a_X5tGXhShIm1LMpBxGDoPATgV8AsdXVE5YAqlVWS1kK-JNFZIKHtQc-edVWXEpVPC5f8R8tuN73_Js9JQDzCoWu"],
+  gym:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuDXmVVa4eIKi9cTBj0xQk_hCyO7VFXbqgW1xpTNArtzMR10-zDGFQpPVlHzEzLGP4X407w5YQyjekIxVbd5PISRUPtue4hJ1yi3i6OpGQbJIe7X5o4SC0PxbeEYzpZavi-8XAiPVUltgvLwpWSqxkyFcBi10Re1MflzKNF-83AszsmuPtxsyRJsQQd2N9D4d8GQ-NGBdp_fL7EjcIitWKAO1BTOuGhr-E_sg8id2-Mxw21kuJQ-nIKbmy7mjYpfRvGCyD2JU8pq0ELf","https://lh3.googleusercontent.com/aida-public/AB6AXuAammkUU2LRwUD8jaYXakwvODFHgqpcBGiiL4kFdvgOSUxZo12wKJOFdtnNMSXh9UGiMLl5g9b_Cf_p-jWzMfKk04138bKhQBc42CP9lYzJnKni12Z_IbsMqtSO3bdgYi7HPQzHA4U60sw0joxAAKRcJ2BBiQgNA4wXfIq01FqX7dH7hI_u7JRZIdS7wpQ3xr4bEfp9Qa8Ei-LZKqM6BHlVmGFoFHbkYWucCYo1VMSWTfFjvJoeC4bpxs3Jz4CNYAJ0hEKlDKERPNd1","https://lh3.googleusercontent.com/aida-public/AB6AXuAw_4KplwHDWnIYq9MtPzWvgzuMGwGhd6arLFWqeUXHFW3tuSJ9jqMRX-GdlutnwkZd2qIFlhKy0gsRpfjDFQfEzWZ-_2MfOJq5iSu6qG4FGxkOxtCxfVKk0F5P5M-_GpJvghEjnNoDMVG05jeWNuDQ72hecHJiCGFhG7Uk8KVnqws-1R-_zaVNPCp42rnjd6Jm3FuIAHcdVy0qWQQC7fttKPofPhOZbISU5WcgaeUz1TZ1z_bm7HTqxvvzakiCzIQQUPQEK2-h1vcg"],
+  plumbing:   ["https://lh3.googleusercontent.com/aida-public/AB6AXuBLx4WzaQZniruzjEUzfNZAFP1YleKAvggn_len6ed_c4bihLu0avfrHa9ULtBo1ogCuZwXSjmGGlJ14T4mbuegnQD7RwdT9UVYy-7oE7vHI2kYIsB8B7eOZ3rlVGRTjfk5u8dur4uWOHG4CQEB7ndtLm5ft534abnjwRIfX5iSUDCdYS0Ym5uixYXqTHFiXu83sX8uAL9OAHluuySsVFF-Cg8AYYlBh1jAiI7s1mS1QUKhOO_hZ0qAC15ikjt5MClUA89gcHsqXo4q","https://lh3.googleusercontent.com/aida/ADBb0ujccHwdhpdnntK9Jbvc0ZMFIMDtOONtTsRBij9mTWuNWXnc8NfkXGCSUz7ieSxJoNzz1hNydPYU-xd_Paznmp4YkXE4iMv96KVsn4OGkWK-dWQuQP4mhAmEhiD64gucQ3Vs3WeM5ilqRryKAPzM0t04-hQ7OOuAWyP-XHxW-mRdHRwdiis2zmCENIsfqt7zD0Z2caqJVHMgFXPjrwHBu21qL-eCwzOykA59WkMJ_msAnIXrAgDJNPIgPDI","https://lh3.googleusercontent.com/aida/ADBb0ujhLJzKSp4J4NvqhdN2IowKU2hCj6-OmtvytWGc3gtpmXhB--cn6YbZmnbcd_N5hui6sVWKXHPY4EWiPmHnfKBNeYFFy0d4aLFTiZSTF121YpzBTRpYoKr8s0kWuOAXImMpnyhJfifptMoGlk5vaq4faVWHeXMU4ucCUUCWDtqK7lkyY90AY2-5er2VaKbuNUWJt6TTvDv9ty_uhgRTY61QwedBVq9C_3m_dBfSCZXCEiG0P1aN2RzrKnZR"],
+  dental:     ["https://lh3.googleusercontent.com/aida-public/AB6AXuAnZsieQO3kVch-WVq6qQv4DIHNp0G1k1KByxaRmfwgs1UX58vW9FtkDrTKOVl5sO_kWGVyy3sR0BWX_12q5TcM-BI87lN1LFMHSdHtQI7pDlQ_8Z5ZE5uF5B3qjAlHLDosVbuL9t37sd1VXWHxuON3LqqbZAvyZOUsPmNNHQQcmLDKMaq-0fQXFEDPSGAJnL8PZGMBMBIFIdsoZNkSe6FDlk1SRJt4WefJJ6iPhc22fob35XmtCNKYOGJ9rXQ5PKE0TyDGUDMMDftz"],
+  law:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuA2bmKC-l0xAsSJpZgDVcecdYLTZCxOVeyCRR88CGcsZ-uI7Z_bL-suNkV6cEAcQ8O3a27t3JNOBScb5Wfw_YzpmlyyTAQJAlW1tMyUyS9PpfjvuziSQusEHlsMX2PSfd2ClgW9QVpxbTCJcy4jiSelqeO8kWkh5tWaINWmRtxyHasnpmWF1VomlI5jDDUZGRURNf80Q5UFVHfRyTwenMP8FXUJcZo-SGFH_iEbWK46RN_eytiiOOyHQ-UcDURSWO80kMLFnp8qe5cO"],
+  salon:      ["https://lh3.googleusercontent.com/aida-public/AB6AXuDuGcJfAqWQYxJJruc0kvCg2_2j3hTIchtkFDyayMxxqmZIODZNtK","https://lh3.googleusercontent.com/aida-public/AB6AXuCt8eqJoO0SDBwjwtyqlHO5EV-Z9zcmbuY0YdgWDoK","https://lh3.googleusercontent.com/aida-public/AB6AXuAzbt-KvFGXzPD18-D1OLreiXiZ3rQYqDfVZgYm4fY"],
+  realestate: ["https://lh3.googleusercontent.com/aida-public/AB6AXuDGTPjhpEEgeVyvIzI98rWuhnE3IutU3zbdSg-CS7N-HUjn-ju9WtKHVpuK3TFHRTyxmqzj8RL2PT2ZxW4I-dfKBxN9mJa636mwi2GZAfd_gVXcGY50vyxMI1fylMyqqYGgjUmUEPH8OlGV9kdi-8GHWStXFF7oshPRVn_KHkEFC_P0pCmWaJHmDdWBnpJHi_UyJsbaE50pvH17nwK2Incu-ZdbPU7C8yjrrbv4BdzGjTZYIP3u-Gs9qY9aBFMoUJn-KuP4BcInfQkg","https://lh3.googleusercontent.com/aida-public/AB6AXuDvYIZryBCbR6HZuapKt-IdeyNMSM1SnFr3bNgqHiyV2KY-xAZozEdFYpsXSI_RUpTI6xOPVmy77nti4XJ-hAWVSvuszsSCDho5caB3yznlUV7TNJ8nS_Lw3KeASHp0nhmbtE5MHN8MEknS2o4h-k__Ffn7fyKs7NS7qjd3ahIpTJlmD_6DCuMX_2aIPiUrKJEgH3kxZarL7YCpDoyvMXbgslfgqsVYMU5IOUHB-foUPMtmM2OLtX9b9xrP-QCuhrSYF2ZphLaTu95a","https://lh3.googleusercontent.com/aida-public/AB6AXuAB35rkEC4mDZDR_x8_1qloNGZYZY-ojQiGBMA_MoUMt54iXM-4me_wbbkW_jaROIjh2eXnRYnUrYxRwlhYi7LCuuS6ckVCmdcS5Qw7I8u0z4jUP4yik1WsaQFhUUQ2tl8DEWLPmYomEaVyCj2nRhfDv-Gdoc33de-VIajRkXp6UtbHrVdJv47mAlGj98NpR3vUdmA4V6h-2BZt1nzoteZwDYLlpSGajuWvwDBp4yWLZsr5sVFbhY3E_feGb8NtKQwkYvaKVpqYQvDu","https://lh3.googleusercontent.com/aida-public/AB6AXuB9mC6OlU08Gn_MihZVur_WnNn8apZCILFqwiwOPr_9aE6ehPKVP-iasLHhomTe1kB8HShJKTpv4qAICN_4KChfhOE7jv5wRYoHAIJswgG_bD8nAtdkTjHuTL47pZALC1Vb79M-SpTkD9QPJWbKYYxu_vIBY69R-TlE45qfonY2M9M7Y8g6N2FJWJ328b-VZ4SI2Vt04q2RG_gHwiwAFKDZuxpJOsUo9yguZoVYIjQ_dnQ5kwDkKBqCA1-Cld_bRahx9EFw2fC7FfXe"],
+  pet:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuAakjrronShuhDi9C1NBElTHzyP3VMzJ9G5Dctjcl92TxRxYkyFiZOPO8yrf9V-eT2J6xmdWJ79cKZz7ZmwBXATymwPf4PxgiUHfCidSgGAK_tkyDTrQhF7Jd2eS7Q63P-FvX-XxCNENgIURqu-7veVfS-TUUcGqcglUXT2szDd_EZy2DPCgMt8jMgGFLtR_L5eYJvAM2PXfKZBsZ-UuUdqQswfyBsCmhZHDMRfGjw5mbNHyKCVbpVV9yEk9kHH5jSHnXW7jp4jEzOi","https://lh3.googleusercontent.com/aida-public/AB6AXuCPZKctAkhk4vS5sjiUkXbEhxvPuIXf1QYIWgGO5yxP9zpP8bypgYZyl0dd1kGxdDwWeedzu9Dfayw1fZdE9vs8P7vRk70LnfTWVuJEHDY8Zt3Jt_RQ7JkzRF9dlA5H3sM9IJjU4p1r8T2lNq0vWo09MS_3zlMPAG3Z2N99AOyCnuEuU3fnXcHVt6vgoLZuYmNx3dopxCBC5UUOZMf_RxcgL5T6fUdg4eOHE8yhZzQFC99mLEezfRm-t_h4Ij9oUVXpOcMfojTUGOVw","https://lh3.googleusercontent.com/aida-public/AB6AXuCk-ZxVr8p4mmJTJMfS_JCw_4Xa-Es7NVCnhfiZq_ULRmRz_-fbp_9-3fLmTTetdH4uyGJ339r_v8Ab8L1OXRRTA8poE-VW7fRlDkE3w-v4M8hZGxzKg8pMBaInBO-0ItvKuP2Gku7ok3Tz3GZWaqkQwcxfj00jHecXJ8NC8Ty3lQCN8M4F0h-2Q_4YwuXygMSbRaFGFcmLY9xYDhdSdzyM4F6HkLINPc3STCrfd6Bs4q92VZG059HlM6rrE5lUM7vB9TOvhJxbR8-L","https://lh3.googleusercontent.com/aida-public/AB6AXuBTK0wTaoSltYZLeQD3X5AUR3gKf8RI7b6hecV2pEiBwVjrIHAXaUoAS6m6W7Qq545KCPN_s8D0YmqUMCpA-urpF2jLcztb9EkqHtXZIHWPhEbAgBTiFBipOazgn5D7J6a6YqV7P7iWqiHs839dONkBjHM6_C2CFV5uiMZwPjVqI-IJqUe_cOBkOI9xPCaQI15e6BOGf5Ai2xQAyozfcYFqnXoefm_C0S1MgmqnEcFhspUWMtzVj1XSbEXJNuMWuATpt36yowjGiJn0"],
+  hvac:       ["https://lh3.googleusercontent.com/aida-public/AB6AXuCJrlkie16uVtFbV6_FAmWBgX5BGTEyUNyBq_lFZscmNGnkGrTVVXrO0IXStJXQWGI6itzZWubrhF1q_YTfyRbLBVusaQJAB1K-Aj2XmG3zTJL6jk_8GXSsoZAvsklJBpokDxVQeRRGmz0jHJef3CxtxjsiJy5AZwZuMUDUpfShNxYb2_aPlFpIImIwSbb44v1Dg838ppf5P4T_9TcGiX6o9711_y-wfyTgwRZNO1iwmD9K2B5ygSzzkKzsuIfWq1vwtPi88BE_hvdv","https://lh3.googleusercontent.com/aida-public/AB6AXuD8GBkkRx8ALxrDMnQichwC0-t8NYrb6k3SLuZOuEcj2yd67FtLT24KP-Dtz46ZhSan8qXGaHcJD-UUyA5HIVJ8gXxjLVlhDK-T9cf73FU9aCRgwBeBNY28WzbjyIx6Ox4V9nsL8Oe0Ju2D8kcopf7tzuLdfuHxt0AChKAmyGJRc1njodsW3D-gWQKU3lDKYZNe7CYhmu_wOIzGskJQp098e2F_DHcRUiXMGZOFbqMGveavHhgLIoe7ErJ50Gk1G5mNdp9NC791XeA1"],
+};
+
+const LABELS = {auto:'🚗 Auto',restaurant:'🍝 Restaurant',gym:'💪 Gym',plumbing:'🔧 Plumbing',dental:'🦷 Dental',law:'⚖️ Law',salon:'✂️ Salon',realestate:'🏠 Real Estate',pet:'🐾 Pet',hvac:'❄️ HVAC'};
+
+// State: keyed by "industry-index"
+const state = {}; // 'flagged' | 'approved' | null
+
+let curFilter = 'all';
+let curIndustry = 'all';
+
+// Load saved state from localStorage
+try {
+  const saved = localStorage.getItem('exsisto-image-review');
+  if (saved) Object.assign(state, JSON.parse(saved));
+} catch(e) {}
+
+function saveState() {
+  try { localStorage.setItem('exsisto-image-review', JSON.stringify(state)); } catch(e) {}
+}
+
+function getKey(ind, i) { return `${ind}-${i}`; }
+
+function setImageState(ind, i, newState) {
+  const key = getKey(ind, i);
+  if (state[key] === newState) {
+    state[key] = null; // toggle off
+  } else {
+    state[key] = newState;
+  }
+  saveState();
+  updateCard(ind, i);
+  updateStats();
+}
+
+function updateCard(ind, i) {
+  const key = getKey(ind, i);
+  const s = state[key];
+  const card = document.getElementById(`card-${key}`);
+  if (!card) return;
+
+  card.classList.remove('flagged','approved');
+  if (s === 'flagged') card.classList.add('flagged');
+  if (s === 'approved') card.classList.add('approved');
+
+  // Visibility
+  let show = true;
+  if (curFilter === 'flagged' && s !== 'flagged') show = false;
+  if (curFilter === 'approved' && s !== 'approved') show = false;
+  if (curFilter === 'unreviewed' && s !== null) show = false;
+  if (curIndustry !== 'all' && ind !== curIndustry) show = false;
+  card.classList.toggle('hidden', !show);
+
+  // Status badge
+  const badge = card.querySelector('.status-badge');
+  badge.textContent = s === 'flagged' ? '🚩 Flagged' : s === 'approved' ? '✅ Approved' : '';
+  badge.className = `status-badge ${s || ''}`;
+
+  // Buttons
+  const flagBtn = card.querySelector('.flag-btn');
+  const approveBtn = card.querySelector('.approve-btn');
+  flagBtn.classList.toggle('active', s === 'flagged');
+  approveBtn.classList.toggle('active', s === 'approved');
+}
+
+function updateStats() {
+  const all = Object.values(MANIFEST).flat();
+  const total = all.length;
+  let flagged = 0, approved = 0;
+  Object.keys(MANIFEST).forEach(ind => {
+    MANIFEST[ind].forEach((_, i) => {
+      const s = state[getKey(ind, i)];
+      if (s === 'flagged') flagged++;
+      if (s === 'approved') approved++;
+    });
+  });
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-flagged').textContent = flagged;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-unreviewed').textContent = total - flagged - approved;
+  document.getElementById('flag-count').textContent = `${flagged} flagged`;
+
+  // Update industry flag counts
+  Object.keys(MANIFEST).forEach(ind => {
+    let fc = 0;
+    MANIFEST[ind].forEach((_,i) => { if (state[getKey(ind,i)] === 'flagged') fc++; });
+    const el = document.getElementById(`flag-count-${ind}`);
+    if (el) { el.textContent = `🚩 ${fc}`; el.classList.toggle('visible', fc > 0); }
+  });
+}
+
+function setFilter(f, btn) {
+  curFilter = f;
+  document.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  rebuildVisibility();
+}
+
+function setIndustryFilter(ind, btn) {
+  curIndustry = ind;
+  document.querySelectorAll('.fb-btn[data-ind]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  rebuildVisibility();
+}
+
+function rebuildVisibility() {
+  Object.keys(MANIFEST).forEach(ind => {
+    MANIFEST[ind].forEach((_, i) => updateCard(ind, i));
+    // Show/hide industry section header
+    const sec = document.getElementById(`sec-${ind}`);
+    if (sec) {
+      const visible = curIndustry === 'all' || curIndustry === ind;
+      sec.style.display = visible ? '' : 'none';
+    }
+  });
+}
+
+function build() {
+  // Industry filter buttons
+  const indFilters = document.getElementById('industry-filters');
+  const allBtn = document.createElement('button');
+  allBtn.className = 'fb-btn active';
+  allBtn.dataset.ind = 'all';
+  allBtn.textContent = 'All Industries';
+  allBtn.onclick = () => setIndustryFilter('all', allBtn);
+  indFilters.appendChild(allBtn);
+
+  Object.keys(MANIFEST).forEach(ind => {
+    const btn = document.createElement('button');
+    btn.className = 'fb-btn';
+    btn.dataset.ind = ind;
+    btn.textContent = LABELS[ind] || ind;
+    btn.onclick = () => setIndustryFilter(ind, btn);
+    indFilters.appendChild(btn);
+  });
+
+  // Content
+  const content = document.getElementById('content');
+  Object.entries(MANIFEST).forEach(([ind, imgs]) => {
+    const sec = document.createElement('div');
+    sec.className = 'industry-section';
+    sec.id = `sec-${ind}`;
+    sec.innerHTML = `
+      <div class="industry-header">
+        <span class="industry-title">${LABELS[ind] || ind}</span>
+        <span class="industry-count">${imgs.length} image${imgs.length !== 1 ? 's' : ''}</span>
+        <span class="industry-flag-count" id="flag-count-${ind}"></span>
+      </div>
+      <div class="img-grid" id="grid-${ind}"></div>
+    `;
+    content.appendChild(sec);
+
+    const grid = sec.querySelector(`#grid-${ind}`);
+    imgs.forEach((url, i) => {
+      const key = getKey(ind, i);
+      const s = state[key];
+      const card = document.createElement('div');
+      card.className = `img-card${s === 'flagged' ? ' flagged' : s === 'approved' ? ' approved' : ''}`;
+      card.id = `card-${key}`;
+      card.innerHTML = `
+        <div class="img-wrap">
+          <img src="${url}" loading="lazy" onerror="this.style.background='#1a1a24';this.style.height='180px';this.removeAttribute('src')"/>
+          <div class="status-badge ${s||''}">${s === 'flagged' ? '🚩 Flagged' : s === 'approved' ? '✅ Approved' : ''}</div>
+          <div class="flag-overlay">
+            <span class="flag-overlay-icon">${s === 'flagged' ? '🚩' : '👆'}</span>
+          </div>
+        </div>
+        <div class="img-info">
+          <div class="img-meta">
+            <div class="img-industry">${ind}</div>
+            <div class="img-num">img_${i+1} · ${url.slice(-20)}</div>
+          </div>
+          <div class="action-btns">
+            <button class="action-btn approve-btn${s === 'approved' ? ' active' : ''}" title="Approve" onclick="setImageState('${ind}',${i},'approved')">✅</button>
+            <button class="action-btn flag-btn${s === 'flagged' ? ' active' : ''}" title="Flag for replacement" onclick="setImageState('${ind}',${i},'flagged')">🚩</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  });
+
+  updateStats();
+}
+
+function openExport() {
+  const flagged = [];
+  Object.keys(MANIFEST).forEach(ind => {
+    MANIFEST[ind].forEach((url, i) => {
+      if (state[getKey(ind, i)] === 'flagged') {
+        flagged.push({ industry: ind, index: i+1, url });
+      }
+    });
+  });
+
+  const modal = document.getElementById('modal-bg');
+  const body = document.getElementById('modal-body');
+  const sub = document.getElementById('modal-sub');
+
+  sub.textContent = `${flagged.length} image${flagged.length !== 1 ? 's' : ''} flagged for replacement across ${[...new Set(flagged.map(f=>f.industry))].length} industries`;
+
+  if (flagged.length === 0) {
+    body.innerHTML = '<div class="empty-flags">No images flagged yet. Use the 🚩 button on any image to flag it.</div>';
+  } else {
+    // Group by industry
+    const byInd = {};
+    flagged.forEach(f => { if (!byInd[f.industry]) byInd[f.industry] = []; byInd[f.industry].push(f); });
+
+    body.innerHTML = Object.entries(byInd).map(([ind, items]) => `
+      <div class="modal-section">
+        <div class="modal-section-title">${LABELS[ind] || ind} — ${items.length} to replace</div>
+        ${items.map(item => `
+          <div class="flag-item">
+            <img src="${item.url}" onerror="this.style.background='#333';this.removeAttribute('src')"/>
+            <div class="flag-item-info">
+              <div class="flag-item-ind">${ind} · Image ${item.index}</div>
+              <div class="flag-item-url">${item.url.slice(0,60)}…</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  modal.classList.add('open');
+}
+
+function closeExport() {
+  document.getElementById('modal-bg').classList.remove('open');
+}
+
+function copyReport() {
+  const flagged = {};
+  Object.keys(MANIFEST).forEach(ind => {
+    MANIFEST[ind].forEach((url, i) => {
+      if (state[getKey(ind, i)] === 'flagged') {
+        if (!flagged[ind]) flagged[ind] = [];
+        flagged[ind].push({ index: i+1, url, action: 'regenerate' });
+      }
+    });
+  });
+  navigator.clipboard.writeText(JSON.stringify(flagged, null, 2)).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy JSON for Regeneration', 2000);
+  });
+}
+
+build();
+</script>
+</body>
+</html>
