@@ -750,7 +750,7 @@ export default function PreviewPage() {
             onNext={pid => { setPlanId(pid); setStep(3); }}
             onBack={() => setStep(1)} />
         )}
-        {step === 3 && biz && planId && (
+        {step === 3 && planId && (
           <StepPlan selectedDesign={planId}
             onNext={pid => { setPlanId(pid); setStep(4); }}
             onBack={() => setStep(2)} />
