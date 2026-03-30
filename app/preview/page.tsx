@@ -218,7 +218,12 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
     <div class="hero-btns"><a class="btn-d" href="#">Get Free Estimate →</a><a class="btn-o" href="#">View Our Work</a></div>
   </div>
   <div class="hero-right">
-    <img src="${hero}" onerror="this.style.background='#eee';this.removeAttribute('src')"/>
+    ${hero ? `<img src="${hero}" onerror="this.style.background='#eee';this.removeAttribute('src')"/>` : `
+    <div style="width:100%;height:100%;min-height:500px;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-family:Inter,sans-serif;text-align:center;padding:40px;">
+      <div style="font-size:48px;margin-bottom:16px;">✦</div>
+      <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:10px;">Your Custom AI Images</div>
+      <div style="font-size:14px;line-height:1.7;max-width:260px;">Professional photos tailored specifically to ${biz.name} will be created after you sign up</div>
+    </div>`}
     <div class="badge"><div class="badge-n">★ 4.9</div><div class="badge-l">200+ Five-Star Reviews</div></div>
   </div>
 </div>
@@ -234,9 +239,9 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
 <section class="gallery">
   <div class="sec-tag" style="text-align:center">Our Work</div><h2 class="sec-h">See the Results</h2>
   <div class="gal-grid">
-    <img src="${hero}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
-    <img src="${card1}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
-    <img src="${card2}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>
+    ${hero ? `<img src="${hero}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 1</div>`}
+    ${card1 ? `<img src="${card1}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#302b63,#24243e);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 2</div>`}
+    ${card2 ? `<img src="${card2}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#24243e,#0f0c29);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 3</div>`}
   </div>
 </section>
 <section class="testimonials">
@@ -556,13 +561,13 @@ function StepDesign({
       : `Trusted ${indLabel.toLowerCase()} services in ${biz.city}. Licensed, insured, and committed to excellence.`,
   };
 
-  const starterHTML = buildStarterHTML(biz, content, imgs);
-  const proHTML = buildProHTML(biz, content, imgs);
+  const starterHTML = buildStarterHTML(biz, content, usePlaceholder ? [] : imgs);
+  const proHTML = buildProHTML(biz, content, usePlaceholder ? [] : imgs);
 
   const designs = [
     { id: "starter", label: "Starter", price: "$99/mo", badge: "Simple & Clean", description: "Clean, professional layout with your hero image" },
     { id: "pro",     label: "Pro",     price: "$299/mo", badge: "Rich & Detailed", description: "Split-hero layout with gallery and testimonials" },
-    { id: "premium", label: "Premium", price: "$599/mo", badge: "✦ Full AI Design", description: "Full custom Stitch AI-generated design" },
+    { id: "premium", label: "Premium", price: "$599/mo", badge: "✦ Full AI Design", description: usePlaceholder ? "Full custom Stitch AI design — with YOUR images" : "Full custom Stitch AI-generated design" },
   ];
 
   return (
