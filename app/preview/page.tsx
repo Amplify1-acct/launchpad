@@ -512,19 +512,22 @@ function StepDesign({
   const [selected, setSelected] = useState<string | null>(null);
   const [fullscreen, setFullscreen] = useState<string | null>(null);
   const [pexelsImgs, setPexelsImgs] = useState<string[]>([]);
+  const [loadingPexels, setLoadingPexels] = useState(false);
 
   // For industries not in our library, fetch from Pexels
   const hasLibraryImages = !!IMAGES[biz.industry];
   useEffect(() => {
     if (!hasLibraryImages) {
+      setLoadingPexels(true);
       const query = biz.customIndustry || biz.industry || "small business professional";
       fetch(`/api/pexels-search?q=${encodeURIComponent(query)}&o=landscape`)
         .then(r => r.json())
         .then(data => {
           const urls = (data.photos || []).map((p: {landscape?: string; square?: string}) => p.landscape || p.square || "").filter(Boolean);
           if (urls.length > 0) setPexelsImgs(urls);
+          setLoadingPexels(false);
         })
-        .catch(() => {});
+        .catch(() => { setLoadingPexels(false); });
     }
   }, [biz.industry, biz.customIndustry, hasLibraryImages]);
 
@@ -581,7 +584,13 @@ function StepDesign({
         </div>
       )}
 
-      <div className="designs-grid">
+      {loadingPexels && (
+        <div className="pexels-loading">
+          <div className="pexels-spinner"></div>
+          <span>Finding photos for {biz.customIndustry || biz.industry}…</span>
+        </div>
+      )}
+      <div className="designs-grid" style={{opacity: loadingPexels ? 0.3 : 1, pointerEvents: loadingPexels ? 'none' : 'auto'}}>
         {designs.map((d, idx) => (
           <div key={d.id}
             className={`design-card ${selected === d.id ? "selected" : ""} ${d.id === "pro" ? "popular" : ""}`}
