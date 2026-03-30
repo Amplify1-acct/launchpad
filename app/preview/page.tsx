@@ -90,8 +90,27 @@ function getTemplate(industryId: string) {
   return ind?.template || "auto";
 }
 
+
+// Placeholder for industries without library images
+const PLACEHOLDER_IMG_HTML = `<div style="width:100%;height:100%;min-height:500px;
+  background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#1e40af 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.85);font-family:Inter,sans-serif;text-align:center;padding:48px;">
+  <div style="font-size:52px;margin-bottom:20px;opacity:0.9;">✦</div>
+  <div style="font-size:20px;font-weight:800;margin-bottom:12px;letter-spacing:-0.5px;">Your Custom AI Images</div>
+  <div style="font-size:14px;line-height:1.8;max-width:260px;opacity:0.7;">
+    Professional photos created specifically for your business — generated when you sign up
+  </div>
+</div>`;
+
+const PLACEHOLDER_CARD_HTML = (n: number) => `<div style="width:100%;height:240px;
+  background:linear-gradient(135deg,#1e1b4b ${n*15}%,#312e81 ${40+n*10}%,#1e40af 100%);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.6);font-size:13px;font-weight:700;font-family:Inter,sans-serif;
+  letter-spacing:1px;text-transform:uppercase;">✦ AI Image ${n}</div>`;
+
 // Build Starter layout HTML (hand-coded, 1 image)
-function buildStarterHTML(biz: BizInfo, ai: AIContent, imgs: string[]): string {
+function buildStarterHTML(biz: BizInfo, ai: AIContent, imgs: string[], usePlaceholder = false): string {
   const hero = imgs[0] || "";
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -152,7 +171,7 @@ footer{padding:22px 72px;background:#f5f5f5;display:flex;justify-content:space-b
 }
 
 // Build Pro layout HTML (hand-coded, 3 images, gallery + stats)
-function buildProHTML(biz: BizInfo, ai: AIContent, imgs: string[]): string {
+function buildProHTML(biz: BizInfo, ai: AIContent, imgs: string[], usePlaceholder = false): string {
   const [hero, card1, card2] = [imgs[0]||"", imgs[1]||imgs[0]||"", imgs[2]||imgs[0]||""];
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -218,12 +237,7 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
     <div class="hero-btns"><a class="btn-d" href="#">Get Free Estimate →</a><a class="btn-o" href="#">View Our Work</a></div>
   </div>
   <div class="hero-right">
-    ${hero ? `<img src="${hero}" onerror="this.style.background='#eee';this.removeAttribute('src')"/>` : `
-    <div style="width:100%;height:100%;min-height:500px;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-family:Inter,sans-serif;text-align:center;padding:40px;">
-      <div style="font-size:48px;margin-bottom:16px;">✦</div>
-      <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:10px;">Your Custom AI Images</div>
-      <div style="font-size:14px;line-height:1.7;max-width:260px;">Professional photos tailored specifically to ${biz.name} will be created after you sign up</div>
-    </div>`}
+    ${usePlaceholder ? PLACEHOLDER_IMG_HTML : `<img src="${hero}" onerror="this.style.background='#eee';this.removeAttribute('src')"/>`}
     <div class="badge"><div class="badge-n">★ 4.9</div><div class="badge-l">200+ Five-Star Reviews</div></div>
   </div>
 </div>
@@ -239,9 +253,9 @@ footer{padding:22px 56px;background:#f0f0f0;display:flex;justify-content:space-b
 <section class="gallery">
   <div class="sec-tag" style="text-align:center">Our Work</div><h2 class="sec-h">See the Results</h2>
   <div class="gal-grid">
-    ${hero ? `<img src="${hero}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 1</div>`}
-    ${card1 ? `<img src="${card1}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#302b63,#24243e);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 2</div>`}
-    ${card2 ? `<img src="${card2}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>` : `<div style="background:linear-gradient(135deg,#24243e,#0f0c29);border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif;">✦ AI Image 3</div>`}
+    ${usePlaceholder ? PLACEHOLDER_CARD_HTML(1) : `<img src="${hero}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>`}
+    ${usePlaceholder ? PLACEHOLDER_CARD_HTML(2) : `<img src="${card1}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>`}
+    ${usePlaceholder ? PLACEHOLDER_CARD_HTML(3) : `<img src="${card2}" onerror="this.style.background='#ddd';this.removeAttribute('src')"/>`}
   </div>
 </section>
 <section class="testimonials">
@@ -561,8 +575,8 @@ function StepDesign({
       : `Trusted ${indLabel.toLowerCase()} services in ${biz.city}. Licensed, insured, and committed to excellence.`,
   };
 
-  const starterHTML = buildStarterHTML(biz, content, usePlaceholder ? [] : imgs);
-  const proHTML = buildProHTML(biz, content, usePlaceholder ? [] : imgs);
+  const starterHTML = buildStarterHTML(biz, content, imgs, usePlaceholder);
+  const proHTML = buildProHTML(biz, content, imgs, usePlaceholder);
 
   const designs = [
     { id: "starter", label: "Starter", price: "$99/mo", badge: "Simple & Clean", description: "Clean, professional layout with your hero image" },
