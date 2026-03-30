@@ -747,16 +747,16 @@ export default function PreviewPage() {
         )}
         {step === 2 && biz && (
           <StepDesign biz={biz} ai={ai} loadingAI={loadingAI}
-            onNext={pid => { setPlanId(pid); setStep(4); }}
-            onBack={() => setStep(2)} />
+            onNext={pid => { setPlanId(pid); setStep(3); }}
+            onBack={() => setStep(1)} />
         )}
-        {step === 3 && planId && biz && (
+        {step === 3 && biz && planId && (
           <StepPlan selectedDesign={planId}
             onNext={pid => { setPlanId(pid); setStep(4); }}
             onBack={() => setStep(2)} />
         )}
         {step === 4 && biz && planId && (
-          <StepSignup biz={biz} planId={planId} onBack={() => setStep(2)} />
+          <StepSignup biz={biz} planId={planId} onBack={() => setStep(3)} />
         )}
       </div>
     </div>
