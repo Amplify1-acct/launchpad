@@ -1,62 +1,17 @@
 {
+  "project_id": "10937997964256804781",
   "auto": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/auto/hero_1.jpg",
-      "desc": "1969 Mustang dramatic garage shot"
-    },
-    "card_1": {
-      "url": "https://www.exsisto.ai/images/auto/card_1.jpg",
-      "desc": "Chrome engine intake manifold macro"
-    },
-    "card_2": {
-      "url": "https://www.exsisto.ai/images/auto/card_2.jpg",
-      "desc": "Mechanic reupholstering vintage car leather"
-    }
+    "hero": "https://lh3.googleusercontent.com/aida/ADBb0uhqeakpVWSSDfs8MUfexYN0Vx0lhXGfULDawIy-jwja9AQHWfWulxB-X9kfHD0Nx1aOMqTvTl0un6Xo8Hl5j4H60eeWzenTP7vcB4eiGnz323AIi7wwJLV0SXvXZnf0NzxsYbrA8R7n-9ewWdPyHUTN-O55Vk1tebCviC_OitAlhF2unsg6hdqjkzWBgqXY3GCIdngl5e94_LVJdsCeddDRRwTDKtlpZmbDRKSPAiyzAQeei8jin8aIx1Ac",
+    "card_1": "https://lh3.googleusercontent.com/aida/ADBb0ugOqDXGFc74HeTwM6P-oYlaGl5hXUv2ojRqm4lyP3xn7TTTBJVHgF_8hLHG1u7vDc_I-ixKNb1ho4vA-azTALNMq4zf7hLdPzzhP4P6fQSPP5yWCTeDEK6sSTNqt5elRMaTJHGaWKA4LhxUZQ8_tGuWnSWN7GuM0XPGeXZxTj-BBHL-hHyjVfx_1tOUxWp0xWQ7LaR5H13LVGBu6LOX1wyb_0I69Zm8hZegxMdlHU4vNG0nHzS4zeR5AD76",
+    "card_2": "https://lh3.googleusercontent.com/aida/ADBb0uizB-_EhmXkfWplXvXf_kHfQgbdXHuGLnHqaE_QHrs_oDcI58LAv4Q3rUb9DOlSwZ5KijMTz8OKblTybQx6en3cbUKDmDtE-aeKW8h3Ryn1GtZNhZS360F9KMDFYTbT3N3edk1QPjNnLip6om3fdnR87UI06JFQPPOZTaT90y2yQS6mp5M1dDQpW5lVjFaI8XutI4y54J5ojrIp5TZWMALLurfvVGjP9VXqHNNOoo1JIGyCPfIEfYDSmtrD"
   },
   "restaurant": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/restaurant/hero_1.jpg",
-      "desc": "Chef plating gourmet Italian dish"
-    },
-    "card_1": {
-      "url": "https://www.exsisto.ai/images/restaurant/card_1.jpg",
-      "desc": "Candlelit fine dining interior"
-    },
-    "card_2": {
-      "url": "https://www.exsisto.ai/images/restaurant/card_2.jpg",
-      "desc": "Black truffle pasta close-up"
-    }
+    "hero": "https://lh3.googleusercontent.com/aida/ADBb0ujwcwqETENf2cqGOMa4EhXGDHs6bVZtqBxJuLdoidxo3R8fEZvMu6HUzgiOdphrJbwIPF8ETDp2P8ok0VAMlVF9NhlunFkrJAWxTfrgfo3yj4eAtXdrCrZqdAptz0Z1QvcUkt86vlpI9r_Ax7_M_WabS0_mW2ZCfaLKlR3d7JR8iD00mmPfHhFrkN0G_loK58rezxCGBKG-o0zKtq-awSFqMudsDjhF3Cpy5dAbxxPRVwkUpU8daboNBWZB",
+    "card_1": "https://lh3.googleusercontent.com/aida/ADBb0uhQXIKn_MJ42mBED_IE-t5Mb7lCHyoVnk-sIvarV9okCtYShVZjFaJOoDEcvHfknMy2xIoNSmdYyaRM7bv1u_bsNZ5_q9ybuml4eELsXSfYxaLfVBttwrPI6d35KaPm9gqLFPxBZ9qXMgS9s1V0UMmj5rSdHFIXM9wH5OwVHu-z-GgXilRZQPQf-Vfi5HAJApPipZC3NTT1etM0I64JQ3GOVDHCE6aO5frXg66iq4Jhi1l8AaNNP7RVmBdb",
+    "card_2": "https://lh3.googleusercontent.com/aida/ADBb0ujjq5rUe74oZvBzpQgMiSKRa4qtx8lQAyWgbTBeCdNo9vabWlZKqmEaGv4UdL2U7p3tMmbY6gKCAAYI3m30V2NfGmGXNKpSxbasEBxMYgsptovK_Q_uyFLgfTwWZtRszuYQ_MZ4KDX8nENdG6Dln2V7dFYjdtUXTKLLJEe2WkT9m-dBi37MgVjqAjnXioixe-j33zPmoOYtVH3J7UaHqaMRDIzmJLncv2JuYsLf-szwewlXoON0SW1XsR8Y"
   },
   "gym": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/gym/hero_1.jpg",
-      "desc": "Athlete deadlift dramatic backlight chalk"
-    },
-    "card_1": {
-      "url": "https://www.exsisto.ai/images/gym/card_1.jpg",
-      "desc": "Premium gym equipment rack polished steel"
-    },
-    "card_2": {
-      "url": "https://www.exsisto.ai/images/gym/card_2.jpg",
-      "desc": "Trainer coaching client pull-ups bright gym"
-    }
-  },
-  "plumbing": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/plumbing/hero_1.jpg",
-      "desc": "Professional plumber copper pipes kitchen"
-    }
-  },
-  "dental": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/dental/hero_1.jpg",
-      "desc": "Friendly dentist with smiling patient"
-    }
-  },
-  "law": {
-    "hero_1": {
-      "url": "https://www.exsisto.ai/images/law/hero_1.jpg",
-      "desc": "Confident attorney dramatic window light law books"
-    }
+    "hero": "https://lh3.googleusercontent.com/aida/ADBb0uhxDo3arAE16KPq-xh9PkVgRquQIe6uH6weGc_WiFSvmcTvV1L5psjaVszKTVyt4JO9Kh1zXUsG58G83i9abvRRTYuAeRcd5tgv1BEHOY5VisYHuA8uZqLPe5IC0p3I8wOQ9Fd5Q7dEAr9I7dvxaecjuZPOQWdztyUWXbF0dXao70V6R71PqjycyRehhvH_1J73hlvBWELX2rsekKCNqECjGWrjB1A9_JCMzNVravGiehxJRLHopH-OfkQ2",
+    "card_1": "https://lh3.googleusercontent.com/aida/ADBb0uhH5q55ru6Pqe2wcTBAPmYfRC8v-72-G61XafBC2mQC-VAHXdNw-eP24TpfpXviGegjlN9Nfmy7m3LNjFsCyEV4pOcvVs_ZlWi8PPKbb8IsPWitVSgpvudpTzECiEXyGVR83PXajyHHgUW3tC5t6-_ndGb3oNCzvBlXrL-eqTAbdlR7WJXKaeWw2384ofsR6Ap-_XBUWvD_DIT8kSRkeMBI9rc6pMZ1nXTTEt1tP3JuBl37n1sBo-zWUyu-"
   }
 }
