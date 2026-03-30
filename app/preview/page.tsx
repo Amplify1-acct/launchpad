@@ -1,6 +1,6 @@
 "use client";
 import "./preview.css";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -491,6 +491,10 @@ function StepDesign({
     headline: `${biz.name} — ${biz.city}'s Trusted Professionals`,
     tagline: "Quality service you can count on.",
     subtext: `Serving ${biz.city} with professional, reliable service. Contact us today for a free estimate.`,
+    stat1: biz.stat1Value || biz.yearsInBusiness || "10+",
+    stat1Label: biz.stat1Label || "Years in Business",
+    stat2: biz.stat2Value || "500+",
+    stat2Label: biz.stat2Label || "Happy Clients",
   };
   const indLabel = INDUSTRIES.find(i => i.id === biz.industry)?.label || biz.industry;
   const content: AIContent = {
