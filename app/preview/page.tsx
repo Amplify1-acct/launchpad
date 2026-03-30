@@ -32,6 +32,7 @@ const INDUSTRIES = [
   { id:"hvac",        label:"HVAC / Home Services",   emoji:"❄️", template:"hvac"       },
   { id:"bakery",      label:"Bakery / Food",          emoji:"🥐", template:"restaurant" },
   { id:"landscaping", label:"Landscaping / Lawn",     emoji:"🌿", template:"plumbing"   },
+  { id:"other",       label:"Other / Not Listed",      emoji:"✏️", template:"auto"       },
 ];
 
 // Images from manifest — keyed by industry
