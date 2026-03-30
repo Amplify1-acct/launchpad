@@ -1,0 +1,16 @@
+{
+  "auto": {
+    "hero_1": {
+      "url": "https://www.exsisto.ai/images/auto/hero_1.jpg",
+      "desc": "1969 Mustang dramatic garage shot"
+    },
+    "card_1": {
+      "url": "https://www.exsisto.ai/images/auto/card_1.jpg",
+      "desc": "Chrome engine intake manifold macro"
+    },
+    "card_2": {
+      "url": "https://www.exsisto.ai/images/auto/card_2.jpg",
+      "desc": "Mechanic reupholstering vintage car leather"
+    }
+  }
+}
