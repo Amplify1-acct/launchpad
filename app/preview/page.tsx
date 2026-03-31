@@ -41,6 +41,7 @@ const BUSINESS_TYPES: Record<string, string[]> = {
   hvac:        ["AC Installation & Repair","Heating & Furnace","Emergency HVAC Service","Duct Cleaning","Commercial HVAC","Smart Home & Thermostats","Geothermal Systems","Air Quality & Purification","Boiler Specialist","HVAC Maintenance Plans"],
   bakery:      ["Artisan Bread Bakery","Custom Cake Studio","French Pastry Shop","Wedding Cake Specialist","Gluten-Free Bakery","Cupcake & Dessert Shop","Bagel Shop","Pie Shop","Cookie & Confections","Wholesale Bakery"],
   landscaping: ["Full-Service Landscaping","Lawn Maintenance","Landscape Design","Irrigation Systems","Tree Service & Removal","Hardscaping & Patios","Snow Removal","Commercial Landscaping","Garden Design","Organic Lawn Care"],
+  other:       ["Retail Shop","Photography Studio","Tutoring & Education","Event Planning","Cleaning Service","Moving Company","Catering","Consulting","Childcare / Daycare","Specialty Service"],
 };
 
 // Images from our library
