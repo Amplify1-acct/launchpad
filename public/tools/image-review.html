@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Exsisto — Image Review</title>
+<title>Exsisto — Image Library Review</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -21,8 +21,11 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 .export-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
 .export-btn:hover{opacity:0.85;}
 
-/* Filter bar */
-.filterbar{padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.stats-bar{display:flex;gap:16px;flex-wrap:wrap;padding:10px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
+.stat{font-size:11px;color:var(--mid);}.stat strong{color:var(--text);font-weight:700;}
+.stat.red strong{color:var(--red);}.stat.green strong{color:var(--green);}
+
+.filterbar{padding:10px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .fb-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-right:4px;font-family:'JetBrains Mono',monospace;}
 .fb-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;transition:all 0.12s;font-family:'Sora',sans-serif;}
 .fb-btn:hover{border-color:var(--accent);color:var(--text);}
@@ -30,9 +33,7 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 .fb-btn.flagged-filter.active{border-color:var(--red);background:rgba(239,68,68,0.1);color:var(--red);}
 .sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
 
-/* Content */
 .content{padding:24px;}
-
 .industry-section{margin-bottom:40px;}
 .industry-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .industry-title{font-size:13px;font-weight:700;}
@@ -40,8 +41,7 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 .industry-flag-count{font-size:10px;font-weight:700;color:var(--red);display:none;}
 .industry-flag-count.visible{display:inline;}
 
-.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
-
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
 .img-card{background:var(--surface);border:2px solid var(--border);border-radius:10px;overflow:hidden;transition:all 0.15s;position:relative;}
 .img-card:hover{border-color:rgba(255,255,255,0.15);}
 .img-card.flagged{border-color:var(--red);background:rgba(239,68,68,0.04);}
@@ -50,27 +50,34 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 
 .img-wrap{position:relative;overflow:hidden;}
 .img-wrap img{width:100%;height:180px;object-fit:cover;display:block;background:var(--surface2);transition:opacity 0.2s;}
-.img-card.flagged .img-wrap img{opacity:0.4;}
+.img-card.flagged .img-wrap img{opacity:0.35;}
 
-.flag-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s;background:rgba(0,0,0,0.3);}
-.img-card:hover .flag-overlay{opacity:1;}
-.flag-overlay-icon{font-size:32px;}
-
-/* Status badge on image */
 .status-badge{position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 .status-badge.flagged{background:rgba(239,68,68,0.9);color:#fff;}
 .status-badge.approved{background:rgba(16,185,129,0.9);color:#fff;}
 
-.img-info{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.img-info{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .img-meta{flex:1;min-width:0;}
 .img-industry{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);}
-.img-num{font-size:11px;color:var(--mid);margin-top:2px;font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.img-num{font-size:10px;color:var(--mid);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 
 .action-btns{display:flex;gap:5px;flex-shrink:0;}
-.action-btn{width:30px;height:30px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.12s;}
+.action-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.12s;}
 .action-btn:hover{transform:scale(1.1);}
 .action-btn.flag-btn:hover,.action-btn.flag-btn.active{border-color:var(--red);background:rgba(239,68,68,0.15);}
 .action-btn.approve-btn:hover,.action-btn.approve-btn.active{border-color:var(--green);background:rgba(16,185,129,0.15);}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:200;display:none;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;}
+.lb-close{position:absolute;top:20px;right:24px;font-size:28px;cursor:pointer;color:rgba(255,255,255,0.6);background:none;border:none;}
+.lb-close:hover{color:#fff;}
+.lb-actions{position:absolute;bottom:24px;display:flex;gap:12px;}
+.lb-btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Sora',sans-serif;}
+.lb-approve{background:var(--green);color:#fff;}
+.lb-flag{background:var(--red);color:#fff;}
+.lb-skip{background:var(--surface2);color:var(--mid);border:1.5px solid var(--border);}
 
 /* Export modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center;}
@@ -78,8 +85,6 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:560px;max-width:95vw;max-height:80vh;overflow-y:auto;}
 .modal-title{font-size:15px;font-weight:800;margin-bottom:4px;}
 .modal-sub{font-size:11px;color:var(--mid);margin-bottom:20px;}
-.modal-section{margin-bottom:18px;}
-.modal-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
 .flag-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:6px;margin-bottom:5px;}
 .flag-item img{width:48px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0;}
 .flag-item-info{flex:1;min-width:0;}
@@ -88,25 +93,15 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 .empty-flags{color:var(--dim);font-size:12px;text-align:center;padding:20px;}
 .modal-close{background:var(--surface2);border:1.5px solid var(--border);border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--mid);cursor:pointer;font-family:'Sora',sans-serif;margin-top:16px;width:100%;}
 .copy-btn{background:var(--accent);border:none;border-radius:6px;padding:8px 16px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:'Sora',sans-serif;margin-top:8px;width:100%;}
-
-/* Empty state */
-.empty-industry{color:var(--dim);font-size:12px;padding:16px 0;}
-
-/* Stats bar */
-.stats-bar{display:flex;gap:12px;padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
-.stat{font-size:11px;color:var(--mid);}
-.stat strong{color:var(--text);font-weight:700;}
-.stat.red strong{color:var(--red);}
-.stat.green strong{color:var(--green);}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Ex<span>sisto</span> · Image Review</div>
+  <div class="logo">Ex<span>sisto</span> · Image Library Review</div>
   <div class="header-right">
     <div class="flag-count" id="flag-count">0 flagged</div>
-    <button class="export-btn" onclick="openExport()">Export Report →</button>
+    <button class="export-btn" onclick="openExport()">Export Flagged →</button>
   </div>
 </header>
 
@@ -130,274 +125,219 @@ header{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(-
 
 <div class="content" id="content"></div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt=""/>
+  <div class="lb-actions" onclick="event.stopPropagation()">
+    <button class="lb-btn lb-approve" onclick="lbAction('approved')">✅ Approve</button>
+    <button class="lb-btn lb-flag" onclick="lbAction('flagged')">🚩 Flag for replacement</button>
+    <button class="lb-btn lb-skip" onclick="closeLightbox()">Skip</button>
+  </div>
+</div>
+
 <!-- Export Modal -->
 <div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeExport()">
   <div class="modal">
     <div class="modal-title">🚩 Flagged Images Report</div>
     <div class="modal-sub" id="modal-sub"></div>
     <div id="modal-body"></div>
-    <button class="copy-btn" onclick="copyReport()">📋 Copy JSON for Regeneration</button>
+    <button class="copy-btn" onclick="copyReport()">📋 Copy JSON (paste to Claude for regeneration)</button>
     <button class="modal-close" onclick="closeExport()">Close</button>
   </div>
 </div>
 
 <script>
-// ---- DATA ----
 const MANIFEST = {
-  auto:       ["https://lh3.googleusercontent.com/aida-public/AB6AXuB1C5DRn1V7PTWJ5C3peAzS5XRATD1-_I_V1zvK1gAruW_KPod1F9uKJNvgaA4nbvEEj0gsUIJH_31KcT9sjEFKB3A8T9mmloZFPwQxmYrtbAnR7iCHRaUqd99X8e8ULR6HvFnZUXaJRdrPYSuq1RCMCYIidiP_I-LAy5vNBBeAWgdelt5cVvKoT_Td9g5JpSPAziCXp9QpjhQljGZ9qBy6XkDafSvgYMLUR0v-kGyDDVlgZHoUZI9UV-ylA7bAX-kNnRwbB4iywO7v"],
-  restaurant: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCvZLqWp4vcBq3WgdR1v4lm0V-Qvv60o516WggmsiMePqV24UjlJFw76Maw2-xQL1O2uq72IMybEO73HmeNdq_YzzOpxC433PT13z6STlsJ3ILrRGais9KfUAHH4vLqpuGdI1_o4yHOifu3A1PaaS9Rr_Re6C9ijjcxZx_7z_NgyT3He22bBREJjWeMqv099xbGD716bTgOEhizQTdoMcbrUjXAO3qcbEgD7nxgAJ_VX9Hkay6pzzx4QzJX6UiB7afiA3lDzsxDPr_L","https://lh3.googleusercontent.com/aida-public/AB6AXuCNiALvKNYkWsiRoW_fZfI7deDmFw8VG03jwNmIPVtmUGJXKBvMZjd530zf1A7DIkHhc4yMj8dHlJmfYj8A9Wg4AoGNw1nw2-G_-yV9nkXlUCRE8OGHbi0EcSR_4W5EAPV-a37j9r34xsCBbwEGxLwdUKDFNS9ObR1jl4LggL4Byq0MrLzgo027a_X5tGXhShIm1LMpBxGDoPATgV8AsdXVE5YAqlVWS1kK-JNFZIKHtQc-edVWXEpVPC5f8R8tuN73_Js9JQDzCoWu"],
-  gym:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuDXmVVa4eIKi9cTBj0xQk_hCyO7VFXbqgW1xpTNArtzMR10-zDGFQpPVlHzEzLGP4X407w5YQyjekIxVbd5PISRUPtue4hJ1yi3i6OpGQbJIe7X5o4SC0PxbeEYzpZavi-8XAiPVUltgvLwpWSqxkyFcBi10Re1MflzKNF-83AszsmuPtxsyRJsQQd2N9D4d8GQ-NGBdp_fL7EjcIitWKAO1BTOuGhr-E_sg8id2-Mxw21kuJQ-nIKbmy7mjYpfRvGCyD2JU8pq0ELf","https://lh3.googleusercontent.com/aida-public/AB6AXuAammkUU2LRwUD8jaYXakwvODFHgqpcBGiiL4kFdvgOSUxZo12wKJOFdtnNMSXh9UGiMLl5g9b_Cf_p-jWzMfKk04138bKhQBc42CP9lYzJnKni12Z_IbsMqtSO3bdgYi7HPQzHA4U60sw0joxAAKRcJ2BBiQgNA4wXfIq01FqX7dH7hI_u7JRZIdS7wpQ3xr4bEfp9Qa8Ei-LZKqM6BHlVmGFoFHbkYWucCYo1VMSWTfFjvJoeC4bpxs3Jz4CNYAJ0hEKlDKERPNd1","https://lh3.googleusercontent.com/aida-public/AB6AXuAw_4KplwHDWnIYq9MtPzWvgzuMGwGhd6arLFWqeUXHFW3tuSJ9jqMRX-GdlutnwkZd2qIFlhKy0gsRpfjDFQfEzWZ-_2MfOJq5iSu6qG4FGxkOxtCxfVKk0F5P5M-_GpJvghEjnNoDMVG05jeWNuDQ72hecHJiCGFhG7Uk8KVnqws-1R-_zaVNPCp42rnjd6Jm3FuIAHcdVy0qWQQC7fttKPofPhOZbISU5WcgaeUz1TZ1z_bm7HTqxvvzakiCzIQQUPQEK2-h1vcg"],
-  plumbing:   ["https://lh3.googleusercontent.com/aida-public/AB6AXuBLx4WzaQZniruzjEUzfNZAFP1YleKAvggn_len6ed_c4bihLu0avfrHa9ULtBo1ogCuZwXSjmGGlJ14T4mbuegnQD7RwdT9UVYy-7oE7vHI2kYIsB8B7eOZ3rlVGRTjfk5u8dur4uWOHG4CQEB7ndtLm5ft534abnjwRIfX5iSUDCdYS0Ym5uixYXqTHFiXu83sX8uAL9OAHluuySsVFF-Cg8AYYlBh1jAiI7s1mS1QUKhOO_hZ0qAC15ikjt5MClUA89gcHsqXo4q","https://lh3.googleusercontent.com/aida/ADBb0ujccHwdhpdnntK9Jbvc0ZMFIMDtOONtTsRBij9mTWuNWXnc8NfkXGCSUz7ieSxJoNzz1hNydPYU-xd_Paznmp4YkXE4iMv96KVsn4OGkWK-dWQuQP4mhAmEhiD64gucQ3Vs3WeM5ilqRryKAPzM0t04-hQ7OOuAWyP-XHxW-mRdHRwdiis2zmCENIsfqt7zD0Z2caqJVHMgFXPjrwHBu21qL-eCwzOykA59WkMJ_msAnIXrAgDJNPIgPDI","https://lh3.googleusercontent.com/aida/ADBb0ujhLJzKSp4J4NvqhdN2IowKU2hCj6-OmtvytWGc3gtpmXhB--cn6YbZmnbcd_N5hui6sVWKXHPY4EWiPmHnfKBNeYFFy0d4aLFTiZSTF121YpzBTRpYoKr8s0kWuOAXImMpnyhJfifptMoGlk5vaq4faVWHeXMU4ucCUUCWDtqK7lkyY90AY2-5er2VaKbuNUWJt6TTvDv9ty_uhgRTY61QwedBVq9C_3m_dBfSCZXCEiG0P1aN2RzrKnZR"],
-  dental:     ["https://lh3.googleusercontent.com/aida-public/AB6AXuAnZsieQO3kVch-WVq6qQv4DIHNp0G1k1KByxaRmfwgs1UX58vW9FtkDrTKOVl5sO_kWGVyy3sR0BWX_12q5TcM-BI87lN1LFMHSdHtQI7pDlQ_8Z5ZE5uF5B3qjAlHLDosVbuL9t37sd1VXWHxuON3LqqbZAvyZOUsPmNNHQQcmLDKMaq-0fQXFEDPSGAJnL8PZGMBMBIFIdsoZNkSe6FDlk1SRJt4WefJJ6iPhc22fob35XmtCNKYOGJ9rXQ5PKE0TyDGUDMMDftz"],
-  law:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuA2bmKC-l0xAsSJpZgDVcecdYLTZCxOVeyCRR88CGcsZ-uI7Z_bL-suNkV6cEAcQ8O3a27t3JNOBScb5Wfw_YzpmlyyTAQJAlW1tMyUyS9PpfjvuziSQusEHlsMX2PSfd2ClgW9QVpxbTCJcy4jiSelqeO8kWkh5tWaINWmRtxyHasnpmWF1VomlI5jDDUZGRURNf80Q5UFVHfRyTwenMP8FXUJcZo-SGFH_iEbWK46RN_eytiiOOyHQ-UcDURSWO80kMLFnp8qe5cO"],
-  salon:      ["https://lh3.googleusercontent.com/aida-public/AB6AXuDuGcJfAqWQYxJJruc0kvCg2_2j3hTIchtkFDyayMxxqmZIODZNtK","https://lh3.googleusercontent.com/aida-public/AB6AXuCt8eqJoO0SDBwjwtyqlHO5EV-Z9zcmbuY0YdgWDoK","https://lh3.googleusercontent.com/aida-public/AB6AXuAzbt-KvFGXzPD18-D1OLreiXiZ3rQYqDfVZgYm4fY"],
-  realestate: ["https://lh3.googleusercontent.com/aida-public/AB6AXuDGTPjhpEEgeVyvIzI98rWuhnE3IutU3zbdSg-CS7N-HUjn-ju9WtKHVpuK3TFHRTyxmqzj8RL2PT2ZxW4I-dfKBxN9mJa636mwi2GZAfd_gVXcGY50vyxMI1fylMyqqYGgjUmUEPH8OlGV9kdi-8GHWStXFF7oshPRVn_KHkEFC_P0pCmWaJHmDdWBnpJHi_UyJsbaE50pvH17nwK2Incu-ZdbPU7C8yjrrbv4BdzGjTZYIP3u-Gs9qY9aBFMoUJn-KuP4BcInfQkg","https://lh3.googleusercontent.com/aida-public/AB6AXuDvYIZryBCbR6HZuapKt-IdeyNMSM1SnFr3bNgqHiyV2KY-xAZozEdFYpsXSI_RUpTI6xOPVmy77nti4XJ-hAWVSvuszsSCDho5caB3yznlUV7TNJ8nS_Lw3KeASHp0nhmbtE5MHN8MEknS2o4h-k__Ffn7fyKs7NS7qjd3ahIpTJlmD_6DCuMX_2aIPiUrKJEgH3kxZarL7YCpDoyvMXbgslfgqsVYMU5IOUHB-foUPMtmM2OLtX9b9xrP-QCuhrSYF2ZphLaTu95a","https://lh3.googleusercontent.com/aida-public/AB6AXuAB35rkEC4mDZDR_x8_1qloNGZYZY-ojQiGBMA_MoUMt54iXM-4me_wbbkW_jaROIjh2eXnRYnUrYxRwlhYi7LCuuS6ckVCmdcS5Qw7I8u0z4jUP4yik1WsaQFhUUQ2tl8DEWLPmYomEaVyCj2nRhfDv-Gdoc33de-VIajRkXp6UtbHrVdJv47mAlGj98NpR3vUdmA4V6h-2BZt1nzoteZwDYLlpSGajuWvwDBp4yWLZsr5sVFbhY3E_feGb8NtKQwkYvaKVpqYQvDu","https://lh3.googleusercontent.com/aida-public/AB6AXuB9mC6OlU08Gn_MihZVur_WnNn8apZCILFqwiwOPr_9aE6ehPKVP-iasLHhomTe1kB8HShJKTpv4qAICN_4KChfhOE7jv5wRYoHAIJswgG_bD8nAtdkTjHuTL47pZALC1Vb79M-SpTkD9QPJWbKYYxu_vIBY69R-TlE45qfonY2M9M7Y8g6N2FJWJ328b-VZ4SI2Vt04q2RG_gHwiwAFKDZuxpJOsUo9yguZoVYIjQ_dnQ5kwDkKBqCA1-Cld_bRahx9EFw2fC7FfXe"],
-  pet:        ["https://lh3.googleusercontent.com/aida-public/AB6AXuAakjrronShuhDi9C1NBElTHzyP3VMzJ9G5Dctjcl92TxRxYkyFiZOPO8yrf9V-eT2J6xmdWJ79cKZz7ZmwBXATymwPf4PxgiUHfCidSgGAK_tkyDTrQhF7Jd2eS7Q63P-FvX-XxCNENgIURqu-7veVfS-TUUcGqcglUXT2szDd_EZy2DPCgMt8jMgGFLtR_L5eYJvAM2PXfKZBsZ-UuUdqQswfyBsCmhZHDMRfGjw5mbNHyKCVbpVV9yEk9kHH5jSHnXW7jp4jEzOi","https://lh3.googleusercontent.com/aida-public/AB6AXuCPZKctAkhk4vS5sjiUkXbEhxvPuIXf1QYIWgGO5yxP9zpP8bypgYZyl0dd1kGxdDwWeedzu9Dfayw1fZdE9vs8P7vRk70LnfTWVuJEHDY8Zt3Jt_RQ7JkzRF9dlA5H3sM9IJjU4p1r8T2lNq0vWo09MS_3zlMPAG3Z2N99AOyCnuEuU3fnXcHVt6vgoLZuYmNx3dopxCBC5UUOZMf_RxcgL5T6fUdg4eOHE8yhZzQFC99mLEezfRm-t_h4Ij9oUVXpOcMfojTUGOVw","https://lh3.googleusercontent.com/aida-public/AB6AXuCk-ZxVr8p4mmJTJMfS_JCw_4Xa-Es7NVCnhfiZq_ULRmRz_-fbp_9-3fLmTTetdH4uyGJ339r_v8Ab8L1OXRRTA8poE-VW7fRlDkE3w-v4M8hZGxzKg8pMBaInBO-0ItvKuP2Gku7ok3Tz3GZWaqkQwcxfj00jHecXJ8NC8Ty3lQCN8M4F0h-2Q_4YwuXygMSbRaFGFcmLY9xYDhdSdzyM4F6HkLINPc3STCrfd6Bs4q92VZG059HlM6rrE5lUM7vB9TOvhJxbR8-L","https://lh3.googleusercontent.com/aida-public/AB6AXuBTK0wTaoSltYZLeQD3X5AUR3gKf8RI7b6hecV2pEiBwVjrIHAXaUoAS6m6W7Qq545KCPN_s8D0YmqUMCpA-urpF2jLcztb9EkqHtXZIHWPhEbAgBTiFBipOazgn5D7J6a6YqV7P7iWqiHs839dONkBjHM6_C2CFV5uiMZwPjVqI-IJqUe_cOBkOI9xPCaQI15e6BOGf5Ai2xQAyozfcYFqnXoefm_C0S1MgmqnEcFhspUWMtzVj1XSbEXJNuMWuATpt36yowjGiJn0"],
-  hvac:       ["https://lh3.googleusercontent.com/aida-public/AB6AXuCJrlkie16uVtFbV6_FAmWBgX5BGTEyUNyBq_lFZscmNGnkGrTVVXrO0IXStJXQWGI6itzZWubrhF1q_YTfyRbLBVusaQJAB1K-Aj2XmG3zTJL6jk_8GXSsoZAvsklJBpokDxVQeRRGmz0jHJef3CxtxjsiJy5AZwZuMUDUpfShNxYb2_aPlFpIImIwSbb44v1Dg838ppf5P4T_9TcGiX6o9711_y-wfyTgwRZNO1iwmD9K2B5ygSzzkKzsuIfWq1vwtPi88BE_hvdv","https://lh3.googleusercontent.com/aida-public/AB6AXuD8GBkkRx8ALxrDMnQichwC0-t8NYrb6k3SLuZOuEcj2yd67FtLT24KP-Dtz46ZhSan8qXGaHcJD-UUyA5HIVJ8gXxjLVlhDK-T9cf73FU9aCRgwBeBNY28WzbjyIx6Ox4V9nsL8Oe0Ju2D8kcopf7tzuLdfuHxt0AChKAmyGJRc1njodsW3D-gWQKU3lDKYZNe7CYhmu_wOIzGskJQp098e2F_DHcRUiXMGZOFbqMGveavHhgLIoe7ErJ50Gk1G5mNdp9NC791XeA1"],
+  auto: ["https://lh3.googleusercontent.com/aida-public/AB6AXuB1C5DRn1V7PTWJ5C3peAzS5XRATD1-_I_V1zvK1gAruW_KPod1F9uKJNvgaA4nbvEEj0gsUIJH_31KcT9sjEFKB3A8T9mmloZFPwQxmYrtbAnR7iCHRaUqd99X8e8ULR6HvFnZUXaJRdrPYSuq1RCMCYIidiP_I-LAy5vNBBeAWgdelt5cVvKoT_Td9g5JpSPAziCXp9QpjhQljGZ9qBy6XkDafSvgYMLUR0v-kGyDDVlgZHoUZI9UV-ylA7bAX-kNnRwbB4iywO7v", "https://lh3.googleusercontent.com/aida/ADBb0uid9WYpkt9YHXofboa59a_M9sb6_THJvoxaAhDt1SCWUWOVUCASKjBwUfEA6BqVH_sTcZWiGG7gHTFIdP7lzt4JgUA7KGXfBTHEm_hZdTpxlfwSRyVNq13Gy2J_vqMrIlrN45yGBFyeKiovCbi07FfmQsK7v2-rtN-GLEzoye4mBk7cIf02B2SNB9-QxA0qCCiOrb4TqUqlvraIoLgOPAPIJQnREVnesWGV2T077XLtxCAc3GeLweo169km", "https://lh3.googleusercontent.com/aida/ADBb0uhgscltGsCXqcmrTjqkfC0zYcA1d8gQe6ZVcfVb95g44pXrajZFsDFrg-5ahwOCjX1w838LfCZhreUMLhlAhyb83bJzArdD6SykJ_wvdswVv3OPtiB3JKjyAUih4wP2nZoXJpHPH6y9MB43KGX4UV0vvQCbyOSxrGMipa94mIfQqbRs2PcB_PvgHiOOd0ueAONE38U470K0g5Z7_wWtll-Dx4P2k3RCZFue_lB8XmcZ6yFFk17zhc_MwWzL", "https://lh3.googleusercontent.com/aida/ADBb0uiM1hnhNfnYnNraSlUQeiErwHK9etR7kr4G2bzJGEFRG_Oq8Zmjsrth0aQg9OPN0sS9p_NvQ-xiAZArpeKmcAEmI0TFs8J3AaYNUHcPb1RrxrrzmQ8CklpdpNU6ylUrUojGpyDz79PfTXLXVCd4lSurrWmAN0iN_raCCt0Ha9XNZ-qux5_l29w_cTKUqPcJn9Eks0Q_RBFmQfQSN6SFDA-ZpYCO5hWaCVbzxfpV-7cZtFvkSiaT-41lAwEz", "https://lh3.googleusercontent.com/aida/ADBb0ugOY__kJUGoHoEYsQLsJuQ9UB9gTgI93bUHd-2EhMD12KITmIvquXzAOkD2tNomMCczoUbWR3x_zRoYtkfL69n0291yTcvJ8M-YEsl3RXkHusm8729h5FiL0akTSd-yivnTkBUSxoFtKD0wLhihWIYwUFPENfvUxJ5tEk1UP2AFx0SI1kpjKqWX3AAEAh6_s-0D2Yq8dUqlXeY3zcI0E4e6XAMPf8AtW9qeL4HVHLyZQ9omq9doMCISghWB"],
+  bakery: ["https://lh3.googleusercontent.com/aida/ADBb0ujpPLT5H1mOx5tTssTq5MGf3XvVVk8zQe6Yq2QhjE5BRuEQzxlout1DINZX1RBsHskzJPSy37g5Uf6nHTSZAAdZt3wuNxtjb8Yw7U4esa6MEYEX2ujWHdZ4EGSucX5JiqJYVOpISm8j3IQuIYPwjxtsKb0neywN8UQY5OoI4_YFSlCIr-r8FRJ0Rf2IM-DUPfebfoqJK_BhtwJxKq5HOn9qNDIFyzahc2OBrKtIhG96A7dcg-XaJyCvGCcJ", "https://lh3.googleusercontent.com/aida/ADBb0ug43vv-x4w3N9YR3BpkJ5HDIY6rNrIlmjJ3b6AADcsJhLTkoGV80PH82CvAIL1v1qAn9eqVUii7VkEBtAxLcBdZ65h6E09-YWs4ooAl5Rr9lTwtFkuEGifT1kr8J7zdbKTY8pUJ78W-jze4bQ-iT_HO2UvzDgoHjCPDFu0WYCYM2gfZlrH3cP_FYYJ9gCABXoAgigaTRBRC-bOnCf0M06MQJcG740ECmY6RbUC3cZy2axZc_NMe5wsniAO4", "https://lh3.googleusercontent.com/aida/ADBb0uifzN0dvrhltfzvEijtEgG3DAFVdXESiidrGzR1wxT3PwBaVvnT1ZhdAg7g22kjKf9D5ZBOn7k7DrePG8tIHEiF42x41aSN2ocTYcKOYL1xv3KtmJjTOzY2hl8CRc-_uUkJhAjBUxD-25mm6z2kaetkmB-5FRGyyLALxd-tWehlZ_O5uRGNoOW58CFQujeUAz9E66ph027Id4SaaEs1POKPmR2hD5GgzVxeYxYA8HAyAudfxOQ2QrQt1c-d"],
+  dental: ["https://lh3.googleusercontent.com/aida-public/AB6AXuAnZsieQO3kVch-WVq6qQv4DIHNp0G1k1KByxaRmfwgs1UX58vW9FtkDrTKOVl5sO_kWGVyy3sR0BWX_12q5TcM-BI87lN1LFMHSdHtQI7pDlQ_8Z5ZE5uF5B3qjAlHLDosVbuL9t37sd1VXWHxuON3LqqbZAvyZOUsPmNNHQQcmLDKMaq-0fQXFEDPSGAJnL8PZGMBMBIFIdsoZNkSe6FDlk1SRJt4WefJJ6iPhc22fob35XmtCNKYOGJ9rXQ5PKE0TyDGUDMMDftz", "https://lh3.googleusercontent.com/aida/ADBb0ui8gYaCSVZj2cn3jXoZD5XPHeidOpcYMgrMAGS-lPtb0DnCAd427kySy2FSlJES_aJRPtstsqc8kobj7aH4uFpEEeL4Q_ycOykkeJ1cNuE1cJcCBrQ0ENscK5HJcsaVsPcj2s8y4d_RUqahzXp5lvUGHNy8W3g7Ym5u7boHen2AWxpP-WKb653cW4odeaa2DQ9q1xTRqIoV_dT-VsoiYDbSEl1u-yVxs7uIKNunxV0C-2DS3J_CgcZ6iwY", "https://lh3.googleusercontent.com/aida/ADBb0uhpvLZ6HgdjmmCTOL7ZJuakqFj8oOXfVCrhEYIq0627RbSvTbJaewW5YHB4ZrFUR5RBrlbTR0_8XHfLIduJ1YrBi_ObzMj_261Mgi8oyyAA-8FTbRjSi0NyTvm0zFcQBajs_U_570xu2IRQ12EQ771QAwLQocvlTg3GEtVSP1m2TWwC3DCmE1dALehM61MoYiwR0AsS9ny2bW4eNx92Hk0Eude3t2qCXCrUTWyI26mqXFa3WLqD9R5-n_k", "https://lh3.googleusercontent.com/aida/ADBb0ugonG21lMkzBEi1ZhzwB6Crxcv9YM-CoOf48XfdFSayva5TjhabYv3E_J9ygbiDwtYvXLzRZA8W-yswPKY37fKhi1ljRBmC2REJYjR7BP8R4P5DHhVVJI4Pg5LkrJDCwiQequdtO_KlRPdtvV633MQ2lDiupSEB3-K92Z819AyBYCU558oCMlpb6fNFBRol2I8o0tVBRJKM6VCtRU4UW4GuQuAmJcCBvOQ0JpBQVrLmqKcnzmQ2Z4UlgaKA"],
+  gym: ["https://lh3.googleusercontent.com/aida-public/AB6AXuAw_4KplwHDWnIYq9MtPzWvgzuMGwGhd6arLFWqeUXHFW3tuSJ9jqMRX-GdlutnwkZd2qIFlhKy0gsRpfjDFQfEzWZ-_2MfOJq5iSu6qG4FGxkOxtCxfVKk0F5P5M-_GpJvghEjnNoDMVG05jeWNuDQ72hecHJiCGFhG7Uk8KVnqws-1R-_zaVNPCp42rnjd6Jm3FuIAHcdVy0qWQQC7fttKPofPhOZbISU5WcgaeUz1TZ1z_bm7HTqxvvzakiCzIQQUPQEK2-h1vcg", "https://lh3.googleusercontent.com/aida/ADBb0uhCf02wM3Sg9eAEhs2SRqGnPKrRxhYmVCqFgfedBWGsg46YP5rg6WFcx3X7Uw42duCgeMOZybdxfNZ9jGTG1ikAGstJ9dHFPfXejzxRVpi2r6sbn72HVc6aNcPP8ziix6vqmWmjtpGus4-2O5KubH0v11rbmrHPYnVgwa_-egyb8ziwAUGP5lGxOo-qfToi-EjiQQKT5DQ3m4orLQsli4he5N484i13BoMTBsHjBIIKX4Lq-ZIdLoPZcODW", "https://lh3.googleusercontent.com/aida/ADBb0uhT5Yw3ciFOyjRBYolVvschBsm4zLZ5uvWvDgXqxzRF5-6i5d2Cm5_wcP9yCbEfxSn7V8YK6qYnX6kiSCE2dFm3ql3RqPt8GScmkbcGTctdEykyHVK7W31ZTfu0CMR7nOohir14WC1F6RrPPQmj-n7QONHJjYM7x4e0rc2V8iw-LGlLm_VfSBwQ_S6igm_gE0Mza2_HwIKolhNWZV3P_8ehX6Vt-aTuG4L3MqYTmLYDZoR7XhPfl2n84pGV", "https://lh3.googleusercontent.com/aida/ADBb0ugWZv-yc9PZF65m53SD5Yhe23KCeXN53wgJfXKJ-cS909BFC5P4zpK7lygNXTMvy39RHuXNH2k_pvD1zHqgM9BKmHzVOQNGAEHjtvtzBtanTki9RNBkpYvHJFZJQrJJyRL9gipOPjSccSKG2RsG4tjFpHFxAl3sDsoUZ2AmYy8oJkjVONbM5Tojl5Iax_CZ47QupQKrTPfqbYvEyuqNr07vB00b7ZPY6tYwKsd-cEba1KpnRJ8k072nAac", "https://lh3.googleusercontent.com/aida/ADBb0ujNMfjBX3R4ffslw6ec8CgHnTNX3fpKWkpMxK4UloQ5rsn2jlRiThb5Zg2CVSgbo9c5hP23LACXM7DDbFE_ZU1xRauLJLA7nlirOQ6k9IRCmjCeancdNMCt_UemZ6fWcZrQTBX9vjs4_SJ2CMswnVP_9hICLkTfNWZyBCpVGcb41GAyfSzUy0bFTx2gq6zdecr1Gnra7ClWmpOqr9CcFCXHL6-8HC-VDs7zVdxckWwCBhCtrmsCKfWFJiDp", "https://lh3.googleusercontent.com/aida/ADBb0uhTxQaHnjBkYOs4OWuFAcK_cYeu2jfxu1dLc9HxnLabRR12oMEoSQf3S1YK6waDHBDUFdMeNq_a8YImIAur5QkiquV6PvJOYz4qETbWhlIvHi9s92kLwh0B_h1ME6J8GeUkUJlDfh-Mz3jKLuP-DvZMRJZePC3fog4j_PTYLIFMLZMN5gdUEKjX0wpDandaX3h9eRNdFKSz2yxX7WjtvkxzH9N4augQtGVfkaYyJRYqSXJTtGSotEixRHk", "https://lh3.googleusercontent.com/aida/ADBb0uhq5fKmUzibWsuFfsxk2Jw6-m0PQ0tvmYVY7LTIpT0bI1vkqN_3JEMAV1qOO0YpNAnwN1kkY1a7krw6iWwAdJabh1sr9SDKU-f0aqJni_gZMTZiEikj5B-CWn7Ni7ibyIZ6iMFyM8Az769PmohWPQVCOAFMO6E7u5Veja63n3LELib9J39cyNoXCQik6pmOeceQN1a7wKNWWaEwj8quYsYNGOAXrMjUC21y7naj8__ArmMvPilTiYns_VA"],
+  hvac: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCJrlkie16uVtFbV6_FAmWBgX5BGTEyUNyBq_lFZscmNGnkGrTVVXrO0IXStJXQWGI6itzZWubrhF1q_YTfyRbLBVusaQJAB1K-Aj2XmG3zTJL6jk_8GXSsoZAvsklJBpokDxVQeRRGmz0jHJef3CxtxjsiJy5AZwZuMUDUpfShNxYb2_aPlFpIImIwSbb44v1Dg838ppf5P4T_9TcGiX6o9711_y-wfyTgwRZNO1iwmD9K2B5ygSzzkKzsuIfWq1vwtPi88BE_hvdv", "https://lh3.googleusercontent.com/aida-public/AB6AXuD8GBkkRx8ALxrDMnQichwC0-t8NYrb6k3SLuZOuEcj2yd67FtLT24KP-Dtz46ZhSan8qXGaHcJD-UUyA5HIVJ8gXxjLVlhDK-T9cf73FU9aCRgwBeBNY28WzbjyIx6Ox4V9nsL8Oe0Ju2D8kcopf7tzuLdfuHxt0AChKAmyGJRc1njodsW3D-gWQKU3lDKYZNe7CYhmu_wOIzGskJQp098e2F_DHcRUiXMGZOFbqMGveavHhgLIoe7ErJ50Gk1G5mNdp9NC791XeA1", "https://lh3.googleusercontent.com/aida/ADBb0uhC-_d6mIhQ49pSqF48e5ieOnRmRuzcXuRaxjHtCgZw6BaCSMYZHFmpF7PpvjWN-Jn5R6ZmIYwUnkvLtkXQsfE1FJP0FZRymWCBOAiaG07kT7NNfBNki2LqNf9pm-k0mpGQMMxO6ECPLBGXaOoG0_4tuS0VA-2p4Z06WB5vHrku5ZKLRA2PbwXM9-RT3VEC3oBWQJLM1ThSjVXSLHLO9WF4VKz1QqNLCkQa5kN59sw4cYxHwujnbBKxe6Q-", "https://lh3.googleusercontent.com/aida/ADBb0uhybrvNQh1vH3wP9YNs9_rwFfwnmWkptSenWflCjC-BPQKagA62dfd_32e6h9KEYEmSvbG6dQpN-CRU8j3S_MvR1nUfXiqEQviwfCeVigbqAelQm8a1q9jY90cysb5ah2Wm9weF99jg6-gydCqQXEVgGtQz6x8xaYPzPixuoTN3rSv-sDoGJRfkNkst7WPGWQOEK_jZ_PwLWV2z4rSIdnESbNokxWjSKjSqas-HlXG1j65xKJeaYq-b_rc"],
+  landscaping: ["https://lh3.googleusercontent.com/aida/ADBb0ujTf5mQ_5K0DPqGENUxUtpvz1T_FB0UwnGpKNM3lMng-BFdPQGlVdZZS0flwrkiMVpjfhT6FIVQS6jvyyTpd65mPH7T85gjewzUJN6vubJ2_1XhA8JeCYKqz4SLcPd7Y_A1D-8moX4VTSM3zlaF8kA0T2bb9PFUACF7BbL92_UiujQzi621zjJ0dHn5LYGtYTshudaVTy1TE2nx02aghEUSS2WsWUPe1jFYFfAy-AlJp1_NCaKdFOWVbDQ", "https://lh3.googleusercontent.com/aida/ADBb0ugJuMGlZb7Fy-wBdGsY5uxfbTrSi1DGQ9BtjQod3P7LJkcKPE0Ki8tFmgNKy-k-esTA4PcvMUOB6lSG_4t0jGLWOYQzUl1GHGom3ZFJspSanKk9t_1D9dwjSsWsvqKsRB6YX4lHj4OEsB1J782_6rOUDKBhhmnGBR1L6qcS5wNn2jG1z4IbeIDFl6Zog13dw6qulRhoar8QLU5ErjTF43KTfTFi6EUzV7wIImSw4sivDANTcWWHu0qYSa_2", "https://lh3.googleusercontent.com/aida/ADBb0uiXROm1EPXYe7UosBwfP_N7LnH3iaeegWsHexSo_b0y3pHGr4BARk20xbVtcA0z2D0iVtTFQUbQYFP6YqrZ62lyOSv8JMvGKvZz0vU8fQ98caC2dqpVzVKp6W67h6rgW_DlAcf_pqLdb_mwThKVG0_eM5cXXjZdIMryMDT2wgIdza55NKtP6CXhQcRu_2vHAqe5fqzk1VPsy1hoP2KJ8SebW3_wVReszSLd2lsUZXfYDWz99vp3_xcUEbLx"],
+  law: ["https://lh3.googleusercontent.com/aida-public/AB6AXuA2bmKC-l0xAsSJpZgDVcecdYLTZCxOVeyCRR88CGcsZ-uI7Z_bL-suNkV6cEAcQ8O3a27t3JNOBScb5Wfw_YzpmlyyTAQJAlW1tMyUyS9PpfjvuziSQusEHlsMX2PSfd2ClgW9QVpxbTCJcy4jiSelqeO8kWkh5tWaINWmRtxyHasnpmWF1VomlI5jDDUZGRURNf80Q5UFVHfRyTwenMP8FXUJcZo-SGFH_iEbWK46RN_eytiiOOyHQ-UcDURSWO80kMLFnp8qe5cO", "https://lh3.googleusercontent.com/aida/ADBb0ujUa-p6HctFzMGFVlVN6YEwpsHzvk6j1raV7pZ981Nefi2UBumEA0JAWgYWCEMF5ZnXwdn75kimUfMLn3I7bwYDzDG2pNRDRKzkGZ-4qlfgEzV2pJtmmQpdStfFzUjhPYKhnDkpPgA49WBP4OTo3s7AXIoKenwfb0MGkIq-z-Ab5e9gtfoZC2riMGbet3s-gg4-RN0LtcUQY-j_ECPXIgLF2wW7Z9YhOsuE3j_vIGbTaDjML1mndE9MC3Kp", "https://lh3.googleusercontent.com/aida/ADBb0uhueC4yG87E1MdCbxBaO_sKXRwLeMWyO27yqtDQwk302A-VXbaUis6DdSCQkyV65rJGoFL9-6x0u-r5nQgWVbi80lqv2kVTde42wb_Rqd-5qdnYWV-4Cr9dfwBAUNG0Y9eREZErnYf9-2ok5tVOCJJwZ5rXa2IfvX5zmAJbIZH2nAeHl6x8PrmI2CSa6-ipjAlQRNsEmCFSRJajwWTajNaL4rCXYYuP5aBFWn0CNIV9btobj7Ac4SO3T5Bw", "https://lh3.googleusercontent.com/aida/ADBb0uhDrSE3kwUtC7o4CgXFksSwZ8fOf6703AaN5b3dnaPSm6iDh2wLlZSt_KBn1p76CTsh_iW-qn_-RVlBeEDQIZI4GT8OX34FYHcyB3LpjqoPyLq0lEDtjCcou9MxOY-0N0RoIwVUjaK0cH2_UIbjCAfaWTYs8bZDULCMvuoLQsnNeylcVXb5SV8htkwWgy0seZSZHafnpuSUmk3ZdeurUzCDfCLD2-sJLW66e8ddB4qFIaOTWmYFzpMjSmqB"],
+  pet: ["https://lh3.googleusercontent.com/aida-public/AB6AXuAakjrronShuhDi9C1NBElTHzyP3VMzJ9G5Dctjcl92TxRxYkyFiZOPO8yrf9V-eT2J6xmdWJ79cKZz7ZmwBXATymwPf4PxgiUHfCidSgGAK_tkyDTrQhF7Jd2eS7Q63P-FvX-XxCNENgIURqu-7veVfS-TUUcGqcglUXT2szDd_EZy2DPCgMt8jMgGFLtR_L5eYJvAM2PXfKZBsZ-UuUdqQswfyBsCmhZHDMRfGjw5mbNHyKCVbpVV9yEk9kHH5jSHnXW7jp4jEzOi", "https://lh3.googleusercontent.com/aida/ADBb0uggs7suwUI_oCfdg4CC1QePdQJhJWwftn64uomoD1b8OX7lLniF5wPs9NWqxr7Pc4fjI46Iv7mVIlSPfITIiBdavJ1YtrpslIYHjslT8x27f9u006qcMycMCqHFMvC0YGrX_UrKP6jn5EbH-GwlxacsPQeNJvv-jRTJhyIx4eh-iu4joaV6Ep9yb66Lkx-hTp2S6XJFovMI4M0zk36MhZU1F6VZEuW87-QuKg0K-r8uwv5ZrWsQcL_NZov3", "https://lh3.googleusercontent.com/aida/ADBb0ujpuI5YYTTUHEYCmzQEVICSfswUpikWRbBHnsYp4OrlfCox3ZYJ1PCnKSD-VeCh0RXUbalCpFh4EIbB91pAlf1QFoVCUGMcp6nRxP16xt3e6ZB9mpkB7O-kB1uQq2TbtvaU8ez8oFKZlvkoqvWEVKKZKHaSj3vHvaT8_rzcIU1jh7uu2M0I9NYCojrWbuSz2RYwemjEkWwgpjAU30VG9CRL8wVaT7QcoUhshNRTh6ImGUIK2lnCQNLGosaw", "https://lh3.googleusercontent.com/aida-public/AB6AXuBTK0wTaoSltYZLeQD3X5AUR3gKf8RI7b6hecV2pEiBwVjrIHAXaUoAS6m6W7Qq545KCPN_s8D0YmqUMCpA-urpF2jLcztb9EkqHtXZIHWPhEbAgBTiFBipOazgn5D7J6a6YqV7P7iWqiHs839dONkBjHM6_C2CFV5uiMZwPjVqI-IJqUe_cOBkOI9xPCaQI15e6BOGf5Ai2xQAyozfcYFqnXoefm_C0S1MgmqnEcFhspUWMtzVj1XSbEXJNuMWuATpt36yowjGiJn0", "https://lh3.googleusercontent.com/aida/ADBb0ujA9rLbgXJ1RYCEiqXlCaTuEZBcz9KjX6vRqihxjZgN5tWS1PFxIOmqLm_jLBz1yUbDq2lpzXnDaBgoCsiLSdJdCy3OqduyczR6BP_-ut9kaV4oFc-DE2KO_5DB8O65X_clS3Z9txK5i3srE-8T5lPTut6tQfFJaARNujZ4civMggD9qDZnWU7tCUSaB99-uJwjD4wrchrucYr9rieH1sL0eddXwwAn7DE12GQ1ALz1zNj8uKf5o3TTtCX3", "https://lh3.googleusercontent.com/aida/ADBb0ugPwqUDzbORL_4XWdcVWFeeST-zi_rIgojhUJ7v58mgu9yALgGpemmxyzuVvr1ECqmRYK-Hyhf7SqQwtW52wMPaQyz4O2UlT93x8w-bvuT6soaf2crargXH2kV75nXi_s865sd3WvNoo1vOOD92QHyL6Hiz9PW7tlmdJcT4SjKAuPKwRW4pFG7AxRR269WUJ4VYqRCQ61N4A1o5Ml1-h7D1FshfnDi_Q3TWpQazVciovwxSIQDn-z37SmXA", "https://lh3.googleusercontent.com/aida/ADBb0ugkhPWU9JAYbFSNBRUVisvvz-hNDqgDJXBuur7UWZ6uewVhXMS1dLyUSsGL-6cAh2o2fDJYDGSkXgj-zyt9aFhC_MA_Bjdpd8krDX7KSUSkYPReuwZ6ZzQ1dWSoTq7jBCLmjFz6ylAJI3fxZcbpdVplve2RIbX6eG4sQjsS0AUJlcXGlNc7F2V90xLouJz9TEJl3ekXqCf6TbEyjbTTUbnezVGhqLWUZJSVervboSxwlv_aqIeDrRknGVo"],
+  plumbing: ["https://lh3.googleusercontent.com/aida/ADBb0uipudoX_8vokP-gF7EDLGQCBzZHa23g_CVh1byNICabNXg3pxd7I8wrn4LA4uBrv_ie3Z2fMRUB4zWBzAD4w6x0_CECAXhssd8--rvYf4-Ms5B1i-p2R_6DwCz_fAuV39in9xacBGkFgeeTobfQAcDF5kTRUs9DPndT_jBdIx_xuwh9Tl0FnSppxgUdr50bJeEA-sbXz701pkJ_NhF6SaVe0ggQeHj7K8NNoqZO6mJqhwA4xVRW1QkTpC8", "https://lh3.googleusercontent.com/aida/ADBb0uj-MInN-NztUWgRGaHMVR52snlXB8tFsp1P8p-pdpQ-Qy3qvY9X85F6PXwpWzUmhLhOGCPHoz-jGgwwhheCtc3XS6XpOGSF9xyqCw5nnAsTIdnstji6wKcXiFmyFUz0IziEt1T--oScTlQ9PtFX03_VW9R0dPiW-EzoUtdnpfAAAfhn_l1-iyqR23oKDm2WJpy-sX1U_PChRxBy-_agQGtn4u0j9TuZRVzW9r1psq1IGoGfDSHcRJQPlNqr", "https://lh3.googleusercontent.com/aida/ADBb0ujpoICwad93ZNUMXTtcc_V4BgsYRsSfdnu9PmJpuMgP3n2LsE_7qGdwXf6lGrc5MLSKv1a98Uya1RXZYP1IxbZc8_uhvIRMtfodY0rDc2T3iCm9yJHTHLUtiqj1ub_9wMVCo1RHCU4EwtkUugS-GqBbgQKHwFNR8nGGKzWsZvOAzhYrxYXqeQpUpp2muiwSpug4esoUZw7X6tYU9vGUrhSgX7LMwVr47NF8RhlApOssGkhmplMlgv3XBOgo", "https://lh3.googleusercontent.com/aida/ADBb0ugOf1WErhVPR3ofyT4fELVAklfCYJ_Sg9vg0WjoqIJAEWm1wR75jcl-SlqQ63JnNnZUH7jydKJFxwsbGWsbMfGa48BV4F0qKtMYTDDyfpzqglw7N6UaV-ETBWZYL2kfnCcy6gSvaKvNLYOHirCeccBWCJpZUMfdGC1fWu7bHkncSs2PPUXEj8WWhAEdydbkCHdZ-wCRfRT3c5hD0LgQbnYyiPmD1HGocxWL9iywr7f53LUohS_FsqTMta0", "https://lh3.googleusercontent.com/aida/ADBb0uhEBTGLoE8ATEoTxckJLybHfgcYBYgHQajKoIDr9_RD5245bIRhyMGyzDYJAdZvCl8VD1EQK5pUiMsI-cMfyiLGOTHTCs2zYTXmVTHtKOw1xsxonYxpMgv3sRLhFKKcVcYVV3cum90y97zfrCaqv9vcPlo30klBW2DX-kbsQdqqKkhUiNW580GSaRKGkUuDMMK-gawDMNrVJbR78FpSs65qNHVAT_BZ-0zY0BKdKA_5ZW9rdgCeyyLFtjBi", "https://lh3.googleusercontent.com/aida/ADBb0ujLfSJmIWThI_BELvOkBTN6zXGNjBvYY5ffPKf-3t8ZkdVl_3AM0woF1kjrgMstct0DOxDhqXRvWsDiUdWhKK_lWPgofl6OFYGW8a7DgHgPLdx5YWcpMl1r4pf20459KJIJ_YvlR32vF9X4lTvuTttrN0jKPavk5Li7myu-CBSJP7k8rhWQC3mlidgkWnwGetIb6p3zWwgxN1LeejI2MpwYdof27MBDWxHdpC2-dYrIfJSDDgUOIe1xXec"],
+  realestate: ["https://lh3.googleusercontent.com/aida-public/AB6AXuDGTPjhpEEgeVyvIzI98rWuhnE3IutU3zbdSg-CS7N-HUjn-ju9WtKHVpuK3TFHRTyxmqzj8RL2PT2ZxW4I-dfKBxN9mJa636mwi2GZAfd_gVXcGY50vyxMI1fylMyqqYGgjUmUEPH8OlGV9kdi-8GHWStXFF7oshPRVn_KHkEFC_P0pCmWaJHmDdWBnpJHi_UyJsbaE50pvH17nwK2Incu-ZdbPU7C8yjrrbv4BdzGjTZYIP3u-Gs9qY9aBFMoUJn-KuP4BcInfQkg", "https://lh3.googleusercontent.com/aida/ADBb0uipl9IHFShCh9WUq_i20_S0Ext1VkwVO76Jms2O5icSXWQ1bB_DvGaNpgis5YcvUGKZUS5hiq5eXRApp4qwq8n7MgoDu6kxxGsFktLVWx3WxbzZ8XGeqkSp_lWdIH8NPkAvhOOBgZi-OJw3ChbswB_IprpBBY--uGBZSoReBwlg4JQ-arb_LOcIMlZ3f927EQ1X5Npqdzkp20woi3fznSnRuEX92FB6BEnPxrU6Kf8v4ucWASP745AZM74", "https://lh3.googleusercontent.com/aida/ADBb0uisx3oeDv0ve0iG2PzpfVE139Fx90o_esFnuCgzPsGk90wF2QBrAQUnuuSJbCq-RpI3kkMfc-SDsdWUatVrgy4TNBV2gVj38c0QWP3PSC98O106APkkq1IZqZlWdaxv8_WzVHJyuoMm1RzWMLJxZf_UhHn3BkHUz0FxROsOk17XHnPayOnsFEQ_FoBHpIMp0CLuh6wJXD735URSodW20shmf0lG5DDTNgNBHZxWYWcnzRgGKDQ73UqYlbEy"],
+  restaurant: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCvZLqWp4vcBq3WgdR1v4lm0V-Qvv60o516WggmsiMePqV24UjlJFw76Maw2-xQL1O2uq72IMybEO73HmeNdq_YzzOpxC433PT13z6STlsJ3ILrRGais9KfUAHH4vLqpuGdI1_o4yHOifu3A1PaaS9Rr_Re6C9ijjcxZx_7z_NgyT3He22bBREJjWeMqv099xbGD716bTgOEhizQTdoMcbrUjXAO3qcbEgD7nxgAJ_VX9Hkay6pzzx4QzJX6UiB7afiA3lDzsxDPr_L", "https://lh3.googleusercontent.com/aida/ADBb0ugBwUSXj-mcDbmDs7LBiIsVfhe0foZb58IH68kR6vFcxrIDEvea5VxD0yGk9b-rCuYeWElMSjI9csFuUl52Nt_poTaI9VK5IEasfyMX8wMFL66ugZYW6Z1z8UxgiB3KwvHAIL_DzbKL9uKQaZyi08FdIEdic6q6Cm71LjjRbBFUKqgCGRYzC5b3293Ray3gkcawIaPN1QK_TU_8ambPQvIpcfdMugd9AH_N9-I6aWByY3KWdIUQ3EQW_IUA", "https://lh3.googleusercontent.com/aida/ADBb0uggwXl30t85mu3p3DMG-ocIVPXcDVGkg-OOZU_BP-h3ASmBi2WNS-jLW54cIY_HCriey-HD5TwPDwOoUwOGJzpTZaczYZT719HUd9trXrzUsiTKpjhhejOoLXgLb67kLsMR38NdytqNDeluK_As5NTrrkbEtCNrB6LSCT8gTB6EUEurBOEZwu45RFzRhDZxHZxwT2NPi53IGI3ltyIyLFfIW3rtuUm13Q7bpeHG4rh6rIwGOC8-zQfvYEuy", "https://lh3.googleusercontent.com/aida/ADBb0uhC6a9zZLOgnf6A2LphURsjg6Fk8PsRBCnub48kluePQYbp3jxjn_2ZSuXCYy4QOLaJC2enOw-gACeKe2qK7897CEt4ILoMc6gmy7pcodxanGDDZxDZyOG2PxbTUaFejoFiiEN5kw-V8Hbx94RV3e0KglMZ8eKYk60sTp4fnPRq4bQ2_Zce-sHb3RYLg9vKdzGzPMtoHSvLYAJrMx3h3FylP6z6eg5OSwOZiO55yoMwUepdstVxY6Y4TRVc", "https://lh3.googleusercontent.com/aida/ADBb0uh_Ia3dJ5e5fzxyj7WKAazPvsefeePHB_dJ_nbKkPlmQxEvgk1YZpxkEapf5E_ao-eKdBp1uaCgAcbBZr6oQjm6mMOMJybA5-99aZEiu1GbxXtaiW_W3uINn6lBEKd5lIA4eZji68i18ZxgA6uKXLz4gXIvwVclNipT3Mfn97fAZOyl7scSJNeif_X_WIfDwdoEFC1YAH7k00kDos0K5fVmx1ybVO_jxXs54m4n3Uq8NRexBB8bDX2keSg-", "https://lh3.googleusercontent.com/aida/ADBb0ugjyCnxz2mGJusqoDNqzRAYlBvpSgFgKeFzWr-kI1PHIBYTpR5p9aLFz0ZZAg-EamEaXXi34NPmVDmFUVM6nfNPIn9rA8QxX9e2hcYWA6WFmMCyoknmE13rnb9-lpJN368gheYaIXheS1Py4VXufsjlJshO-Wu8k_HdtHDi6lwyuVs0CSDUmTBUFj6o--jmG8u2k52t0rxTKF_eqdtLnvV4gY1qnLmpsp9YRdF6KrCZ3P1VPw6s9eQqEB83", "https://lh3.googleusercontent.com/aida/ADBb0uj1k4kIpsVJfPF8Vv319omQlTJGwtsNXf-StSQcmqN7sCNm8prwmhxGvici4XBnrrHFkEyw-f7yd8U3iN639oplBqFmsLaK_u9ji-LFPdUF8bCis_a43hcg380YpsHyPA2va6WXB6crh2TtQDtffKGln4jSfsAR2MCrvueyRrmpBiOJ8KZyI91OKKj9abwjshdP9tJJPqGR7qW0mPvJdQP0ITjAugD9omXFNzN8vVF6sYP_sMP-b6qpGLQ", "https://lh3.googleusercontent.com/aida/ADBb0uiTcNC3oemzopPIzBhILvC2iHclu3AoGadKbvo6rZ_W3LnK56_tj_NbAMJcBJWFQG0RMldPZLMX9juqOkL5nf6JoL9jOW_0Ba-WjgnP2fIntXpsb5geNBH6XIRJyH3VsO2jS6ueNZOhWJ5n4QODSAcf76YuAiHWa4_PS7xdqCzEZZqjhm3Yh0RcSVRDfjIO-HQMLxNTmeX1NftsDdlzlycZuUjJnF_Dxk-bWomluyS8xxfr20MEyNjtcKDH"],
+  salon: ["https://lh3.googleusercontent.com/aida/ADBb0uiq2HuzT_2fvlAM6H5aT1vbuIJahr2TMYwV8dB1oAv-LmNcIZRjx2fS8g-VQ6rm_x2-hisvCMwr6SprZZUnSu1iFVvPfSBs9FXNsOJuyrUhujKbmi9KlXNZNuXqqp43HCGzHyMpkc8aOapPYgtYaCaK-svJl8k_cvD4btaNIwjlahORUB1ASoCAs_i4rIrA0tZ65nsflG1zyxTg7IHPxTRQ6l3s6wHQebtCeXNZVmbfSAm1HdpEAVz2kDyF", "https://lh3.googleusercontent.com/aida/ADBb0ujoIvcEQAsjUGtfLHwJrH6Euh3Qf6fxgJ7gFKZ8sund22ThGsIHU9wllt470AJxSn6pDdd1ugWniEhGA4mkDFPBCAID61tevtIn1OH1zlFppuswW9Me7MxZRWGPQxnKegagsZci2EJonYZZlmnpqk5UfoNqZ_VS_FxcOGM5fR1ns87qLr5-c2PHbFrZwOlYvzcvAVR-gpKe07bafXqt_NuFVW302-TjkRB3SsJCZKuYRibWaR0uBuftU7vv", "https://lh3.googleusercontent.com/aida/ADBb0ujzvE55Hb-KYcHu-1-5Lp268-Qf-F2LJ2KTTFigLPcKACtjl7XNtJcH7g-yMdHL6q41PFabkYRto3bcWA2gxP7RNqeGJcyUIUX2aaKj60SCN3dpE6j380IAWLkV9frpFv0Ao01vjmRZ1LhEijkPVcczb0Mck1qys2RNbsvxqqywwvdg2h3KNviU1LnOShYYq-dYhu_CvrfjWUfnKqR7_8S2pfQzEB3akhJrLGDeYbREAapCVLze_wCBoJQ", "https://lh3.googleusercontent.com/aida/ADBb0ugv4ophOvlWDQqRjowFDhDA0olaNgXlsPuAiM30roLR6z7BqbcfU8M6399O2uvs6vhlpaSvl1BeWoOUeOWjWfnroY9d5ee358GFLie4JSrnlo75UjFSB9j468GKrLTXEc7LDlyM8n_FVVMk3LOdFPNDuYTcMNKyjd1fPDctio0ZeWFD6I-CmbxIuWXir7BYJHttHEDDAXpGzZKHqwIJsE-XvuGBBNR8tWnHB2nM5nreQlWCDcYqk-5EHexy", "https://lh3.googleusercontent.com/aida/ADBb0ugeueRtKQgqV1qjZuBnKZMmYIkVbu-WYcQNHNtaq8CXhxfJ3JeXgalSWmYoDklFgvDxh0wi_aSDrTgV4VknALJeXtpfC-s5M9uevlE33NeB77dRvJx8dckoSKLETzf4fHddGpy1UTdLISZ9JxRSbCmx1Pzg9IEijObcPv_oYmDPJRWpUyRirL5Bb5qcFap_Mmrcr_6pLouvNQy7P0VdDAw99XHAOFoqWSwGHBP28z6wMpEyRv5zi9JM64Y", "https://lh3.googleusercontent.com/aida/ADBb0ujTNBF4Ap-BMKubzi5e1YaxHfQtXrvDc2Wps63YtLlWPHML_Q4j3GSYNFJSlfl7lYuYhCwJbfPQK-DiNu5kYgL4PoXuhJYSwpmPtKctH3Tz311ucoG9YAAzW9Eqf4tszrLFEyDVbydD2tLWtnAk3DEi6vqsKPo-NQQlyHTlakI-V0j4BFV_rdnurD-nywaCS5WtO0QORzAe9v3BEvolef0jMIA1HxsioaCOe6kDGifdkE-VsBWdH6A0PTY", "https://lh3.googleusercontent.com/aida/ADBb0uhG6hPzEkcU9rmCpvStvxS135s_1M_0nR_3iNZxugY-kdK0iuNRidCeQP2HDLPq9_FHsdFTNqrgXQjCO2JwDoJwb5Z2nRYfzezYsSYr96d4L6pqeTH0bj6uNiBlLPWR-iCouGMi9CMmvh_tca3IoiwvIHxmMaVjHwspPFKQ5pJnAA7IkRvLTnl5SUM4Fw0gjSGeR8Vxbl--ewP0iWhyUJwNoNu4NRr4HFaOD45Wd6bwUDn-soljgCRc8bgd", "https://lh3.googleusercontent.com/aida/ADBb0uhVW3_i7XYhk0SLFCNZTy-Tt8PM4I6o645e8canUPBXxCJLTnpEe-5W1CGeaC2RXffmxFVBGIlscMnmz7KnwDAPNzSJpzqTY4amNYxWLgtMmNN1qb-8Gbra_fJaVt31FxgyAo_uQRsmgZEFk4gPd0A8UmcINwhsbVQ_V8k5nDSs4P6QJV4BtNsqgZlctS-ymuSikfTAVHnmYuVU3V3N0WdW7nnv8LO2a8Nb52655Nc2nTSiV87u6ZcUhdJf", "https://lh3.googleusercontent.com/aida/ADBb0ujsTcdcQTYuJgzN2Pt0myG-G5fd2loyZGYWRiaRrroeYMF6T2v1egmrt7KUXlDvA5mASn6zDoDB-cB59MsI3_-BmGepYQlvjwJlG3KMRqdmZDy0BctIIuKFYu8UgWmiLF-iUIzoIeXra_z_9QpgrxRt5vfsZuICahE2BIjaML1EQblOum9I31gXhmtKmxUcCkQwSUpkUrjmpflGNYsYk5fKRFcrgZhxcivPem_gGMy-s_ckpGlcQxtumyeJ"],
 };
 
-const LABELS = {auto:'🚗 Auto',restaurant:'🍝 Restaurant',gym:'💪 Gym',plumbing:'🔧 Plumbing',dental:'🦷 Dental',law:'⚖️ Law',salon:'✂️ Salon',realestate:'🏠 Real Estate',pet:'🐾 Pet',hvac:'❄️ HVAC'};
+const LABELS = {"auto": "\ud83d\ude97 Auto", "bakery": "\ud83e\udd50 Bakery", "dental": "\ud83e\uddb7 Dental", "gym": "\ud83d\udcaa Gym", "hvac": "\u2744\ufe0f HVAC", "landscaping": "\ud83c\udf3f Landscaping", "law": "\u2696\ufe0f Law", "pet": "\ud83d\udc3e Pet", "plumbing": "\ud83d\udd27 Plumbing", "realestate": "\ud83c\udfe0 Real Estate", "restaurant": "\ud83c\udf5d Restaurant", "salon": "\u2702\ufe0f Salon"};
 
-// State: keyed by "industry-index"
-const state = {}; // 'flagged' | 'approved' | null
-
+const state = {};
 let curFilter = 'all';
 let curIndustry = 'all';
+let lbInd = null, lbIdx = null;
 
-// Load saved state from localStorage
-try {
-  const saved = localStorage.getItem('exsisto-image-review');
-  if (saved) Object.assign(state, JSON.parse(saved));
-} catch(e) {}
+try { const s = localStorage.getItem('exsisto-lib-review'); if(s) Object.assign(state, JSON.parse(s)); } catch(e){}
+function save() { try { localStorage.setItem('exsisto-lib-review', JSON.stringify(state)); } catch(e){} }
+function key(ind,i) { return ind+'-'+i; }
 
-function saveState() {
-  try { localStorage.setItem('exsisto-image-review', JSON.stringify(state)); } catch(e) {}
+function setState(ind,i,val) {
+  const k = key(ind,i);
+  state[k] = state[k]===val ? null : val;
+  save(); updateCard(ind,i); updateStats();
 }
 
-function getKey(ind, i) { return `${ind}-${i}`; }
-
-function setImageState(ind, i, newState) {
-  const key = getKey(ind, i);
-  if (state[key] === newState) {
-    state[key] = null; // toggle off
-  } else {
-    state[key] = newState;
-  }
-  saveState();
-  updateCard(ind, i);
-  updateStats();
-}
-
-function updateCard(ind, i) {
-  const key = getKey(ind, i);
-  const s = state[key];
-  const card = document.getElementById(`card-${key}`);
-  if (!card) return;
-
+function updateCard(ind,i) {
+  const k = key(ind,i); const s = state[k];
+  const card = document.getElementById('card-'+k);
+  if(!card) return;
   card.classList.remove('flagged','approved');
-  if (s === 'flagged') card.classList.add('flagged');
-  if (s === 'approved') card.classList.add('approved');
-
-  // Visibility
+  if(s==='flagged') card.classList.add('flagged');
+  if(s==='approved') card.classList.add('approved');
   let show = true;
-  if (curFilter === 'flagged' && s !== 'flagged') show = false;
-  if (curFilter === 'approved' && s !== 'approved') show = false;
-  if (curFilter === 'unreviewed' && s !== null) show = false;
-  if (curIndustry !== 'all' && ind !== curIndustry) show = false;
-  card.classList.toggle('hidden', !show);
-
-  // Status badge
+  if(curFilter==='flagged' && s!=='flagged') show=false;
+  if(curFilter==='approved' && s!=='approved') show=false;
+  if(curFilter==='unreviewed' && s!==null) show=false;
+  if(curIndustry!=='all' && ind!==curIndustry) show=false;
+  card.classList.toggle('hidden',!show);
   const badge = card.querySelector('.status-badge');
-  badge.textContent = s === 'flagged' ? '🚩 Flagged' : s === 'approved' ? '✅ Approved' : '';
-  badge.className = `status-badge ${s || ''}`;
-
-  // Buttons
-  const flagBtn = card.querySelector('.flag-btn');
-  const approveBtn = card.querySelector('.approve-btn');
-  flagBtn.classList.toggle('active', s === 'flagged');
-  approveBtn.classList.toggle('active', s === 'approved');
+  badge.textContent = s==='flagged'?'🚩 Flagged':s==='approved'?'✅ Approved':'';
+  badge.className = 'status-badge '+(s||'');
+  card.querySelector('.flag-btn').classList.toggle('active',s==='flagged');
+  card.querySelector('.approve-btn').classList.toggle('active',s==='approved');
 }
 
 function updateStats() {
-  const all = Object.values(MANIFEST).flat();
-  const total = all.length;
-  let flagged = 0, approved = 0;
-  Object.keys(MANIFEST).forEach(ind => {
-    MANIFEST[ind].forEach((_, i) => {
-      const s = state[getKey(ind, i)];
-      if (s === 'flagged') flagged++;
-      if (s === 'approved') approved++;
+  let total=0,flagged=0,approved=0;
+  Object.keys(MANIFEST).forEach(ind=>{
+    MANIFEST[ind].forEach((_,i)=>{
+      total++;
+      const s=state[key(ind,i)];
+      if(s==='flagged') flagged++;
+      if(s==='approved') approved++;
     });
+    let fc=0; MANIFEST[ind].forEach((_,i)=>{if(state[key(ind,i)]==='flagged')fc++;});
+    const el=document.getElementById('fc-'+ind);
+    if(el){el.textContent='🚩 '+fc;el.classList.toggle('visible',fc>0);}
   });
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-flagged').textContent = flagged;
-  document.getElementById('stat-approved').textContent = approved;
-  document.getElementById('stat-unreviewed').textContent = total - flagged - approved;
-  document.getElementById('flag-count').textContent = `${flagged} flagged`;
-
-  // Update industry flag counts
-  Object.keys(MANIFEST).forEach(ind => {
-    let fc = 0;
-    MANIFEST[ind].forEach((_,i) => { if (state[getKey(ind,i)] === 'flagged') fc++; });
-    const el = document.getElementById(`flag-count-${ind}`);
-    if (el) { el.textContent = `🚩 ${fc}`; el.classList.toggle('visible', fc > 0); }
-  });
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-flagged').textContent=flagged;
+  document.getElementById('stat-approved').textContent=approved;
+  document.getElementById('stat-unreviewed').textContent=total-flagged-approved;
+  document.getElementById('flag-count').textContent=flagged+' flagged';
 }
 
-function setFilter(f, btn) {
-  curFilter = f;
-  document.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('active'));
+function setFilter(f,btn) {
+  curFilter=f;
+  document.querySelectorAll('.fb-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   rebuildVisibility();
 }
-
-function setIndustryFilter(ind, btn) {
-  curIndustry = ind;
-  document.querySelectorAll('.fb-btn[data-ind]').forEach(b => b.classList.remove('active'));
+function setIndustryFilter(ind,btn) {
+  curIndustry=ind;
+  document.querySelectorAll('.fb-btn[data-ind]').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   rebuildVisibility();
 }
-
 function rebuildVisibility() {
-  Object.keys(MANIFEST).forEach(ind => {
-    MANIFEST[ind].forEach((_, i) => updateCard(ind, i));
-    // Show/hide industry section header
-    const sec = document.getElementById(`sec-${ind}`);
-    if (sec) {
-      const visible = curIndustry === 'all' || curIndustry === ind;
-      sec.style.display = visible ? '' : 'none';
-    }
+  Object.keys(MANIFEST).forEach(ind=>{
+    MANIFEST[ind].forEach((_,i)=>updateCard(ind,i));
+    const sec=document.getElementById('sec-'+ind);
+    if(sec) sec.style.display=(curIndustry==='all'||curIndustry===ind)?'':'none';
   });
 }
+
+// Lightbox
+function openLightbox(ind,i) {
+  lbInd=ind; lbIdx=i;
+  document.getElementById('lb-img').src=MANIFEST[ind][i];
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); lbInd=null; lbIdx=null; }
+function lbAction(val) { if(lbInd!==null) setState(lbInd,lbIdx,val); closeLightbox(); }
 
 function build() {
-  // Industry filter buttons
+  // Industry filters
   const indFilters = document.getElementById('industry-filters');
   const allBtn = document.createElement('button');
-  allBtn.className = 'fb-btn active';
-  allBtn.dataset.ind = 'all';
-  allBtn.textContent = 'All Industries';
-  allBtn.onclick = () => setIndustryFilter('all', allBtn);
-  indFilters.appendChild(allBtn);
-
-  Object.keys(MANIFEST).forEach(ind => {
-    const btn = document.createElement('button');
-    btn.className = 'fb-btn';
-    btn.dataset.ind = ind;
-    btn.textContent = LABELS[ind] || ind;
-    btn.onclick = () => setIndustryFilter(ind, btn);
-    indFilters.appendChild(btn);
+  allBtn.className='fb-btn active'; allBtn.dataset.ind='all'; allBtn.textContent='All';
+  allBtn.onclick=()=>setIndustryFilter('all',allBtn); indFilters.appendChild(allBtn);
+  Object.keys(MANIFEST).sort().forEach(ind=>{
+    const btn=document.createElement('button');
+    btn.className='fb-btn'; btn.dataset.ind=ind; btn.textContent=LABELS[ind]||ind;
+    btn.onclick=()=>setIndustryFilter(ind,btn); indFilters.appendChild(btn);
   });
 
   // Content
-  const content = document.getElementById('content');
-  Object.entries(MANIFEST).forEach(([ind, imgs]) => {
-    const sec = document.createElement('div');
-    sec.className = 'industry-section';
-    sec.id = `sec-${ind}`;
-    sec.innerHTML = `
-      <div class="industry-header">
-        <span class="industry-title">${LABELS[ind] || ind}</span>
-        <span class="industry-count">${imgs.length} image${imgs.length !== 1 ? 's' : ''}</span>
-        <span class="industry-flag-count" id="flag-count-${ind}"></span>
-      </div>
-      <div class="img-grid" id="grid-${ind}"></div>
-    `;
+  const content=document.getElementById('content');
+  Object.keys(MANIFEST).sort().forEach(ind=>{
+    const imgs=MANIFEST[ind];
+    const sec=document.createElement('div');
+    sec.className='industry-section'; sec.id='sec-'+ind;
+    sec.innerHTML=`<div class="industry-header">
+      <span class="industry-title">${LABELS[ind]||ind}</span>
+      <span class="industry-count">${imgs.length} image${imgs.length!==1?'s':''}</span>
+      <span class="industry-flag-count" id="fc-${ind}"></span>
+    </div><div class="img-grid" id="grid-${ind}"></div>`;
     content.appendChild(sec);
 
-    const grid = sec.querySelector(`#grid-${ind}`);
-    imgs.forEach((url, i) => {
-      const key = getKey(ind, i);
-      const s = state[key];
-      const card = document.createElement('div');
-      card.className = `img-card${s === 'flagged' ? ' flagged' : s === 'approved' ? ' approved' : ''}`;
-      card.id = `card-${key}`;
-      card.innerHTML = `
-        <div class="img-wrap">
+    const grid=sec.querySelector('#grid-'+ind);
+    imgs.forEach((url,i)=>{
+      const k=key(ind,i); const s=state[k];
+      const card=document.createElement('div');
+      card.className='img-card'+(s==='flagged'?' flagged':s==='approved'?' approved':'');
+      card.id='card-'+k;
+      card.innerHTML=`
+        <div class="img-wrap" style="cursor:zoom-in" onclick="openLightbox('${ind}',${i})">
           <img src="${url}" loading="lazy" onerror="this.style.background='#1a1a24';this.style.height='180px';this.removeAttribute('src')"/>
-          <div class="status-badge ${s||''}">${s === 'flagged' ? '🚩 Flagged' : s === 'approved' ? '✅ Approved' : ''}</div>
-          <div class="flag-overlay">
-            <span class="flag-overlay-icon">${s === 'flagged' ? '🚩' : '👆'}</span>
-          </div>
+          <div class="status-badge ${s||''}">${s==='flagged'?'🚩 Flagged':s==='approved'?'✅ Approved':''}</div>
         </div>
         <div class="img-info">
           <div class="img-meta">
             <div class="img-industry">${ind}</div>
-            <div class="img-num">img_${i+1} · ${url.slice(-20)}</div>
+            <div class="img-num">img_${i+1}</div>
           </div>
           <div class="action-btns">
-            <button class="action-btn approve-btn${s === 'approved' ? ' active' : ''}" title="Approve" onclick="setImageState('${ind}',${i},'approved')">✅</button>
-            <button class="action-btn flag-btn${s === 'flagged' ? ' active' : ''}" title="Flag for replacement" onclick="setImageState('${ind}',${i},'flagged')">🚩</button>
+            <button class="action-btn approve-btn${s==='approved'?' active':''}" title="Approve" onclick="setState('${ind}',${i},'approved')">✅</button>
+            <button class="action-btn flag-btn${s==='flagged'?' active':''}" title="Flag" onclick="setState('${ind}',${i},'flagged')">🚩</button>
           </div>
-        </div>
-      `;
+        </div>`;
       grid.appendChild(card);
     });
   });
-
   updateStats();
 }
 
 function openExport() {
-  const flagged = [];
-  Object.keys(MANIFEST).forEach(ind => {
-    MANIFEST[ind].forEach((url, i) => {
-      if (state[getKey(ind, i)] === 'flagged') {
-        flagged.push({ industry: ind, index: i+1, url });
-      }
+  const flagged=[];
+  Object.keys(MANIFEST).forEach(ind=>{
+    MANIFEST[ind].forEach((url,i)=>{
+      if(state[key(ind,i)]==='flagged') flagged.push({industry:ind,index:i+1,url});
     });
   });
-
-  const modal = document.getElementById('modal-bg');
-  const body = document.getElementById('modal-body');
-  const sub = document.getElementById('modal-sub');
-
-  sub.textContent = `${flagged.length} image${flagged.length !== 1 ? 's' : ''} flagged for replacement across ${[...new Set(flagged.map(f=>f.industry))].length} industries`;
-
-  if (flagged.length === 0) {
-    body.innerHTML = '<div class="empty-flags">No images flagged yet. Use the 🚩 button on any image to flag it.</div>';
+  const modal=document.getElementById('modal-bg');
+  document.getElementById('modal-sub').textContent=flagged.length+' image'+(flagged.length!==1?'s':'')+' flagged across '+[...new Set(flagged.map(f=>f.industry))].length+' industries';
+  if(flagged.length===0) {
+    document.getElementById('modal-body').innerHTML='<div class="empty-flags">No images flagged yet. Click 🚩 on any image or open it to flag.</div>';
   } else {
-    // Group by industry
-    const byInd = {};
-    flagged.forEach(f => { if (!byInd[f.industry]) byInd[f.industry] = []; byInd[f.industry].push(f); });
-
-    body.innerHTML = Object.entries(byInd).map(([ind, items]) => `
-      <div class="modal-section">
-        <div class="modal-section-title">${LABELS[ind] || ind} — ${items.length} to replace</div>
-        ${items.map(item => `
-          <div class="flag-item">
-            <img src="${item.url}" onerror="this.style.background='#333';this.removeAttribute('src')"/>
-            <div class="flag-item-info">
-              <div class="flag-item-ind">${ind} · Image ${item.index}</div>
-              <div class="flag-item-url">${item.url.slice(0,60)}…</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `).join('');
+    const byInd={};
+    flagged.forEach(f=>{if(!byInd[f.industry])byInd[f.industry]=[];byInd[f.industry].push(f);});
+    document.getElementById('modal-body').innerHTML=Object.entries(byInd).map(([ind,items])=>`
+      <div style="margin-bottom:16px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:8px">${LABELS[ind]||ind} — ${items.length} to replace</div>
+        ${items.map(item=>`<div class="flag-item"><img src="${item.url}"/><div class="flag-item-info"><div class="flag-item-ind">${ind} · Image ${item.index}</div><div class="flag-item-url">${item.url.slice(0,70)}…</div></div></div>`).join('')}
+      </div>`).join('');
   }
-
   modal.classList.add('open');
 }
-
-function closeExport() {
-  document.getElementById('modal-bg').classList.remove('open');
-}
-
+function closeExport() { document.getElementById('modal-bg').classList.remove('open'); }
 function copyReport() {
-  const flagged = {};
-  Object.keys(MANIFEST).forEach(ind => {
-    MANIFEST[ind].forEach((url, i) => {
-      if (state[getKey(ind, i)] === 'flagged') {
-        if (!flagged[ind]) flagged[ind] = [];
-        flagged[ind].push({ index: i+1, url, action: 'regenerate' });
+  const flagged={};
+  Object.keys(MANIFEST).forEach(ind=>{
+    MANIFEST[ind].forEach((url,i)=>{
+      if(state[key(ind,i)]==='flagged') {
+        if(!flagged[ind]) flagged[ind]=[];
+        flagged[ind].push({index:i+1,url,action:'regenerate'});
       }
     });
   });
-  navigator.clipboard.writeText(JSON.stringify(flagged, null, 2)).then(() => {
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = '✓ Copied!';
-    setTimeout(() => btn.textContent = '📋 Copy JSON for Regeneration', 2000);
+  navigator.clipboard.writeText(JSON.stringify(flagged,null,2)).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='📋 Copy JSON (paste to Claude for regeneration)',2000);
   });
 }
 
