@@ -93,6 +93,123 @@ We build your website, write your blogs, and run your social media. You do nothi
 <p class="font-body text-on-surface-variant text-center">Trusted by <span class="text-on-surface font-semibold">500+ small businesses</span> across 40+ industries</p>
 </div>
 </section>
+
+<!-- DEMO SHOWCASE -->
+<section class="py-32 relative overflow-hidden" style="background:#000;">
+  <div style="position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(circle,rgba(99,102,241,0.15),transparent 70%);pointer-events:none;"></div>
+  <div class="max-w-7xl mx-auto px-8 relative" style="z-index:1;">
+    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#6366f1;margin-bottom:12px;">✦ The Work</p>
+    <h2 class="font-headline" style="font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:12px;">Real sites.<br/><span style="color:#a3a6ff;">Real businesses.</span></h2>
+    <p style="color:#acaab1;font-size:18px;max-width:500px;margin-bottom:40px;line-height:1.7;">Every site is built by AI and tailored to your specific business. See for yourself.</p>
+
+    <!-- Browser Chrome -->
+    <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 0 80px rgba(99,102,241,0.15);margin-bottom:20px;">
+      <div style="background:#1f1f26;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.07);">
+        <div style="display:flex;gap:6px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(239,68,68,0.5);"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(245,158,11,0.5);"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(16,185,129,0.5);"></div>
+        </div>
+        <div style="flex:1;background:#000;border-radius:100px;padding:6px 16px;font-size:12px;color:#9090a8;display:flex;align-items:center;gap:6px;max-width:380px;margin:0 auto;">
+          🔒 <span id="browser-url">coastaldental.exsisto.ai</span>
+        </div>
+      </div>
+      <div style="height:520px;overflow:hidden;position:relative;background:#fff;">
+        <iframe id="demo-iframe" src="/stitch-templates/dental.html" style="width:200%;height:200%;border:none;transform:scale(0.5);transform-origin:top left;pointer-events:none;" title="demo"></iframe>
+      </div>
+    </div>
+
+    <!-- Thumbnails -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:40px;">
+      <button onclick="switchDemo('dental','coastaldental.exsisto.ai',0)" class="demo-thumb" style="background:#19191f;border:2px solid #6366f1;border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-0">
+        <div style="font-size:20px;margin-bottom:6px;">🦷</div>
+        <div style="font-size:11px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;">Coastal Dental</div>
+        <div style="font-size:9px;color:#9090a8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Santa Monica, CA</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#fff;"><div style="height:4px;background:#3b82f6;"></div></div>
+      </button>
+      <button onclick="switchDemo('gym','ironoakgym.exsisto.ai',1)" class="demo-thumb" style="background:#19191f;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-1">
+        <div style="font-size:20px;margin-bottom:6px;">💪</div>
+        <div style="font-size:11px;font-weight:700;color:#9090a8;font-family:'Space Grotesk',sans-serif;">Iron & Oak Gym</div>
+        <div style="font-size:9px;color:#555568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Austin, TX</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#18181b;"><div style="height:4px;background:#22c55e;"></div></div>
+      </button>
+      <button onclick="switchDemo('restaurant','villarosso.exsisto.ai',2)" class="demo-thumb" style="background:#19191f;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-2">
+        <div style="font-size:20px;margin-bottom:6px;">🍝</div>
+        <div style="font-size:11px;font-weight:700;color:#9090a8;font-family:'Space Grotesk',sans-serif;">Villa Rosso</div>
+        <div style="font-size:9px;color:#555568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Brooklyn, NY</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#fafaf9;"><div style="height:4px;background:#b45309;"></div></div>
+      </button>
+      <button onclick="switchDemo('law','summitlaw.exsisto.ai',3)" class="demo-thumb" style="background:#19191f;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-3">
+        <div style="font-size:20px;margin-bottom:6px;">⚖️</div>
+        <div style="font-size:11px;font-weight:700;color:#9090a8;font-family:'Space Grotesk',sans-serif;">Summit Law</div>
+        <div style="font-size:9px;color:#555568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Chicago, IL</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#0f172a;"><div style="height:4px;background:#4338ca;"></div></div>
+      </button>
+      <button onclick="switchDemo('salon','bloomhair.exsisto.ai',4)" class="demo-thumb" style="background:#19191f;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-4">
+        <div style="font-size:20px;margin-bottom:6px;">✂️</div>
+        <div style="font-size:11px;font-weight:700;color:#9090a8;font-family:'Space Grotesk',sans-serif;">Bloom Hair</div>
+        <div style="font-size:9px;color:#555568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Portland, OR</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#fdf2f8;"><div style="height:4px;background:#ec4899;"></div></div>
+      </button>
+      <button onclick="switchDemo('hvac','apexhvac.exsisto.ai',5)" class="demo-thumb" style="background:#19191f;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-5">
+        <div style="font-size:20px;margin-bottom:6px;">❄️</div>
+        <div style="font-size:11px;font-weight:700;color:#9090a8;font-family:'Space Grotesk',sans-serif;">Apex HVAC</div>
+        <div style="font-size:9px;color:#555568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Phoenix, AZ</div>
+        <div style="height:20px;border-radius:4px;overflow:hidden;background:#eff6ff;"><div style="height:4px;background:#3b82f6;"></div></div>
+      </button>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;">
+        <div style="position:relative;width:8px;height:8px;">
+          <div style="position:absolute;inset:0;border-radius:50%;background:#a3a6ff;opacity:0.75;animation:ping 1.5s infinite;"></div>
+          <div style="position:relative;width:8px;height:8px;border-radius:50%;background:#a3a6ff;"></div>
+        </div>
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#9090a8;">All built by Exsisto AI in under 48 hours</span>
+      </div>
+      <a href="/preview" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#000;padding:16px 40px;border-radius:100px;font-weight:900;font-size:17px;font-family:'Space Grotesk',sans-serif;text-decoration:none;transition:all 0.2s;box-shadow:0 0 40px rgba(163,166,255,0.3);">
+        Build Mine →
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+@keyframes ping { 0%,100%{transform:scale(1);opacity:0.75} 50%{transform:scale(2);opacity:0;} }
+</style>
+<script>
+var demos = ['dental','gym','restaurant','law','salon','hvac'];
+var urls = ['coastaldental.exsisto.ai','ironoakgym.exsisto.ai','villarosso.exsisto.ai','summitlaw.exsisto.ai','bloomhair.exsisto.ai','apexhvac.exsisto.ai'];
+var current = 0;
+var timer;
+
+function switchDemo(industry, url, idx) {
+  document.getElementById('demo-iframe').src = '/stitch-templates/' + industry + '.html';
+  document.getElementById('browser-url').textContent = url;
+  for (var i = 0; i < 6; i++) {
+    var t = document.getElementById('thumb-' + i);
+    if (i === idx) {
+      t.style.borderColor = '#6366f1';
+      t.style.background = 'rgba(99,102,241,0.08)';
+    } else {
+      t.style.borderColor = 'rgba(255,255,255,0.08)';
+      t.style.background = '#19191f';
+    }
+  }
+  current = idx;
+  clearInterval(timer);
+  startAuto();
+}
+
+function startAuto() {
+  timer = setInterval(function() {
+    current = (current + 1) % 6;
+    switchDemo(demos[current], urls[current], current);
+  }, 4000);
+}
+startAuto();
+</script>
+
 <section class="py-32 relative">
 <div class="max-w-7xl mx-auto px-8">
 <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
