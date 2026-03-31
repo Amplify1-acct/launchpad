@@ -863,3 +863,29 @@
   .site-layout { grid-template-columns: 1fr; }
   .biztype-grid { grid-template-columns: 1fr; }
 }
+
+/* ── OTHER WRITE-IN ────────────────────────────────────────────────────────── */
+.other-writein { }
+.writein-examples { margin-bottom: 8px; }
+.writein-example-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.5px; color: #555568; margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.writein-example-chips {
+  display: flex; flex-wrap: wrap; gap: 7px;
+}
+.example-chip {
+  background: #1a1a24; border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 100px; padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: #9090a8;
+  cursor: pointer; transition: all 0.12s; font-family: inherit;
+}
+.example-chip:hover {
+  border-color: #6366f1; color: #a5b4fc;
+  background: rgba(99,102,241,0.08);
+}
+.form-input-lg {
+  font-size: 17px; padding: 15px 18px;
+  font-weight: 600;
+}
