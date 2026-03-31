@@ -1,6 +1,7 @@
 "use client";
 import "./preview.css";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -754,6 +755,8 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 export default function PreviewPage() {
+  const searchParams = useSearchParams();
+  const theme = searchParams.get("theme") || "dark";
   const [step, setStep] = useState(0);
   const [industry, setIndustry] = useState("");
   const [bizType, setBizType] = useState("");
@@ -763,7 +766,7 @@ export default function PreviewPage() {
   const [planId, setPlanId] = useState("pro");
 
   return (
-    <div className="preview-page">
+    <div className="preview-page" data-theme={theme}>
       <nav className="preview-nav">
         <div className="preview-nav-logo">Exsisto</div>
         <div className="preview-nav-tag">✦ Your site, built by AI in 48 hours</div>
