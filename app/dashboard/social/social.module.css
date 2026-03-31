@@ -484,3 +484,207 @@
   background: var(--accent);
   border-color: var(--accent);
 }
+
+/* ── Connect Accounts Section ──────────────────────────────── */
+.connectSection {
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.connectHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.connectTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black, #111);
+  margin-bottom: 3px;
+}
+
+.connectSubtitle {
+  font-size: 13px;
+  color: var(--text-mid, #6b7280);
+}
+
+.connectedBadge {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.platformConnectGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.platformConnectCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border, #e5e7eb);
+  background: #fafafa;
+  transition: border-color 0.15s;
+}
+
+.platformConnected {
+  background: #fff;
+  border-color: #d1fae5;
+}
+
+.platformConnectTop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.platformConnectIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.platformConnectInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.platformConnectName {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  text-transform: capitalize;
+}
+
+.platformConnectAccount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accountAvatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.accountName {
+  font-size: 12px;
+  color: var(--black, #111);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.platformConnectHint {
+  font-size: 12px;
+  color: var(--text-mid, #6b7280);
+}
+
+.platformConnectAction {
+  flex-shrink: 0;
+}
+
+.connectBtn {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.connectBtn:hover { opacity: 0.88; }
+
+.connectedActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connectedDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  flex-shrink: 0;
+}
+
+.connectedLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.disconnectBtn {
+  background: none;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.disconnectBtn:hover { background: #fef2f2; }
+.disconnectBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.tokenExpiry {
+  font-size: 11px;
+  color: var(--text-mid, #9ca3af);
+  padding-left: 50px;
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  animation: slideIn 0.2s ease;
+}
+
+.toastSuccess { background: #16a34a; color: #fff; }
+.toastError { background: #ef4444; color: #fff; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .platformConnectGrid { gap: 10px; }
+  .connectSection { padding: 16px; }
+  .connectedActions { flex-wrap: wrap; gap: 6px; }
+}
