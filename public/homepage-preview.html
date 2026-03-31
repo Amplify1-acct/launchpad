@@ -34,21 +34,111 @@ body { background-color: #0e0e13; color: #f9f5fd; font-family: 'Inter', sans-ser
 .glass-nav { background: rgba(14, 14, 19, 0.7); backdrop-filter: blur(20px); }
 .indigo-glow { background: radial-gradient(circle, rgba(163, 166, 255, 0.15) 0%, rgba(14, 14, 19, 0) 70%); }
 </style>
+
+<style id="responsive-overrides">
+/* ── MOBILE-FIRST RESPONSIVE OVERRIDES ─────────────────────────────────── */
+
+/* Nav — hamburger menu on mobile */
+.mobile-menu { display: none; flex-direction: column; gap: 12px; padding: 16px; position: absolute; top: 100%; left: 0; right: 0; z-index: 100; }
+.mobile-menu.open { display: flex; }
+.menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+
+@media (max-width: 767px) {
+  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+  .desktop-nav { display: none !important; }
+
+  /* Hero */
+  h1 { font-size: 2.4rem !important; line-height: 1.05 !important; letter-spacing: -1px !important; }
+  section.hero-section, section:first-of-type { padding-top: 100px !important; padding-bottom: 60px !important; min-height: auto !important; }
+
+  /* Demo section */
+  #demo-preview, [style*="height:520px"], [style*="height: 520px"] { height: 260px !important; }
+  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+
+  /* Browser URL bar */
+  [style*="max-width:380px"] { max-width: 160px !important; font-size: 10px !important; }
+
+  /* Demo section heading */
+  .demo-section h2 { font-size: 2rem !important; }
+
+  /* Pricing — remove scale on Pro card */
+  .scale-105 { transform: none !important; }
+  .grid.md\:grid-cols-3 { gap: 16px !important; }
+
+  /* How it works ghost numbers */
+  .text-8xl { font-size: 3rem !important; }
+
+  /* Section padding */
+  .py-32 { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .py-40 { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .py-24 { padding-top: 40px !important; padding-bottom: 40px !important; }
+  .mb-24 { margin-bottom: 32px !important; }
+
+  /* Horizontal padding */
+  .px-8 { padding-left: 16px !important; padding-right: 16px !important; }
+  [style*="padding:80px 64px"] { padding: 48px 16px !important; }
+  [style*="padding: 80px 64px"] { padding: 48px 16px !important; }
+  [style*="padding:120px 64px"] { padding: 60px 16px !important; }
+
+  /* Hero CTA buttons */
+  .flex-col.sm\:flex-row { flex-direction: column !important; }
+  button, a > button { width: 100% !important; justify-content: center !important; }
+
+  /* Stats row */
+  .flex.flex-wrap.gap-8 { gap: 24px !important; }
+
+  /* Footer grid */
+  .grid.grid-cols-1.md\:grid-cols-4 { gap: 24px !important; }
+
+  /* CTA section headline */
+  .text-5xl { font-size: 2rem !important; }
+  .text-7xl { font-size: 2.4rem !important; }
+
+  /* Pricing section */
+  [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+
+  /* Editorial hero stacked cards — hide on mobile */
+  .col-span-5.relative.h-\[520px\] { display: none !important; }
+  [style*="height:520px;overflow:hidden;position:relative;background:#fff"] { height: 220px !important; }
+
+  /* Build Mine button width fix */
+  a[href*="/preview"] button, a[href*="preview"] { width: auto !important; }
+  .demo-cta a, #demo-cta a { width: auto !important; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2rem !important; }
+  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="height:520px"], [style*="height: 520px"] { height: 200px !important; }
+  .text-4xl { font-size: 1.6rem !important; }
+}
+</style>
+
 </head>
 <body class="selection:bg-primary selection:text-on-primary">
 <header class="bg-slate-950/70 backdrop-blur-xl font-['Space_Grotesk'] font-bold tracking-tight sticky top-0 z-50 shadow-[0_0_20px_rgba(99,102,241,0.08)]">
 <nav class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
 <div class="text-2xl font-black tracking-tighter bg-gradient-to-br from-indigo-400 to-indigo-600 bg-clip-text text-transparent">Exsisto</div>
-<div class="hidden md:flex items-center gap-8">
+<div class="hidden md:flex items-center gap-8 desktop-nav">
 <a class="text-indigo-400 border-b-2 border-indigo-500 pb-1 hover:opacity-80 transition-all duration-300" href="#">How It Works</a>
 <a class="text-slate-400 hover:text-slate-100 transition-colors" href="/preview?theme=dark">Pricing</a>
 <a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Examples</a>
 </div>
 <a href="/preview?theme=dark"><button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary px-6 py-2 rounded-md font-bold hover:opacity-90 transition-all">See Your Site →</button></a>
+<button id="menu-toggle" class="menu-toggle" aria-label="Menu" style="color:#a3a6ff;font-size:22px;">
+      ☰
+    </button>
+    <div id="mobile-menu" class="mobile-menu" style="background:rgba(14,14,19,0.95);border-top:1px solid rgba(128,128,128,0.15);">
+      <a href="#" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">How It Works</a>
+      <a href="/preview?theme=dark" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">Pricing</a>
+      <a href="#" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">Examples</a>
+      <a href="/preview?theme=dark" style="display:block;background:#a3a6ff;color:#0f00a4;padding:12px 24px;border-radius:8px;text-align:center;font-weight:700;text-decoration:none;margin-top:4px;">See Your Site →</a>
+    </div>
 </nav>
 </header>
 <main>
-<section class="relative pt-32 pb-24 overflow-hidden min-h-screen flex flex-col justify-center">
+<section class="relative pt-32 pb-24 overflow-hidden min-h-screen flex flex-col justify-center hero-section">
 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] indigo-glow rounded-full"></div>
 <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] indigo-glow rounded-full"></div>
 <div class="max-w-7xl mx-auto px-8 relative z-10">
@@ -120,7 +210,7 @@ We build your website, write your blogs, and run your social media. You do nothi
     </div>
 
     <!-- Thumbnails -->
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:40px;">
+    <div id="demo-thumbnails" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:40px;">
       <button onclick="switchDemo('dental','coastaldental.exsisto.ai',0)" class="demo-thumb" style="background:#19191f;border:2px solid #6366f1;border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all 0.15s;" id="thumb-0">
         <div style="font-size:20px;margin-bottom:6px;">🦷</div>
         <div style="font-size:11px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;">Coastal Dental</div>
@@ -313,4 +403,18 @@ startAuto();
 <span class="text-slate-500">© 2026 Exsisto. All rights reserved.</span>
 </div>
 </footer>
+
+<script>
+// Hamburger menu
+(function() {
+  var toggle = document.getElementById('menu-toggle');
+  var menu = document.getElementById('mobile-menu');
+  if (toggle && menu) {
+    toggle.addEventListener('click', function() {
+      menu.classList.toggle('open');
+    });
+  }
+})();
+</script>
+
 </body></html>
