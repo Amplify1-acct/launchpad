@@ -281,6 +281,100 @@ footer{padding:20px 56px;background:#f0f0f0;display:flex;justify-content:space-b
 </body></html>`;
 }
 
+
+function buildPremiumSite(bizType: string, industry: string, city: string, phone: string, ai: AIContent): string {
+  const imgs = IMAGES[industry] || IMAGES["other"] || [];
+  const [img1, img2, img3] = [imgs[0]||"", imgs[1]||imgs[0]||"", imgs[2]||imgs[0]||""];
+  const svcs = ai.services.slice(0, 6);
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;background:#0a0a14;color:#fff;}
+nav{padding:20px 56px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(10,10,20,0.96);backdrop-filter:blur(12px);}
+.logo{font-size:18px;font-weight:900;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:28px;}.nav-links a{font-size:13px;color:rgba(255,255,255,0.5);text-decoration:none;}
+.nav-cta{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;}
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:88vh;}
+.hero-left{padding:80px 56px;display:flex;flex-direction:column;justify-content:center;}
+.tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#6366f1;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.tag::before{content:'';width:20px;height:1px;background:#6366f1;}
+h1{font-size:48px;font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:18px;background:linear-gradient(135deg,#fff 60%,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sub{font-size:16px;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:28px;max-width:420px;}
+.stats{display:flex;gap:20px;padding:18px 22px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:28px;}
+.stat-n{font-size:20px;font-weight:900;color:#a78bfa;}.stat-l{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.btns{display:flex;gap:12px;}
+.btn-p{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:700;}
+.btn-s{border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);padding:14px 22px;border-radius:8px;font-size:14px;}
+.hero-right{position:relative;overflow:hidden;}
+.hero-right img{width:100%;height:100%;object-fit:cover;min-height:500px;}
+.hero-badge{position:absolute;bottom:24px;left:24px;background:rgba(10,10,20,0.9);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);padding:14px 18px;border-radius:10px;}
+.badge-n{font-size:18px;font-weight:900;color:#a78bfa;}.badge-l{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.services{padding:64px 56px;background:#0d0d1a;}
+.sec-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#6366f1;margin-bottom:8px;}
+.sec-h{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:28px;background:linear-gradient(135deg,#fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.svc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:22px;}
+.svc-dot{width:30px;height:30px;background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:8px;margin-bottom:12px;}
+.svc-n{font-size:14px;font-weight:700;color:#fff;}
+.gallery{padding:64px 56px;background:#0a0a14;}
+.gal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:24px;}
+.gal-grid img{width:100%;height:220px;object-fit:cover;border-radius:10px;background:#1a1a2e;}
+.cta{padding:56px;background:linear-gradient(135deg,#1e1b4b,#312e81);text-align:center;}
+.cta h2{font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:10px;}
+.cta p{font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:24px;}
+.cta-btn{background:#fff;color:#312e81;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:800;display:inline-block;}
+footer{padding:22px 56px;background:#050509;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.25);}
+.powered{color:#6366f1;font-weight:700;}
+</style></head><body>
+<nav>
+  <div class="logo">${bizType}</div>
+  <div class="nav-links"><a href="#">Services</a><a href="#">Work</a><a href="#">About</a></div>
+  <div class="nav-cta">${phone || "Contact Us"}</div>
+</nav>
+<div class="hero">
+  <div class="hero-left">
+    <div class="tag">${city || "Your City"}</div>
+    <h1>${ai.headline}</h1>
+    <p class="sub">${ai.subtext}</p>
+    <div class="stats">
+      <div><div class="stat-n">${ai.stat1}</div><div class="stat-l">${ai.stat1Label}</div></div>
+      <div><div class="stat-n">${ai.stat2}</div><div class="stat-l">${ai.stat2Label}</div></div>
+      <div><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
+    </div>
+    <div class="btns"><div class="btn-p">Get Started →</div><div class="btn-s">View Our Work</div></div>
+  </div>
+  <div class="hero-right">
+    <img src="${img1}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+    <div class="hero-badge"><div class="badge-n">★ 4.9</div><div class="badge-l">Top Rated</div></div>
+  </div>
+</div>
+<section class="services">
+  <div class="sec-eyebrow">What We Offer</div>
+  <h2 class="sec-h">Our Services</h2>
+  <div class="svc-grid">
+    ${svcs.map((s: string) => `<div class="svc"><div class="svc-dot"></div><div class="svc-n">${s}</div></div>`).join("")}
+  </div>
+</section>
+<section class="gallery">
+  <div class="sec-eyebrow">Our Work</div>
+  <h2 class="sec-h">See the Results</h2>
+  <div class="gal-grid">
+    <img src="${img1}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+    <img src="${img2}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+    <img src="${img3}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+  </div>
+</section>
+<section class="cta">
+  <h2>Ready to work together?</h2>
+  <p>${bizType} · ${city || "Your City"} · Premium service guaranteed</p>
+  <div class="cta-btn">${phone || "Contact Us Today"}</div>
+</section>
+<footer>
+  <span>${bizType} · ${city || "Your City"}</span>
+  <span>Powered by <span class="powered">Exsisto Premium</span> · $599/mo</span>
+</footer>
+</body></html>`;
+}
+
 // ─── STEP BAR ─────────────────────────────────────────────────────────────────
 function StepBar({ step }: { step: number }) {
   const steps = ["Industry", "Business Type", "Your Site", "Sign Up"];
@@ -446,10 +540,13 @@ function StepSite({ industry, bizType, onNext, onBack }: {
   const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
 
   // Build preview HTML using selected plan
+  const isOther = industry === "other";
   const previewHTML = !loading && ai
     ? (selectedPlan === "starter"
         ? buildStarterSite(bizType, industry, city || "Your City", phone || "Call Us", ai)
-        : buildProSite(bizType, industry, city || "Your City", phone || "Call Us", ai))
+        : selectedPlan === "pro"
+          ? buildProSite(bizType, industry, city || "Your City", phone || "Call Us", ai)
+          : buildPremiumSite(bizType, industry, city || "Your City", phone || "Call Us", ai))
     : null;
 
   function handleNext() {
@@ -493,7 +590,10 @@ function StepSite({ industry, bizType, onNext, onBack }: {
                 <div className="loading-sub">Writing your headlines, copy, and services…</div>
               </div>
             ) : selectedPlan === "premium" ? (
-              <iframe src={stitchUrl} className="preview-iframe" title="Premium preview" />
+              <iframe
+                src={isOther ? undefined : stitchUrl}
+                srcDoc={isOther && previewHTML ? previewHTML : undefined}
+                className="preview-iframe" title="Premium preview" />
             ) : previewHTML ? (
               <iframe srcDoc={previewHTML} className="preview-iframe" title="Site preview" />
             ) : null}
@@ -569,7 +669,10 @@ function StepSite({ industry, bizType, onNext, onBack }: {
               <button className="btn-ghost btn-sm" onClick={() => setFullscreen(false)}>✕ Close</button>
             </div>
             {selectedPlan === "premium"
-              ? <iframe src={stitchUrl} className="fs-iframe" title="Full preview" />
+              ? <iframe
+                  src={isOther ? undefined : stitchUrl}
+                  srcDoc={isOther && previewHTML ? previewHTML : undefined}
+                  className="fs-iframe" title="Full preview" />
               : previewHTML
                 ? <iframe srcDoc={previewHTML} className="fs-iframe" title="Full preview" />
                 : null}
