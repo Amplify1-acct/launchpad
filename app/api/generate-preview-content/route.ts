@@ -3,105 +3,78 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-interface PreviewBody {
-  name?: string;
-  industry?: string;
-  city?: string;
-  phone?: string;
-  customIndustry?: string;
-  description?: string;
-  services?: string[];
-  yearsInBusiness?: string;
-  differentiator?: string;
-  stat1Label?: string;
-  stat1Value?: string;
-  stat2Label?: string;
-  stat2Value?: string;
-}
+const DEFAULT_SERVICES: Record<string, string[]> = {
+  auto: ["Full Restoration","Custom Paint","Engine Rebuilds","Chrome Work","Storage","Appraisals"],
+  restaurant: ["Dine-In","Takeout","Catering","Private Events","Bar","Weekend Brunch"],
+  gym: ["Personal Training","Group Classes","Nutrition","Strength","Yoga","Recovery"],
+  plumbing: ["Emergency Repairs","Drain Cleaning","Water Heaters","Pipe Work","Remodels","Leak Detection"],
+  dental: ["General Care","Whitening","Implants","Invisalign","Emergency","Cosmetic"],
+  law: ["Free Consultation","Case Review","Litigation","Negotiation","Appeals","Settlement"],
+  salon: ["Cuts & Color","Highlights","Extensions","Bridal","Treatments","Blowouts"],
+  realestate: ["Buyer Rep","Seller Services","Luxury Homes","Investment","First-Time Buyers","Market Analysis"],
+  pet: ["Grooming","Boarding","Daycare","Training","Mobile Service","Wellness"],
+  hvac: ["AC Install","Heating Repair","Duct Cleaning","Maintenance","Emergency","Smart Thermostats"],
+  bakery: ["Artisan Breads","Custom Cakes","Pastries","Wedding Cakes","Gluten-Free","Coffee"],
+  landscaping: ["Lawn Care","Landscape Design","Irrigation","Tree Service","Hardscaping","Snow Removal"],
+};
 
 export async function POST(req: Request) {
-  let body: PreviewBody = {};
-  try { body = await req.json() as PreviewBody; } catch { /* use defaults */ }
+  let body: Record<string, string> = {};
+  try { body = await req.json(); } catch {}
 
-  const name = body.name || "Your Business";
-  const industry = body.industry || "";
-  const city = body.city || "your city";
-  const phone = body.phone || "";
-  const customIndustry = body.customIndustry || "";
-  const description = body.description || "";
-  const rawServices = body.services;
-  const yearsInBusiness = body.yearsInBusiness || "";
-  const differentiator = body.differentiator || "";
-  const stat1Label = body.stat1Label || "Years in Business";
-  const stat1Value = body.stat1Value || "";
-  const stat2Label = body.stat2Label || "Clients Served";
-  const stat2Value = body.stat2Value || "";
+  const { industry = "", bizType = "", city = "your city" } = body;
 
-  const industryLabel = industry === "other"
-    ? (customIndustry || "business")
-    : (industry || "business");
-
-  const serviceList: string = Array.isArray(rawServices)
-    ? rawServices.slice(0, 6).join(", ")
-    : "";
+  const fallbackServices = DEFAULT_SERVICES[industry] || ["Professional Service","Consultation","Quality Work","Expert Care","Fast Response","Free Estimates"];
 
   const fallback = {
-    headline: `${name} — Trusted ${industryLabel} Professionals in ${city}`,
-    tagline: `Quality ${industryLabel} services delivered with care and expertise.`,
-    subtext: `Serving ${city} with professional, reliable ${industryLabel} services${yearsInBusiness ? ` for over ${yearsInBusiness} years` : ""}. Contact us today for a free estimate.`,
-    serviceHeadline: "Our Services",
-    aboutText: `${name} is a trusted ${industryLabel} business serving ${city} and the surrounding community. ${differentiator || "We pride ourselves on quality workmanship and exceptional customer service."}`,
-    stat1: stat1Value || (yearsInBusiness ? `${yearsInBusiness}+` : "10+"),
-    stat1Label: stat1Label,
-    stat2: stat2Value || "500+",
-    stat2Label: stat2Label,
+    headline: `${bizType || industry} — ${city}\'s Trusted Professionals`,
+    tagline: `Quality ${bizType || industry} services delivered with care.`,
+    subtext: `Serving ${city} with professional, reliable service. Contact us today for a free estimate.`,
+    services: fallbackServices,
+    stat1: "15+", stat1Label: "Years Experience",
+    stat2: "500+", stat2Label: "Happy Clients",
   };
-
-  const prompt = `Write website hero copy for a real small business. Use their actual info — do NOT invent facts.
-
-Business: ${name}
-Type: ${industryLabel}
-City: ${city}
-Description: ${description || "not provided"}
-Services: ${serviceList || "not provided"}
-Years in business: ${yearsInBusiness || "not provided"}
-What makes them different: ${differentiator || "not provided"}
-
-Return ONLY a raw JSON object. No markdown, no backticks, no explanation:
-{
-  "headline": "Bold 6-9 word hero headline specific to their business",
-  "tagline": "One punchy sentence about their unique value",
-  "subtext": "Two sentences using their real description, professional tone",
-  "serviceHeadline": "Section heading for their services",
-  "aboutText": "2-3 sentences using their actual description and differentiator",
-  "stat1": "${stat1Value || yearsInBusiness || "15+"}",
-  "stat1Label": "${stat1Label}",
-  "stat2": "${stat2Value || "500+"}",
-  "stat2Label": "${stat2Label}"
-}`;
 
   try {
     const msg = await client.messages.create({
       model: "claude-opus-4-6",
-      max_tokens: 500,
-      messages: [{ role: "user", content: prompt }],
+      max_tokens: 400,
+      messages: [{
+        role: "user",
+        content: `Write website hero copy for a local small business. Return ONLY valid JSON, no markdown.
+
+Business type: ${bizType}
+Industry: ${industry}
+City: ${city}
+
+{
+  "headline": "Bold 6-9 word hero headline specific to ${bizType} in ${city}",
+  "tagline": "One punchy sentence about their unique value",
+  "subtext": "Two sentences, professional and local-feeling, no generic filler",
+  "services": ["Service 1","Service 2","Service 3","Service 4","Service 5","Service 6"],
+  "stat1": "20+",
+  "stat1Label": "Years Experience",
+  "stat2": "500+",
+  "stat2Label": "Happy Clients"
+}
+
+Make services specific to ${bizType}. Stats should be realistic for this type of business.`,
+      }],
     });
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
     const clean = raw.replace(/```(?:json)?\n?/g, "").replace(/```/g, "").trim();
-    const parsed = JSON.parse(clean) as Record<string, string>;
+    const parsed = JSON.parse(clean);
 
     return NextResponse.json({
-      headline:        parsed.headline        || fallback.headline,
-      tagline:         parsed.tagline         || fallback.tagline,
-      subtext:         parsed.subtext         || fallback.subtext,
-      serviceHeadline: parsed.serviceHeadline || fallback.serviceHeadline,
-      aboutText:       parsed.aboutText       || fallback.aboutText,
-      stat1:           parsed.stat1           || fallback.stat1,
-      stat1Label:      parsed.stat1Label      || fallback.stat1Label,
-      stat2:           parsed.stat2           || fallback.stat2,
-      stat2Label:      parsed.stat2Label      || fallback.stat2Label,
-      services:        rawServices || [],
+      headline:    parsed.headline    || fallback.headline,
+      tagline:     parsed.tagline     || fallback.tagline,
+      subtext:     parsed.subtext     || fallback.subtext,
+      services:    Array.isArray(parsed.services) ? parsed.services : fallback.services,
+      stat1:       parsed.stat1       || fallback.stat1,
+      stat1Label:  parsed.stat1Label  || fallback.stat1Label,
+      stat2:       parsed.stat2       || fallback.stat2,
+      stat2Label:  parsed.stat2Label  || fallback.stat2Label,
     });
   } catch {
     return NextResponse.json(fallback);
