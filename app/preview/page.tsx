@@ -324,6 +324,55 @@ function StepBizType({ industry, onNext, onBack }: {
 }) {
   const ind = INDUSTRIES.find(i => i.id === industry);
   const types = BUSINESS_TYPES[industry] || [];
+  const [customType, setCustomType] = useState("");
+  const [error, setError] = useState("");
+
+  // "Other" industry gets a full write-in experience
+  if (industry === "other") {
+    return (
+      <div className="step-content">
+        <div className="step-header">
+          <h2>✏️ Describe your business</h2>
+          <p>Tell us what you do — our AI will build your entire site around it</p>
+        </div>
+        <div className="other-writein">
+          <div className="writein-examples">
+            <div className="writein-example-label">Examples</div>
+            <div className="writein-example-chips">
+              {["Candy Shop","Wedding Photography","Dog Training","Music School","Tattoo Studio","Food Truck","Wine Bar","Escape Room","Yoga Retreat","Art Gallery"].map(ex => (
+                <button key={ex} className="example-chip" onClick={() => setCustomType(ex)}>{ex}</button>
+              ))}
+            </div>
+          </div>
+          <div className="form-group" style={{marginTop:"20px"}}>
+            <label>Your Business Type *</label>
+            <input
+              className="form-input form-input-lg"
+              type="text"
+              placeholder="e.g. Artisan Candy Shop, Wedding Photographer, Dog Trainer..."
+              value={customType}
+              onChange={e => { setCustomType(e.target.value); setError(""); }}
+              onKeyDown={e => e.key === "Enter" && handleOtherNext()}
+              autoFocus
+            />
+            <div className="field-hint">Be specific — the more detail, the better your AI-built site</div>
+          </div>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="step-actions">
+            <button className="btn-ghost" onClick={onBack}>← Back</button>
+            <button className="btn-primary btn-lg" onClick={handleOtherNext}>
+              Build My Site →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function handleOtherNext() {
+    if (!customType.trim()) return setError("Please describe your business type");
+    onNext(customType.trim());
+  }
 
   return (
     <div className="step-content">
