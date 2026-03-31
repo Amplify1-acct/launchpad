@@ -1,6 +1,6 @@
 "use client";
 import "./preview.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -754,7 +754,7 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
 }
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
-export default function PreviewPage() {
+function PreviewPageInner() {
   const searchParams = useSearchParams();
   const theme = searchParams.get("theme") || "dark";
   const [step, setStep] = useState(0);
@@ -793,5 +793,13 @@ export default function PreviewPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PreviewPage() {
+  return (
+    <Suspense fallback={<div style={{background:'#0a0a0f',minHeight:'100vh'}} />}>
+      <PreviewPageInner />
+    </Suspense>
   );
 }
