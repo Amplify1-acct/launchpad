@@ -35,110 +35,244 @@ body { background-color: #0e0e13; color: #f9f5fd; font-family: 'Inter', sans-ser
 .indigo-glow { background: radial-gradient(circle, rgba(163, 166, 255, 0.15) 0%, rgba(14, 14, 19, 0) 70%); }
 </style>
 
-<style id="responsive-overrides">
-/* ── MOBILE-FIRST RESPONSIVE OVERRIDES ─────────────────────────────────── */
-
-/* Nav — hamburger menu on mobile */
-.mobile-menu { display: none; flex-direction: column; gap: 12px; padding: 16px; position: absolute; top: 100%; left: 0; right: 0; z-index: 100; }
-.mobile-menu.open { display: flex; }
-.menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-
-@media (max-width: 767px) {
-  .menu-toggle { display: flex; align-items: center; justify-content: center; }
-  .desktop-nav { display: none !important; }
-
-  /* Hero */
-  h1 { font-size: 2.4rem !important; line-height: 1.05 !important; letter-spacing: -1px !important; }
-  section.hero-section, section:first-of-type { padding-top: 100px !important; padding-bottom: 60px !important; min-height: auto !important; }
-
-  /* Demo section */
-  #demo-preview, [style*="height:520px"], [style*="height: 520px"] { height: 260px !important; }
-  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
-
-  /* Browser URL bar */
-  [style*="max-width:380px"] { max-width: 160px !important; font-size: 10px !important; }
-
-  /* Demo section heading */
-  .demo-section h2 { font-size: 2rem !important; }
-
-  /* Pricing — remove scale on Pro card */
-  .scale-105 { transform: none !important; }
-  .grid.md\:grid-cols-3 { gap: 16px !important; }
-
-  /* How it works ghost numbers */
-  .text-8xl { font-size: 3rem !important; }
-
-  /* Section padding */
-  .py-32 { padding-top: 48px !important; padding-bottom: 48px !important; }
-  .py-40 { padding-top: 48px !important; padding-bottom: 48px !important; }
-  .py-24 { padding-top: 40px !important; padding-bottom: 40px !important; }
-  .mb-24 { margin-bottom: 32px !important; }
-
-  /* Horizontal padding */
-  .px-8 { padding-left: 16px !important; padding-right: 16px !important; }
-  [style*="padding:80px 64px"] { padding: 48px 16px !important; }
-  [style*="padding: 80px 64px"] { padding: 48px 16px !important; }
-  [style*="padding:120px 64px"] { padding: 60px 16px !important; }
-
-  /* Hero CTA buttons */
-  .flex-col.sm\:flex-row { flex-direction: column !important; }
-  button, a > button { width: 100% !important; justify-content: center !important; }
-
-  /* Stats row */
-  .flex.flex-wrap.gap-8 { gap: 24px !important; }
-
-  /* Footer grid */
-  .grid.grid-cols-1.md\:grid-cols-4 { gap: 24px !important; }
-
-  /* CTA section headline */
-  .text-5xl { font-size: 2rem !important; }
-  .text-7xl { font-size: 2.4rem !important; }
-
-  /* Pricing section */
-  [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns: repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
-
-  /* Editorial hero stacked cards — hide on mobile */
-  .col-span-5.relative.h-\[520px\] { display: none !important; }
-  [style*="height:520px;overflow:hidden;position:relative;background:#fff"] { height: 220px !important; }
-
-  /* Build Mine button width fix */
-  a[href*="/preview"] button, a[href*="preview"] { width: auto !important; }
-  .demo-cta a, #demo-cta a { width: auto !important; }
-}
-
-@media (max-width: 480px) {
-  h1 { font-size: 2rem !important; }
-  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(2, 1fr) !important; }
-  [style*="height:520px"], [style*="height: 520px"] { height: 200px !important; }
-  .text-4xl { font-size: 1.6rem !important; }
-}
-</style>
 
 </head>
 <body class="selection:bg-primary selection:text-on-primary">
-<header class="bg-slate-950/70 backdrop-blur-xl font-['Space_Grotesk'] font-bold tracking-tight sticky top-0 z-50 shadow-[0_0_20px_rgba(99,102,241,0.08)]">
-<nav class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-<div class="text-2xl font-black tracking-tighter bg-gradient-to-br from-indigo-400 to-indigo-600 bg-clip-text text-transparent">Exsisto</div>
-<div class="hidden md:flex items-center gap-8 desktop-nav">
-<a class="text-indigo-400 border-b-2 border-indigo-500 pb-1 hover:opacity-80 transition-all duration-300" href="#">How It Works</a>
-<a class="text-slate-400 hover:text-slate-100 transition-colors" href="/preview?theme=dark">Pricing</a>
-<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Examples</a>
-</div>
-<a href="/preview?theme=dark"><button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary px-6 py-2 rounded-md font-bold hover:opacity-90 transition-all">See Your Site →</button></a>
-<button id="menu-toggle" class="menu-toggle" aria-label="Menu" style="color:#a3a6ff;font-size:22px;">
-      ☰
-    </button>
-    <div id="mobile-menu" class="mobile-menu" style="background:rgba(14,14,19,0.95);border-top:1px solid rgba(128,128,128,0.15);">
-      <a href="#" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">How It Works</a>
-      <a href="/preview?theme=dark" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">Pricing</a>
-      <a href="#" style="color:#f9f5fd;text-decoration:none;font-weight:600;font-size:15px;padding:8px 0;">Examples</a>
-      <a href="/preview?theme=dark" style="display:block;background:#a3a6ff;color:#0f00a4;padding:12px 24px;border-radius:8px;text-align:center;font-weight:700;text-decoration:none;margin-top:4px;">See Your Site →</a>
-    </div>
-</nav>
+<!-- ══ RESPONSIVE NAV ══════════════════════════════════════════════ -->
+<style>
+#exsisto-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+#exsisto-logo {
+  background: linear-gradient(135deg,#6366f1,#a3a6ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.5px;
+  text-decoration: none;
+}
+.nav-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-desktop-links a {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #acaab1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-desktop-links a:hover { color: #f9f5fd; }
+#nav-cta-desktop {
+  background: linear-gradient(135deg,#6063ee,#a3a6ff);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s;
+}
+#nav-cta-desktop:hover { opacity: 0.9; transform: scale(1.02); }
+#hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #a3a6ff;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+#hamburger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+#hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+#hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer */
+#mobile-drawer {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(17,17,24,0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: inset 0 1px 0 rgba(163,166,255,0.15), 0 20px 40px rgba(0,0,0,0.6);
+  padding: 16px 16px 24px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 0 0 20px 20px;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+}
+#mobile-drawer.open {
+  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+}
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #acaab1;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.drawer-item:hover {
+  background: rgba(99,102,241,0.12);
+  color: #f9f5fd;
+}
+.drawer-item.active {
+  background: rgba(99,102,241,0.12);
+  color: #a3a6ff;
+}
+.drawer-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 8px 16px;
+}
+#drawer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  background: linear-gradient(135deg,#6063ee,#a3a6ff);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+#drawer-cta:hover { opacity: 0.92; transform: scale(0.99); }
+#nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(2px);
+}
+#nav-overlay.open { display: block; }
+
+@media (max-width: 767px) {
+  .nav-desktop-links { display: none; }
+  #nav-cta-desktop { display: none; }
+  #hamburger-btn { display: flex; }
+}
+@media (min-width: 768px) {
+  #mobile-drawer { display: none !important; }
+  #nav-overlay { display: none !important; }
+}
+</style>
+
+<header id="exsisto-nav">
+  <a href="/" id="exsisto-logo">Exsisto</a>
+
+  <!-- Desktop links -->
+  <nav class="nav-desktop-links">
+    <a href="#">How It Works</a>
+    <a href="/preview?theme=dark">Pricing</a>
+    <a href="#">Examples</a>
+  </nav>
+
+  <!-- Desktop CTA -->
+  <a href="/preview?theme=dark" id="nav-cta-desktop">See Your Site →</a>
+
+  <!-- Hamburger -->
+  <button id="hamburger-btn" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<!-- Mobile overlay -->
+<div id="nav-overlay" onclick="closeNav()"></div>
+
+<!-- Mobile drawer -->
+<div id="mobile-drawer">
+  <a class="drawer-item" href="#">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    How It Works
+  </a>
+  <a class="drawer-item active" href="/preview?theme=dark">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+    Pricing
+  </a>
+  <a class="drawer-item" href="#">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    Examples
+  </a>
+  <div class="drawer-divider"></div>
+  <a id="drawer-cta" href="/preview?theme=dark">
+    See Your Site →
+  </a>
+</div>
+
+<script>
+function toggleNav() {
+  var btn = document.getElementById('hamburger-btn');
+  var drawer = document.getElementById('mobile-drawer');
+  var overlay = document.getElementById('nav-overlay');
+  var isOpen = btn.classList.contains('open');
+  if (isOpen) { closeNav(); } else {
+    btn.classList.add('open');
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeNav() {
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('mobile-drawer').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Close on escape
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeNav(); });
+</script>
+<!-- ════════════════════════════════════════════════════════════════ -->
+
 <main>
-<section class="relative pt-32 pb-24 overflow-hidden min-h-screen flex flex-col justify-center hero-section">
+<section class="relative pt-24 pb-24 overflow-hidden min-h-screen flex flex-col justify-center hero-section">
 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] indigo-glow rounded-full"></div>
 <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] indigo-glow rounded-full"></div>
 <div class="max-w-7xl mx-auto px-8 relative z-10">
@@ -404,17 +538,5 @@ startAuto();
 </div>
 </footer>
 
-<script>
-// Hamburger menu
-(function() {
-  var toggle = document.getElementById('menu-toggle');
-  var menu = document.getElementById('mobile-menu');
-  if (toggle && menu) {
-    toggle.addEventListener('click', function() {
-      menu.classList.toggle('open');
-    });
-  }
-})();
-</script>
 
 </body></html>
