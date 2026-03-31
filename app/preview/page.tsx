@@ -1,6 +1,6 @@
 "use client";
 import "./preview.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -25,6 +25,7 @@ const INDUSTRIES = [
   { id: "hvac",        label: "HVAC",           emoji: "❄️" },
   { id: "bakery",      label: "Bakery",         emoji: "🥐" },
   { id: "landscaping", label: "Landscaping",    emoji: "🌿" },
+  { id: "other",       label: "Other",           emoji: "✏️" },
 ];
 
 const BUSINESS_TYPES: Record<string, string[]> = {
@@ -374,7 +375,7 @@ function StepSite({ industry, bizType, onNext, onBack }: {
       const res = await fetch("/api/generate-preview-content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ industry, bizType, city: city || "your city" }),
+        body: JSON.stringify({ industry, bizType, city: city || "your city", isOther: industry === "other" }),
       });
       const data = await res.json();
       setAI(data);
@@ -411,9 +412,9 @@ function StepSite({ industry, bizType, onNext, onBack }: {
     <div className="step-content step-wide">
       <div className="step-header">
         <h2>
-          {loading ? "✦ Building your site…" : "Here's your site"}
+          {loading ? "✦ Your site is being born…" : "Here's your site"}
         </h2>
-        <p>{loading ? "AI is writing your content — just a moment" : `${bizType} · Powered by Exsisto AI`}</p>
+        <p>{loading ? "Please be patient — our AI is magically building your website" : `${bizType} · ${city || "Your City"} · Powered by Exsisto AI`}</p>
       </div>
 
       {/* 2-col layout: preview left, config right */}
@@ -437,7 +438,8 @@ function StepSite({ industry, bizType, onNext, onBack }: {
             {loading ? (
               <div className="preview-loading">
                 <div className="loading-spinner" />
-                <div className="loading-text">Writing your content…</div>
+                <div className="loading-title">Please be patient while our AI is<br/>magically building your website ✦</div>
+                <div className="loading-sub">Writing your headlines, copy, and services…</div>
               </div>
             ) : selectedPlan === "premium" ? (
               <iframe src={stitchUrl} className="preview-iframe" title="Premium preview" />
