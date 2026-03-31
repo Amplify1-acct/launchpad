@@ -592,8 +592,7 @@ function StepSite({ industry, bizType, onNext, onBack }: {
               </div>
             ) : selectedPlan === "premium" ? (
               <iframe
-                src={isOther ? undefined : stitchUrl}
-                srcDoc={isOther && previewHTML ? previewHTML : undefined}
+                srcDoc={previewHTML || undefined}
                 className="preview-iframe" title="Premium preview" />
             ) : previewHTML ? (
               <iframe srcDoc={previewHTML} className="preview-iframe" title="Site preview" />
@@ -669,14 +668,9 @@ function StepSite({ industry, bizType, onNext, onBack }: {
               <span>{bizType} — {plan.name} Preview</span>
               <button className="btn-ghost btn-sm" onClick={() => setFullscreen(false)}>✕ Close</button>
             </div>
-            {selectedPlan === "premium"
-              ? <iframe
-                  src={isOther ? undefined : stitchUrl}
-                  srcDoc={isOther && previewHTML ? previewHTML : undefined}
-                  className="fs-iframe" title="Full preview" />
-              : previewHTML
-                ? <iframe srcDoc={previewHTML} className="fs-iframe" title="Full preview" />
-                : null}
+            {previewHTML
+              ? <iframe srcDoc={previewHTML} className="fs-iframe" title="Full preview" />
+              : null}
           </div>
         </div>
       )}
