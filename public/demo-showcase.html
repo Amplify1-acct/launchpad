@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Exsisto | Your entire digital presence. Done for you.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "primary": "#a3a6ff","primary-dim": "#6063ee","primary-container": "#9396ff",
+                "on-primary": "#0f00a4","on-primary-container": "#0a0081",
+                "surface": "#0e0e13","surface-container": "#19191f","surface-container-low": "#131319",
+                "surface-container-high": "#1f1f26","surface-container-highest": "#25252d",
+                "surface-container-lowest": "#000000","surface-bright": "#2c2b33","surface-dim": "#0e0e13",
+                "on-surface": "#f9f5fd","on-surface-variant": "#acaab1",
+                "outline": "#76747b","outline-variant": "#48474d",
+                "background": "#0e0e13","on-background": "#f9f5fd",
+                "tertiary": "#ffa5d9","secondary": "#a28efc","secondary-container": "#49339d",
+            },
+            fontFamily: { "headline": ["Space Grotesk"], "body": ["Inter"], "label": ["Inter"] },
+            borderRadius: {"DEFAULT": "0.125rem","lg": "0.25rem","xl": "0.5rem","full": "0.75rem"},
+        },
+    },
+}
+</script>
+<style>
+body { background-color: #0e0e13; color: #f9f5fd; font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.glass-nav { background: rgba(14, 14, 19, 0.7); backdrop-filter: blur(20px); }
+.indigo-glow { background: radial-gradient(circle, rgba(163, 166, 255, 0.15) 0%, rgba(14, 14, 19, 0) 70%); }
+</style>
+</head>
+<body class="selection:bg-primary selection:text-on-primary">
+<header class="bg-slate-950/70 backdrop-blur-xl font-['Space_Grotesk'] font-bold tracking-tight sticky top-0 z-50 shadow-[0_0_20px_rgba(99,102,241,0.08)]">
+<nav class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter bg-gradient-to-br from-indigo-400 to-indigo-600 bg-clip-text text-transparent">Exsisto</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-indigo-400 border-b-2 border-indigo-500 pb-1 hover:opacity-80 transition-all duration-300" href="#">How It Works</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="/preview">Pricing</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">Examples</a>
+</div>
+<a href="/preview"><button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary px-6 py-2 rounded-md font-bold hover:opacity-90 transition-all">See Your Site →</button></a>
+</nav>
+</header>
+<main>
+<section class="relative pt-32 pb-24 overflow-hidden min-h-screen flex flex-col justify-center">
+<div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] indigo-glow rounded-full"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] indigo-glow rounded-full"></div>
+<div class="max-w-7xl mx-auto px-8 relative z-10">
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-8">
+<h1 class="font-headline text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8 text-on-surface">
+Your entire digital presence. <span class="text-primary">Done for you.</span>
+</h1>
+<p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-2xl mb-12 leading-relaxed">
+We build your website, write your blogs, and run your social media. You do nothing.
+</p>
+<div class="flex flex-wrap gap-3 mb-12">
+<span class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-medium">Law Firms</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-medium">Restaurants</span>
+<span class="px-4 py-2 rounded-full border border-primary/40 text-primary bg-primary/5 text-sm font-medium">Dentists</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-medium">Contractors</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-medium">Gyms</span>
+<span class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-medium">Real Estate</span>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 mb-16">
+<a href="/preview"><button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary px-8 py-4 rounded-md font-bold text-lg hover:scale-[1.02] transition-transform">See Your Site →</button></a>
+<button class="bg-surface-container-highest border border-outline-variant/20 text-on-surface px-8 py-4 rounded-md font-bold text-lg flex items-center gap-2 hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">play_circle</span> Watch How It Works
+</button>
+</div>
+<div class="flex flex-wrap gap-8">
+<div class="flex flex-col"><span class="text-3xl font-headline font-bold text-on-surface">48h</span><span class="text-label text-xs uppercase tracking-widest text-on-surface-variant">site live</span></div>
+<div class="flex flex-col"><span class="text-3xl font-headline font-bold text-on-surface">4×</span><span class="text-label text-xs uppercase tracking-widest text-on-surface-variant">more traffic</span></div>
+<div class="flex flex-col"><span class="text-3xl font-headline font-bold text-on-surface">0</span><span class="text-label text-xs uppercase tracking-widest text-on-surface-variant">tech skills</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-8 bg-surface-container-low border-y border-outline-variant/10">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center justify-center gap-6">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+</div>
+<p class="font-body text-on-surface-variant text-center">Trusted by <span class="text-on-surface font-semibold">500+ small businesses</span> across 40+ industries</p>
+</div>
+</section>
+<section class="py-32 relative">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+<h2 class="font-headline text-5xl font-bold tracking-tight max-w-md">See it happen in 60 seconds</h2>
+<span class="text-label text-sm uppercase tracking-widest text-primary font-bold mb-2">Process</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative">
+<div class="group relative pt-16">
+<div class="text-8xl font-black text-outline-variant/10 absolute top-0 group-hover:text-primary/10 transition-colors">01</div>
+<div class="relative z-10"><h3 class="text-xl font-bold mb-4 font-headline">Tell us your business</h3><p class="text-on-surface-variant font-body">Complete a 3 min form about your services and brand.</p></div>
+</div>
+<div class="group relative pt-16">
+<div class="text-8xl font-black text-outline-variant/10 absolute top-0 group-hover:text-primary/10 transition-colors">02</div>
+<div class="relative z-10"><h3 class="text-xl font-bold mb-4 font-headline">AI builds everything</h3><p class="text-on-surface-variant font-body">Custom site, tailored content, and social strategy ready.</p></div>
+</div>
+<div class="group relative pt-16">
+<div class="text-8xl font-black text-outline-variant/10 absolute top-0 group-hover:text-primary/10 transition-colors">03</div>
+<div class="relative z-10"><h3 class="text-xl font-bold mb-4 font-headline">You approve &amp; go live</h3><p class="text-on-surface-variant font-body">Review your assets and launch with one single click.</p></div>
+</div>
+<div class="group relative pt-16">
+<div class="text-8xl font-black text-outline-variant/10 absolute top-0 group-hover:text-primary/10 transition-colors">04</div>
+<div class="relative z-10"><h3 class="text-xl font-bold mb-4 font-headline">Autopilot forever</h3><p class="text-on-surface-variant font-body">Weekly fresh blogs and social posts managed by AI.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-20">
+<h2 class="font-headline text-5xl font-bold mb-4">Simple pricing. No surprises.</h2>
+<p class="text-on-surface-variant text-lg">Choose the growth engine that fits your business stage.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container p-8 rounded-xl border border-outline-variant/10 flex flex-col">
+<h3 class="text-xl font-bold mb-2">Starter</h3>
+<div class="flex items-baseline gap-1 mb-8"><span class="text-4xl font-bold">$99</span><span class="text-on-surface-variant">/mo</span></div>
+<ul class="space-y-4 mb-12 flex-grow">
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>5-page site</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>1 AI image</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>2 blogs/mo</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>8 social posts</li>
+</ul>
+<a href="/preview"><button class="w-full py-3 rounded-md border border-outline-variant/30 font-bold hover:bg-surface-bright transition-colors">Choose Starter</button></a>
+</div>
+<div class="bg-surface-container-high p-8 rounded-xl border-2 border-primary/50 flex flex-col relative scale-105 shadow-[0_0_40px_rgba(163,166,255,0.1)]">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full">MOST POPULAR</div>
+<h3 class="text-xl font-bold mb-2">Pro</h3>
+<div class="flex items-baseline gap-1 mb-8"><span class="text-4xl font-bold">$299</span><span class="text-on-surface-variant">/mo</span></div>
+<ul class="space-y-4 mb-12 flex-grow">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>10-page site</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>3 AI images</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>4 blogs/mo</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>16 social posts</li>
+</ul>
+<a href="/preview"><button class="w-full py-4 rounded-md bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">Get Started with Pro</button></a>
+</div>
+<div class="bg-surface-container p-8 rounded-xl border border-outline-variant/10 flex flex-col">
+<h3 class="text-xl font-bold mb-2">Premium</h3>
+<div class="flex items-baseline gap-1 mb-8"><span class="text-4xl font-bold">$599</span><span class="text-on-surface-variant">/mo</span></div>
+<ul class="space-y-4 mb-12 flex-grow">
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>Full Stitch AI design</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>6 AI images</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>8 blogs/mo</li>
+<li class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-primary text-sm">check_circle</span>32 social posts</li>
+</ul>
+<a href="/preview"><button class="w-full py-3 rounded-md border border-outline-variant/30 font-bold hover:bg-surface-bright transition-colors">Choose Premium</button></a>
+</div>
+</div>
+</div>
+</section>
+<section class="py-40 relative overflow-hidden text-center bg-surface-container-lowest">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent"></div>
+<div class="max-w-4xl mx-auto px-8 relative z-10">
+<h2 class="font-headline text-5xl md:text-7xl font-bold mb-6 tracking-tight">Ready to see your site?</h2>
+<p class="text-xl text-on-surface-variant mb-12">Takes 60 seconds. No credit card required.</p>
+<a href="/preview"><button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary px-12 py-5 rounded-md font-bold text-xl hover:scale-105 transition-transform shadow-2xl shadow-primary/30">Build My Site →</button></a>
+</div>
+<div class="absolute left-1/2 -bottom-48 -translate-x-1/2 w-[800px] h-[400px] bg-primary/20 blur-[120px] rounded-full"></div>
+</section>
+</main>
+<footer class="bg-slate-950 w-full py-12 px-8 border-t border-slate-900">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+<div class="md:col-span-1">
+<div class="text-xl font-bold text-slate-100 mb-4 bg-gradient-to-br from-indigo-400 to-indigo-600 bg-clip-text text-transparent">Exsisto</div>
+<p class="text-slate-500 mb-6">Your business, brought to life.</p>
+</div>
+<div><h4 class="text-slate-200 font-bold mb-4">Platform</h4>
+<ul class="space-y-2">
+<li><a class="text-slate-500 hover:text-indigo-300 transition-colors" href="#">How It Works</a></li>
+<li><a class="text-slate-500 hover:text-indigo-300 transition-colors" href="/preview">Pricing</a></li>
+<li><a class="text-slate-500 hover:text-indigo-300 transition-colors" href="#">Examples</a></li>
+</ul></div>
+<div><h4 class="text-slate-200 font-bold mb-4">Company</h4>
+<ul class="space-y-2">
+<li><a class="text-slate-500 hover:text-indigo-300 transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-slate-500 hover:text-indigo-300 transition-colors" href="#">Terms of Service</a></li>
+</ul></div>
+<div></div>
+</div>
+<div class="max-w-7xl mx-auto px-8 mt-12 pt-8 border-t border-slate-900/50 flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="text-slate-500">© 2026 Exsisto. All rights reserved.</span>
+</div>
+</footer>
+</body></html>
