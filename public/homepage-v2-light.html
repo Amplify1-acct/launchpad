@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Exsisto — Variant 2: Clean Light</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/><style>body{font-family:'Inter',sans-serif;background:#f9f9fb;color:#1a1c1d;}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}</style></head><body>
+<nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-200/30 px-8 py-4 flex justify-between items-center">
+  <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:700;font-style:italic;">Exsisto</div>
+  <div class="flex gap-8 text-sm text-zinc-500"><a href="#">How It Works</a><a href="#">Pricing</a><a href="#">Examples</a></div>
+  <a href="/preview"><button class="bg-black text-white px-6 py-2 rounded-lg text-sm font-semibold">Get Started →</button></a>
+</nav>
+<main class="pt-32">
+  <section class="max-w-5xl mx-auto px-8 text-center py-24">
+    <h1 style="font-family:'Newsreader',serif;font-size:80px;font-weight:700;font-style:italic;letter-spacing:-2px;line-height:0.95;margin-bottom:24px;">Your entire digital presence.<br/>Done for you.</h1>
+    <p class="text-xl text-zinc-500 max-w-2xl mx-auto mb-10">Exsisto's AI builds your high-conversion website, handles your blog content, and automates your social media. You focus on your business.</p>
+    <div class="flex justify-center gap-4 mb-12">
+      <a href="/preview"><button class="bg-black text-white px-10 py-4 rounded-xl text-lg font-semibold">Get Started →</button></a>
+      <button class="flex items-center gap-2 text-black font-semibold border-b border-black pb-1">Watch Demo</button>
+    </div>
+    <div class="flex justify-center gap-4 flex-wrap">
+      <div class="bg-white px-6 py-3 rounded-full border border-zinc-200 shadow-sm text-sm font-semibold">⚡ 48h Site Live</div>
+      <div class="bg-white px-6 py-3 rounded-full border border-zinc-200 shadow-sm text-sm font-semibold">📈 4× More Traffic</div>
+      <div class="bg-white px-6 py-3 rounded-full border border-zinc-200 shadow-sm text-sm font-semibold">0 Tech Skills</div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="max-w-6xl mx-auto px-8 mb-24">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-zinc-200/50 mb-8">
+      <div class="bg-zinc-100 px-4 py-3 flex items-center gap-3">
+        <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-red-400/50"></div><div class="w-3 h-3 rounded-full bg-yellow-400/50"></div><div class="w-3 h-3 rounded-full bg-green-400/50"></div></div>
+        <div class="bg-white rounded-md px-4 py-1 text-xs text-zinc-400 text-center max-w-xs mx-auto">coastaldental.exsisto.ai</div>
+      </div>
+      <div style="height:480px;overflow:hidden;position:relative;">
+        <iframe id="demo-iframe" src="/stitch-templates/dental.html" style="width:200%;height:200%;border:none;transform:scale(0.5);transform-origin:top left;pointer-events:none;"></iframe>
+      </div>
+    </div>
+    <div class="grid grid-cols-6 gap-3">
+      <button onclick="switchDemo('dental','Coastal Dental',0)" id="t0" class="p-3 rounded-xl bg-white border-2 border-black shadow text-left"><div class="text-lg mb-1">🦷</div><div class="text-xs font-bold">Coastal Dental</div><div class="text-[9px] text-zinc-400">Santa Monica</div></button>
+      <button onclick="switchDemo('gym','Iron & Oak Gym',1)" id="t1" class="p-3 rounded-xl bg-white border border-zinc-200 hover:border-black text-left"><div class="text-lg mb-1">💪</div><div class="text-xs font-bold text-zinc-500">Iron & Oak Gym</div><div class="text-[9px] text-zinc-400">Austin, TX</div></button>
+      <button onclick="switchDemo('restaurant','Villa Rosso',2)" id="t2" class="p-3 rounded-xl bg-white border border-zinc-200 hover:border-black text-left"><div class="text-lg mb-1">🍝</div><div class="text-xs font-bold text-zinc-500">Villa Rosso</div><div class="text-[9px] text-zinc-400">Brooklyn, NY</div></button>
+      <button onclick="switchDemo('law','Summit Law',3)" id="t3" class="p-3 rounded-xl bg-white border border-zinc-200 hover:border-black text-left"><div class="text-lg mb-1">⚖️</div><div class="text-xs font-bold text-zinc-500">Summit Law</div><div class="text-[9px] text-zinc-400">Chicago, IL</div></button>
+      <button onclick="switchDemo('salon','Bloom Hair',4)" id="t4" class="p-3 rounded-xl bg-white border border-zinc-200 hover:border-black text-left"><div class="text-lg mb-1">✂️</div><div class="text-xs font-bold text-zinc-500">Bloom Hair</div><div class="text-[9px] text-zinc-400">Portland, OR</div></button>
+      <button onclick="switchDemo('hvac','Apex HVAC',5)" id="t5" class="p-3 rounded-xl bg-white border border-zinc-200 hover:border-black text-left"><div class="text-lg mb-1">❄️</div><div class="text-xs font-bold text-zinc-500">Apex HVAC</div><div class="text-[9px] text-zinc-400">Phoenix, AZ</div></button>
+    </div>
+    <div class="text-center mt-8"><a href="/preview" class="inline-block bg-black text-white px-10 py-4 rounded-full font-bold text-lg">Build Mine →</a></div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="bg-zinc-50 py-24 px-8">
+    <div class="max-w-5xl mx-auto">
+      <h2 style="font-family:'Newsreader',serif;font-size:56px;font-style:italic;font-weight:700;letter-spacing:-1px;margin-bottom:48px;">The Editorial Process</h2>
+      <div class="grid grid-cols-3 gap-16">
+        <div class="relative pt-12"><div style="position:absolute;top:0;left:-8px;font-family:'Newsreader',serif;font-size:120px;color:rgba(0,0,0,0.04);line-height:1;">01</div><h3 class="text-xl font-bold mb-3">Tell us your business</h3><p class="text-zinc-500">A 3-minute form about your services and brand. Our AI does the rest.</p></div>
+        <div class="relative pt-12"><div style="position:absolute;top:0;left:-8px;font-family:'Newsreader',serif;font-size:120px;color:rgba(0,0,0,0.04);line-height:1;">02</div><h3 class="text-xl font-bold mb-3">AI builds everything</h3><p class="text-zinc-500">Custom site, tailored content, and social strategy — ready in 48 hours.</p></div>
+        <div class="relative pt-12"><div style="position:absolute;top:0;left:-8px;font-family:'Newsreader',serif;font-size:120px;color:rgba(0,0,0,0.04);line-height:1;">03</div><h3 class="text-xl font-bold mb-3">You approve & go live</h3><p class="text-zinc-500">Review your site in our portal. One click and you're live to the world.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="py-24 px-8 max-w-5xl mx-auto">
+    <h2 class="text-center text-4xl font-bold mb-2" style="font-family:'Newsreader',serif;font-style:italic;">Simple pricing.</h2>
+    <p class="text-center text-zinc-500 mb-16">No surprises. No contracts.</p>
+    <div class="grid grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-2xl border border-zinc-200"><h3 class="font-bold text-xl mb-2">Starter</h3><div class="text-4xl font-bold mb-6">$99<span class="text-lg text-zinc-400 font-normal">/mo</span></div><ul class="space-y-3 text-sm text-zinc-600 mb-8"><li>✓ 5-page website</li><li>✓ 1 AI image</li><li>✓ 2 blogs/mo</li><li>✓ 8 social posts</li></ul><a href="/preview"><button class="w-full py-3 border border-black font-bold rounded-lg">Choose Starter</button></a></div>
+      <div class="bg-white p-8 rounded-2xl border-2 border-black shadow-lg transform -translate-y-2 relative"><div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-bold uppercase px-4 py-1 rounded-full">Most Popular</div><h3 class="font-bold text-xl mb-2">Pro</h3><div class="text-4xl font-bold mb-6">$299<span class="text-lg text-zinc-400 font-normal">/mo</span></div><ul class="space-y-3 text-sm mb-8"><li>✓ 10-page website</li><li>✓ 3 AI images</li><li>✓ 4 blogs/mo</li><li>✓ 16 social posts</li></ul><a href="/preview"><button class="w-full py-3 bg-black text-white font-bold rounded-lg">Get Started with Pro</button></a></div>
+      <div class="bg-white p-8 rounded-2xl border border-zinc-200"><h3 class="font-bold text-xl mb-2">Premium</h3><div class="text-4xl font-bold mb-6">$599<span class="text-lg text-zinc-400 font-normal">/mo</span></div><ul class="space-y-3 text-sm text-zinc-600 mb-8"><li>✓ Full Stitch AI design</li><li>✓ 6 AI images</li><li>✓ 8 blogs/mo</li><li>✓ 32 social posts</li></ul><a href="/preview"><button class="w-full py-3 border border-black font-bold rounded-lg">Choose Premium</button></a></div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="py-24 px-8 bg-zinc-50">
+    <div class="max-w-3xl mx-auto text-center">
+      <p style="font-family:'Newsreader',serif;font-size:36px;font-style:italic;line-height:1.4;margin-bottom:24px;">"I went from zero web presence to a full professional site in two days. My phone started ringing that week."</p>
+      <p class="font-bold">Mike D. <span class="text-zinc-400 font-normal">· Plumber, Newark NJ</span></p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-32 px-8 text-center bg-white">
+    <h2 style="font-family:'Newsreader',serif;font-size:64px;font-style:italic;font-weight:700;letter-spacing:-2px;margin-bottom:12px;">Ready to see your site?</h2>
+    <p class="text-zinc-400 mb-10 text-lg">Takes 60 seconds. No credit card required.</p>
+    <a href="/preview"><button class="bg-black text-white px-12 py-5 rounded-xl text-xl font-bold hover:scale-105 transition-transform">Build My Site →</button></a>
+  </section>
+</main>
+<footer class="border-t border-zinc-200 py-12 px-8 bg-white">
+  <div class="max-w-5xl mx-auto flex justify-between items-center">
+    <div style="font-family:'Newsreader',serif;font-size:20px;font-style:italic;font-weight:700;">Exsisto</div>
+    <p class="text-zinc-400 text-sm">Your business, brought to life.</p>
+    <p class="text-zinc-400 text-sm">© 2026 Exsisto</p>
+  </div>
+</footer>
+<script>
+var demos=['dental','gym','restaurant','law','salon','hvac'];var cur=0;var timer;
+function switchDemo(ind,name,idx){document.getElementById('demo-iframe').src='/stitch-templates/'+ind+'.html';for(var i=0;i<6;i++){var t=document.getElementById('t'+i);t.style.borderWidth=i===idx?'2px':'1px';t.style.borderColor=i===idx?'#000':'#e5e7eb';}cur=idx;clearInterval(timer);startAuto();}
+function startAuto(){timer=setInterval(function(){cur=(cur+1)%6;switchDemo(demos[cur],'',cur);},4000);}
+startAuto();
+</script>
+</body></html>
