@@ -4,100 +4,110 @@ import { createAdminClient } from "@/lib/supabase-server";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
-  const userId = searchParams.get("state");
+  const stateRaw = searchParams.get("state");
   const error = searchParams.get("error");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-  if (error || !code || !userId) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?error=facebook_auth_failed`);
+  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/social`;
+
+  if (error || !code || !stateRaw) {
+    return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=facebook`);
   }
 
-  const clientId = process.env.FACEBOOK_APP_ID!;
-  const clientSecret = process.env.FACEBOOK_APP_SECRET!;
-  const redirectUri = `${siteUrl}/api/auth/facebook/callback`;
+  let state: { business_id: string; user_id: string };
+  try { state = JSON.parse(stateRaw); }
+  catch { return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=facebook`); }
+
+  const appId = process.env.FACEBOOK_APP_ID!;
+  const appSecret = process.env.FACEBOOK_APP_SECRET!;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/facebook/callback`;
 
   try {
-    // Exchange code for access token
+    // Exchange code for short-lived token
     const tokenRes = await fetch(
-      `https://graph.facebook.com/v18.0/oauth/access_token?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${clientSecret}&code=${code}`
+      `https://graph.facebook.com/v18.0/oauth/access_token?` +
+      `client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&client_secret=${appSecret}&code=${code}`
     );
     const tokenData = await tokenRes.json();
-    if (tokenData.error) throw new Error(tokenData.error.message);
+    if (!tokenData.access_token) throw new Error(tokenData.error?.message || "No token");
 
-    const accessToken = tokenData.access_token;
-
-    // Get user info
-    const meRes = await fetch(`https://graph.facebook.com/me?fields=id,name,picture&access_token=${accessToken}`);
-    const me = await meRes.json();
-
-    // Get pages
-    const pagesRes = await fetch(`https://graph.facebook.com/me/accounts?access_token=${accessToken}`);
-    const pagesData = await pagesRes.json();
-    const page = pagesData.data?.[0];
-
-    // Get long-lived token
-    const llRes = await fetch(
-      `https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${clientId}&client_secret=${clientSecret}&fb_exchange_token=${accessToken}`
+    // Exchange for long-lived token (60 days)
+    const longLivedRes = await fetch(
+      `https://graph.facebook.com/v18.0/oauth/access_token?` +
+      `grant_type=fb_exchange_token&client_id=${appId}` +
+      `&client_secret=${appSecret}&fb_exchange_token=${tokenData.access_token}`
     );
-    const llData = await llRes.json();
-    const longLivedToken = llData.access_token || accessToken;
+    const longLivedData = await longLivedRes.json();
+    const userToken = longLivedData.access_token || tokenData.access_token;
+
+    // Get user profile
+    const profileRes = await fetch(
+      `https://graph.facebook.com/v18.0/me?fields=id,name,picture&access_token=${userToken}`
+    );
+    const profile = await profileRes.json();
+
+    // Get pages managed by this user
+    const pagesRes = await fetch(
+      `https://graph.facebook.com/v18.0/me/accounts?access_token=${userToken}`
+    );
+    const pagesData = await pagesRes.json();
+    const page = pagesData.data?.[0]; // Use first page for now
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 58); // ~60 day token
 
     const supabase = createAdminClient();
 
-    // Get business_id for this user
-    const { data: customer } = await supabase
-      .from("customers").select("id").eq("user_id", userId).single();
-    if (!customer) throw new Error("Customer not found");
-
-    const { data: business } = await supabase
-      .from("businesses").select("id").eq("customer_id", customer.id).single();
-    if (!business) throw new Error("Business not found");
-
-    // Save Facebook connection
+    // Upsert Facebook account
     await supabase.from("social_accounts").upsert({
-      business_id: business.id,
+      business_id: state.business_id,
       platform: "facebook",
-      account_id: me.id,
-      account_name: me.name,
-      account_picture: me.picture?.data?.url,
-      access_token: longLivedToken,
-      page_id: page?.id,
-      page_name: page?.name,
-      page_access_token: page?.access_token,
+      account_id: profile.id,
+      account_name: profile.name,
+      account_picture: profile.picture?.data?.url || null,
+      access_token: userToken,
+      token_expires_at: expiresAt.toISOString(),
+      page_id: page?.id || null,
+      page_name: page?.name || null,
+      page_access_token: page?.access_token || null,
       status: "connected",
       connected_at: new Date().toISOString(),
     }, { onConflict: "business_id,platform" });
 
-    // Also save Instagram (connected via Facebook page)
-    if (page) {
+    // Also handle Instagram if connected to this Facebook account
+    if (page?.id && page?.access_token) {
       const igRes = await fetch(
         `https://graph.facebook.com/v18.0/${page.id}?fields=instagram_business_account&access_token=${page.access_token}`
       );
       const igData = await igRes.json();
-      if (igData.instagram_business_account) {
-        const igId = igData.instagram_business_account.id;
-        const igInfoRes = await fetch(
-          `https://graph.facebook.com/v18.0/${igId}?fields=name,username,profile_picture_url&access_token=${page.access_token}`
+      const igAccountId = igData.instagram_business_account?.id;
+
+      if (igAccountId) {
+        const igProfileRes = await fetch(
+          `https://graph.facebook.com/v18.0/${igAccountId}?fields=id,name,profile_picture_url,username&access_token=${page.access_token}`
         );
-        const igInfo = await igInfoRes.json();
+        const igProfile = await igProfileRes.json();
 
         await supabase.from("social_accounts").upsert({
-          business_id: business.id,
+          business_id: state.business_id,
           platform: "instagram",
-          account_id: igId,
-          account_name: igInfo.username || igInfo.name,
-          account_picture: igInfo.profile_picture_url,
+          account_id: igAccountId,
+          account_name: igProfile.name || igProfile.username || "Instagram",
+          account_picture: igProfile.profile_picture_url || null,
           access_token: page.access_token,
+          token_expires_at: expiresAt.toISOString(),
           page_id: page.id,
+          page_name: page.name,
+          page_access_token: page.access_token,
           status: "connected",
           connected_at: new Date().toISOString(),
         }, { onConflict: "business_id,platform" });
       }
     }
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?connected=facebook`);
+    return NextResponse.redirect(`${dashboardUrl}?connect=success&platform=facebook`);
   } catch (err: any) {
     console.error("Facebook OAuth error:", err);
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?error=facebook_auth_failed`);
+    return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=facebook&msg=${encodeURIComponent(err.message)}`);
   }
 }
