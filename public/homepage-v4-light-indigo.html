@@ -14,6 +14,87 @@ body { background:#fcf8ff; color:#1b1b25; font-family:'Inter',sans-serif; }
 .indigo-glow { box-shadow:0 10px 40px -10px rgba(99,102,241,0.15); }
 .surface-low { background:#f5f2ff; }
 </style>
+
+<style id="responsive-overrides">
+/* ── MOBILE-FIRST RESPONSIVE OVERRIDES ─────────────────────────────────── */
+
+/* Nav — hamburger menu on mobile */
+.mobile-menu { display: none; flex-direction: column; gap: 12px; padding: 16px; position: absolute; top: 100%; left: 0; right: 0; z-index: 100; }
+.mobile-menu.open { display: flex; }
+.menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+
+@media (max-width: 767px) {
+  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+  .desktop-nav { display: none !important; }
+
+  /* Hero */
+  h1 { font-size: 2.4rem !important; line-height: 1.05 !important; letter-spacing: -1px !important; }
+  section.hero-section, section:first-of-type { padding-top: 100px !important; padding-bottom: 60px !important; min-height: auto !important; }
+
+  /* Demo section */
+  #demo-preview, [style*="height:520px"], [style*="height: 520px"] { height: 260px !important; }
+  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+
+  /* Browser URL bar */
+  [style*="max-width:380px"] { max-width: 160px !important; font-size: 10px !important; }
+
+  /* Demo section heading */
+  .demo-section h2 { font-size: 2rem !important; }
+
+  /* Pricing — remove scale on Pro card */
+  .scale-105 { transform: none !important; }
+  .grid.md\:grid-cols-3 { gap: 16px !important; }
+
+  /* How it works ghost numbers */
+  .text-8xl { font-size: 3rem !important; }
+
+  /* Section padding */
+  .py-32 { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .py-40 { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .py-24 { padding-top: 40px !important; padding-bottom: 40px !important; }
+  .mb-24 { margin-bottom: 32px !important; }
+
+  /* Horizontal padding */
+  .px-8 { padding-left: 16px !important; padding-right: 16px !important; }
+  [style*="padding:80px 64px"] { padding: 48px 16px !important; }
+  [style*="padding: 80px 64px"] { padding: 48px 16px !important; }
+  [style*="padding:120px 64px"] { padding: 60px 16px !important; }
+
+  /* Hero CTA buttons */
+  .flex-col.sm\:flex-row { flex-direction: column !important; }
+  button, a > button { width: 100% !important; justify-content: center !important; }
+
+  /* Stats row */
+  .flex.flex-wrap.gap-8 { gap: 24px !important; }
+
+  /* Footer grid */
+  .grid.grid-cols-1.md\:grid-cols-4 { gap: 24px !important; }
+
+  /* CTA section headline */
+  .text-5xl { font-size: 2rem !important; }
+  .text-7xl { font-size: 2.4rem !important; }
+
+  /* Pricing section */
+  [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+
+  /* Editorial hero stacked cards — hide on mobile */
+  .col-span-5.relative.h-\[520px\] { display: none !important; }
+  [style*="height:520px;overflow:hidden;position:relative;background:#fff"] { height: 220px !important; }
+
+  /* Build Mine button width fix */
+  a[href*="/preview"] button, a[href*="preview"] { width: auto !important; }
+  .demo-cta a, #demo-cta a { width: auto !important; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2rem !important; }
+  #demo-thumbnails, [style*="grid-template-columns:repeat(6"] { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="height:520px"], [style*="height: 520px"] { height: 200px !important; }
+  .text-4xl { font-size: 1.6rem !important; }
+}
+</style>
+
 </head>
 <body>
 
@@ -21,7 +102,7 @@ body { background:#fcf8ff; color:#1b1b25; font-family:'Inter',sans-serif; }
 <header class="sticky top-0 z-50 glass-nav border-b border-slate-100 shadow-sm">
   <div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
     <div class="text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent" style="font-family:'Space Grotesk',sans-serif;">Exsisto</div>
-    <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-500">
+    <nav class="hidden md:flex gap-8 desktop-nav text-sm font-medium text-slate-500">
       <a href="#" class="hover:text-indigo-600 transition-colors">How It Works</a>
       <a href="#" class="hover:text-indigo-600 transition-colors">Pricing</a>
       <a href="#" class="hover:text-indigo-600 transition-colors">Examples</a>
@@ -247,4 +328,18 @@ function v4Switch(ind,url,idx){
 function startAuto(){timer=setInterval(function(){cur=(cur+1)%6;v4Switch(demos[cur],urls[cur],cur);},4000);}
 startAuto();
 </script>
+
+<script>
+// Hamburger menu
+(function() {
+  var toggle = document.getElementById('menu-toggle');
+  var menu = document.getElementById('mobile-menu');
+  if (toggle && menu) {
+    toggle.addEventListener('click', function() {
+      menu.classList.toggle('open');
+    });
+  }
+})();
+</script>
+
 </body></html>
