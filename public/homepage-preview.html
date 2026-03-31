@@ -36,6 +36,122 @@ body { background-color: #0e0e13; color: #f9f5fd; font-family: 'Inter', sans-ser
 </style>
 
 
+
+<style id="mobile-layout-fixes">
+/* ── Kill any leftover old nav remnants ───────────────────────────── */
+header:not(#exsisto-nav) { display: none !important; }
+
+/* ── Body top offset for fixed nav ───────────────────────────────── */
+body > main:first-of-type,
+body > section:first-of-type { margin-top: 64px; }
+
+@media (max-width: 767px) {
+  /* ── Pricing: stack single column on mobile ───────────────────── */
+  /* Tailwind grid */
+  .grid.grid-cols-1.md\:grid-cols-3,
+  .grid.md\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  /* Inline style grids (v2, v3) */
+  [style*="grid-template-columns:repeat(3"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* ── Pro card: remove scale, fix badge ───────────────────────── */
+  .scale-105 { transform: none !important; margin-top: 0 !important; }
+  .absolute.-top-4 { top: -12px !important; }
+  [style*="transform:translateY(-8px)"] { transform: none !important; }
+  [style*="transform: translateY(-8px)"] { transform: none !important; }
+
+  /* ── Pricing card padding ─────────────────────────────────────── */
+  .p-8 { padding: 20px !important; }
+  [style*="padding:48px"] { padding: 24px !important; }
+  [style*="padding: 48px"] { padding: 24px !important; }
+  [style*="padding:32px"] { padding: 20px !important; }
+  [style*="padding: 32px"] { padding: 20px !important; }
+
+  /* ── Hero headline ─────────────────────────────────────────────── */
+  h1 {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  /* ── Section headings ─────────────────────────────────────────── */
+  h2 {
+    font-size: clamp(1.6rem, 6vw, 2.4rem) !important;
+    line-height: 1.15 !important;
+  }
+  [style*="font-size:56px"], [style*="font-size: 56px"],
+  [style*="font-size:72px"], [style*="font-size: 72px"] {
+    font-size: clamp(1.8rem, 7vw, 2.6rem) !important;
+    letter-spacing: -1px !important;
+  }
+
+  /* ── Demo browser: shorter on mobile ─────────────────────────── */
+  [style*="height:520px"], [style*="height: 520px"],
+  [style*="height:500px"], [style*="height: 500px"] {
+    height: 240px !important;
+  }
+
+  /* ── Demo thumbnails: 3 col → 2 col on very small ──────────────  */
+  #demo-thumbnails {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* ── Section vertical padding ─────────────────────────────────── */
+  .py-32 { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .py-40, .py-24 { padding-top: 40px !important; padding-bottom: 40px !important; }
+  [style*="padding:80px 64px"], [style*="padding: 80px 64px"] { padding: 48px 20px !important; }
+  [style*="padding:120px 64px"] { padding: 56px 20px !important; }
+  [style*="padding:40px 64px"] { padding: 24px 20px !important; }
+
+  /* ── Horizontal padding ────────────────────────────────────────── */
+  .px-8 { padding-left: 20px !important; padding-right: 20px !important; }
+  .max-w-7xl.mx-auto.px-8 { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* ── Hero CTAs: stack ──────────────────────────────────────────── */
+  .flex.flex-col.sm\:flex-row { flex-direction: column !important; }
+  .flex-col.sm\:flex-row > a, .flex-col.sm\:flex-row > button { width: 100% !important; }
+
+  /* ── How it works grid ─────────────────────────────────────────── */
+  .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px 16px !important;
+  }
+  [style*="grid-template-columns:repeat(4"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px 16px !important;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────── */
+  .grid.grid-cols-1.md\:grid-cols-4 { gap: 20px !important; }
+  [style*="justify-content:space-between"] { flex-direction: column !important; gap: 16px !important; align-items: flex-start !important; }
+
+  /* ── Editorial hero cards stack ───────────────────────────────── */
+  .lg\:col-span-5 { display: none !important; }
+  .lg\:col-span-7 { grid-column: span 12 !important; }
+
+  /* ── Stats row ─────────────────────────────────────────────────── */
+  .flex.flex-wrap.gap-8, .flex.flex-wrap.gap-12 { gap: 20px !important; }
+
+  /* ── CTA buttons ───────────────────────────────────────────────── */
+  a > button, .btn-primary { min-width: 0 !important; }
+}
+
+@media (max-width: 480px) {
+  #demo-thumbnails { grid-template-columns: repeat(2, 1fr) !important; }
+  [style*="height:240px"], [style*="height: 240px"] { height: 200px !important; }
+}
+</style>
+
 </head>
 <body class="selection:bg-primary selection:text-on-primary">
 <!-- ══ RESPONSIVE NAV ══════════════════════════════════════════════ -->
