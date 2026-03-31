@@ -4,19 +4,22 @@ import { createAdminClient } from "@/lib/supabase-server";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
-  const state = searchParams.get("state");
+  const stateB64 = searchParams.get("state");
   const error = searchParams.get("error");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-  const userId = state?.split(":")[0];
+  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/social`;
 
-  if (error || !code || !userId) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?error=tiktok_auth_failed`);
+  if (error || !code || !stateB64) {
+    return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=tiktok`);
   }
+
+  let state: { business_id: string; user_id: string; cv: string };
+  try { state = JSON.parse(Buffer.from(stateB64, "base64").toString()); }
+  catch { return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=tiktok`); }
 
   const clientKey = process.env.TIKTOK_CLIENT_KEY!;
   const clientSecret = process.env.TIKTOK_CLIENT_SECRET!;
-  const redirectUri = `${siteUrl}/api/auth/tiktok/callback`;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/tiktok/callback`;
 
   try {
     // Exchange code for token
@@ -29,44 +32,40 @@ export async function GET(request: Request) {
         code,
         grant_type: "authorization_code",
         redirect_uri: redirectUri,
+        code_verifier: state.cv,
       }),
     });
     const tokenData = await tokenRes.json();
-    if (tokenData.error) throw new Error(tokenData.error_description || tokenData.error);
+    if (!tokenData.access_token) throw new Error(tokenData.message || "No token");
 
     // Get user info
-    const userRes = await fetch("https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,avatar_url", {
-      headers: { Authorization: `Bearer ${tokenData.access_token}` },
-    });
-    const userData = await userRes.json();
-    const tikUser = userData.data?.user;
+    const profileRes = await fetch(
+      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,avatar_url",
+      { headers: { Authorization: `Bearer ${tokenData.access_token}` } }
+    );
+    const profileData = await profileRes.json();
+    const profile = profileData.data?.user || {};
+
+    const expiresAt = new Date();
+    expiresAt.setSeconds(expiresAt.getSeconds() + (tokenData.expires_in || 86400));
 
     const supabase = createAdminClient();
-
-    const { data: customer } = await supabase
-      .from("customers").select("id").eq("user_id", userId).single();
-    if (!customer) throw new Error("Customer not found");
-
-    const { data: business } = await supabase
-      .from("businesses").select("id").eq("customer_id", customer.id).single();
-    if (!business) throw new Error("Business not found");
-
     await supabase.from("social_accounts").upsert({
-      business_id: business.id,
+      business_id: state.business_id,
       platform: "tiktok",
-      account_id: tikUser?.open_id,
-      account_name: tikUser?.display_name,
-      account_picture: tikUser?.avatar_url,
+      account_id: profile.open_id || tokenData.open_id,
+      account_name: profile.display_name || "TikTok Account",
+      account_picture: profile.avatar_url || null,
       access_token: tokenData.access_token,
-      refresh_token: tokenData.refresh_token,
-      token_expires_at: new Date(Date.now() + tokenData.expires_in * 1000).toISOString(),
+      refresh_token: tokenData.refresh_token || null,
+      token_expires_at: expiresAt.toISOString(),
       status: "connected",
       connected_at: new Date().toISOString(),
     }, { onConflict: "business_id,platform" });
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?connected=tiktok`);
+    return NextResponse.redirect(`${dashboardUrl}?connect=success&platform=tiktok`);
   } catch (err: any) {
     console.error("TikTok OAuth error:", err);
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?error=tiktok_auth_failed`);
+    return NextResponse.redirect(`${dashboardUrl}?connect=error&platform=tiktok&msg=${encodeURIComponent(err.message)}`);
   }
 }
