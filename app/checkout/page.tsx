@@ -61,6 +61,9 @@ function CheckoutContent() {
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
 
   // Site data passed from preview page via sessionStorage
   const [siteData, setSiteData] = useState<any>(null);
@@ -87,24 +90,8 @@ function CheckoutContent() {
     }
     setLoading(true);
     setError("");
-    try {
-      const res = await fetch("/api/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan: selectedPlan,
-          email,
-          businessName,
-          siteData,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      window.location.href = data.url;
-    } catch (e: any) {
-      setError(e.message);
-      setLoading(false);
-    }
+    // TODO: replace with Stripe before launch
+    window.location.href = "/dashboard";
   }
 
   return (
@@ -218,11 +205,58 @@ function CheckoutContent() {
             />
           </div>
 
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#777", marginBottom: 4 }}>
+              Card Number
+            </label>
+            <input
+              type="text"
+              value={cardNumber}
+              onChange={e => setCardNumber(e.target.value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim())}
+              placeholder="1234 5678 9012 3456"
+              style={{ width: "100%", padding: "0.75rem 1rem", border: "1.5px solid #e4e4e0", borderRadius: 3, fontSize: "0.95rem", fontFamily: "inherit", letterSpacing: "0.05em" }}
+            />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.5rem" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#777", marginBottom: 4 }}>
+                Expiry
+              </label>
+              <input
+                type="text"
+                value={cardExpiry}
+                onChange={e => {
+                  const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                  setCardExpiry(v.length > 2 ? v.slice(0,2) + "/" + v.slice(2) : v);
+                }}
+                placeholder="MM/YY"
+                style={{ width: "100%", padding: "0.75rem 1rem", border: "1.5px solid #e4e4e0", borderRadius: 3, fontSize: "0.95rem", fontFamily: "inherit" }}
+              />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#777", marginBottom: 4 }}>
+                CVC
+              </label>
+              <input
+                type="text"
+                value={cardCvc}
+                onChange={e => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                placeholder="123"
+                style={{ width: "100%", padding: "0.75rem 1rem", border: "1.5px solid #e4e4e0", borderRadius: 3, fontSize: "0.95rem", fontFamily: "inherit" }}
+              />
+            </div>
+          </div>
+
           {error && (
             <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 3, padding: "0.75rem", fontSize: "0.82rem", color: "#dc2626", marginBottom: "1rem" }}>
               {error}
             </div>
           )}
+
+          <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 3, padding: "0.6rem 0.9rem", fontSize: "0.75rem", color: "#92400e", marginBottom: "1rem", textAlign: "center" }}>
+            🧪 Test mode — card details are not required and no charge will be made
+          </div>
 
           <button
             onClick={handleCheckout}
@@ -236,7 +270,7 @@ function CheckoutContent() {
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
-            {loading ? "Redirecting to payment..." : `Start Free Trial — ${PLANS.find(p => p.id === selectedPlan)?.price}/mo after trial →`}
+            {loading ? "Setting up your account..." : `Start Free Trial — ${PLANS.find(p => p.id === selectedPlan)?.price}/mo after trial →`}
           </button>
 
           <div style={{ textAlign: "center", marginTop: "1rem", fontSize: "0.75rem", color: "#aaa", lineHeight: 1.6 }}>
@@ -265,3 +299,4 @@ export default function CheckoutPage() {
     </Suspense>
   );
 }
+
