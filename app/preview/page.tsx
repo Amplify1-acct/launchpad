@@ -545,7 +545,7 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 function PreviewPageInner() {
   const searchParams = useSearchParams();
-  const theme = searchParams.get("theme") || "dark";
+  const theme = searchParams.get("theme") || "light";
   const [step, setStep] = useState(0);
   const [industry, setIndustry] = useState("");
   const [bizType, setBizType] = useState("");
