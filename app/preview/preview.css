@@ -1458,3 +1458,327 @@
   font-weight: 800;
   color: var(--pg-accent);
 }
+
+
+/* ─── ROW LABELS ─────────────────────────────────────────────────────────── */
+.site-row-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--pg-dim);
+  margin-bottom: 14px;
+}
+
+/* ─── ROW 1: SITE CARDS ──────────────────────────────────────────────────── */
+.site-cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.site-card {
+  border: 1.5px solid var(--pg-border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.site-card:hover { border-color: var(--pg-accent); }
+
+.site-card-selected {
+  border-color: var(--pg-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pg-accent) 15%, transparent);
+}
+
+.site-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--pg-surface);
+  border-bottom: 1px solid var(--pg-border);
+}
+
+.site-card-name { font-size: 12px; font-weight: 700; color: var(--pg-text); flex: 1; }
+
+.site-card-popular {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--pg-accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.site-card-preview-btn {
+  font-size: 11px;
+  color: var(--pg-accent);
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.site-card-iframe-wrap {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  background: var(--pg-surface);
+}
+
+.site-card-iframe {
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  border: none;
+  pointer-events: none;
+}
+
+.site-card-iframe-overlay {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.site-card-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-card-footer {
+  padding: 8px 14px;
+  border-top: 1px solid var(--pg-border);
+  background: var(--pg-surface);
+}
+
+.site-card-check {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pg-accent);
+}
+
+/* ─── ROW 2: SOCIAL POSTS ────────────────────────────────────────────────── */
+.social-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.social-post-card {
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.social-post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--pg-border);
+}
+
+.social-avatar-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.social-biz-name { font-size: 13px; font-weight: 700; color: var(--pg-text); }
+.social-platform-name { font-size: 11px; color: var(--pg-dim); margin-top: 1px; }
+
+/* Wide 16:9 for Facebook */
+.social-img-wide {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background: var(--pg-border);
+}
+
+/* Square 1:1 for Instagram */
+.social-img-square {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--pg-border);
+}
+
+/* Portrait 9:16 for TikTok — show cropped portrait */
+.social-img-portrait {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--pg-border);
+}
+
+.social-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--pg-dim);
+}
+
+.social-post-text {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--pg-mid);
+  line-height: 1.7;
+  white-space: pre-line;
+  min-height: 60px;
+}
+
+.social-loading-text {
+  height: 12px;
+  background: var(--pg-border);
+  border-radius: 6px;
+  width: 80%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+.social-engagement {
+  display: flex;
+  gap: 16px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--pg-border);
+  font-size: 12px;
+  color: var(--pg-dim);
+}
+
+/* ─── ROW 3: BLOG + PLAN ─────────────────────────────────────────────────── */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.blog-card {
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.blog-card-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--pg-accent);
+}
+
+.blog-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pg-text);
+  line-height: 1.35;
+  letter-spacing: -0.2px;
+}
+
+.blog-card-excerpt {
+  font-size: 13px;
+  color: var(--pg-mid);
+  line-height: 1.75;
+}
+
+.blog-card-meta {
+  font-size: 11px;
+  color: var(--pg-dim);
+}
+
+.blog-card-note {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pg-accent);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--pg-border);
+}
+
+.blog-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0;
+  color: var(--pg-mid);
+  font-size: 13px;
+}
+
+.plan-chooser {
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.plan-chooser-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--pg-dim);
+  margin-bottom: 12px;
+}
+
+.plan-chooser-divider {
+  height: 1px;
+  background: var(--pg-border);
+  margin: 14px 0;
+}
+
+/* ─── MODAL DEVICE TOGGLE ────────────────────────────────────────────────── */
+.fs-modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: var(--pg-surface);
+}
+
+.device-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.device-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--pg-border);
+  background: transparent;
+  color: var(--pg-mid);
+  cursor: pointer;
+}
+
+.device-btn-active {
+  background: var(--pg-accent);
+  border-color: var(--pg-accent);
+  color: #fff;
+}
+
+.fs-iframe { width: 100%; height: 100%; border: none; border-radius: 8px; }
