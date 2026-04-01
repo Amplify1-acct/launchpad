@@ -514,8 +514,10 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
     setLoading(true); setError("");
     try {
       const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, phone, planId }) });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error||"Signup failed"); }
-      router.push("/checkout?plan="+planId);
+      const d = await res.json();
+      if (!res.ok) { throw new Error(d.error||"Signup failed"); }
+      const bizId = d.businessId || "";
+      router.push(`/checkout/success${bizId ? `?business_id=${bizId}` : ""}`);
     } catch(err: unknown) { setError(err instanceof Error ? err.message : "Something went wrong"); setLoading(false); }
   }
 
