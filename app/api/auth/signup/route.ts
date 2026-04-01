@@ -60,6 +60,7 @@ export async function POST(request: Request) {
         phone: phone || "",
         email,
         subdomain: slug,
+        description: `${businessName} — professional ${industry || "services"} in ${city || "your area"}`,
       })
       .select()
       .single();
