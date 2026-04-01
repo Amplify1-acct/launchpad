@@ -308,7 +308,7 @@ function StepDetails({ industry, bizType, onNext, onBack }: {
             <button
               key={s}
               onClick={() => toggleService(s)}
-              className={services.includes(s) ? "service-chip service-chip-selected" : "service-chip"}
+              className={services.includes(s) ? "service-chip active" : "service-chip"}
               style={{ fontFamily: "inherit" }}
             >
               {services.includes(s) ? "✓ " : ""}{s}
