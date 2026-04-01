@@ -3,6 +3,7 @@ import "./preview.css";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
 
 interface AIContent {
   headline: string; tagline: string; subtext: string;
@@ -513,10 +514,18 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
     if (password.length < 8) return setError("Password must be at least 8 characters");
     setLoading(true); setError("");
     try {
+      // 1. Create the account server-side
       const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, phone, planId }) });
       const d = await res.json();
       if (!res.ok) { throw new Error(d.error||"Signup failed"); }
       const bizId = d.businessId || "";
+
+      // 2. Sign in client-side to establish browser session
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw new Error("Account created but sign-in failed. Please log in.");
+
+      // 3. Redirect to success page
       router.push(`/checkout/success${bizId ? `?business_id=${bizId}` : ""}`);
     } catch(err: unknown) { setError(err instanceof Error ? err.message : "Something went wrong"); setLoading(false); }
   }
