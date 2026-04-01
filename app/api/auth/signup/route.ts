@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { email, password, businessName, industry, city, phone, planId } = body;
+  const { email, password, businessName, industry, city, phone, planId, description, years, differentiator, stat, statLabel, services } = body;
 
   if (!email || !password || !businessName) {
     return NextResponse.json({ error: "email, password, and businessName are required" }, { status: 400 });
@@ -60,7 +60,12 @@ export async function POST(request: Request) {
         phone: phone || "",
         email,
         subdomain: slug,
-        description: `${businessName} — professional ${industry || "services"} in ${city || "your area"}`,
+        description: description || `${businessName} — professional ${industry || "services"} in ${city || "your area"}`,
+        years_in_business: years || null,
+        differentiator: differentiator || null,
+        key_stat: stat || null,
+        key_stat_label: statLabel || null,
+        services: services?.length ? services : null,
       })
       .select()
       .single();
