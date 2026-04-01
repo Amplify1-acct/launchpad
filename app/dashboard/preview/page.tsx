@@ -89,6 +89,17 @@ export default function WebsitePreviewPage() {
     setSubmittedFeedback(true);
     setShowFeedback(false);
 
+    // Detect template preference from feedback keywords
+    const lower = feedback.toLowerCase();
+    let templateOverride: string | undefined;
+    if (lower.match(/light|clean|bright|white|minimal|professional|simple/)) {
+      templateOverride = "skeleton-clean";
+    } else if (lower.match(/warm|cozy|classic|elegant|serif|traditional/)) {
+      templateOverride = "skeleton-warm";
+    } else if (lower.match(/bold|dark|dramatic|strong|impact/)) {
+      templateOverride = "skeleton-bold";
+    }
+
     // Update status in Supabase
     await supabase.from("websites").update({
       status: "needs_revision",
@@ -96,23 +107,27 @@ export default function WebsitePreviewPage() {
       revision_requested_at: new Date().toISOString(),
     }).eq("business_id", business.id);
 
-    // Show regenerating state
     setApproving(true);
 
-    // Trigger regeneration and wait for it
     try {
+      // 1. Regenerate with revision notes + optional template switch
       const res = await fetch("/api/generate-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           business_id: business.id,
-          template_name: website?.template_name,
+          template_override: templateOverride,
           revision_notes: feedback,
         }),
       });
 
       if (res.ok) {
-        // Reload the page to show the new site
+        // 2. Auto-deploy to subdomain immediately
+        await fetch("/api/deploy-site", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ business_id: business.id }),
+        });
         window.location.reload();
       } else {
         router.push("/dashboard");
@@ -306,5 +321,6 @@ export default function WebsitePreviewPage() {
     </div>
   );
 }
+
 
 
