@@ -1,4 +1,4 @@
-// Homepage is served via next.config.js rewrite → /homepage-v4-light-indigo.html
+// Route handled by app/route.ts — this file intentionally left minimal
 export default function Home() {
   return null;
 }
