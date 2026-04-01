@@ -8,14 +8,6 @@ const nextConfig = {
       "images.pexels.com",
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/",
-        destination: "/homepage-v4-light-indigo.html",
-      },
-    ];
-  },
 };
 
 module.exports = withSentryConfig(nextConfig, {
