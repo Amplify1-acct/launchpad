@@ -37,9 +37,11 @@ export async function POST(request: Request) {
 
     if (customerError) {
       if (customerError.code === "23505") {
+        // Customer already exists - user can log in
         return NextResponse.json({ error: "An account with this email already exists. Please log in instead." }, { status: 409 });
       }
-      throw customerError;
+      console.error("Customer insert error:", customerError);
+      return NextResponse.json({ error: `Account setup failed: ${customerError.message}` }, { status: 500 });
     }
 
     // 3. Create business record
