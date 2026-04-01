@@ -1,4 +1,25 @@
-// Route handled by app/route.ts — this file intentionally left minimal
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import Demo from "@/components/Demo";
+import HowItWorks from "@/components/HowItWorks";
+import Services from "@/components/Services";
+import Pricing from "@/components/Pricing";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
+
 export default function Home() {
-  return null;
+  return (
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Demo />
+        <HowItWorks />
+        <Services />
+        <Pricing />
+        <Contact />
+      </main>
+      <Footer />
+    </>
+  );
 }
