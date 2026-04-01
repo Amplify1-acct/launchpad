@@ -8,6 +8,14 @@ const nextConfig = {
       "images.pexels.com",
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/homepage-v4-light-indigo.html",
+      },
+    ];
+  },
 };
 
 module.exports = withSentryConfig(nextConfig, {
@@ -18,7 +26,6 @@ module.exports = withSentryConfig(nextConfig, {
   hideSourceMaps: true,
   disableLogger: true,
   automaticVercelMonitors: true,
-  // Disable source map upload — requires SENTRY_AUTH_TOKEN which we don't have
   sourcemaps: {
     disable: true,
   },
