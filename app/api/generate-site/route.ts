@@ -49,10 +49,14 @@ Return complete JSON with targeted changes.`
 
 Business:
 - Name: ${business.name}
-- Industry: ${business.description || business.industry}
-- City: ${business.city || ""}, ${business.state || ""}
+- Industry: ${business.industry}
+- Description: ${business.description || ""}
+- Location: ${business.city || ""}, ${business.state || ""}
 - Phone: ${business.phone || ""}
-- Email: ${business.email || ""}
+- Years in business: ${business.years_in_business || "established"}
+- What makes them different: ${business.differentiator || "professional service and quality workmanship"}
+- Key stat: ${business.key_stat ? `${business.key_stat} ${business.key_stat_label}` : ""}
+- Services they offer: ${business.services?.length ? (business.services as string[]).join(", ") : "professional services"}
 
 Return this JSON with EXACTLY these keys:
 {
