@@ -303,7 +303,10 @@ function StepSite({ industry, bizType, onNext, onBack }: {
       </div>
 
       {/* ── ROW 2: Three social posts ───────────────────────────────────── */}
-      <div className="site-row-label" style={{marginTop:"36px"}}>Your social media — written &amp; posted automatically every week</div>
+      <div className="site-row-label" style={{marginTop:"36px"}}>
+        Your social media — written &amp; posted automatically every week
+        <span className="demo-note">✦ Sample content — personalized to your business after sign up</span>
+      </div>
       <div className="social-row">
 
         {/* Facebook — wide 16:9 */}
@@ -378,7 +381,10 @@ function StepSite({ industry, bizType, onNext, onBack }: {
       </div>
 
       {/* ── ROW 3: Two blog cards + plan chooser ───────────────────────── */}
-      <div className="site-row-label" style={{marginTop:"36px"}}>Your blog + choose a plan</div>
+      <div className="site-row-label" style={{marginTop:"36px"}}>
+        Your blog + choose a plan
+        <span className="demo-note">✦ Sample content — personalized to your business after sign up</span>
+      </div>
       <div className="bottom-row">
 
         {/* Blog card 1 */}
