@@ -261,9 +261,18 @@ function StepSite({ industry, bizType, onNext, onBack }: {
   return (
     <div className="step-content step-wide">
       <div className="step-header">
-        <h2>{siteLoading ? "✦ Building your site…" : "Here's your complete digital presence"}</h2>
-        <p>{siteLoading ? "Our AI is writing your copy and designing your site" : `${bizType} · ${city||"Your City"} · Website + Blog + Social, all handled`}</p>
+        <h2>Here's your complete digital presence</h2>
+        <p>{`${bizType} · ${city||"Your City"} · Website + Blog + Social, all handled`}</p>
       </div>
+
+      {siteLoading ? (
+        <div className="site-generating">
+          <div className="loading-spinner" style={{width:"40px",height:"40px",borderWidth:"3px"}} />
+          <div className="site-generating-title">Building your site…</div>
+          <div className="site-generating-sub">Our AI is writing your headlines, services, and copy</div>
+        </div>
+      ) : (<>
+
 
       {/* ── DISCLAIMER BANNER ──────────────────────────────────────────── */}
       <div className="sample-disclaimer">
@@ -476,6 +485,9 @@ function StepSite({ industry, bizType, onNext, onBack }: {
             </div>
           </div>
         </div>
+      )}
+
+      </>
       )}
 
       <div className="step-actions" style={{marginTop:"24px"}}>
