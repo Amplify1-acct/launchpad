@@ -99,7 +99,7 @@ export default async function DashboardPage() {
 
         <div className={styles.header}>
           <div>
-            <h1 className={styles.greeting}>{greeting}, {business.name.split(" ")[0]}</h1>
+            <h1 className={styles.greeting}>{greeting}! 👋</h1>
             <p className={styles.subGreeting}>
               {business.name} · {business.city}{business.state ? `, ${business.state}` : ""} · {plan} plan
             </p>
@@ -377,3 +377,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
