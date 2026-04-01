@@ -287,7 +287,7 @@ export async function POST(request: Request) {
       image_source: imageSource,
       template: primary.name,
       tokens_generated: Object.keys(tokens).length,
-      variants: htmlResults.map(r => ({ name: r.name, html: r.html })),
+      variants: [{ name: primary.name, html: primary.html }],
     });
 
   } catch (error: any) {
