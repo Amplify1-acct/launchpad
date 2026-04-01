@@ -85,13 +85,14 @@ export default function WebsitePage() {
     mobile: "390px",
   };
 
-  const statusInfo = {
-    live:             { label: "Live", color: "#16a34a", bg: "#dcfce7", desc: "Your site is live and visible to the public" },
-    needs_revision:   { label: "Rebuilding", color: "#f59e0b", bg: "#fef3c7", desc: "Rebuilding with your requested changes" },
-    ready_for_review: { label: "Ready to review", color: "#4648d4", bg: "#eeeeff", desc: "Your site is ready — approve to go live" },
-    generating:       { label: "Building", color: "#f59e0b", bg: "#fef3c7", desc: "Building your site — this takes about 30 seconds" },
-    error:            { label: "Error", color: "#dc2626", bg: "#fee2e2", desc: "Something went wrong — contact support" },
-  }[website?.status || "generating"] || { label: website?.status || "Building", color: "#f59e0b", bg: "#fef3c7", desc: "Working on your site…" };
+  const STATUS_MAP: Record<string, { label: string; color: string; bg: string; desc: string }> = {
+    live:             { label: "Live",             color: "#16a34a", bg: "#dcfce7", desc: "Your site is live and visible to the public" },
+    needs_revision:   { label: "Rebuilding",       color: "#f59e0b", bg: "#fef3c7", desc: "Rebuilding with your requested changes" },
+    ready_for_review: { label: "Ready to review",  color: "#4648d4", bg: "#eeeeff", desc: "Your site is ready — approve to go live" },
+    generating:       { label: "Building",         color: "#f59e0b", bg: "#fef3c7", desc: "Building your site — this takes about 30 seconds" },
+    error:            { label: "Error",            color: "#dc2626", bg: "#fee2e2", desc: "Something went wrong — contact support" },
+  };
+  const statusInfo = STATUS_MAP[website?.status || ""] || { label: website?.status || "Building", color: "#f59e0b", bg: "#fef3c7", desc: "Working on your site…" };
 
   return (
     <div className={styles.layout}>
