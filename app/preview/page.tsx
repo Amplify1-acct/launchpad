@@ -267,8 +267,8 @@ function StepSite({ industry, bizType, onNext, onBack }: {
 
       {/* ── DISCLAIMER BANNER ──────────────────────────────────────────── */}
       <div className="sample-disclaimer">
-        <span className="sample-disclaimer-icon">✦</span>
-        <span>Everything below is a <strong>live sample</strong> built from your business type. Real images, copy, blog posts, and social content are generated specifically for you after sign up.</span>
+        <span className="sample-disclaimer-icon">📸</span>
+        <span>The photos shown are samples. After sign up, you'll receive <strong>AI-generated images tailored to your specific business</strong> — and you'll always have the ability to swap them out for your own photos.</span>
       </div>
 
       {/* ── ROW 1: Three site designs ───────────────────────────────────── */}
