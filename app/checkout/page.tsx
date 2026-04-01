@@ -91,7 +91,8 @@ function CheckoutContent() {
     setLoading(true);
     setError("");
     // TODO: replace with Stripe before launch
-    window.location.href = "/dashboard";
+    const bizId = siteData?.businessId || "";
+    window.location.href = `/checkout/success${bizId ? `?business_id=${bizId}` : ""}`;
   }
 
   return (
