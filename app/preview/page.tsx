@@ -12,6 +12,24 @@ interface AIContent {
   stat2: string; stat2Label: string;
 }
 
+interface SocialPost {
+  platform: string;
+  icon: string;
+  content: string;
+  likes: string;
+  comments: string;
+}
+
+interface ContentSamples {
+  blog: {
+    title: string;
+    excerpt: string;
+    readTime: string;
+    date: string;
+  };
+  social: SocialPost[];
+}
+
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const INDUSTRIES = [
   { id: "auto",        label: "Auto",           emoji: "🚗" },
@@ -59,7 +77,7 @@ const IMAGES: Record<string, string[]> = {
   hvac:       ["https://lh3.googleusercontent.com/aida-public/AB6AXuCJrlkie16uVtFbV6_FAmWBgX5BGTEyUNyBq_lFZscmNGnkGrTVVXrO0IXStJXQWGI6itzZWubrhF1q_YTfyRbLBVusaQJAB1K-Aj2XmG3zTJL6jk_8GXSsoZAvsklJBpokDxVQeRRGmz0jHJef3CxtxjsiJy5AZwZuMUDUpfShNxYb2_aPlFpIImIwSbb44v1Dg838ppf5P4T_9TcGiX6o9711_y-wfyTgwRZNO1iwmD9K2B5ygSzzkKzsuIfWq1vwtPi88BE_hvdv","https://lh3.googleusercontent.com/aida-public/AB6AXuD8GBkkRx8ALxrDMnQichwC0-t8NYrb6k3SLuZOuEcj2yd67FtLT24KP-Dtz46ZhSan8qXGaHcJD-UUyA5HIVJ8gXxjLVlhDK-T9cf73FU9aCRgwBeBNY28WzbjyIx6Ox4V9nsL8Oe0Ju2D8kcopf7tzuLdfuHxt0AChKAmyGJRc1njodsW3D-gWQKU3lDKYZNe7CYhmu_wOIzGskJQp098e2F_DHcRUiXMGZOFbqMGveavHhgLIoe7ErJ50Gk1G5mNdp9NC791XeA1"],
   bakery:     ["https://lh3.googleusercontent.com/aida-public/AB6AXuCvZLqWp4vcBq3WgdR1v4lm0V-Qvv60o516WggmsiMePqV24UjlJFw76Maw2-xQL1O2uq72IMybEO73HmeNdq_YzzOpxC433PT13z6STlsJ3ILrRGais9KfUAHH4vLqpuGdI1_o4yHOifu3A1PaaS9Rr_Re6C9ijjcxZx_7z_NgyT3He22bBREJjWeMqv099xbGD716bTgOEhizQTdoMcbrUjXAO3qcbEgD7nxgAJ_VX9Hkay6pzzx4QzJX6UiB7afiA3lDzsxDPr_L"],
   landscaping:["https://lh3.googleusercontent.com/aida/ADBb0uipudoX_8vokP-gF7EDLGQCBzZHa23g_CVh1byNICabNXg3pxd7I8wrn4LA4uBrv_ie3Z2fMRUB4zWBzAD4w6x0_CECAXhssd8--rvYf4-Ms5B1i-p2R_6DwCz_fAuV39in9xacBGkFgeeTobfQAcDF5kTRUs9DPndT_jBdIx_xuwh9Tl0FnSppxgUdr50bJeEA-sbXz701pkJ_NhF6SaVe0ggQeHj7K8NNoqZO6mJqhwA4xVRW1QkTpC8"],
-  other:      ["https://lh3.googleusercontent.com/aida/ADBb0uj5QlO4hvuzgWKH1QZvg1npiAvGwRAgLKkYFbuuROvRTbsr6Z7ofr9TXaZhxP7CLQl1_6lIminQuE7xS7mrPjkvQ2KgGiwbZGu8ItVG4T1kNNhXstBKnKu6gVFyAVEcfn5ZGa9W14ovi0OANPcFu9j4UXLzisA2172nmjgGh7HMj3bsUFzlsmSfAJNWBUHiaPoCdvbqF6Yn80J5LaO9xrLY5TM4-MLdpvb7vfU21mwZTnCAAopel-qjbuD8","https://lh3.googleusercontent.com/aida/ADBb0ugfWjKNK6Pwmaq-gXD4xXs_CGuE94eTYHDSHQjnY9nGQQn89wnxo5xPzaZdZbpJkWCROAPHWJNRfeGGlD94JKLWmC6tiJ44rnmaw47I58DUq_WTyTXvyiPI2PLzMJDEc3ZmCmBUJvoR0WBWyL7dfo9hAOy41WAefhpCYvembOjEk2QoknlygxijCReYYnGIJeXfHHGHP2JpGiOA_YqJexfo3ja_2jS6gxtswx9GwPJlwXQ0JwvF0Myzie8","https://lh3.googleusercontent.com/aida/ADBb0ugP34Hr3rnEMDmFccI888ZnLQjTvff-ymSkgxt5Gx0_U66koayfzkPHGIoE1zSXVE4qqjSPlV2AY7D6OaUn-cLV6aVGTCtk_xsFpmhszSUB0O0NIZEg1yQI6KqWK75GYhsaBCObs0JzZF0PSo-mZed87gUdvNDCh8XwKk91Lo2qcs3UKq8ME9a3PQ7yxP9o94K7TI_RyaRqSmwkP_dJZxOSsFniT0v2E3WcvquqSnCBvvfStVaW5PPU7mk","https://lh3.googleusercontent.com/aida/ADBb0uiSI3y7PzcUwJAu92Ok3NhXJ0sVhMtplNk5i9foYVKJIzSRcjJBosQykFQCdZs5G7J0jeYRfx5iqDVk2Fj7SsJ2Ztl_UK4NjT3I-RzaUTa3KR9Iwa-hftwjy08B010bVdNMU0YLLoMhNS9MGYZwmTxoWIsUTb3nTSkPKJhgkxAhHu1EbDycTgKsGCkzG9RrmxKdEvgE_w8f2PvyhGEVpjG80EWzxqR04U77-pY1YUJjBwJiJXwuU-SfKDk"],
+  other:      ["https://lh3.googleusercontent.com/aida/ADBb0uj5QlO4hvuzgWKH1QZvg1npiAvGwRAgLKkYFbuuROvRTbsr6Z7ofr9TXaZhxP7CLQl1_6lIminQuE7xS7mrPjkvQ2KgGiwbZGu8ItVG4T1kNNhXstBKnKu6gVFyAVEcfn5ZGa9W14ovi0OANPcFu9j4UXLzisA2172nmjgGh7HMj3bsUFzlsmSfAJNWBUHiaPoCdvbqF6Yn80J5LaO9xrLY5TM4-MLdpvb7vfU21mwZTnCAAopel-qjbuD8"],
 };
 
 const TEMPLATE_IDS: Record<string, string> = {
@@ -282,7 +300,6 @@ footer{padding:20px 56px;background:#f0f0f0;display:flex;justify-content:space-b
 </body></html>`;
 }
 
-
 function buildPremiumSite(bizType: string, industry: string, city: string, phone: string, ai: AIContent): string {
   const imgs = IMAGES[industry] || IMAGES["other"] || [];
   const [img1, img2, img3] = [imgs[0]||"", imgs[1]||imgs[0]||"", imgs[2]||imgs[0]||""];
@@ -423,7 +440,6 @@ function StepBizType({ industry, onNext, onBack }: {
   const [customType, setCustomType] = useState("");
   const [error, setError] = useState("");
 
-  // "Other" industry gets a full write-in experience
   if (industry === "other") {
     return (
       <div className="step-content">
@@ -490,6 +506,129 @@ function StepBizType({ industry, onNext, onBack }: {
   );
 }
 
+// ─── BLOG + SOCIAL PREVIEW SECTION ───────────────────────────────────────────
+function ContentSamplesSection({ bizType, industry, city }: {
+  bizType: string;
+  industry: string;
+  city: string;
+}) {
+  const [samples, setSamples] = useState<ContentSamples | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"blog" | "social">("blog");
+
+  useEffect(() => {
+    async function generate() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/generate-content-samples", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bizType, industry, city: city || "your city" }),
+        });
+        const data = await res.json();
+        setSamples(data);
+      } catch {
+        setSamples(null);
+      }
+      setLoading(false);
+    }
+    generate();
+  }, [bizType, industry, city]);
+
+  return (
+    <div className="content-samples-section">
+      <div className="content-samples-header">
+        <div className="content-samples-eyebrow">✦ Also included with every plan</div>
+        <h3 className="content-samples-title">Your blog & social media, handled</h3>
+        <p className="content-samples-sub">
+          Every week, we publish fresh content written specifically for {bizType || "your business"} in {city || "your city"}.
+        </p>
+      </div>
+
+      <div className="content-tabs">
+        <button
+          className={`content-tab ${activeTab === "blog" ? "active" : ""}`}
+          onClick={() => setActiveTab("blog")}
+        >
+          📝 Blog Post Sample
+        </button>
+        <button
+          className={`content-tab ${activeTab === "social" ? "active" : ""}`}
+          onClick={() => setActiveTab("social")}
+        >
+          📱 Social Media Sample
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="content-loading">
+          <div className="loading-spinner" />
+          <span>Writing your sample content…</span>
+        </div>
+      ) : activeTab === "blog" && samples?.blog ? (
+        <div className="blog-preview-card">
+          <div className="blog-meta">
+            <span className="blog-date">{samples.blog.date}</span>
+            <span className="blog-dot">·</span>
+            <span className="blog-read-time">{samples.blog.readTime}</span>
+            <span className="blog-ai-badge">✦ AI-written</span>
+          </div>
+          <h4 className="blog-title">{samples.blog.title}</h4>
+          <p className="blog-excerpt">{samples.blog.excerpt}</p>
+          <div className="blog-footer">
+            <div className="blog-author">
+              <div className="blog-author-avatar">E</div>
+              <span>Written by Exsisto AI · Published to your blog automatically</span>
+            </div>
+            <div className="blog-cta-note">→ Goes live on your site every week</div>
+          </div>
+        </div>
+      ) : activeTab === "social" && samples?.social ? (
+        <div className="social-grid">
+          {samples.social.map((post, i) => (
+            <div key={i} className="social-card">
+              <div className="social-card-header">
+                <span className="social-icon">{post.icon}</span>
+                <span className="social-platform">{post.platform}</span>
+                <span className="social-ai-badge">✦ AI-written</span>
+              </div>
+              <div className="social-business-info">
+                <div className="social-avatar">{bizType.charAt(0)}</div>
+                <div>
+                  <div className="social-biz-name">{bizType}</div>
+                  <div className="social-location">{city || "Your City"}</div>
+                </div>
+              </div>
+              <p className="social-content">{post.content}</p>
+              <div className="social-engagement">
+                <span>❤️ {post.likes} likes</span>
+                <span>💬 {post.comments} comments</span>
+              </div>
+              <div className="social-auto-note">→ Scheduled & posted automatically</div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="content-samples-footer">
+        <div className="content-freq-grid">
+          {[
+            { plan: "Starter", blog: "2 blogs/mo", social: "8 posts/mo", price: "$99" },
+            { plan: "Pro", blog: "4 blogs/mo", social: "16 posts/mo", price: "$299" },
+            { plan: "Premium", blog: "8 blogs/mo", social: "32 posts/mo", price: "$599" },
+          ].map(p => (
+            <div key={p.plan} className="content-freq-item">
+              <div className="content-freq-plan">{p.plan}</div>
+              <div className="content-freq-detail">{p.blog} · {p.social}</div>
+              <div className="content-freq-price">{p.price}/mo</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── STEP 3: SITE PREVIEW + COLLECT BASIC INFO ────────────────────────────────
 function StepSite({ industry, bizType, onNext, onBack }: {
   industry: string;
@@ -510,7 +649,6 @@ function StepSite({ industry, bizType, onNext, onBack }: {
   const templateId = TEMPLATE_IDS[industry] || "auto";
   const stitchUrl = `https://www.exsisto.ai/stitch-templates/${templateId}.html`;
 
-  // Generate AI content immediately on mount
   useEffect(() => {
     generateContent();
   }, []);
@@ -540,7 +678,6 @@ function StepSite({ industry, bizType, onNext, onBack }: {
 
   const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
 
-  // Build preview HTML using selected plan
   const isOther = industry === "other";
   const previewHTML = !loading && ai
     ? (selectedPlan === "starter"
@@ -659,6 +796,13 @@ function StepSite({ industry, bizType, onNext, onBack }: {
           <p className="terms">Site live within 48 hours. Cancel anytime.</p>
         </div>
       </div>
+
+      {/* ─── BLOG + SOCIAL PREVIEW ─────────────────────────────────────── */}
+      <ContentSamplesSection
+        bizType={bizType}
+        industry={industry}
+        city={city}
+      />
 
       {/* Fullscreen modal */}
       {fullscreen && (
