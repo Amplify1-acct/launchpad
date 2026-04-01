@@ -1468,6 +1468,19 @@
   letter-spacing: 2px;
   color: var(--pg-dim);
   margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.demo-note {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pg-dim);
+  opacity: 0.7;
+  font-style: italic;
 }
 
 /* ─── ROW 1: SITE CARDS ──────────────────────────────────────────────────── */
