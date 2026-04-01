@@ -557,7 +557,7 @@ function PreviewPageInner() {
   return (
     <div className="preview-page" data-theme={theme}>
       <nav className="preview-nav">
-        <div className="preview-nav-logo">Exsisto</div>
+        <a href="/" className="preview-nav-logo">Exsisto</a>
         <div className="preview-nav-tag">✦ Your site, built by AI in 48 hours</div>
       </nav>
       <div className="preview-container">
