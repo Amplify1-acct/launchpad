@@ -1,25 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Demo from "@/components/Demo";
-import HowItWorks from "@/components/HowItWorks";
-import Services from "@/components/Services";
-import Pricing from "@/components/Pricing";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-
+// Homepage is served via next.config.js rewrite → /homepage-v4-light-indigo.html
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Demo />
-        <HowItWorks />
-        <Services />
-        <Pricing />
-        <Contact />
-      </main>
-      <Footer />
-    </>
-  );
+  return null;
 }
