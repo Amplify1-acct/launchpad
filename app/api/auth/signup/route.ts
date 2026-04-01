@@ -28,19 +28,18 @@ export async function POST(request: Request) {
 
     const userId = authData.user.id;
 
-    // 2. Create customer record — handle duplicate gracefully
+    // 2. Clean up any orphaned customer record with same email (from deleted auth users)
+    await supabase.from("customers").delete().eq("email", email).neq("user_id", userId);
+
+    // 3. Create customer record (upsert to handle edge cases)
     const { data: customer, error: customerError } = await supabase
       .from("customers")
-      .insert({ user_id: userId, email })
+      .upsert({ user_id: userId, email }, { onConflict: "user_id" })
       .select()
       .single();
 
     if (customerError) {
-      if (customerError.code === "23505") {
-        // Customer already exists - user can log in
-        return NextResponse.json({ error: "An account with this email already exists. Please log in instead." }, { status: 409 });
-      }
-      console.error("Customer insert error:", customerError);
+      console.error("Customer upsert error:", customerError);
       return NextResponse.json({ error: `Account setup failed: ${customerError.message}` }, { status: 500 });
     }
 
