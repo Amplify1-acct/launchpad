@@ -1460,6 +1460,29 @@
 }
 
 
+/* ─── GENERATING LOADING STATE ───────────────────────────────────────────── */
+.site-generating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 16px;
+  text-align: center;
+}
+
+.site-generating-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--pg-text);
+  letter-spacing: -0.3px;
+}
+
+.site-generating-sub {
+  font-size: 14px;
+  color: var(--pg-mid);
+}
+
 /* ─── SAMPLE DISCLAIMER BANNER ──────────────────────────────────────────── */
 .sample-disclaimer {
   display: flex;
