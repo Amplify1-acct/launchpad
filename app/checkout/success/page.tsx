@@ -31,6 +31,7 @@ function SuccessContent() {
       setTimeout(() => setStep(i + 1), delay);
     });
     setTimeout(() => setDone(true), 12000);
+    setTimeout(() => { window.location.href = "/dashboard"; }, 14000);
   }, [businessId]);
 
   async function triggerGeneration(bizId: string) {
