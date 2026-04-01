@@ -532,7 +532,12 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
       </div>
       <div className="form-group"><label>Email</label><input className="form-input" type="email" value={email} disabled style={{opacity:0.6}} /></div>
       <div className="form-group"><label>Password *</label><input className="form-input" type="password" placeholder="At least 8 characters" value={password} onChange={e => setPassword(e.target.value)} /></div>
-      {error && <div className="error-msg">{error}</div>}
+      {error && (
+        <div className="error-msg">
+          {error}
+          {error.includes("already exists") && <span> <a href="/login" style={{color:"inherit",fontWeight:700,textDecoration:"underline"}}>Log in instead →</a></span>}
+        </div>
+      )}
       <button className="btn-primary btn-lg btn-full" onClick={submit} disabled={loading}>
         {loading ? "Creating your account…" : `Create Account & Pay ${plan.price}/mo →`}
       </button>
