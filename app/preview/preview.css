@@ -1460,6 +1460,33 @@
 }
 
 
+/* ─── SAMPLE DISCLAIMER BANNER ──────────────────────────────────────────── */
+.sample-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 18px;
+  background: color-mix(in srgb, var(--pg-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pg-accent) 25%, transparent);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pg-mid);
+}
+
+.sample-disclaimer strong {
+  color: var(--pg-text);
+  font-weight: 700;
+}
+
+.sample-disclaimer-icon {
+  color: var(--pg-accent);
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
 /* ─── ROW LABELS ─────────────────────────────────────────────────────────── */
 .site-row-label {
   font-size: 11px;
