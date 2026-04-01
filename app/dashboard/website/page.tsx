@@ -46,6 +46,13 @@ export default function WebsitePage() {
     if (!feedback.trim() || !business) return;
     setSubmitting(true);
     try {
+      // Detect template from keywords
+      const lower = feedback.toLowerCase();
+      let templateOverride: string | undefined;
+      if (lower.match(/light|clean|bright|white|minimal|professional|simple/)) templateOverride = "skeleton-clean";
+      else if (lower.match(/warm|cozy|classic|elegant|serif|traditional/)) templateOverride = "skeleton-warm";
+      else if (lower.match(/bold|dark|dramatic|strong|impact/)) templateOverride = "skeleton-bold";
+
       await supabase.from("websites").update({
         status: "needs_revision",
         revision_notes: feedback,
@@ -55,12 +62,18 @@ export default function WebsitePage() {
       const res = await fetch("/api/generate-site", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business_id: business.id, revision_notes: feedback }),
+        body: JSON.stringify({ business_id: business.id, revision_notes: feedback, template_override: templateOverride }),
       });
 
       if (res.ok) {
+        // Auto-deploy after regeneration
+        await fetch("/api/deploy-site", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ business_id: business.id }),
+        });
         setFeedback("");
-        showToast("Changes requested — rebuilding your site now");
+        showToast("Site rebuilt and deployed ✓");
         setTimeout(() => load(), 3000);
       } else {
         showToast("Something went wrong", false);
