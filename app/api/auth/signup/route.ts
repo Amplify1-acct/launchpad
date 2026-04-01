@@ -20,23 +20,27 @@ export async function POST(request: Request) {
     });
 
     if (authError) {
-      // If user already exists, try to sign them in instead
       if (authError.message?.includes("already registered") || authError.message?.includes("already exists")) {
-        return NextResponse.json({ error: "An account with this email already exists. Please log in." }, { status: 409 });
+        return NextResponse.json({ error: "An account with this email already exists. Please log in instead." }, { status: 409 });
       }
       throw authError;
     }
 
     const userId = authData.user.id;
 
-    // 2. Create customer record
+    // 2. Create customer record — handle duplicate gracefully
     const { data: customer, error: customerError } = await supabase
       .from("customers")
       .insert({ user_id: userId, email })
       .select()
       .single();
 
-    if (customerError) throw customerError;
+    if (customerError) {
+      if (customerError.code === "23505") {
+        return NextResponse.json({ error: "An account with this email already exists. Please log in instead." }, { status: 409 });
+      }
+      throw customerError;
+    }
 
     // 3. Create business record
     const slug = businessName
