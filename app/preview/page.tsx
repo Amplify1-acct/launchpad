@@ -111,7 +111,7 @@ function buildPremiumSite(bizType: string, industry: string, city: string, phone
 }
 // ─── STEP BAR ─────────────────────────────────────────────────────────────────
 function StepBar({ step }: { step: number }) {
-  const steps = ["Industry", "Business Type", "Your Site", "Sign Up"];
+  const steps = ["Industry", "Business Type", "Your Details", "Your Site", "Sign Up"];
   return (
     <div className="step-bar">
       {steps.map((s, i) => (
@@ -193,8 +193,145 @@ function StepBizType({ industry, onNext, onBack }: { industry: string; onNext: (
 }
 
 // ─── STEP 3: NEW 3-ROW LAYOUT ─────────────────────────────────────────────────
-function StepSite({ industry, bizType, onNext, onBack }: {
+// ─── STEP DETAILS ─────────────────────────────────────────────────────────────
+function StepDetails({ industry, bizType, onNext, onBack }: {
+  industry: string;
+  bizType: string;
+  onNext: (details: { description: string; years: string; differentiator: string; stat: string; statLabel: string; services: string[] }) => void;
+  onBack: () => void;
+}) {
+  const [description, setDescription] = useState("");
+  const [years, setYears] = useState("");
+  const [differentiator, setDifferentiator] = useState("");
+  const [stat, setStat] = useState("");
+  const [statLabel, setStatLabel] = useState("");
+  const [services, setServices] = useState<string[]>([]);
+  const [error, setError] = useState("");
+
+  const industryServices: Record<string, string[]> = {
+    auto: ["Oil Changes", "Brake Repair", "Engine Diagnostics", "Tire Service", "Transmission Repair", "AC Service", "Detailing", "Inspections"],
+    plumbing: ["Emergency Repairs", "Drain Cleaning", "Water Heater Install", "Pipe Replacement", "Fixture Install", "Sewer Service", "Backflow Prevention", "Leak Detection"],
+    dental: ["Cleanings", "Teeth Whitening", "Fillings", "Crowns", "Implants", "Invisalign", "Root Canals", "Emergency Care"],
+    hvac: ["AC Installation", "Heating Repair", "Duct Cleaning", "Preventive Maintenance", "Emergency Service", "Smart Thermostats", "Air Quality", "Commercial HVAC"],
+    landscaping: ["Lawn Mowing", "Tree Trimming", "Landscape Design", "Irrigation", "Snow Removal", "Mulching", "Fertilization", "Hardscaping"],
+    restaurant: ["Dine-In", "Takeout", "Catering", "Private Events", "Delivery", "Happy Hour", "Brunch", "Custom Menus"],
+    legal: ["Consultations", "Contract Review", "Litigation", "Estate Planning", "Business Formation", "Real Estate", "Family Law", "Criminal Defense"],
+    cleaning: ["Residential Cleaning", "Commercial Cleaning", "Deep Cleaning", "Move-In/Out", "Window Washing", "Carpet Cleaning", "Post-Construction", "Green Cleaning"],
+    roofing: ["Roof Replacement", "Repairs", "Inspections", "Gutters", "Skylights", "Emergency Tarping", "Insurance Claims", "Commercial Roofing"],
+    beauty: ["Haircuts", "Color", "Highlights", "Balayage", "Blowouts", "Extensions", "Treatments", "Bridal"],
+    fitness: ["Personal Training", "Group Classes", "Yoga", "Pilates", "Nutrition Coaching", "Online Training", "Corporate Wellness", "Kids Programs"],
+    pet: ["Dog Walking", "Pet Sitting", "Boarding", "Grooming", "Training", "Daycare", "Vet Transport", "Home Visits"],
+  };
+
+  const availableServices = industryServices[industry] || ["Service 1", "Service 2", "Service 3", "Service 4", "Service 5", "Service 6", "Service 7", "Service 8"];
+
+  function toggleService(s: string) {
+    setServices(prev => prev.includes(s) ? prev.filter(x => x !== s) : prev.length < 6 ? [...prev, s] : prev);
+  }
+
+  function handleNext() {
+    if (!description.trim()) return setError("Please describe your business");
+    setError("");
+    onNext({ description, years, differentiator, stat, statLabel, services });
+  }
+
+  return (
+    <div className="step-content">
+      <div className="step-header">
+        <h2>Tell us about your business ✍️</h2>
+        <p>The more you share, the better your site will be — our AI uses this to write your copy</p>
+      </div>
+
+      <div className="form-group">
+        <label>What does your business do? <span style={{color:"#dc2626"}}>*</span></label>
+        <textarea
+          className="form-input"
+          rows={3}
+          placeholder={`e.g. "We're a family-owned ${bizType} in Westfield serving residential and commercial clients. We specialize in..."`}
+          value={description}
+          onChange={e => { setDescription(e.target.value); setError(""); }}
+          style={{ resize: "vertical", lineHeight: 1.6 }}
+        />
+        <div style={{ fontSize: "11px", color: "#9090a8", marginTop: "4px" }}>Tip: mention your specialty, who you serve, and what you're known for</div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label>Years in business</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="e.g. 12"
+            value={years}
+            onChange={e => setYears(e.target.value)}
+          />
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label>What makes you different?</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="e.g. Same-day service"
+            value={differentiator}
+            onChange={e => setDifferentiator(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "12px" }}>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label>A stat you're proud of</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="e.g. 500+"
+            value={stat}
+            onChange={e => setStat(e.target.value)}
+          />
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label>What does that stat mean?</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="e.g. Happy customers"
+            value={statLabel}
+            onChange={e => setStatLabel(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="form-group" style={{ marginTop: "16px" }}>
+        <label>Your main services <span style={{ fontSize: "11px", color: "#9090a8", fontWeight: 400 }}>(pick up to 6)</span></label>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px" }}>
+          {availableServices.map(s => (
+            <button
+              key={s}
+              onClick={() => toggleService(s)}
+              className={services.includes(s) ? "service-chip service-chip-selected" : "service-chip"}
+              style={{ fontFamily: "inherit" }}
+            >
+              {services.includes(s) ? "✓ " : ""}{s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {error && <div className="error-msg">{error}</div>}
+
+      <button className="btn-primary btn-lg btn-full" onClick={handleNext} style={{ marginTop: "8px" }}>
+        See my site preview →
+      </button>
+      <div className="step-actions" style={{ marginTop: "12px" }}>
+        <button className="btn-ghost" onClick={onBack}>← Back</button>
+      </div>
+    </div>
+  );
+}
+
+function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
   industry: string; bizType: string;
+  bizDetails: { description: string; years: string; differentiator: string; stat: string; statLabel: string; services: string[] };
   onNext: (city: string, phone: string, email: string, planId: string) => void;
   onBack: () => void;
 }) {
@@ -217,11 +354,11 @@ function StepSite({ industry, bizType, onNext, onBack }: {
     try {
       const res = await fetch("/api/generate-preview-content", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ industry, bizType, city: "your city" }),
+        body: JSON.stringify({ industry, bizType, city: city || "your city", description: bizDetails.description, differentiator: bizDetails.differentiator, services: bizDetails.services }),
       });
       setAI(await res.json());
     } catch {
-      setAI({ headline: `${bizType} — Trusted Professionals`, tagline: "", subtext: "Professional service delivered with care.", services: (BUSINESS_TYPES[industry]||[]).slice(0,6), stat1:"15+", stat1Label:"Years", stat2:"500+", stat2Label:"Clients" });
+      setAI({ headline: `${bizType} — Trusted Professionals`, tagline: "", subtext: "Professional service delivered with care.", services: bizDetails.services.length ? bizDetails.services : (BUSINESS_TYPES[industry]||[]).slice(0,6), stat1: bizDetails.stat || "15+", stat1Label: bizDetails.statLabel || "Years", stat2:"500+", stat2Label:"Clients" });
     }
     setSiteLoading(false);
   }
@@ -500,8 +637,10 @@ function StepSite({ industry, bizType, onNext, onBack }: {
 }
 
 // ─── STEP 4 ───────────────────────────────────────────────────────────────────
-function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
-  industry: string; bizType: string; city: string; phone: string; email: string; planId: string; onBack: () => void;
+function StepSignup({ industry, bizType, city, phone, email, planId, bizDetails, onBack }: {
+  industry: string; bizType: string; city: string; phone: string; email: string; planId: string;
+  bizDetails: { description: string; years: string; differentiator: string; stat: string; statLabel: string; services: string[] };
+  onBack: () => void;
 }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -515,7 +654,7 @@ function StepSignup({ industry, bizType, city, phone, email, planId, onBack }: {
     setLoading(true); setError("");
     try {
       // 1. Create the account server-side
-      const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, phone, planId }) });
+      const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, phone, planId, description: bizDetails.description, years: bizDetails.years, differentiator: bizDetails.differentiator, stat: bizDetails.stat, statLabel: bizDetails.statLabel, services: bizDetails.services }) });
       const d = await res.json();
       if (!res.ok) { throw new Error(d.error||"Signup failed"); }
       const bizId = d.businessId || "";
@@ -569,6 +708,14 @@ function PreviewPageInner() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [planId, setPlanId] = useState("pro");
+  const [bizDetails, setBizDetails] = useState<{
+    description: string;
+    years: string;
+    differentiator: string;
+    stat: string;
+    statLabel: string;
+    services: string[];
+  }>({ description: "", years: "", differentiator: "", stat: "", statLabel: "", services: [] });
 
   return (
     <div className="preview-page" data-theme={theme}>
@@ -580,8 +727,9 @@ function PreviewPageInner() {
         <StepBar step={step} />
         {step===0 && <StepIndustry onNext={id => { setIndustry(id); setStep(1); }} />}
         {step===1 && <StepBizType industry={industry} onNext={t => { setBizType(t); setStep(2); }} onBack={() => setStep(0)} />}
-        {step===2 && <StepSite industry={industry} bizType={bizType} onNext={(c,p,e,pid) => { setCity(c); setPhone(p); setEmail(e); setPlanId(pid); setStep(3); }} onBack={() => setStep(1)} />}
-        {step===3 && <StepSignup industry={industry} bizType={bizType} city={city} phone={phone} email={email} planId={planId} onBack={() => setStep(2)} />}
+        {step===2 && <StepDetails industry={industry} bizType={bizType} onNext={details => { setBizDetails(details); setStep(3); }} onBack={() => setStep(1)} />}
+        {step===3 && <StepSite industry={industry} bizType={bizType} bizDetails={bizDetails} onNext={(c,p,e,pid) => { setCity(c); setPhone(p); setEmail(e); setPlanId(pid); setStep(4); }} onBack={() => setStep(2)} />}
+        {step===4 && <StepSignup industry={industry} bizType={bizType} city={city} phone={phone} email={email} planId={planId} bizDetails={bizDetails} onBack={() => setStep(3)} />}
       </div>
     </div>
   );
