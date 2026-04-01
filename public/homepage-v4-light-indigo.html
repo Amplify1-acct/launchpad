@@ -306,9 +306,10 @@ body > section:first-of-type { margin-top: 64px; }
 
   <!-- Desktop links -->
   <nav class="nav-desktop-links">
-    <a href="#">How It Works</a>
-    <a href="/preview?theme=light">Pricing</a>
-    <a href="#">Examples</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#demo">Examples</a>
+    <a href="/login" style="color:#4648d4;font-weight:600;">Log in</a>
   </nav>
 
   <!-- Desktop CTA -->
@@ -325,17 +326,21 @@ body > section:first-of-type { margin-top: 64px; }
 
 <!-- Mobile drawer -->
 <div id="mobile-drawer">
-  <a class="drawer-item" href="#">
+  <a class="drawer-item" href="#how-it-works">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
     How It Works
   </a>
-  <a class="drawer-item active" href="/preview?theme=light">
+  <a class="drawer-item active" href="#pricing">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
     Pricing
   </a>
-  <a class="drawer-item" href="#">
+  <a class="drawer-item" href="#demo">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     Examples
+  </a>
+  <a class="drawer-item" href="/login" style="color:#4648d4;font-weight:600;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    Log in
   </a>
   <div class="drawer-divider"></div>
   <a id="drawer-cta" href="/preview?theme=light">
@@ -405,7 +410,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 </section>
 
 <!-- DEMO SHOWCASE -->
-<section class="py-24 px-8 bg-white">
+<section id="demo" class="py-24 px-8 bg-white">
   <div class="max-w-7xl mx-auto">
     <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#6366f1;margin-bottom:12px;">✦ The Work</p>
     <h2 style="font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:900;letter-spacing:-1.5px;color:#1b1b25;margin-bottom:12px;">Real sites. Real businesses.</h2>
@@ -476,7 +481,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="py-24 px-8 bg-slate-50">
+<section id="how-it-works" class="py-24 px-8 bg-slate-50">
   <div class="max-w-7xl mx-auto">
     <h2 style="font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;">See it happen in 60 seconds</h2>
     <p style="color:#464554;font-size:16px;margin-bottom:48px;">Four simple steps. You only do step one.</p>
@@ -506,7 +511,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 </section>
 
 <!-- PRICING -->
-<section class="py-24 px-8 bg-white">
+<section id="pricing" class="py-24 px-8 bg-white">
   <div class="max-w-7xl mx-auto">
     <div style="text-align:center;margin-bottom:48px;">
       <h2 style="font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;">Simple pricing. No surprises.</h2>
@@ -560,7 +565,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
       <p style="font-size:12px;color:#9ca3af;">Your business, brought to life.</p>
     </div>
     <div style="display:flex;gap:32px;font-size:13px;color:#9ca3af;">
-      <a href="#" style="hover:color:#6366f1;text-decoration:none;color:#9ca3af;">How It Works</a>
+      <a href="#how-it-works" style="hover:color:#6366f1;text-decoration:none;color:#9ca3af;">How It Works</a>
       <a href="/preview?theme=light" style="text-decoration:none;color:#9ca3af;">Pricing</a>
       <a href="#" style="text-decoration:none;color:#9ca3af;">Privacy</a>
     </div>
