@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase-server";
 import { generateBusinessPhoto } from "@/lib/nano-banana";
+import { generateStitchSite } from "@/lib/stitch";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -231,7 +232,6 @@ export async function POST(request: Request) {
     let templateName = "stitch";
 
     try {
-      const { generateStitchSite } = await import("@/lib/stitch");
       finalHtml = await generateStitchSite({
         businessName: business.name,
         industry: business.industry || business.description || "",
@@ -240,8 +240,8 @@ export async function POST(request: Request) {
         services: (business.services as string[]) || [],
         phone: business.phone || "",
         description: business.description || "",
-        yearsInBusiness: business.years_in_business || "",
-        differentiator: business.differentiator || "",
+        yearsInBusiness: (business as any).years_in_business || "",
+        differentiator: (business as any).differentiator || "",
         revisionNotes: revision_notes || "",
       });
       console.log("✓ Stitch site generated");
