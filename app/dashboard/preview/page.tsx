@@ -67,9 +67,16 @@ export default function WebsitePreviewPage() {
         body: JSON.stringify({ business_id: business.id }),
       });
       if (res.ok) {
+        // Update status to live
+        await supabase.from("websites").update({ status: "live" }).eq("business_id", business.id);
+        // Send site live email (non-blocking)
+        fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "site_live", business_id: business.id }),
+        }).catch(() => {});
         router.push("/dashboard?deployed=true");
       } else {
-        // Still update status and redirect even if deploy fails
         router.push("/dashboard");
       }
     } catch {
@@ -299,4 +306,5 @@ export default function WebsitePreviewPage() {
     </div>
   );
 }
+
 
