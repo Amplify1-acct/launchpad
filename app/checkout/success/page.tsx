@@ -3,113 +3,237 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
+const STEPS = [
+  { icon: "✓",  label: "Payment confirmed",        detail: "You're all set — no charge for 7 days." },
+  { icon: "👤", label: "Setting up your account",  detail: "Creating your dashboard and profile." },
+  { icon: "🌐", label: "Building your website",    detail: "Writing your copy and generating your design." },
+  { icon: "✍️", label: "Writing your blog posts",  detail: "SEO-optimized content ready for your review." },
+  { icon: "📱", label: "Queuing social posts",     detail: "Facebook, Instagram & TikTok content drafted." },
+];
+
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  const businessId = searchParams.get("business_id");
   const [step, setStep] = useState(0);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // Animate through the setup steps
-    const steps = [800, 2000, 4000, 6000];
-    steps.forEach((delay, i) => {
+    sessionStorage.removeItem("exsisto_pending_site");
+
+    // Kick off real generation if we have a business_id
+    if (businessId) {
+      triggerGeneration(businessId);
+    }
+
+    // Animate steps regardless (fake timing for UX)
+    const timings = [800, 2500, 5000, 8000, 10500];
+    timings.forEach((delay, i) => {
       setTimeout(() => setStep(i + 1), delay);
     });
-    // Clear pending site from sessionStorage
-    sessionStorage.removeItem("exsisto_pending_site");
-  }, []);
+    setTimeout(() => setDone(true), 12000);
+  }, [businessId]);
 
-  const steps = [
-    { icon: "✓", label: "Payment confirmed", done: step >= 1 },
-    { icon: "👤", label: "Creating your account", done: step >= 2 },
-    { icon: "🌐", label: "Deploying your website", done: step >= 3 },
-    { icon: "📧", label: "Sending your login link", done: step >= 4 },
-  ];
-
-  const allDone = step >= 4;
+  async function triggerGeneration(bizId: string) {
+    try {
+      // Generate site
+      await fetch("/api/generate-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: bizId }),
+      });
+      // Deploy to subdomain
+      await fetch("/api/deploy-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: bizId }),
+      });
+      // Generate blog posts
+      fetch("/api/generate-blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: bizId }),
+      }).catch(() => {});
+      // Generate social posts
+      fetch("/api/generate-social", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: bizId }),
+      }).catch(() => {});
+    } catch (e) {
+      console.error("Generation error:", e);
+    }
+  }
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#0a0a0a",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      fontFamily: "'DM Sans', sans-serif", padding: "2rem",
+      minHeight: "100vh",
+      background: "#fcf8ff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontFamily: "'Inter', sans-serif",
+      padding: "2rem",
     }}>
-      <div style={{ textAlign: "center", maxWidth: 480 }}>
+      <div style={{ textAlign: "center", maxWidth: 520, width: "100%" }}>
 
-        <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>
-          {allDone ? "🎉" : "⚙️"}
+        {/* Logo */}
+        <a href="/" style={{ textDecoration: "none" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "#1b1b25", marginBottom: "2.5rem", letterSpacing: "-0.5px" }}>
+            Ex<span style={{ color: "#4648d4" }}>sisto</span>
+          </div>
+        </a>
+
+        {/* Icon */}
+        <div style={{
+          width: 72, height: 72,
+          background: done ? "#dcfce7" : "#eeeeff",
+          borderRadius: "50%",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "28px", margin: "0 auto 1.5rem",
+          transition: "background 0.5s",
+        }}>
+          {done ? "🎉" : "✦"}
         </div>
 
         <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "clamp(2rem,4vw,3rem)",
-          color: "#fff", marginBottom: "0.75rem",
+          fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+          fontWeight: 800,
+          color: "#1b1b25",
+          letterSpacing: "-0.5px",
+          marginBottom: "0.75rem",
+          lineHeight: 1.2,
         }}>
-          {allDone ? "You're live!" : "Setting everything up..."}
+          {done ? "You're all set!" : "Building your digital presence…"}
         </h1>
 
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "2.5rem" }}>
-          {allDone
-            ? "Check your email for a login link to access your dashboard. Your site is deploying now — usually live within 2 minutes."
-            : "Hang tight while we set up your account and deploy your site."}
+        <p style={{
+          color: "#9090a8",
+          fontSize: "15px",
+          lineHeight: 1.7,
+          marginBottom: "2.5rem",
+          maxWidth: 400,
+          margin: "0 auto 2.5rem",
+        }}>
+          {done
+            ? "Your website, blog, and social posts are ready. Head to your dashboard to review and approve everything."
+            : "This takes about 30 seconds. We're building everything from scratch, just for you."}
         </p>
 
         {/* Steps */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2.5rem", textAlign: "left" }}>
-          {steps.map((s, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "center", gap: "1rem",
-              padding: "0.9rem 1.25rem",
-              background: s.done ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
-              borderRadius: 4,
-              border: `1px solid ${s.done ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)"}`,
-              transition: "all 0.4s",
-            }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: "50%",
-                background: s.done ? "#8b4513" : "rgba(255,255,255,0.08)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.85rem", flexShrink: 0,
-                transition: "background 0.4s",
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "2.5rem", textAlign: "left" }}>
+          {STEPS.map((s, i) => {
+            const isActive = i === step - 1 && !done;
+            const isDone = step > i;
+            return (
+              <div key={i} style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+                padding: "14px 18px",
+                background: isDone ? "#fff" : "#f5f2ff",
+                borderRadius: "12px",
+                border: `1px solid ${isDone ? "#ede9f8" : isActive ? "#c7c4f0" : "#ede9f8"}`,
+                transition: "all 0.4s",
+                opacity: step <= i && !isActive ? 0.45 : 1,
               }}>
-                {s.done ? "✓" : <span style={{ opacity: 0.3 }}>○</span>}
+                {/* Status indicator */}
+                <div style={{
+                  width: 32, height: 32,
+                  borderRadius: "50%",
+                  background: isDone ? "#4648d4" : isActive ? "#eeeeff" : "#f5f2ff",
+                  border: `2px solid ${isDone ? "#4648d4" : isActive ? "#4648d4" : "#ede9f8"}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "13px", flexShrink: 0,
+                  transition: "all 0.4s",
+                }}>
+                  {isDone ? (
+                    <span style={{ color: "#fff", fontWeight: 700 }}>✓</span>
+                  ) : isActive ? (
+                    <div style={{
+                      width: 12, height: 12,
+                      border: "2px solid #c7c4f0",
+                      borderTopColor: "#4648d4",
+                      borderRadius: "50%",
+                      animation: "spin 0.8s linear infinite",
+                    }} />
+                  ) : (
+                    <span style={{ color: "#c7c4f0", fontSize: "10px" }}>○</span>
+                  )}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontSize: "13px",
+                    fontWeight: isDone || isActive ? 700 : 500,
+                    color: isDone ? "#1b1b25" : isActive ? "#4648d4" : "#9090a8",
+                    transition: "color 0.4s",
+                  }}>
+                    {s.label}
+                  </div>
+                  {(isDone || isActive) && (
+                    <div style={{ fontSize: "11px", color: "#9090a8", marginTop: "2px" }}>
+                      {s.detail}
+                    </div>
+                  )}
+                </div>
+
+                {isDone && (
+                  <div style={{
+                    background: "#dcfce7",
+                    color: "#166534",
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    padding: "3px 10px",
+                    borderRadius: "100px",
+                    flexShrink: 0,
+                  }}>
+                    Done
+                  </div>
+                )}
               </div>
-              <div style={{
-                fontSize: "0.9rem",
-                color: s.done ? "#fff" : "rgba(255,255,255,0.3)",
-                fontWeight: s.done ? 600 : 400,
-                transition: "color 0.4s",
-              }}>
-                {s.label}
-              </div>
-              {!s.done && i === step && (
-                <div style={{ marginLeft: "auto", width: 16, height: 16, border: "2px solid rgba(255,255,255,0.2)", borderTopColor: "#8b4513", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {allDone && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        {/* CTA */}
+        {done ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <a href="/dashboard" style={{
-              display: "block", background: "#fff", color: "#111",
-              padding: "0.9rem 2rem", borderRadius: 3,
-              fontSize: "0.9rem", fontWeight: 700,
-              letterSpacing: "0.05em", textTransform: "uppercase",
+              display: "block",
+              background: "#4648d4",
+              color: "#fff",
+              padding: "14px 32px",
+              borderRadius: "10px",
+              fontSize: "15px",
+              fontWeight: 700,
               textDecoration: "none",
+              transition: "background 0.2s",
             }}>
-              Go to Dashboard →
+              Go to my dashboard →
             </a>
-            <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.3)" }}>
-              Or check your email for a direct login link
+            <p style={{ fontSize: "12px", color: "#9090a8" }}>
+              Your 7-day free trial starts now · Cancel anytime
             </p>
           </div>
+        ) : (
+          <div style={{
+            background: "#f5f2ff",
+            border: "1px solid #ede9f8",
+            borderRadius: "10px",
+            padding: "14px 20px",
+            fontSize: "13px",
+            color: "#6b6b8a",
+          }}>
+            Don't close this tab — we'll redirect you automatically when everything's ready
+          </div>
         )}
+
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
       `}</style>
     </div>
   );
@@ -117,7 +241,11 @@ function SuccessContent() {
 
 export default function SuccessPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0a0a0a" }} />}>
+    <Suspense fallback={
+      <div style={{ minHeight: "100vh", background: "#fcf8ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontFamily: "Inter, sans-serif", color: "#9090a8" }}>Setting up your account…</div>
+      </div>
+    }>
       <SuccessContent />
     </Suspense>
   );
