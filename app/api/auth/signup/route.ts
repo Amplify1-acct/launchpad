@@ -75,6 +75,17 @@ export async function POST(request: Request) {
       status: "pending",
     });
 
+    // 6. Send welcome email (non-blocking)
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai"}/api/send-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "welcome",
+        to: email,
+        data: { businessName, plan: planId || "starter" },
+      }),
+    }).catch(() => {});
+
     return NextResponse.json({
       success: true,
       businessId: business.id,
