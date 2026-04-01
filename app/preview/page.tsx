@@ -265,6 +265,12 @@ function StepSite({ industry, bizType, onNext, onBack }: {
         <p>{siteLoading ? "Our AI is writing your copy and designing your site" : `${bizType} · ${city||"Your City"} · Website + Blog + Social, all handled`}</p>
       </div>
 
+      {/* ── DISCLAIMER BANNER ──────────────────────────────────────────── */}
+      <div className="sample-disclaimer">
+        <span className="sample-disclaimer-icon">✦</span>
+        <span>Everything below is a <strong>live sample</strong> built from your business type. Real images, copy, blog posts, and social content are generated specifically for you after sign up.</span>
+      </div>
+
       {/* ── ROW 1: Three site designs ───────────────────────────────────── */}
       <div className="site-row-label">Your website — choose a design, click to preview</div>
       <div className="site-cards-row">
@@ -304,7 +310,6 @@ function StepSite({ industry, bizType, onNext, onBack }: {
       {/* ── ROW 2: Three social posts ───────────────────────────────────── */}
       <div className="site-row-label" style={{marginTop:"36px"}}>
         Your social media — written &amp; posted automatically every week
-        <span className="demo-note">✦ Sample content — personalized to your business after sign up</span>
       </div>
       <div className="social-row">
 
@@ -382,7 +387,6 @@ function StepSite({ industry, bizType, onNext, onBack }: {
       {/* ── ROW 3: Two blog cards + plan chooser ───────────────────────── */}
       <div className="site-row-label" style={{marginTop:"36px"}}>
         Your blog + choose a plan
-        <span className="demo-note">✦ Sample content — personalized to your business after sign up</span>
       </div>
       <div className="bottom-row">
 
