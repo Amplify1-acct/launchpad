@@ -129,6 +129,15 @@ export async function POST(request: Request) {
     }
   }
 
+  // Send blog ready email (non-blocking)
+  if (results.length > 0) {
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai"}/api/send-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "blog_ready", business_id }),
+    }).catch(() => {});
+  }
+
   return NextResponse.json({
     success: true,
     generated: results.length,
