@@ -85,6 +85,17 @@ export default async function DashboardPage() {
         </nav>
         <div className={styles.sidebarBottom}>
           <div className={styles.planBadge}>{plan} plan</div>
+          {plan === "starter" && (
+            <a href="mailto:support@exsisto.ai?subject=Upgrade to Pro" style={{
+              display: "block", marginTop: "8px", marginBottom: "4px",
+              background: "linear-gradient(135deg, #4648d4, #6366f1)",
+              color: "#fff", borderRadius: "8px", padding: "8px 12px",
+              fontSize: "11px", fontWeight: 700, textDecoration: "none",
+              textAlign: "center", letterSpacing: "0.3px",
+            }}>
+              ✦ Upgrade to Pro →
+            </a>
+          )}
           <div className={styles.bizName}>{business.name}</div>
           <div className={styles.bizLocation}>
             {business.city}{business.state ? `, ${business.state}` : ""}
@@ -370,6 +381,41 @@ export default async function DashboardPage() {
             </div>
           </div>
 
+          {/* Upgrade card for Starter plan */}
+          {plan === "starter" && (
+            <div className={styles.card} style={{ borderColor: "#c7c4f0", background: "linear-gradient(135deg, #f5f2ff, #eeeeff)" }}>
+              <div style={{ padding: "20px 22px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 700, color: "#4648d4", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "6px" }}>You're on Starter</div>
+                <div style={{ fontSize: "16px", fontWeight: 800, color: "#1b1b25", marginBottom: "8px" }}>Unlock a custom AI-designed website</div>
+                <p style={{ fontSize: "12px", color: "#6b6b8a", lineHeight: 1.6, marginBottom: "16px" }}>
+                  Pro and Premium plans use Stitch AI to generate a fully custom website design — unique to your business, not a template. Plus more blog posts, more social content, and priority support.
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "16px" }}>
+                  {[
+                    { plan: "Pro", price: "$299/mo", features: ["Custom Stitch AI design", "4 blog posts/month", "16 social posts/month"] },
+                    { plan: "Premium", price: "$599/mo", features: ["Custom Stitch AI design", "8 blog posts/month", "32 social posts/month"] },
+                  ].map(p => (
+                    <div key={p.plan} style={{ background: "#fff", borderRadius: "10px", padding: "14px", border: "1px solid #ede9f8" }}>
+                      <div style={{ fontSize: "13px", fontWeight: 800, color: "#1b1b25" }}>{p.plan}</div>
+                      <div style={{ fontSize: "16px", fontWeight: 800, color: "#4648d4", margin: "2px 0 8px" }}>{p.price}</div>
+                      {p.features.map(f => (
+                        <div key={f} style={{ fontSize: "11px", color: "#6b6b8a", marginBottom: "3px" }}>✓ {f}</div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <a href="mailto:support@exsisto.ai?subject=Upgrade my plan" style={{
+                  display: "block", textAlign: "center",
+                  background: "#4648d4", color: "#fff",
+                  padding: "11px", borderRadius: "8px",
+                  fontSize: "13px", fontWeight: 700, textDecoration: "none",
+                }}>
+                  Upgrade my plan →
+                </a>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
 
@@ -377,4 +423,5 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
 
