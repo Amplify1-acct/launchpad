@@ -104,11 +104,18 @@ export async function POST(request: Request) {
     await supabase
       .from("websites")
       .update({
-        status: "live",
+        status: "ready_for_review",
         vercel_url: siteUrl,
         deployed_at: new Date().toISOString(),
       })
       .eq("business_id", business_id);
+
+    // Send site ready email (non-blocking)
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai"}/api/send-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "site_ready", business_id }),
+    }).catch(() => {});
 
     return NextResponse.json({
       success: true,
