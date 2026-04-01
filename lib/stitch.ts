@@ -175,10 +175,14 @@ export async function generateStitchSite(params: {
   services: string[];
   phone?: string;
   accentColor?: string;
+  description?: string;
+  yearsInBusiness?: string;
+  differentiator?: string;
+  revisionNotes?: string;
 }): Promise<string> {
-  const { businessName, industry, city, state, services, phone, accentColor = "#0d7694" } = params;
+  const { businessName, industry, city, state, services, phone, accentColor = "#0d7694", description, yearsInBusiness, differentiator, revisionNotes } = params;
 
-  const serviceList = services.slice(0, 3).join(", ");
+  const serviceList = services.slice(0, 6).join(", ");
 
   // Use Claude to understand any free-text industry
   const industryContext = await normalizeIndustry(industry);
@@ -187,28 +191,34 @@ export async function generateStitchSite(params: {
   const vibe = industryContext.vibe;
   const navLabel = industryContext.navLabel;
 
-  const prompt = `Design a homepage for "${businessName}", a ${industry} business in ${city}, ${state}.
+  const prompt = `Design a homepage for "${businessName}", a ${industry} business in ${city}${state ? `, ${state}` : ""}.
 
 Business details:
 - Industry: ${industry}
+- Description: ${description || `Professional ${industry} services`}
 - Services: ${serviceList || industry + " services"}
 - Phone: ${phone || "(555) 000-0000"}
+- Years in business: ${yearsInBusiness || "established"}
+- What makes them different: ${differentiator || "professional service and quality workmanship"}
 - Primary brand color: ${effectiveAccent}
+${revisionNotes ? `\nCustomer feedback for this revision: "${revisionNotes}"\nPlease incorporate this feedback into the new design.` : ""}
 
 Design direction: ${vibe} aesthetic — feel genuinely designed for this type of business, not generic.
 
 Page sections required:
 1. Sticky nav: business name logo, nav links (Home / ${navLabel} / About / Contact), phone number, "${ctaLabel}" button
-2. Hero: strong headline mentioning ${city}, subheadline about the business, two CTAs ("${ctaLabel}" + secondary), hero image area
-3. Stats bar: 3 trust indicators appropriate for ${industry} (years experience, customers served, rating etc.)
-4. ${navLabel} section: 3 cards for ${serviceList || "their main services"}, each with icon, title, description, learn more link
-5. Testimonial: one compelling customer quote with attribution
-6. CTA banner: gradient background using ${effectiveAccent}, bold headline, "${ctaLabel}" button
-7. Footer: business name, services list, contact info (address, phone, email), hours, copyright
+2. Hero: strong headline mentioning ${city}, subheadline using the business description, two CTAs ("${ctaLabel}" + secondary), hero image area
+3. Stats bar: 3-4 trust indicators (years in business, customers served, rating, etc.) using real numbers if provided
+4. ${navLabel} section: 6 service cards for ${serviceList || "their main services"}, each with icon, title, description
+5. About section: why choose us, what makes them different, featuring: "${differentiator || "quality service"}"
+6. Reviews section: 3 compelling customer reviews with star ratings
+7. CTA banner: strong headline, "${ctaLabel}" button
+8. Footer: business name, services list, contact info, copyright
 
-Color: use ${effectiveAccent} as the primary accent throughout — buttons, headings, icons, borders.
+Color: use ${effectiveAccent} as the primary accent — buttons, headings, icons, borders.
 Typography: modern, readable, pair a strong display font with clean body text.
-Quality: high-end, polished — this should look like it cost $10,000 to build.`;
+Quality: high-end, polished — this should look like it cost $10,000 to build.
+Important: Use real, specific copy based on the business details above — not placeholder text.`;
 
   // Create project and generate screen
   const projectId = await createProject(`${businessName} — Exsisto`);
@@ -216,3 +226,4 @@ Quality: high-end, polished — this should look like it cost $10,000 to build.`
   const html = await fetchScreenHtml(htmlUrl);
   return html;
 }
+
