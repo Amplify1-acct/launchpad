@@ -226,17 +226,40 @@ export async function POST(request: Request) {
     if (heroUrl) tokens.hero_image_url = heroUrl;
     if (aboutUrl) tokens.about_image_url = aboutUrl;
 
-    // ── GENERATE TEMPLATES ────────────────────────────────────────────────
-    const templatesToGenerate = template_override ? [template_override] : SKELETONS;
+    // ── GENERATE SITE VIA STITCH ──────────────────────────────────────────
+    let finalHtml = "";
+    let templateName = "stitch";
 
-    const htmlResults = await Promise.all(
-      templatesToGenerate.map(async (name) => {
-        const html = await fetchTemplate(name);
-        return { name, html: injectTokens(html, tokens) };
-      })
-    );
+    try {
+      const { generateStitchSite } = await import("@/lib/stitch");
+      finalHtml = await generateStitchSite({
+        businessName: business.name,
+        industry: business.industry || business.description || "",
+        city: business.city || "",
+        state: business.state || "",
+        services: (business.services as string[]) || [],
+        phone: business.phone || "",
+        description: business.description || "",
+        yearsInBusiness: business.years_in_business || "",
+        differentiator: business.differentiator || "",
+        revisionNotes: revision_notes || "",
+      });
+      console.log("✓ Stitch site generated");
+    } catch (stitchErr: any) {
+      // Stitch quota or error — fall back to skeleton templates
+      console.warn("Stitch failed, falling back to skeleton:", stitchErr.message);
+      const templatesToGenerate = template_override ? [template_override] : SKELETONS;
+      const htmlResults = await Promise.all(
+        templatesToGenerate.map(async (name) => {
+          const html = await fetchTemplate(name);
+          return { name, html: injectTokens(html, tokens) };
+        })
+      );
+      finalHtml = htmlResults[0].html;
+      templateName = htmlResults[0].name;
+    }
 
-    const primary = htmlResults[0];
+    const primary = { name: templateName, html: finalHtml };
 
     let finalTemplateName = primary.name;
     if (revision_notes && !template_override) {
