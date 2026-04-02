@@ -83,8 +83,8 @@ function buildStarterSite(bizType: string, industry: string, city: string, phone
 // ─── STITCH TEMPLATE CONFIG ──────────────────────────────────────────────────
 // Each industry has a Pro template and a Premium template (different designs)
 const STITCH_TEMPLATE_MAP: Record<string, {
-  template: string;   // Pro theme
-  templatePremium: string; // Premium theme (different design)
+  template: string;
+  templatePremium: string;
   bizName: string;
   phone: string;
   city: string;
@@ -92,27 +92,43 @@ const STITCH_TEMPLATE_MAP: Record<string, {
   phonePremium?: string;
   cityPremium?: string;
 }> = {
-  auto:        { template: "auto",        templatePremium: "hvac",        bizName: "MATTY'S AUTOMOTIVE",   bizNamePremium: "Cool Breeze HVAC",    phone: "(732) 555-0192", phonePremium: "(908) 555-0134", city: "Clark",       cityPremium: "Union" },
-  restaurant:  { template: "restaurant",  templatePremium: "salon",       bizName: "La Bella Cucina",       bizNamePremium: "Velvet Studio",       phone: "(201) 555-0134", phonePremium: "(908) 555-0167", city: "Hoboken",     cityPremium: "Westfield" },
-  gym:         { template: "gym",         templatePremium: "auto",        bizName: "IRON PEAK",             bizNamePremium: "MATTY'S AUTOMOTIVE",  phone: "(908) 555-0178", phonePremium: "(732) 555-0192", city: "Summit",      cityPremium: "Clark" },
-  plumbing:    { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",   cityPremium: "Union" },
-  dental:      { template: "dental",      templatePremium: "law",         bizName: "Bright Smile Dental",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0156", phonePremium: "(973) 555-0189", city: "Scotch Plains",cityPremium: "Newark" },
-  law:         { template: "law",         templatePremium: "realestate",  bizName: "Morgan & Associates",   bizNamePremium: "Summit Realty Group", phone: "(973) 555-0189", phonePremium: "(908) 555-0145", city: "Newark",      cityPremium: "Summit" },
-  salon:       { template: "salon",       templatePremium: "restaurant",  bizName: "Velvet Studio",         bizNamePremium: "La Bella Cucina",     phone: "(908) 555-0167", phonePremium: "(201) 555-0134", city: "Westfield",   cityPremium: "Hoboken" },
-  realestate:  { template: "realestate",  templatePremium: "law",         bizName: "Summit Realty Group",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0145", phonePremium: "(973) 555-0189", city: "Summit",      cityPremium: "Newark" },
-  pet:         { template: "pet",         templatePremium: "salon",       bizName: "Happy Paws Pet Care",   bizNamePremium: "Velvet Studio",       phone: "(908) 555-0123", phonePremium: "(908) 555-0167", city: "Cranford",    cityPremium: "Westfield" },
-  hvac:        { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",       cityPremium: "Westfield" },
-  bakery:      { template: "restaurant",  templatePremium: "salon",       bizName: "La Bella Cucina",       bizNamePremium: "Velvet Studio",       phone: "(201) 555-0134", phonePremium: "(908) 555-0167", city: "Hoboken",     cityPremium: "Westfield" },
-  landscaping: { template: "hvac",        templatePremium: "realestate",  bizName: "Cool Breeze HVAC",      bizNamePremium: "Summit Realty Group", phone: "(908) 555-0134", phonePremium: "(908) 555-0145", city: "Union",       cityPremium: "Summit" },
-  other:       { template: "salon",       templatePremium: "law",         bizName: "Velvet Studio",         bizNamePremium: "Morgan & Associates", phone: "(908) 555-0167", phonePremium: "(973) 555-0189", city: "Westfield",   cityPremium: "Newark" },
-  // Additional industries mapping to best visual match
-  cleaning:    { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",   cityPremium: "Union" },
-  roofing:     { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",       cityPremium: "Westfield" },
-  painting:    { template: "plumbing",    templatePremium: "salon",       bizName: "FlowRight",             bizNamePremium: "Velvet Studio",       phone: "(908) 555-0112", phonePremium: "(908) 555-0167", city: "Westfield",   cityPremium: "Westfield" },
-  remodeling:  { template: "realestate",  templatePremium: "law",         bizName: "Summit Realty Group",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0145", phonePremium: "(973) 555-0189", city: "Summit",      cityPremium: "Newark" },
-  pest_control:{ template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",       cityPremium: "Westfield" },
-  moving:      { template: "auto",        templatePremium: "hvac",        bizName: "MATTY'S AUTOMOTIVE",    bizNamePremium: "Cool Breeze HVAC",    phone: "(732) 555-0192", phonePremium: "(908) 555-0134", city: "Clark",       cityPremium: "Union" },
-  electrical:  { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",       cityPremium: "Westfield" },
+  // ── Automotive ────────────────────────────────────────────────────
+  auto:        { template: "auto",        templatePremium: "gym",         bizName: "MATTY'S AUTOMOTIVE",   bizNamePremium: "IRON PEAK",           phone: "(732) 555-0192", phonePremium: "(908) 555-0178", city: "Clark",        cityPremium: "Summit" },
+
+  // ── Food & Hospitality ────────────────────────────────────────────
+  restaurant:  { template: "restaurant",  templatePremium: "salon",       bizName: "La Bella Cucina",       bizNamePremium: "Velvet Studio",       phone: "(201) 555-0134", phonePremium: "(908) 555-0167", city: "Hoboken",      cityPremium: "Westfield" },
+  bakery:      { template: "restaurant",  templatePremium: "salon",       bizName: "La Bella Cucina",       bizNamePremium: "Velvet Studio",       phone: "(201) 555-0134", phonePremium: "(908) 555-0167", city: "Hoboken",      cityPremium: "Westfield" },
+
+  // ── Health & Wellness ─────────────────────────────────────────────
+  gym:         { template: "gym",         templatePremium: "auto",        bizName: "IRON PEAK",             bizNamePremium: "MATTY'S AUTOMOTIVE",  phone: "(908) 555-0178", phonePremium: "(732) 555-0192", city: "Summit",       cityPremium: "Clark" },
+  dental:      { template: "dental",      templatePremium: "realestate",  bizName: "Bright Smile Dental",   bizNamePremium: "Summit Realty Group", phone: "(908) 555-0156", phonePremium: "(908) 555-0145", city: "Scotch Plains", cityPremium: "Summit" },
+
+  // ── Professional Services ─────────────────────────────────────────
+  law:         { template: "law",         templatePremium: "realestate",  bizName: "Morgan & Associates",   bizNamePremium: "Summit Realty Group", phone: "(973) 555-0189", phonePremium: "(908) 555-0145", city: "Newark",       cityPremium: "Summit" },
+  realestate:  { template: "realestate",  templatePremium: "law",         bizName: "Summit Realty Group",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0145", phonePremium: "(973) 555-0189", city: "Summit",       cityPremium: "Newark" },
+
+  // ── Beauty & Lifestyle ────────────────────────────────────────────
+  salon:       { template: "salon",       templatePremium: "dental",      bizName: "Velvet Studio",         bizNamePremium: "Bright Smile Dental", phone: "(908) 555-0167", phonePremium: "(908) 555-0156", city: "Westfield",    cityPremium: "Scotch Plains" },
+  pet:         { template: "pet",         templatePremium: "dental",      bizName: "Happy Paws Pet Care",   bizNamePremium: "Bright Smile Dental", phone: "(908) 555-0123", phonePremium: "(908) 555-0156", city: "Cranford",     cityPremium: "Scotch Plains" },
+
+  // ── Home & Trade Services ─────────────────────────────────────────
+  hvac:        { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",        cityPremium: "Westfield" },
+  plumbing:    { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",    cityPremium: "Union" },
+  electrical:  { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",        cityPremium: "Westfield" },
+  roofing:     { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",    cityPremium: "Union" },
+  cleaning:    { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",        cityPremium: "Westfield" },
+  painting:    { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",    cityPremium: "Union" },
+  remodeling:  { template: "realestate",  templatePremium: "law",         bizName: "Summit Realty Group",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0145", phonePremium: "(973) 555-0189", city: "Summit",       cityPremium: "Newark" },
+  pest_control:{ template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",        cityPremium: "Westfield" },
+
+  // ── Outdoor Services ─────────────────────────────────────────────
+  landscaping: { template: "pet",         templatePremium: "hvac",        bizName: "Happy Paws Pet Care",   bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0123", phonePremium: "(908) 555-0134", city: "Cranford",     cityPremium: "Union" },
+
+  // ── Moving ────────────────────────────────────────────────────────
+  moving:      { template: "auto",        templatePremium: "hvac",        bizName: "MATTY'S AUTOMOTIVE",    bizNamePremium: "Cool Breeze HVAC",    phone: "(732) 555-0192", phonePremium: "(908) 555-0134", city: "Clark",        cityPremium: "Union" },
+
+  // ── General ───────────────────────────────────────────────────────
+  other:       { template: "salon",       templatePremium: "realestate",  bizName: "Velvet Studio",         bizNamePremium: "Summit Realty Group", phone: "(908) 555-0167", phonePremium: "(908) 555-0145", city: "Westfield",    cityPremium: "Summit" },
 };
 
 const STITCH_BASE_URL = "https://www.exsisto.ai/stitch-templates";
