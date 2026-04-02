@@ -127,7 +127,7 @@ async function uploadToSupabase(imageBuffer: Uint8Array, path: string): Promise<
           "Content-Type": "image/png",
           "x-upsert": "true",
         },
-        body: imageBuffer,
+        body: imageBuffer.buffer as ArrayBuffer,
       }
     );
 
