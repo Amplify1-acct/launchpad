@@ -38,11 +38,15 @@ export default function DevPanel() {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.from("businesses").select("id,name,industry,city,phone,subdomain")
-      .then(({ data }) => {
-        if (data) {
+    // Dev panel: fetch all businesses via admin API
+    fetch("/api/dev/businesses")
+      .then(r => r.json())
+      .then(({ businesses: data }) => {
+        if (data?.length) {
           setBusinesses(data);
-          if (data[0]) setSelectedBiz(data[0]);
+          // Default to Matty's Automotive if available
+          const matty = data.find((b: Business) => b.subdomain?.includes("matty") || b.name?.includes("Matty"));
+          setSelectedBiz(matty || data[0]);
         }
       });
   }, []);
