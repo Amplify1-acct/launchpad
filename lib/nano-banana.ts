@@ -1,76 +1,218 @@
-const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+/**
+ * lib/nano-banana.ts
+ *
+ * Image strategy for Exsisto:
+ * - Known industries (plumbing, hvac, etc): serve from Supabase library (instant, free)
+ * - "Other" / unknown industries: generate custom images via Nano Banana (Gemini API)
+ * - Fallback: gradient placeholder if all else fails
+ */
 
-// Industry-specific Pexels search queries
-const SEARCH_QUERIES: Record<string, string[]> = {
-  auto: [
-    "vintage car restoration garage",
-    "classic car mechanic workshop",
-    "antique automobile restoration",
-    "old vintage car engine restoration",
-    "classic car bodywork paint shop",
-    "vintage automobile chrome detail",
-    "old car restoration before after",
-    "classic car show vintage automobile",
-    "vintage car interior restoration",
-    "antique car polishing detailing",
-  ],
-  restaurant: [
-    "restaurant food plating",
-    "gourmet dish restaurant",
-    "restaurant interior dining",
-    "chef cooking kitchen",
-    "fine dining table",
-  ],
-  fitness: [
-    "gym workout weights",
-    "fitness training",
-    "personal trainer gym",
-    "weight lifting gym",
-  ],
-  plumbing: [
-    "plumber working pipes",
-    "plumbing repair home",
-    "plumber professional",
-  ],
-  dental: [
-    "dentist office modern",
-    "dental clinic professional",
-  ],
-  law: [
-    "lawyer office professional",
-    "attorney law office",
-  ],
-  realestate: [
-    "luxury home exterior",
-    "modern house real estate",
-    "real estate agent home",
-  ],
-  landscaping: [
-    "landscaping garden professional",
-    "lawn care garden",
-  ],
-  default: [
-    "professional business team",
-    "small business storefront",
-    "business professional office",
-  ],
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const STORAGE_BUCKET = "industry-images";
+const CUSTOMER_BUCKET = "customer-images";
+const GEMINI_MODEL = "gemini-3.1-flash-image-preview";
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+
+// ── Industry library mapping ───────────────────────────────────────────────────
+// Maps industry slugs (from preview wizard) to our Supabase library slugs
+const INDUSTRY_LIBRARY_MAP: Record<string, string> = {
+  // Direct matches
+  plumbing:    "plumbing",
+  hvac:        "hvac",
+  electrical:  "electrical",
+  landscaping: "landscaping",
+  cleaning:    "cleaning",
+  roofing:     "roofing",
+  painting:    "painting",
+  automotive:  "automotive",
+  auto:        "automotive",
+  remodeling:  "remodeling",
+  pest_control:"pest_control",
+  moving:      "moving",
+  // New industries (added in expansion)
+  restaurant:  "restaurant",
+  dental:      "dental",
+  salon:       "salon",
+  gym:         "gym",
+  pet:         "pet",
+  law:         "law",
+  realestate:  "realestate",
+  bakery:      "bakery",
+  // Fallback
+  other:       "other",
 };
 
-function getIndustryKey(description: string): string {
-  const lower = description.toLowerCase();
-  if (lower.includes("classic") || lower.includes("restoration") || lower.includes("vintage") ||
-      lower.includes("car") || lower.includes("auto") || lower.includes("muscle") ||
-      lower.includes("corvette") || lower.includes("mustang") || lower.includes("dodge")) return "auto";
-  if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe") || lower.includes("dining")) return "restaurant";
-  if (lower.includes("gym") || lower.includes("fitness") || lower.includes("trainer")) return "fitness";
-  if (lower.includes("plumb") || lower.includes("hvac") || lower.includes("pipe")) return "plumbing";
-  if (lower.includes("dental") || lower.includes("dentist")) return "dental";
-  if (lower.includes("law") || lower.includes("attorney") || lower.includes("legal")) return "law";
-  if (lower.includes("real estate") || lower.includes("realtor")) return "realestate";
-  if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("garden")) return "landscaping";
-  return "default";
+const BASE_LIBRARY_URL = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}`;
+
+function getLibraryUrl(industrySlug: string, slot: string): string {
+  const libSlug = INDUSTRY_LIBRARY_MAP[industrySlug] || "other";
+  return `${BASE_LIBRARY_URL}/${libSlug}/${slot}.png`;
 }
 
+// ── Nano Banana (Gemini Image API) ────────────────────────────────────────────
+
+function buildCustomPrompt(
+  businessName: string,
+  businessType: string,
+  industry: string,
+  city: string,
+  slot: string
+): string {
+  const base = "photorealistic photograph, professional quality, no text, no logos, no watermarks, no UI elements";
+
+  const prompts: Record<string, string> = {
+    hero:  `${base}. Hero image for a ${businessType} business called "${businessName}" in ${city}. Show a professional ${businessType.toLowerCase()} service being performed, clean and trustworthy, natural lighting, wide composition suitable for a website hero banner.`,
+    card1: `${base}. Service showcase image for ${businessName}, a ${businessType} business. Show the primary service with quality craftsmanship, close detail, warm professional lighting.`,
+    card2: `${base}. Trust image for a ${businessType} business in ${city}. Show a professional service vehicle, team member, or completed work result. Clean and high-quality.`,
+    card3: `${base}. Customer satisfaction image for ${businessName}. Show a happy customer with a professional, or a beautiful finished result. Warm and inviting.`,
+    card4: `${base}. Quality showcase for a ${businessType} business. Show the craftsmanship or materials used. High detail, professional photography style.`,
+  };
+
+  return prompts[slot] || prompts.hero;
+}
+
+async function generateNanoBananaImage(prompt: string): Promise<Buffer | null> {
+  if (!GEMINI_API_KEY) {
+    console.warn("GEMINI_API_KEY not set");
+    return null;
+  }
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      if (attempt > 1) await new Promise(r => setTimeout(r, attempt * 8000));
+
+      const resp = await fetch(`${GEMINI_ENDPOINT}?key=${GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+        }),
+        signal: AbortSignal.timeout(90000),
+      });
+
+      if (!resp.ok) {
+        console.error(`Gemini API error attempt ${attempt}:`, resp.status);
+        if (resp.status === 429 || resp.status === 401 || resp.status === 403) break;
+        continue;
+      }
+
+      const data = await resp.json() as any;
+      const parts = data.candidates?.[0]?.content?.parts ?? [];
+      for (const part of parts) {
+        if (part.inlineData?.data) {
+          return Buffer.from(part.inlineData.data, "base64");
+        }
+      }
+    } catch (e) {
+      console.error(`Nano Banana attempt ${attempt} failed:`, e);
+    }
+  }
+  return null;
+}
+
+async function uploadToSupabase(imageBuffer: Buffer, path: string): Promise<string | null> {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return null;
+
+  try {
+    const resp = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${CUSTOMER_BUCKET}/${path}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+          "Content-Type": "image/png",
+          "x-upsert": "true",
+        },
+        body: imageBuffer,
+      }
+    );
+
+    if (!resp.ok) {
+      console.error("Supabase upload failed:", resp.status, await resp.text());
+      return null;
+    }
+
+    return `${SUPABASE_URL}/storage/v1/object/public/${CUSTOMER_BUCKET}/${path}`;
+  } catch (e) {
+    console.error("Supabase upload error:", e);
+    return null;
+  }
+}
+
+// ── Public API ─────────────────────────────────────────────────────────────────
+
+/**
+ * Get image URLs for a business.
+ * - For known industries: returns library URLs instantly (no API call)
+ * - For "other"/custom: generates via Nano Banana and uploads to customer-images bucket
+ */
+export async function getBusinessImages(params: {
+  businessId: string;
+  businessName: string;
+  businessType: string; // e.g. "Water Heater Specialist" or "Artisan Candy Shop"
+  industry: string;     // e.g. "plumbing", "hvac", "other"
+  city: string;
+  plan: "starter" | "pro" | "premium";
+}): Promise<{
+  hero: string;
+  card1: string;
+  card2: string;
+  card3?: string;
+  card4?: string;
+}> {
+  const { businessId, businessName, businessType, industry, city, plan } = params;
+  const isCustom = industry === "other" || !INDUSTRY_LIBRARY_MAP[industry];
+  const slots = plan === "starter" ? ["hero"] :
+    plan === "pro" ? ["hero", "card1", "card2"] :
+    ["hero", "card1", "card2", "card3", "card4"];
+
+  if (!isCustom) {
+    // ── Library path: instant, free ──────────────────────────────────────
+    const result: Record<string, string> = {};
+    for (const slot of slots) {
+      result[slot] = getLibraryUrl(industry, slot);
+    }
+    return result as any;
+  }
+
+  // ── Custom path: generate via Nano Banana ────────────────────────────
+  console.log(`🍌 Generating custom Nano Banana images for ${businessName} (${businessType})`);
+  const result: Record<string, string> = {};
+  const timestamp = Date.now();
+
+  for (const slot of slots) {
+    const prompt = buildCustomPrompt(businessName, businessType, industry, city, slot);
+    const imageBuffer = await generateNanoBananaImage(prompt);
+
+    if (imageBuffer) {
+      const storagePath = `${businessId}/${slot}_${timestamp}.png`;
+      const url = await uploadToSupabase(imageBuffer, storagePath);
+      if (url) {
+        result[slot] = url;
+        console.log(`  ✓ ${slot}: uploaded`);
+        // Small delay between generations
+        if (slots.indexOf(slot) < slots.length - 1) {
+          await new Promise(r => setTimeout(r, 3000));
+        }
+        continue;
+      }
+    }
+
+    // Fallback to library "other" images if generation fails
+    console.warn(`  ⚠️ ${slot}: generation failed, using library fallback`);
+    result[slot] = getLibraryUrl("other", slot);
+  }
+
+  return result as any;
+}
+
+/**
+ * Legacy compatibility: get a single photo URL.
+ * Used by generate-site for hero/about images.
+ */
 export async function generateBusinessPhoto(
   businessName: string,
   businessDescription: string,
@@ -79,75 +221,31 @@ export async function generateBusinessPhoto(
   businessId?: string,
   index: number = 0
 ): Promise<string> {
-  if (!PEXELS_API_KEY) {
-    console.warn("PEXELS_API_KEY not set — using fallback");
-    return getFallbackPhoto(businessDescription, platform, index);
-  }
-
-  const industryKey = getIndustryKey(businessDescription);
-  const queries = SEARCH_QUERIES[industryKey] || SEARCH_QUERIES.default;
-  // Use different query per post AND per platform to get real variety
-  // index already includes platform offset (0, 100, 200) from generate-social
-  const queryIndex = index % queries.length;
-  const query = queries[queryIndex];
-  // Use a random page offset so we don't always get the same photos
-  const pageNum = (Math.floor(index / queries.length) % 3) + 1;
-
-  // Orientation based on platform
-  const orientation = platform === "tiktok" ? "portrait" :
-    platform === "instagram" ? "square" : "landscape";
-
-  try {
-    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=${orientation}&page=${pageNum}`;
-    const res = await fetch(url, {
-      headers: { Authorization: PEXELS_API_KEY },
-    });
-
-    if (!res.ok) {
-      console.error("Pexels error:", res.status);
-      return getFallbackPhoto(businessDescription, platform, index);
-    }
-
-    const data = await res.json();
-    const photos = data.photos || [];
-
-    if (photos.length === 0) {
-      return getFallbackPhoto(businessDescription, platform, index);
-    }
-
-    // Pick a photo based on index for variety
-    // Pick a different photo within results using a secondary index
-    const photoIndex = Math.floor(index / queries.length) % photos.length;
-    const photo = photos[photoIndex];
-
-    // Return appropriate size
-    if (platform === "tiktok") return photo.src.portrait || photo.src.large;
-    if (platform === "instagram") return photo.src.large || photo.src.original;
-    return photo.src.landscape || photo.src.large2x || photo.src.large;
-
-  } catch (e) {
-    console.error("Pexels fetch failed:", e);
-    return getFallbackPhoto(businessDescription, platform, index);
-  }
+  const industry = inferIndustryFromDescription(businessDescription);
+  const slot = photoType === "about" ? "card1" : "hero";
+  return getLibraryUrl(industry, slot);
 }
 
-function getFallbackPhoto(description: string, platform?: string, index: number = 0): string {
-  const w = platform === "tiktok" ? 608 : platform === "instagram" ? 800 : 1200;
-  const h = platform === "tiktok" ? 1080 : platform === "instagram" ? 800 : 630;
-
-  const classicCarPhotos = [
-    "1494976388531-d1058494cdd8",
-    "1502877338535-766e1452684a",
-    "1511919884226-fd3cad34687c",
-    "1519641471654-76ce0107ad1b",
-    "1504215680853-026ed2a45def",
-    "1541348263662-e068662d82af",
-    "1567808291548-fc3ee04dbcf0",
-    "1580274455191-1c62238fa333",
-    "1553440569-bcc63803a83d",
-    "1476525223214-c31ff100e1ae",
-  ];
-
-  const id = classicCarPhotos[index % classicCarPhotos.length];
-  return `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&auto=format`;
+function inferIndustryFromDescription(description: string): string {
+  const lower = description.toLowerCase();
+  if (lower.includes("plumb") || lower.includes("pipe") || lower.includes("drain")) return "plumbing";
+  if (lower.includes("hvac") || lower.includes("heating") || lower.includes("cooling") || lower.includes("air condition")) return "hvac";
+  if (lower.includes("electric") || lower.includes("wiring") || lower.includes("panel")) return "electrical";
+  if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("garden")) return "landscaping";
+  if (lower.includes("clean") || lower.includes("maid") || lower.includes("janitorial")) return "cleaning";
+  if (lower.includes("roof") || lower.includes("shingle") || lower.includes("gutter")) return "roofing";
+  if (lower.includes("paint") || lower.includes("coating")) return "painting";
+  if (lower.includes("auto") || lower.includes("car") || lower.includes("mechanic") || lower.includes("vehicle")) return "automotive";
+  if (lower.includes("remodel") || lower.includes("renovation") || lower.includes("contractor")) return "remodeling";
+  if (lower.includes("pest") || lower.includes("exterminator") || lower.includes("bug")) return "pest_control";
+  if (lower.includes("moving") || lower.includes("mover") || lower.includes("relocation")) return "moving";
+  if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe") || lower.includes("dining")) return "restaurant";
+  if (lower.includes("dental") || lower.includes("dentist") || lower.includes("teeth")) return "dental";
+  if (lower.includes("salon") || lower.includes("hair") || lower.includes("barbershop")) return "salon";
+  if (lower.includes("gym") || lower.includes("fitness") || lower.includes("trainer")) return "gym";
+  if (lower.includes("pet") || lower.includes("dog") || lower.includes("grooming")) return "pet";
+  if (lower.includes("law") || lower.includes("attorney") || lower.includes("legal")) return "law";
+  if (lower.includes("real estate") || lower.includes("realtor") || lower.includes("property")) return "realestate";
+  if (lower.includes("bakery") || lower.includes("bread") || lower.includes("pastry")) return "bakery";
+  return "other";
 }
