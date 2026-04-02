@@ -421,6 +421,16 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 
   useEffect(() => { generateSite(); generateSamples(); }, []);
 
+  const [stitchHtml, setStitchHtml] = useState<string>("");
+  const [stitchLoading, setStitchLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStitchTemplate(industry).then(html => {
+      setStitchHtml(html);
+      setStitchLoading(false);
+    });
+  }, [industry]);
+
   async function generateSite() {
     setSiteLoading(true);
     try {
@@ -448,17 +458,6 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
   }
 
   const imgs = IMAGES[industry] || IMAGES["other"] || [];
-
-  const [stitchHtml, setStitchHtml] = useState<string>("");
-  const [stitchLoading, setStitchLoading] = useState(true);
-
-  useEffect(() => {
-    // Load the Stitch template for this industry
-    fetchStitchTemplate(industry).then(html => {
-      setStitchHtml(html);
-      setStitchLoading(false);
-    });
-  }, [industry]);
 
   function buildSite(planId: string) {
     if (!stitchHtml) return "";
