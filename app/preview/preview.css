@@ -1852,3 +1852,252 @@
 }
 
 .fs-iframe { width: 100%; height: 100%; border: none; border-radius: 8px; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATION — Full responsive overhaul
+   Target: 390px (iPhone 14) and up
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── Preview container ─────────────────────────────────────────── */
+  .preview-container {
+    padding: 0 16px 40px;
+    max-width: 100%;
+  }
+
+  /* ── Step bar: hide labels, show only circles + active label ────── */
+  .step-bar {
+    margin-bottom: 28px;
+    gap: 0;
+  }
+  .step-label {
+    display: none;
+  }
+  .step-item.active .step-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .step-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .step-line {
+    width: 20px;
+    min-width: 20px;
+  }
+
+  /* ── Step headers ──────────────────────────────────────────────── */
+  .step-header h2 {
+    font-size: 22px !important;
+  }
+  .step-header p {
+    font-size: 14px;
+  }
+
+  /* ── Industry grid: 2 columns on mobile ─────────────────────────── */
+  .industry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .industry-btn {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+  .industry-emoji {
+    font-size: 20px;
+  }
+
+  /* ── Biz type grid: single column ────────────────────────────────── */
+  .biztype-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Step content wider on mobile ───────────────────────────────── */
+  .step-content, .step-wide {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* ── Site preview cards: single column carousel ─────────────────── */
+  .site-cards-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .site-card {
+    width: 100%;
+  }
+  .site-card-iframe-wrap {
+    height: 220px;
+  }
+  .site-row-label {
+    font-size: 10px;
+    margin-top: 24px !important;
+  }
+
+  /* ── Social row: single column ───────────────────────────────────── */
+  .social-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .social-img-wide,
+  .social-img-square,
+  .social-img-portrait {
+    height: 200px;
+  }
+
+  /* ── Bottom row: single column ───────────────────────────────────── */
+  .bottom-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* ── Blog cards: compact on mobile ──────────────────────────────── */
+  .blog-card {
+    padding: 16px;
+  }
+  .blog-card img {
+    height: 130px !important;
+  }
+  .blog-card-title {
+    font-size: 15px;
+  }
+  .blog-card-excerpt {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+  }
+
+  /* ── Plan chooser: full width ────────────────────────────────────── */
+  .plan-chooser {
+    padding: 16px;
+  }
+  .plan-option {
+    padding: 14px;
+  }
+  .plan-option-price {
+    font-size: 22px;
+  }
+
+  /* ── Form inputs: larger touch targets ───────────────────────────── */
+  .form-input {
+    font-size: 16px !important; /* prevents iOS zoom */
+    padding: 14px 12px;
+    min-height: 48px;
+  }
+  .form-group label {
+    font-size: 13px;
+  }
+
+  /* ── Primary button: full width on mobile ───────────────────────── */
+  .btn-primary.btn-lg {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+  .btn-full {
+    width: 100%;
+  }
+
+  /* ── Step actions ────────────────────────────────────────────────── */
+  .step-actions {
+    margin-top: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  /* ── Fullscreen modal: full screen on mobile ─────────────────────── */
+  .fs-modal-inner {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+  }
+  .fs-modal-bar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .device-toggle {
+    display: none; /* hide desktop/tablet/mobile toggle on mobile */
+  }
+
+  /* ── Order summary box ────────────────────────────────────────────── */
+  .order-box {
+    padding: 16px;
+  }
+
+  /* ── Service chips ────────────────────────────────────────────────── */
+  .service-chip {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* ── Disclaimer banner ────────────────────────────────────────────── */
+  .sample-disclaimer {
+    font-size: 13px;
+    padding: 12px 14px;
+  }
+
+  /* ── Signup step ─────────────────────────────────────────────────── */
+  .btn-primary.btn-lg.btn-full {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  /* ── Write-in / other section ────────────────────────────────────── */
+  .writein-example-chips {
+    gap: 6px;
+  }
+  .example-chip {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* ── Nav ─────────────────────────────────────────────────────────── */
+  .preview-nav {
+    padding: 0 16px;
+    height: 52px;
+  }
+  .preview-nav-logo {
+    font-size: 18px;
+  }
+  .preview-nav-tag {
+    display: none;
+  }
+}
+
+/* Extra small phones (< 390px) */
+@media (max-width: 390px) {
+  .industry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .step-header h2 {
+    font-size: 20px !important;
+  }
+  .site-card-iframe-wrap {
+    height: 190px;
+  }
+}
+
+/* Tablet (768px - 1024px): 2-column layouts */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .site-cards-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .bottom-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .bottom-row > .plan-chooser {
+    grid-column: span 2;
+  }
+  .social-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
