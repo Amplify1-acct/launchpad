@@ -1,105 +1,122 @@
 {
-  "project_id": "161260860765240350",
-  "auto": {
-    "hero": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0uifwVcHYg2nEIA-m6b6UVMyxr_u46fUtKx1N5YZntgwO96nRzO0utygbHj_P0g4R7qQ0n-gXW54QlrnImMMXj4BMD0L10DXDQJRx0D13-tLODIKUsz_3bXCXrO39HpAym9s19AyklBW47kA-W-r2jVrh5iz4rB_mxkLHPhFKcyiPWgNaRfJEfclBUyh7BCN7cTg3X6PVIMWVh5g50zafnVaJpiUsjcXFmewDWHn3yTU9wRyGPzHz5-eUA",
-        "screen_id": "6f86fc79d1684d2c8c2b459cd7a452f8",
-        "desc": "Classic 1969 muscle car, dark garage, rim lighting"
-      }
-    ],
-    "card": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0uhV7PLLxjIoKd_HgxwiTC6ZpGrXZ5qO9_w_O71c-x5Lg0XOBW7v0DIdaBXNgSpzJYol_JjZ6b2hTjIohg0wZyqtwlOnk3oBb6EdPKpH-0tArveB4PRcoxHbVbWL-whQ1Ck65YiqnBRnoI96Hd1EDNE4-JzRWXAmHhssHvyb4aoSYT6tbjeVBuYV60A78HzwoGGDqos57y66GN5SzVQFYKt9T4oezNVG4WPHduUBu1o4w1lXcOU2dk5t",
-        "screen_id": "92624f9f487547c498811408c276338c",
-        "desc": "Chrome engine close-up, dark moody"
-      }
-    ],
-    "detail": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0ugjyauBPSkPka8yTW2kPXlGOQsyFvVelQOnGSXMEr_vHWZni9KmgKVNitYoQ1xqsxLni0PcymnZ8fU5sXMWVWXyh04pmshrIGJCtsMCbYSYb_RCBxx1PHZTnNCpyNm2xi6BPCx9JZqNewHE33kLrFWcNx3UllRUKVOdVOY1dpz-qvaemHkhOq0VghwrFPK5fcDQd-0lePLCh3LIR06E8zBRSj1oy0abHPfPlFDFFPfIPvciFIrV1aJEJg",
-        "screen_id": "426402312f844258a6e1917ecbdd3982",
-        "desc": "Mechanic sanding car body panel, sparks"
-      }
-    ]
-  },
-  "restaurant": {
-    "hero": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0ujkzBg3SyO3_uac2pdMzXko28h0844enm4FNZmx_9s89EEibQ5XSzN0ARddZzzFiJ-Ap4QmSB_A3T3-NkZZ0OZyXmJAVkKysR3-AmBvMVANv0dc-jo1CgWAu5sKjYbOT12C5PD9Re0sfBGSotgwlcx9ub-bCFqZaqHwjgXCwlI_YteMPco7UYaF9Nnoubq8oyRwYlkYEvwgxp0hUIuOLKfvmpF80UltzN3KmhG5d4AUpdYIvfe6OK37",
-        "screen_id": "4f965a556e974f2999cdcb75b88d3a1a",
-        "desc": "Chef plating truffle pasta, candlelight, steam"
-      }
-    ],
-    "card": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0ujrKdlU233Xm3F7sybA4ZmCdAQ0AwLjyB0LVvgrTSwNeMYFI7LIdZMeAnj5CDeAyGYSqXn8q1pHuhWUV1Xq9ri5RWSDWvvBpvweleP-LN9_XWYWdnhALEXZ8DO2tCF9xXEBXwWPG9O6nppJjItHQREMWNsvWopLTUmPmh970pC4W0O9IqYBb9qU0WgCgl__eqL0bS5AhJksB7_yTf8Tu6p-idxmMSFz7kwYuo2hLihzZClK5RNb54IlaQ",
-        "screen_id": "1fd48a838d8245daa7ec9633a9494456",
-        "desc": "Candlelit restaurant interior, white linen"
-      }
-    ],
-    "detail": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0uhWugr2E2ejawvnUYfTQh3964gNTobvsx8KO1cSwyc58gxKR12jYGhIZFiXYpC3vrVv0OUCQajkc4ahKhYoQP1_KPe5ODKfi2pfHWfUenzmtjBDBkUh0EfuCXTa6i11mM1NH9t1tHVcpi7SUSOfeTN1c8wp8mrsMzPeooG5Ihiod7cJoHwG_IvGOBoTqjOp4gxqE50FVHC2JOLr-mAibEL0y8N-ZHqRpmQ8zzEHzV2IhrEXQiEY8Nh7iA",
-        "screen_id": "708b4fd2e70e4343b697f7e30eac79c5",
-        "desc": "Red wine pour, crystal glass, dark moody"
-      }
-    ]
-  },
-  "gym": {
-    "hero": [
-      {
-        "url": "https://lh3.googleusercontent.com/aida/ADBb0ugTITPpK4xqKm_urV-fOFqwgN3yhasPRJd8VE68MQ4dNSRRoBnJKZIAe2wAxXlgxlErZFLgJJ1um4T3-hGopolqJAkbB1mKo3OjZuLH4UYXmr1od-AxCViXLRp3Ct_n19YEVzCQ-OrPDuwuUFsVUmfsKYIrWRRiKkNFUNTqBUXN2x03qcZjwg_ERTmg6zkYNMGT8vtMYuKQrYsKXMC535VegzlOrOTnkcVuso96OoTuQFd0SIK72xseXg",
-        "screen_id": "49185ed781fd4102a9e27b82f3a4bdcf",
-        "desc": "Athlete deadlifting, dark gym, chalk dust, backlight"
-      }
-    ],
-    "card": [],
-    "detail": []
-  },
   "plumbing": {
-    "hero": [],
-    "card": [],
-    "detail": []
-  },
-  "dental": {
-    "hero": [],
-    "card": [],
-    "detail": []
-  },
-  "law": {
-    "hero": [],
-    "card": [],
-    "detail": []
-  },
-  "salon": {
-    "hero": [],
-    "card": [],
-    "detail": []
-  },
-  "realestate": {
-    "hero": [],
-    "card": [],
-    "detail": []
-  },
-  "pet": {
-    "hero": [],
-    "card": [],
-    "detail": []
+    "label": "Plumbing",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card4.png" }
+    }
   },
   "hvac": {
-    "hero": [],
-    "card": [],
-    "detail": []
+    "label": "HVAC",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card4.png" }
+    }
   },
-  "bakery": {
-    "hero": [],
-    "card": [],
-    "detail": []
+  "electrical": {
+    "label": "Electrical",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card4.png" }
+    }
   },
   "landscaping": {
-    "hero": [],
-    "card": [],
-    "detail": []
+    "label": "Landscaping",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card4.png" }
+    }
+  },
+  "cleaning": {
+    "label": "Cleaning Services",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card4.png" }
+    }
+  },
+  "roofing": {
+    "label": "Roofing",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card4.png" }
+    }
+  },
+  "painting": {
+    "label": "Painting",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card4.png" }
+    }
+  },
+  "automotive": {
+    "label": "Auto Repair",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card4.png" }
+    }
+  },
+  "remodeling": {
+    "label": "Home Remodeling",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card4.png" }
+    }
+  },
+  "pest_control": {
+    "label": "Pest Control",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card4.png" }
+    }
+  },
+  "moving": {
+    "label": "Moving Services",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card4.png" }
+    }
+  },
+  "other": {
+    "label": "General Business",
+    "images": {
+      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/hero.png" },
+      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card1.png" },
+      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card2.png" },
+      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card3.png" },
+      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card4.png" }
+    }
   }
 }
