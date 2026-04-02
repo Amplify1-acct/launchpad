@@ -9,5 +9,11 @@
     "enabled": true,
     "autoAlias": true,
     "autoJobCancelation": true
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/post-social",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
