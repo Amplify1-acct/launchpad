@@ -1,6 +1,7 @@
 const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
+// cache bust: sites route fix
 const nextConfig = {
   images: {
     domains: [
