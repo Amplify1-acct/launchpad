@@ -54,16 +54,27 @@ export async function GET(
     });
   }
 
-  // Get website record
-  const { data: website } = await supabase
+  // Get website record (bypass RLS with service role)
+  const { data: website, error: webError } = await supabase
     .from("websites")
     .select("custom_html, services_html, about_html, contact_html, blog_index_html, status")
     .eq("business_id", business.id)
-    .single();
+    .maybeSingle();
+  
+  console.log("DEBUG website query:", { businessId: business.id, status: website?.status, error: webError?.message, found: !!website });
 
   console.log("DEBUG site route:", { slug, pagePath, businessId: business.id, websiteStatus: website?.status, hasHtml: !!website?.custom_html });
   
-  if (!website || website.status !== "live") {
+  if (!website) {
+    console.log("DEBUG: no website found for business", business.id);
+    return new NextResponse(buildingHTML(business.name), {
+      status: 200,
+      headers: { "Content-Type": "text/html" },
+    });
+  }
+
+  if (website.status !== "live") {
+    console.log("DEBUG: website not live, status =", website.status);
     return new NextResponse(buildingHTML(business.name), {
       status: 200,
       headers: { "Content-Type": "text/html" },
