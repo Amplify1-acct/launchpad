@@ -106,7 +106,7 @@ async function fetchStitchTemplate(industry: string): Promise<string> {
   const cacheKey = config.template;
   if (templateCache[cacheKey]) return templateCache[cacheKey];
   try {
-    const res = await fetch(\`\${STITCH_BASE_URL}/\${config.template}.html\`);
+    const res = await fetch(`\${STITCH_BASE_URL}/\${config.template}.html`);
     if (!res.ok) throw new Error("fetch failed");
     const html = await res.text();
     templateCache[cacheKey] = html;
@@ -153,7 +153,7 @@ function personalizeTemplate(
   if (heroUrl) {
     result = result.replace(
       /src="https:\/\/lh3\.googleusercontent\.com\/[^"]+"/,
-      \`src="\${heroUrl}"\`
+      `src="\${heroUrl}"`
     );
   }
 
@@ -165,7 +165,7 @@ function personalizeTemplate(
       if (cardIdx === 0 && heroUrl) { cardIdx++; return match; }
       const url = cardUrls[cardIdx % cardUrls.length];
       cardIdx++;
-      return url ? \`src="\${url}"\` : match;
+      return url ? `src="\${url}"` : match;
     });
   }
 
