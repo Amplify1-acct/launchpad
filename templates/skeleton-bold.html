@@ -127,7 +127,7 @@ footer{background:var(--dark);padding:32px 20px;text-align:center;border-top:1px
   <img class="hero-bg" src="{{hero_image_url}}" alt="{{business_name}}"/>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-label">{{city}}, {{state}}</div>
+    <div class="hero-label">{{city}}{{state_display}}</div>
     <h1>{{hero_line_1}}<em>{{hero_line_2}}</em></h1>
     <p class="hero-sub">{{hero_subheadline}}</p>
     <div class="hero-ctas">
@@ -209,7 +209,7 @@ footer{background:var(--dark);padding:32px 20px;text-align:center;border-top:1px
 <footer>
   <div class="footer-logo">{{business_name}}<span>.</span></div>
   <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="tel:{{phone_raw}}">{{phone}}</a></div>
-  <div class="footer-copy">© {{year}} {{business_name}} · {{address}}, {{city}}, {{state}}</div>
+  <div class="footer-copy">© {{year}} {{business_name}} · {{city}}{{state_display}}</div>
 </footer>
 
 <script>
