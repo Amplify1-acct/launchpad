@@ -17,8 +17,8 @@ export async function GET() {
     .limit(5);
     
   return NextResponse.json({
-    businesses: businesses?.map(b => ({ id: b.id, name: b.name, subdomain: b.subdomain })),
-    websites: websites?.map(w => ({ business_id: w.business_id, status: w.status, has_html: !!w.custom_html })),
+    businesses: businesses?.map((b: any) => ({ id: b.id, name: b.name, subdomain: b.subdomain })),
+    websites: websites?.map((w: any) => ({ business_id: w.business_id, status: w.status, has_html: !!w.custom_html })),
     bizError: bizErr?.message,
     webError: webErr?.message,
   });
