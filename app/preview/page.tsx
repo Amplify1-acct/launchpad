@@ -160,7 +160,8 @@ function personalizeTemplate(
   phone: string,
   heroUrl?: string,
   cardUrls?: string[],
-  plan: string = "pro"
+  plan: string = "pro",
+  services: string[] = []
 ): string {
   const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
   const isPremium = plan === "premium";
@@ -189,6 +190,29 @@ function personalizeTemplate(
     const rawOld = templatePhone.replace(/\D/g, "");
     const rawNew = phone.replace(/\D/g, "");
     if (rawOld && rawNew) result = result.split(rawOld).join(rawNew);
+  }
+
+
+  // Replace template service names with user's actual services
+  const templateName = isPremium ? config.templatePremium : config.template;
+  const templateServices: Record<string, string[]> = {
+    plumbing:   ["Emergency Repairs", "Leak Detection", "Water Heaters", "Drain Cleaning", "Mastered Solutions"],
+    hvac:       ["AC Installation", "Heating Repair", "Duct Cleaning", "Maintenance Plans", "Mastered Environments"],
+    dental:     ["General Care", "Teeth Whitening", "Invisalign", "Dental Implants", "Curated Clinical Solutions"],
+    salon:      ["Balayage & Color", "Bridal & Editorial", "Precision Cuts", "Keratin & Therapy", "Curated Services"],
+    restaurant: ["Signature Offerings", "Dine-In Experience", "Private Events", "Seasonal Menu"],
+    auto:       ["Full Body Restoration", "Custom Paint & Body", "Panel Fabrication", "Chrome & Detailing"],
+    gym:        ["Personal Training", "Group Classes", "Nutrition Coaching", "Open Gym"],
+    pet:        ["Grooming", "Daycare", "Boarding", "Expert Training", "Unmatched Care"],
+    realestate: ["The Summit Standard", "Buyer Representation", "Seller Services", "Investment Properties"],
+    law:        ["Personal Injury", "Criminal Defense", "Family Law", "Estate Planning", "Strategic Expertise"],
+  };
+  const oldServices = templateServices[templateName] || [];
+  if (services && services.length > 0 && oldServices.length > 0) {
+    oldServices.forEach((oldSvc, i) => {
+      const newSvc = services[i] || services[i % services.length] || oldSvc;
+      result = result.split(oldSvc).join(newSvc);
+    });
   }
 
   // Replace hero image (first lh3.googleusercontent.com img)
@@ -527,7 +551,8 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
       phone || "(555) 555-0100",
       imgs[0] || undefined,
       imgs.slice(1),
-      planId
+      planId,
+      bizDetails?.services || []
     );
 
     // Add plan badge
