@@ -40,14 +40,7 @@ const INDUSTRY_LIBRARY_MAP: Record<string, string> = {
   law:         "law",
   realestate:  "realestate",
   bakery:      "bakery",
-  // Additional mappings
-  cleaning:    "cleaning",
-  roofing:     "roofing",
-  painting:    "painting",
-  remodeling:  "remodeling",
-  pest_control:"pest_control",
-  moving:      "moving",
-  electrical:  "electrical",
+
   // Fallback
   other:       "other",
 };
