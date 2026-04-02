@@ -86,8 +86,29 @@ export async function POST(request: Request) {
       status: "pending",
     });
 
-    // 6. Send welcome email (non-blocking)
-    fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai"}/api/send-email`, {
+    // 6. Pre-generate images via Nano Banana (non-blocking background task)
+    // For known industries: resolves instantly from library URLs
+    // For "other": triggers Nano Banana generation and uploads to customer-images bucket
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+    fetch(`${appUrl}/api/generate-images`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+      },
+      body: JSON.stringify({
+        businessId: business.id,
+        businessName,
+        businessType: businessName, // use business name as type; generate-images also accepts bizType
+        industry: industry || "other",
+        city: city || "",
+        services: services || [],
+        tier: planId || "starter",
+      }),
+    }).catch((e) => console.error("Image pre-generation failed (non-fatal):", e));
+
+    // 7. Send welcome email (non-blocking)
+    fetch(`${appUrl}/api/send-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
