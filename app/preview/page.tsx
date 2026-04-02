@@ -649,6 +649,7 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
         {/* Blog card 1 */}
         <div className="blog-card">
           <div className="blog-card-eyebrow">📝 Blog post · published weekly</div>
+          {imgs[1] && <div className="blog-card-img"><img src={imgs[1]} alt="" style={{width:"100%",height:"160px",objectFit:"cover",borderRadius:"8px",marginBottom:"12px",display:"block"}} /></div>}
           {samplesLoading ? (
             <div className="blog-loading"><div className="loading-spinner" /><span>Writing your blog…</span></div>
           ) : (
@@ -664,6 +665,7 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
         {/* Blog card 2 */}
         <div className="blog-card">
           <div className="blog-card-eyebrow">📝 Blog post · next week</div>
+          {imgs[2] && <div className="blog-card-img"><img src={imgs[2]} alt="" style={{width:"100%",height:"160px",objectFit:"cover",borderRadius:"8px",marginBottom:"12px",display:"block"}} /></div>}
           {samplesLoading ? (
             <div className="blog-loading"><div className="loading-spinner" /><span>Writing your blog…</span></div>
           ) : (
