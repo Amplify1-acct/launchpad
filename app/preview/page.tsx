@@ -159,28 +159,34 @@ function personalizeTemplate(
   city: string,
   phone: string,
   heroUrl?: string,
-  cardUrls?: string[]
+  cardUrls?: string[],
+  plan: string = "pro"
 ): string {
   const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
+  const isPremium = plan === "premium";
+
+  // Use premium-specific placeholder names when rendering the premium template
+  const templateBizName = isPremium ? (config.bizNamePremium || config.bizName) : config.bizName;
+  const templateCity    = isPremium ? (config.cityPremium    || config.city)    : config.city;
+  const templatePhone   = isPremium ? (config.phonePremium   || config.phone)   : config.phone;
+
   let result = html;
 
   // Replace business name (all occurrences)
-  if (bizType && config.bizName) {
-    result = result.split(config.bizName).join(bizType);
-    // Also handle uppercase version
-    result = result.split(config.bizName.toUpperCase()).join(bizType.toUpperCase());
+  if (bizType && templateBizName) {
+    result = result.split(templateBizName).join(bizType);
+    result = result.split(templateBizName.toUpperCase()).join(bizType.toUpperCase());
   }
 
   // Replace city
-  if (city && config.city) {
-    result = result.split(config.city).join(city);
+  if (city && templateCity) {
+    result = result.split(templateCity).join(city);
   }
 
   // Replace phone
-  if (phone && config.phone) {
-    result = result.split(config.phone).join(phone);
-    // Also replace raw digits version
-    const rawOld = config.phone.replace(/\D/g, "");
+  if (phone && templatePhone) {
+    result = result.split(templatePhone).join(phone);
+    const rawOld = templatePhone.replace(/\D/g, "");
     const rawNew = phone.replace(/\D/g, "");
     if (rawOld && rawNew) result = result.split(rawOld).join(rawNew);
   }
@@ -520,7 +526,8 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
       city || "Your City",
       phone || "(555) 555-0100",
       imgs[0] || undefined,
-      imgs.slice(1)
+      imgs.slice(1),
+      planId
     );
 
     // Add plan badge
