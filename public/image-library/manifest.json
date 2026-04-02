@@ -2,121 +2,241 @@
   "plumbing": {
     "label": "Plumbing",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/plumbing/card4.png"
+      }
     }
   },
   "hvac": {
     "label": "HVAC",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/hvac/card4.png"
+      }
     }
   },
   "electrical": {
     "label": "Electrical",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/electrical/card4.png"
+      }
     }
   },
   "landscaping": {
     "label": "Landscaping",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/landscaping/card4.png"
+      }
     }
   },
   "cleaning": {
     "label": "Cleaning Services",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/cleaning/card4.png"
+      }
     }
   },
   "roofing": {
     "label": "Roofing",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/roofing/card4.png"
+      }
     }
   },
   "painting": {
     "label": "Painting",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/painting/card4.png"
+      }
     }
   },
   "automotive": {
     "label": "Auto Repair",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/automotive/card4.png"
+      }
     }
   },
   "remodeling": {
     "label": "Home Remodeling",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/remodeling/card4.png"
+      }
     }
   },
   "pest_control": {
     "label": "Pest Control",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/pest_control/card4.png"
+      }
     }
   },
   "moving": {
     "label": "Moving Services",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/moving/card4.png"
+      }
     }
   },
   "other": {
     "label": "General Business",
     "images": {
-      "hero":  { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/hero.png" },
-      "card1": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card1.png" },
-      "card2": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card2.png" },
-      "card3": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card3.png" },
-      "card4": { "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card4.png" }
+      "hero": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/hero.png"
+      },
+      "card1": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card1.png"
+      },
+      "card2": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card2.png"
+      },
+      "card3": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card3.png"
+      },
+      "card4": {
+        "url": "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card4.png"
+      }
     }
   }
 }
