@@ -460,10 +460,10 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
     });
   }, [industry]);
 
-  function buildSite(_planId: string) {
+  function buildSite(planId: string) {
     if (!stitchHtml) return "";
     const imgs = IMAGES[industry] || IMAGES["other"] || [];
-    return personalizeTemplate(
+    const personalized = personalizeTemplate(
       stitchHtml,
       industry,
       bizType || "Your Business",
@@ -472,6 +472,15 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
       imgs[0] || undefined,
       imgs.slice(1)
     );
+
+    // Add plan-specific badge overlay to differentiate tiers
+    const badges: Record<string, string> = {
+      starter: `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#111;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">STARTER · $99/mo</div>`,
+      pro:     `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#2563eb;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PRO · $299/mo</div>`,
+      premium: `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:linear-gradient(135deg,#6366f1,#a78bfa);color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PREMIUM · $599/mo</div>`,
+    };
+
+    return personalized.replace("</body>", `${badges[planId] || ""}</body>`);
   }
 
   const deviceWidths: Record<string, string> = { desktop: "100%", tablet: "768px", mobile: "390px" };
