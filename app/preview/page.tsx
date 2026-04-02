@@ -73,6 +73,105 @@ const IMAGES: Record<string, string[]> = {
   other:      ["https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/hero.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card1.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card2.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card3.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card4.png"],
 };
 
+// ─── STITCH TEMPLATE CONFIG ──────────────────────────────────────────────────
+// Maps preview industry IDs → Stitch template file + hardcoded content to replace
+const STITCH_TEMPLATE_MAP: Record<string, {
+  template: string;
+  bizName: string;
+  phone: string;
+  city: string;
+}> = {
+  auto:        { template: "auto",        bizName: "MATTY'S AUTOMOTIVE",   phone: "(732) 555-0192", city: "Clark" },
+  restaurant:  { template: "restaurant",  bizName: "La Bella Cucina",       phone: "(201) 555-0134", city: "Hoboken" },
+  gym:         { template: "gym",         bizName: "IRON PEAK",             phone: "(908) 555-0178", city: "Summit" },
+  plumbing:    { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
+  dental:      { template: "dental",      bizName: "Bright Smile Dental",   phone: "(908) 555-0156", city: "Scotch Plains" },
+  law:         { template: "law",         bizName: "Morgan & Associates",   phone: "(973) 555-0189", city: "Newark" },
+  salon:       { template: "salon",       bizName: "Velvet Studio",         phone: "(908) 555-0167", city: "Westfield" },
+  realestate:  { template: "realestate",  bizName: "Summit Realty Group",   phone: "(908) 555-0145", city: "Summit" },
+  pet:         { template: "pet",         bizName: "Happy Paws Pet Care",   phone: "(908) 555-0123", city: "Cranford" },
+  hvac:        { template: "hvac",        bizName: "Cool Breeze HVAC",      phone: "(908) 555-0134", city: "Union" },
+  bakery:      { template: "restaurant",  bizName: "La Bella Cucina",       phone: "(201) 555-0134", city: "Hoboken" },
+  landscaping: { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
+  other:       { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
+};
+
+const STITCH_BASE_URL = "https://www.exsisto.ai/stitch-templates";
+
+// Cache for fetched template HTML
+const templateCache: Record<string, string> = {};
+
+async function fetchStitchTemplate(industry: string): Promise<string> {
+  const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
+  const cacheKey = config.template;
+  if (templateCache[cacheKey]) return templateCache[cacheKey];
+  try {
+    const res = await fetch(\`\${STITCH_BASE_URL}/\${config.template}.html\`);
+    if (!res.ok) throw new Error("fetch failed");
+    const html = await res.text();
+    templateCache[cacheKey] = html;
+    return html;
+  } catch {
+    return "";
+  }
+}
+
+function personalizeTemplate(
+  html: string,
+  industry: string,
+  bizType: string,
+  city: string,
+  phone: string,
+  heroUrl?: string,
+  cardUrls?: string[]
+): string {
+  const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
+  let result = html;
+
+  // Replace business name (all occurrences)
+  if (bizType && config.bizName) {
+    result = result.split(config.bizName).join(bizType);
+    // Also handle uppercase version
+    result = result.split(config.bizName.toUpperCase()).join(bizType.toUpperCase());
+  }
+
+  // Replace city
+  if (city && config.city) {
+    result = result.split(config.city).join(city);
+  }
+
+  // Replace phone
+  if (phone && config.phone) {
+    result = result.split(config.phone).join(phone);
+    // Also replace raw digits version
+    const rawOld = config.phone.replace(/\D/g, "");
+    const rawNew = phone.replace(/\D/g, "");
+    if (rawOld && rawNew) result = result.split(rawOld).join(rawNew);
+  }
+
+  // Replace hero image (first lh3.googleusercontent.com img)
+  if (heroUrl) {
+    result = result.replace(
+      /src="https:\/\/lh3\.googleusercontent\.com\/[^"]+"/,
+      \`src="\${heroUrl}"\`
+    );
+  }
+
+  // Replace additional images
+  if (cardUrls && cardUrls.length > 0) {
+    let cardIdx = 0;
+    result = result.replace(/src="https:\/\/lh3\.googleusercontent\.com\/[^"]+"/g, (match) => {
+      // Skip the first one (already replaced by hero)
+      if (cardIdx === 0 && heroUrl) { cardIdx++; return match; }
+      const url = cardUrls[cardIdx % cardUrls.length];
+      cardIdx++;
+      return url ? \`src="\${url}"\` : match;
+    });
+  }
+
+  return result;
+}
+
 const PLANS = [
   { id: "starter", name: "Starter", price: "$99", period: "/mo", images: 1,
     features: ["5-page website","1 AI image","2 blogs/mo","8 social posts/mo","On-page SEO"] },
@@ -82,33 +181,6 @@ const PLANS = [
     features: ["Full Stitch AI template","6 AI images","8 blogs/mo","32 social posts/mo","Priority support","Before/after gallery"] },
 ];
 
-// ─── SITE BUILDERS ────────────────────────────────────────────────────────────
-const PLACEHOLDER_IMG_HTML = `<div style="width:100%;height:100%;min-height:500px;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e40af 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-family:Inter,sans-serif;text-align:center;padding:48px;"><div style="font-size:48px;margin-bottom:18px;">📸</div><div style="font-size:18px;font-weight:800;margin-bottom:10px;">Your Custom Photos Go Here</div></div>`;
-const PLACEHOLDER_CARD = (n: number) => `<div style="width:100%;height:240px;background:linear-gradient(135deg,#1e1b4b ${n*12}%,#312e81 ${40+n*8}%,#1e40af 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.8);font-family:Inter,sans-serif;"><span style="font-size:12px;font-weight:700;">Photo ${n}</span></div>`;
-
-function buildStarterSite(bizType: string, industry: string, city: string, phone: string, ai: AIContent): string {
-  const imgs = IMAGES[industry] || [];
-  const hero = imgs[0] || "";
-  const heroEl = hero ? `<img src="${hero}" style="width:100%;height:100%;object-fit:cover;display:block;" />` : PLACEHOLDER_IMG_HTML;
-  const svcs = ai.services.slice(0, 6);
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;color:#111;background:#fff;}nav{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;background:#fff;gap:12px;}.logo{font-size:15px;font-weight:900;flex-shrink:0;}.cta-btn{background:#111;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;}.hero{position:relative;height:90vh;min-height:400px;overflow:hidden;background:#1a1a2e;}.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.8) 100%);}.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:32px 24px;}.tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:12px;}h1{font-size:clamp(28px,7vw,52px);font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1px;margin-bottom:14px;}.sub{font-size:clamp(13px,2.5vw,15px);color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:22px;}.btns{display:flex;gap:10px;flex-wrap:wrap;}.btn-w{background:#fff;color:#111;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;}.btn-g{border:2px solid rgba(255,255,255,0.4);color:#fff;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;}.services{padding:40px 20px;background:#f9f9f9;}.sec-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#999;margin-bottom:8px;}.sec-h{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-0.5px;margin-bottom:24px;}.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;}.svc{background:#fff;border-radius:10px;padding:18px;border:1px solid #f0f0f0;}.svc-dot{width:8px;height:8px;background:#111;border-radius:50%;margin-bottom:10px;}.svc-n{font-size:13px;font-weight:700;}.stats{display:grid;grid-template-columns:repeat(2,1fr);background:#111;}.stat{padding:22px 16px;text-align:center;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);}.stat-n{font-size:22px;font-weight:900;color:#fff;}.stat-l{font-size:9px;color:rgba(255,255,255,0.4);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}.cta-sec{padding:36px 20px;}.cta-sec h2{font-size:clamp(18px,4vw,24px);font-weight:800;margin-bottom:16px;}.cta-ph{background:#111;color:#fff;padding:13px 24px;border-radius:8px;font-size:14px;font-weight:800;display:inline-block;}footer{padding:16px 20px;background:#f5f5f5;display:flex;justify-content:space-between;font-size:10px;color:#999;flex-wrap:wrap;gap:4px;}@media(min-width:640px){nav{padding:18px 48px;}.hero-content{padding:0 72px;justify-content:center;}.hero-overlay{background:linear-gradient(to right,rgba(0,0,0,0.80) 55%,rgba(0,0,0,0.1));}.stats{grid-template-columns:repeat(4,1fr);}.cta-sec{padding:52px 48px;display:flex;justify-content:space-between;align-items:center;}.cta-sec h2{margin-bottom:0;}.services{padding:64px 48px;}footer{padding:20px 48px;}}</style></head><body><nav><div class="logo">${bizType}</div><div class="cta-btn">${phone||"Call Us"}</div></nav><div class="hero"><div style="position:absolute;inset:0;">${heroEl}</div><div class="hero-overlay"></div><div class="hero-content"><div class="tag">${city} · ${bizType}</div><h1>${ai.headline}</h1><p class="sub">${ai.subtext}</p><div class="btns"><div class="btn-w">Get Free Estimate →</div><div class="btn-g">Our Services</div></div></div></div><section class="services"><div class="sec-tag">What We Offer</div><h2 class="sec-h">Our Services</h2><div class="svc-grid">${svcs.map(s=>`<div class="svc"><div class="svc-dot"></div><div class="svc-n">${s}</div></div>`).join("")}</div></section><div class="stats"><div class="stat"><div class="stat-n">${ai.stat1}</div><div class="stat-l">${ai.stat1Label}</div></div><div class="stat"><div class="stat-n">${ai.stat2}</div><div class="stat-l">${ai.stat2Label}</div></div><div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div><div class="stat"><div class="stat-n">Free</div><div class="stat-l">Estimates</div></div></div><section class="cta-sec"><h2>Ready to get started?</h2><div class="cta-ph">${phone||"Contact Us"}</div></section><footer><span>${bizType} · ${city}</span><span>Exsisto Starter · $99/mo</span></footer></body></html>`;
-}
-
-function buildProSite(bizType: string, industry: string, city: string, phone: string, ai: AIContent): string {
-  const imgs = IMAGES[industry] || [];
-  const [hero, card1, card2] = [imgs[0]||"", imgs[1]||imgs[0]||"", imgs[2]||imgs[0]||""];
-  const hasImgs = imgs.length > 0;
-  const heroEl = hasImgs ? `<img src="${hero}" style="width:100%;height:100%;object-fit:cover;min-height:300px;"/>` : PLACEHOLDER_IMG_HTML;
-  const svcs = ai.services.slice(0, 6);
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;color:#111;background:#fff;}nav{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;background:#fff;gap:12px;}.logo{font-size:15px;font-weight:900;flex-shrink:0;}.nav-links{display:none;}.nav-links a{font-size:13px;font-weight:500;color:#666;text-decoration:none;}.cta-btn{background:#111;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;}.hero{display:flex;flex-direction:column;}.hero-left{padding:36px 20px;display:flex;flex-direction:column;justify-content:center;order:2;}.tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#999;margin-bottom:12px;}h1{font-size:clamp(26px,7vw,46px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:14px;}.sub{font-size:clamp(13px,2.5vw,15px);color:#555;line-height:1.8;margin-bottom:20px;}.stats-row{display:flex;flex-wrap:wrap;gap:16px;padding:14px 16px;background:#f9f9f9;border-radius:10px;margin-bottom:20px;}.stat-n{font-size:18px;font-weight:900;}.stat-l{font-size:9px;color:#999;margin-top:2px;text-transform:uppercase;letter-spacing:1px;}.btns{display:flex;gap:10px;flex-wrap:wrap;}.btn-d{background:#111;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;}.btn-o{border:2px solid #e5e5e5;color:#333;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;}.hero-right{position:relative;overflow:hidden;min-height:260px;order:1;}.hero-right img{width:100%;height:100%;object-fit:cover;min-height:260px;}.badge{position:absolute;bottom:16px;left:16px;background:rgba(255,255,255,0.95);padding:10px 14px;border-radius:10px;}.badge-n{font-size:16px;font-weight:900;}.badge-l{font-size:9px;color:#999;margin-top:2px;}.services{padding:40px 20px;background:#f9f9f9;}.sec-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#999;margin-bottom:8px;}.sec-h{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-0.5px;margin-bottom:22px;}.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;}.svc{background:#fff;border-radius:10px;padding:18px;}.svc-dot{width:8px;height:8px;background:#111;border-radius:50%;margin-bottom:10px;}.svc-n{font-size:13px;font-weight:700;}.gallery{padding:36px 20px;}.gal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}.gal-grid img{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#eee;display:block;}.cta-sec{background:#111;padding:36px 20px;}.cta-sec h2{font-size:clamp(18px,5vw,24px);font-weight:800;color:#fff;margin-bottom:16px;}.cta-ph{background:#fff;color:#111;padding:13px 22px;border-radius:8px;font-size:14px;font-weight:800;display:inline-block;}footer{padding:16px 20px;background:#f0f0f0;display:flex;justify-content:space-between;font-size:10px;color:#999;flex-wrap:wrap;gap:4px;}@media(min-width:700px){nav{padding:18px 56px;}.nav-links{display:flex;gap:24px;}.hero{display:grid;grid-template-columns:45% 55%;min-height:88vh;}.hero-left{padding:80px 56px;order:1;}.hero-right{order:2;}.stats-row{flex-wrap:nowrap;}.gallery{padding:64px 56px;}.gal-grid{grid-template-columns:2fr 1fr 1fr;}.gal-grid img{height:240px;}.cta-sec{padding:52px 56px;display:flex;justify-content:space-between;align-items:center;}.cta-sec h2{margin-bottom:0;}.services{padding:64px 56px;}footer{padding:20px 56px;}}</style></head><body><nav><div class="logo">${bizType}</div><div class="nav-links"><a href="#">Services</a><a href="#">Gallery</a><a href="#">About</a></div><div class="cta-btn">${phone||"Call Now"}</div></nav><div class="hero"><div class="hero-left"><div class="tag">${city}</div><h1>${ai.headline}</h1><p class="sub">${ai.subtext}</p><div class="stats-row"><div><div class="stat-n">${ai.stat1}</div><div class="stat-l">${ai.stat1Label}</div></div><div><div class="stat-n">${ai.stat2}</div><div class="stat-l">${ai.stat2Label}</div></div><div><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div></div><div class="btns"><div class="btn-d">Get Free Estimate →</div><div class="btn-o">View Our Work</div></div></div><div class="hero-right">${heroEl}<div class="badge"><div class="badge-n">★ 4.9</div><div class="badge-l">200+ Reviews</div></div></div></div><section class="services"><div class="sec-tag">What We Offer</div><h2 class="sec-h">Our Services</h2><div class="svc-grid">${svcs.map(s=>`<div class="svc"><div class="svc-dot"></div><div class="svc-n">${s}</div></div>`).join("")}</div></section><section class="gallery"><div class="sec-tag">Our Work</div><h2 class="sec-h">See the Results</h2><div class="gal-grid">${hasImgs?`<img src="${hero}"/><img src="${card1}"/><img src="${card2}"/>`:`${PLACEHOLDER_CARD(1)}${PLACEHOLDER_CARD(2)}${PLACEHOLDER_CARD(3)}`}</div></section><section class="cta-sec"><h2>Ready to get started?</h2><div class="cta-ph">${phone||"Contact Us"}</div></section><footer><span>${bizType} · ${city}</span><span>Exsisto Pro · $299/mo</span></footer></body></html>`;
-}
-
-function buildPremiumSite(bizType: string, industry: string, city: string, phone: string, ai: AIContent): string {
-  const imgs = IMAGES[industry] || IMAGES["other"] || [];
-  const [img1, img2, img3] = [imgs[0]||"", imgs[1]||imgs[0]||"", imgs[2]||imgs[0]||""];
-  const svcs = ai.services.slice(0, 6);
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;background:#0a0a14;color:#fff;}nav{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(10,10,20,0.96);gap:12px;}.logo{font-size:15px;font-weight:900;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;}.nav-links{display:none;gap:28px;}.nav-links a{font-size:13px;color:rgba(255,255,255,0.5);text-decoration:none;}.nav-cta{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;}.hero{display:flex;flex-direction:column;}.hero-left{padding:36px 20px;display:flex;flex-direction:column;justify-content:center;order:2;}.tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#6366f1;margin-bottom:16px;display:flex;align-items:center;gap:6px;}.tag::before{content:'';width:14px;height:1px;background:#6366f1;}h1{font-size:clamp(26px,7vw,48px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:16px;background:linear-gradient(135deg,#fff 60%,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}.sub{font-size:clamp(13px,2.5vw,15px);color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:22px;}.stats{display:flex;flex-wrap:wrap;gap:16px;padding:16px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:22px;}.stat-n{font-size:18px;font-weight:900;color:#a78bfa;}.stat-l{font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}.btns{display:flex;gap:10px;flex-wrap:wrap;}.btn-p{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:12px 22px;border-radius:8px;font-size:13px;font-weight:700;}.btn-s{border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);padding:12px 16px;border-radius:8px;font-size:13px;}.hero-right{position:relative;overflow:hidden;min-height:260px;order:1;}.hero-right img{width:100%;height:100%;object-fit:cover;min-height:260px;}.services{padding:40px 20px;background:#0d0d1a;}.sec-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#6366f1;margin-bottom:8px;}.sec-h{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-0.5px;margin-bottom:22px;background:linear-gradient(135deg,#fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;}.svc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px;}.svc-dot{width:26px;height:26px;background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:8px;margin-bottom:10px;}.svc-n{font-size:13px;font-weight:700;color:#fff;}.gallery{padding:36px 20px;background:#0a0a14;}.gal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}.gal-grid img{width:100%;height:140px;object-fit:cover;border-radius:10px;}.cta{padding:48px 20px;background:linear-gradient(135deg,#1e1b4b,#312e81);text-align:center;}.cta h2{font-size:clamp(22px,6vw,32px);font-weight:900;letter-spacing:-1px;margin-bottom:10px;}.cta p{font-size:14px;color:rgba(255,255,255,0.65);margin-bottom:22px;}.cta-btn{background:#fff;color:#312e81;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:800;display:inline-block;}footer{padding:16px 20px;background:#050509;display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.25);flex-wrap:wrap;gap:4px;}@media(min-width:700px){nav{padding:20px 56px;}.nav-links{display:flex;}.hero{display:grid;grid-template-columns:1fr 1fr;min-height:88vh;}.hero-left{padding:80px 56px;order:1;}.hero-right{order:2;}.gallery{padding:64px 56px;}.gal-grid{grid-template-columns:1fr 1fr 1fr;}.gal-grid img{height:220px;}.cta{padding:56px;}.services{padding:64px 56px;}footer{padding:22px 56px;}}</style></head><body><nav><div class="logo">${bizType}</div><div class="nav-links"><a href="#">Services</a><a href="#">Work</a><a href="#">About</a></div><div class="nav-cta">${phone||"Contact Us"}</div></nav><div class="hero"><div class="hero-left"><div class="tag">${city||"Your City"}</div><h1>${ai.headline}</h1><p class="sub">${ai.subtext}</p><div class="stats"><div><div class="stat-n">${ai.stat1}</div><div class="stat-l">${ai.stat1Label}</div></div><div><div class="stat-n">${ai.stat2}</div><div class="stat-l">${ai.stat2Label}</div></div><div><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div></div><div class="btns"><div class="btn-p">Get Started →</div><div class="btn-s">View Our Work</div></div></div><div class="hero-right"><img src="${img1}" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/></div></div><section class="services"><div class="sec-eyebrow">What We Offer</div><h2 class="sec-h">Our Services</h2><div class="svc-grid">${svcs.map((s:string)=>`<div class="svc"><div class="svc-dot"></div><div class="svc-n">${s}</div></div>`).join("")}</div></section><section class="gallery"><div class="sec-eyebrow">Our Work</div><h2 class="sec-h">See the Results</h2><div class="gal-grid"><img src="${img1}"/><img src="${img2}"/><img src="${img3}"/></div></section><section class="cta"><h2>Ready to work together?</h2><p>${bizType} · ${city||"Your City"}</p><div class="cta-btn">${phone||"Contact Us Today"}</div></section><footer><span>${bizType} · ${city||"Your City"}</span><span>Exsisto Premium · $599/mo</span></footer></body></html>`;
-}
 // ─── STEP BAR ─────────────────────────────────────────────────────────────────
 function StepBar({ step }: { step: number }) {
   const steps = ["Industry", "Business Type", "Your Details", "Your Site", "Sign Up"];
@@ -377,12 +449,29 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 
   const imgs = IMAGES[industry] || IMAGES["other"] || [];
 
-  function buildSite(planId: string) {
-    if (!ai) return "";
-    const c = city || "Your City", p = phone || "Call Us";
-    if (planId === "starter") return buildStarterSite(bizType, industry, c, p, ai);
-    if (planId === "pro") return buildProSite(bizType, industry, c, p, ai);
-    return buildPremiumSite(bizType, industry, c, p, ai);
+  const [stitchHtml, setStitchHtml] = useState<string>("");
+  const [stitchLoading, setStitchLoading] = useState(true);
+
+  useEffect(() => {
+    // Load the Stitch template for this industry
+    fetchStitchTemplate(industry).then(html => {
+      setStitchHtml(html);
+      setStitchLoading(false);
+    });
+  }, [industry]);
+
+  function buildSite(_planId: string) {
+    if (!stitchHtml) return "";
+    const imgs = IMAGES[industry] || IMAGES["other"] || [];
+    return personalizeTemplate(
+      stitchHtml,
+      industry,
+      bizType || "Your Business",
+      city || "Your City",
+      phone || "(555) 555-0100",
+      imgs[0] || undefined,
+      imgs.slice(1)
+    );
   }
 
   const deviceWidths: Record<string, string> = { desktop: "100%", tablet: "768px", mobile: "390px" };
@@ -403,10 +492,10 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
         <p>{`${bizType} · ${city||"Your City"} · Website + Blog + Social, all handled`}</p>
       </div>
 
-      {siteLoading ? (
+      {(siteLoading || stitchLoading) ? (
         <div className="site-generating">
           <div className="loading-spinner" style={{width:"40px",height:"40px",borderWidth:"3px"}} />
-          <div className="site-generating-title">Building your site…</div>
+          <div className="site-generating-title">{stitchLoading ? "Loading your site design…" : "Building your site…"}</div>
           <div className="site-generating-sub">Our AI is writing your headlines, services, and copy</div>
         </div>
       ) : (<>
