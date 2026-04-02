@@ -61,6 +61,8 @@ export async function GET(
     .eq("business_id", business.id)
     .single();
 
+  console.log("DEBUG site route:", { slug, pagePath, businessId: business.id, websiteStatus: website?.status, hasHtml: !!website?.custom_html });
+  
   if (!website || website.status !== "live") {
     return new NextResponse(buildingHTML(business.name), {
       status: 200,
