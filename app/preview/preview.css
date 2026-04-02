@@ -2101,3 +2101,73 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+
+/* ── Mobile plan tabs (hidden on desktop) ─────────────────────────── */
+.mobile-plan-tabs {
+  display: none;
+}
+.mobile-plan-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: 1.5px solid var(--pg-border);
+  border-radius: 8px;
+  background: var(--pg-surface);
+  color: var(--pg-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.mobile-plan-tab.active {
+  background: #111118;
+  color: #fff;
+  border-color: #111118;
+}
+.mobile-plan-tab-price {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* Desktop: always show all cards, hide mobile-only elements */
+.site-card-mobile-hidden {
+  /* visible on desktop */
+}
+
+@media (max-width: 768px) {
+  /* Show tab switcher */
+  .mobile-plan-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* Hide non-selected plan cards on mobile */
+  .site-card-mobile-hidden {
+    display: none !important;
+  }
+
+  /* Selected card takes full width */
+  .site-card {
+    width: 100% !important;
+  }
+
+  /* Taller iframe on mobile for selected card */
+  .site-card-selected .site-card-iframe-wrap {
+    height: 280px;
+  }
+
+  /* Hide the site-card-check text on mobile since tabs handle it */
+  .site-card-footer {
+    display: none;
+  }
+
+  /* Section row labels: shorter */
+  .site-row-label {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    margin-top: 28px !important;
+  }
+}
