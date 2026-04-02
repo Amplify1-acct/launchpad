@@ -542,11 +542,24 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 
       {/* ── ROW 1: Three site designs ───────────────────────────────────── */}
       <div className="site-row-label">Your website — choose a design, click to preview</div>
+      {/* Mobile: show active plan label */}
+      <div className="mobile-plan-tabs">
+        {PLANS.map(p => (
+          <button
+            key={p.id}
+            className={`mobile-plan-tab ${selectedPlan === p.id ? "active" : ""}`}
+            onClick={() => setSelectedPlan(p.id)}
+          >
+            {p.name}<span className="mobile-plan-tab-price"> {p.price}</span>
+          </button>
+        ))}
+      </div>
+
       <div className="site-cards-row">
         {PLANS.map(p => (
           <div
             key={p.id}
-            className={`site-card ${selectedPlan === p.id ? "site-card-selected" : ""}`}
+            className={`site-card ${selectedPlan === p.id ? "site-card-selected" : ""} ${selectedPlan !== p.id ? "site-card-mobile-hidden" : ""}`}
             onClick={() => setSelectedPlan(p.id)}
           >
             <div className="site-card-header">
