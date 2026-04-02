@@ -73,7 +73,7 @@ function buildCustomPrompt(
   return prompts[slot] || prompts.hero;
 }
 
-async function generateNanoBananaImage(prompt: string): Promise<Buffer | null> {
+async function generateNanoBananaImage(prompt: string): Promise<Uint8Array | null> {
   if (!GEMINI_API_KEY) {
     console.warn("GEMINI_API_KEY not set");
     return null;
@@ -103,7 +103,8 @@ async function generateNanoBananaImage(prompt: string): Promise<Buffer | null> {
       const parts = data.candidates?.[0]?.content?.parts ?? [];
       for (const part of parts) {
         if (part.inlineData?.data) {
-          return Buffer.from(part.inlineData.data, "base64");
+          const buf = Buffer.from(part.inlineData.data, "base64");
+          return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
         }
       }
     } catch (e) {
@@ -113,7 +114,7 @@ async function generateNanoBananaImage(prompt: string): Promise<Buffer | null> {
   return null;
 }
 
-async function uploadToSupabase(imageBuffer: Buffer, path: string): Promise<string | null> {
+async function uploadToSupabase(imageBuffer: Uint8Array, path: string): Promise<string | null> {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return null;
 
   try {
