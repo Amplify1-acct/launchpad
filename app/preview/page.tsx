@@ -73,6 +73,13 @@ const IMAGES: Record<string, string[]> = {
   other:      ["https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/hero.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card1.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card2.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card3.png","https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/other/card4.png"],
 };
 
+// ─── STARTER SITE (hand-coded, simple) ───────────────────────────────────────
+function buildStarterSite(bizType: string, industry: string, city: string, phone: string, imgs: string[]): string {
+  const hero = imgs[0] || "";
+  const heroEl = hero ? `<img src="${hero}" style="width:100%;height:100%;object-fit:cover;display:block;" />` : `<div style="width:100%;height:100%;min-height:500px;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e40af 100%);"></div>`;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;color:#111;background:#fff;}nav{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;background:#fff;}.logo{font-size:15px;font-weight:900;}.cta-btn{background:#111;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;}.hero{position:relative;height:90vh;min-height:400px;overflow:hidden;background:#1a1a2e;}.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.8) 100%);}.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:32px 24px;}.tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:12px;}h1{font-size:clamp(28px,7vw,52px);font-weight:900;color:#fff;line-height:1.05;margin-bottom:14px;}.sub{font-size:14px;color:rgba(255,255,255,0.75);margin-bottom:22px;}.btns{display:flex;gap:10px;}.btn-w{background:#fff;color:#111;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;}.badge{position:absolute;bottom:16px;right:16px;background:#111;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;}footer{padding:16px 20px;background:#f5f5f5;font-size:10px;color:#999;display:flex;justify-content:space-between;}</style></head><body><nav><div class="logo">${bizType}</div><div class="cta-btn">${phone || "Call Us"}</div></nav><div class="hero"><div style="position:absolute;inset:0;">${heroEl}</div><div class="hero-overlay"></div><div class="hero-content"><div class="tag">${city} · ${bizType}</div><h1>Professional ${bizType} Services</h1><p class="sub">Trusted by hundreds of customers in ${city}. Licensed, insured, and ready to help.</p><div class="btns"><div class="btn-w">Get Free Estimate →</div></div></div><div class="badge">STARTER · $99/mo</div></div><footer><span>${bizType} · ${city}</span><span>Powered by Exsisto</span></footer></body></html>`;
+}
+
 // ─── STITCH TEMPLATE CONFIG ──────────────────────────────────────────────────
 // Maps preview industry IDs → Stitch template file + hardcoded content to replace
 const STITCH_TEMPLATE_MAP: Record<string, {
@@ -460,8 +467,15 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
   const imgs = IMAGES[industry] || IMAGES["other"] || [];
 
   function buildSite(planId: string) {
-    if (!stitchHtml) return "";
     const imgs = IMAGES[industry] || IMAGES["other"] || [];
+
+    // Starter: hand-coded simple template
+    if (planId === "starter") {
+      return buildStarterSite(bizType || "Your Business", industry, city || "Your City", phone || "(555) 555-0100", imgs);
+    }
+
+    // Pro/Premium: real Stitch template with personalization
+    if (!stitchHtml) return "";
     const personalized = personalizeTemplate(
       stitchHtml,
       industry,
@@ -472,14 +486,12 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
       imgs.slice(1)
     );
 
-    // Add plan-specific badge overlay to differentiate tiers
-    const badges: Record<string, string> = {
-      starter: `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#111;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">STARTER · $99/mo</div>`,
-      pro:     `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#2563eb;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PRO · $299/mo</div>`,
-      premium: `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:linear-gradient(135deg,#6366f1,#a78bfa);color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PREMIUM · $599/mo</div>`,
-    };
+    // Add plan badge
+    const badge = planId === "premium"
+      ? `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:linear-gradient(135deg,#6366f1,#a78bfa);color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PREMIUM · $599/mo</div>`
+      : `<div style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#2563eb;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:Inter,sans-serif;">PRO · $299/mo</div>`;
 
-    return personalized.replace("</body>", `${badges[planId] || ""}</body>`);
+    return personalized.replace("</body>", `${badge}</body>`);
   }
 
   const deviceWidths: Record<string, string> = { desktop: "100%", tablet: "768px", mobile: "390px" };
