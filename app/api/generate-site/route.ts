@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase-server";
-import { generateBusinessPhoto } from "@/lib/nano-banana";
+import { getBusinessImages, generateBusinessPhoto } from "@/lib/nano-banana";
 import { generateStitchSite } from "@/lib/stitch";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
@@ -189,43 +189,45 @@ export async function POST(request: Request) {
     const tokens = await generateTokens(business, revision_notes, existingTokens);
 
     // ── IMAGE STRATEGY ────────────────────────────────────────────────────
-    // For Pro/Premium: check if Claude has already stored Stitch image URLs
-    // via /api/generate-images (called before this endpoint by the onboarding flow)
-    let heroUrl: string | null = null;
-    let aboutUrl: string | null = null;
-    let imageSource = "pexels";
+    // 1. Check for pre-generated images stored during signup (fastest path)
+    // 2. If not found, call getBusinessImages() which:
+    //    - Returns library URLs instantly for known industries
+    //    - Generates via Nano Banana for "other"/custom industries
+    let imageSource = "nano-banana";
 
-    if (plan === "pro" || plan === "premium") {
-      // Check for pre-stored Stitch images (set by Claude via /api/generate-images)
-      const { data: existingWebsite } = await supabase
-        .from("websites")
-        .select("stitch_hero_url, stitch_card1_url, image_source")
-        .eq("business_id", business_id)
-        .single();
+    const { data: existingWebsite } = await supabase
+      .from("websites")
+      .select("stitch_hero_url, stitch_card1_url, hero_image_url, card1_image_url, image_source")
+      .eq("business_id", business_id)
+      .single();
 
-      if (existingWebsite?.stitch_hero_url) {
-        heroUrl = existingWebsite.stitch_hero_url;
-        aboutUrl = existingWebsite.stitch_card1_url;
-        imageSource = "stitch";
-        console.log("✓ Using pre-generated Stitch images");
-      } else {
-        // Fall back to Pexels if Stitch images not yet generated
-        console.log("No Stitch images found, using Pexels fallback...");
-        [heroUrl, aboutUrl] = await Promise.all([
-          generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
-          generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
-        ]);
-      }
+    // Use pre-stored images if available (set during signup)
+    if (existingWebsite?.hero_image_url) {
+      tokens.hero_image_url = existingWebsite.hero_image_url;
+      if (existingWebsite.card1_image_url) tokens.about_image_url = existingWebsite.card1_image_url;
+      imageSource = existingWebsite.image_source || "nano-banana";
+      console.log("✓ Using pre-generated images from signup");
+    } else if (existingWebsite?.stitch_hero_url) {
+      // Legacy: Stitch images stored via admin/generate
+      tokens.hero_image_url = existingWebsite.stitch_hero_url;
+      if (existingWebsite.stitch_card1_url) tokens.about_image_url = existingWebsite.stitch_card1_url;
+      imageSource = "stitch";
+      console.log("✓ Using pre-generated Stitch images");
     } else {
-      // Starter: Pexels
-      [heroUrl, aboutUrl] = await Promise.all([
-        generateBusinessPhoto(business.name, business.description || business.industry || "", "hero", undefined, business_id, 0),
-        generateBusinessPhoto(business.name, business.description || business.industry || "", "about", undefined, business_id, 1),
-      ]);
+      // Generate now: library for known industries, Nano Banana for custom
+      console.log(`Generating images for ${business.name} (${business.industry || "other"})...`);
+      const images = await getBusinessImages({
+        businessId: business_id,
+        businessName: business.name,
+        businessType: business.name,
+        industry: business.industry || "other",
+        city: business.city || "",
+        plan,
+      });
+      if (images.hero) tokens.hero_image_url = images.hero;
+      if (images.card1) tokens.about_image_url = images.card1;
+      console.log(`✓ Images ready (source: ${imageSource})`);
     }
-
-    if (heroUrl) tokens.hero_image_url = heroUrl;
-    if (aboutUrl) tokens.about_image_url = aboutUrl;
 
     // ── GENERATE SITE VIA STITCH ──────────────────────────────────────────
     let finalHtml = "";
