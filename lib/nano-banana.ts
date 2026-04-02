@@ -31,7 +31,7 @@ const INDUSTRY_LIBRARY_MAP: Record<string, string> = {
   remodeling:  "remodeling",
   pest_control:"pest_control",
   moving:      "moving",
-  // New industries (added in expansion)
+  // Expansion industries (all now have dedicated images)
   restaurant:  "restaurant",
   dental:      "dental",
   salon:       "salon",
@@ -40,6 +40,14 @@ const INDUSTRY_LIBRARY_MAP: Record<string, string> = {
   law:         "law",
   realestate:  "realestate",
   bakery:      "bakery",
+  // Additional mappings
+  cleaning:    "cleaning",
+  roofing:     "roofing",
+  painting:    "painting",
+  remodeling:  "remodeling",
+  pest_control:"pest_control",
+  moving:      "moving",
+  electrical:  "electrical",
   // Fallback
   other:       "other",
 };
