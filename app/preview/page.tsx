@@ -81,26 +81,30 @@ function buildStarterSite(bizType: string, industry: string, city: string, phone
 }
 
 // ─── STITCH TEMPLATE CONFIG ──────────────────────────────────────────────────
-// Maps preview industry IDs → Stitch template file + hardcoded content to replace
+// Each industry has a Pro template and a Premium template (different designs)
 const STITCH_TEMPLATE_MAP: Record<string, {
-  template: string;
+  template: string;   // Pro theme
+  templatePremium: string; // Premium theme (different design)
   bizName: string;
   phone: string;
   city: string;
+  bizNamePremium?: string;
+  phonePremium?: string;
+  cityPremium?: string;
 }> = {
-  auto:        { template: "auto",        bizName: "MATTY'S AUTOMOTIVE",   phone: "(732) 555-0192", city: "Clark" },
-  restaurant:  { template: "restaurant",  bizName: "La Bella Cucina",       phone: "(201) 555-0134", city: "Hoboken" },
-  gym:         { template: "gym",         bizName: "IRON PEAK",             phone: "(908) 555-0178", city: "Summit" },
-  plumbing:    { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
-  dental:      { template: "dental",      bizName: "Bright Smile Dental",   phone: "(908) 555-0156", city: "Scotch Plains" },
-  law:         { template: "law",         bizName: "Morgan & Associates",   phone: "(973) 555-0189", city: "Newark" },
-  salon:       { template: "salon",       bizName: "Velvet Studio",         phone: "(908) 555-0167", city: "Westfield" },
-  realestate:  { template: "realestate",  bizName: "Summit Realty Group",   phone: "(908) 555-0145", city: "Summit" },
-  pet:         { template: "pet",         bizName: "Happy Paws Pet Care",   phone: "(908) 555-0123", city: "Cranford" },
-  hvac:        { template: "hvac",        bizName: "Cool Breeze HVAC",      phone: "(908) 555-0134", city: "Union" },
-  bakery:      { template: "restaurant",  bizName: "La Bella Cucina",       phone: "(201) 555-0134", city: "Hoboken" },
-  landscaping: { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
-  other:       { template: "plumbing",    bizName: "FlowRight",             phone: "(908) 555-0112", city: "Westfield" },
+  auto:        { template: "auto",        templatePremium: "hvac",        bizName: "MATTY'S AUTOMOTIVE",   bizNamePremium: "Cool Breeze HVAC",    phone: "(732) 555-0192", phonePremium: "(908) 555-0134", city: "Clark",       cityPremium: "Union" },
+  restaurant:  { template: "restaurant",  templatePremium: "salon",       bizName: "La Bella Cucina",       bizNamePremium: "Velvet Studio",       phone: "(201) 555-0134", phonePremium: "(908) 555-0167", city: "Hoboken",     cityPremium: "Westfield" },
+  gym:         { template: "gym",         templatePremium: "auto",        bizName: "IRON PEAK",             bizNamePremium: "MATTY'S AUTOMOTIVE",  phone: "(908) 555-0178", phonePremium: "(732) 555-0192", city: "Summit",      cityPremium: "Clark" },
+  plumbing:    { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",   cityPremium: "Union" },
+  dental:      { template: "dental",      templatePremium: "law",         bizName: "Bright Smile Dental",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0156", phonePremium: "(973) 555-0189", city: "Scotch Plains",cityPremium: "Newark" },
+  law:         { template: "law",         templatePremium: "realestate",  bizName: "Morgan & Associates",   bizNamePremium: "Summit Realty Group", phone: "(973) 555-0189", phonePremium: "(908) 555-0145", city: "Newark",      cityPremium: "Summit" },
+  salon:       { template: "salon",       templatePremium: "restaurant",  bizName: "Velvet Studio",         bizNamePremium: "La Bella Cucina",     phone: "(908) 555-0167", phonePremium: "(201) 555-0134", city: "Westfield",   cityPremium: "Hoboken" },
+  realestate:  { template: "realestate",  templatePremium: "law",         bizName: "Summit Realty Group",   bizNamePremium: "Morgan & Associates", phone: "(908) 555-0145", phonePremium: "(973) 555-0189", city: "Summit",      cityPremium: "Newark" },
+  pet:         { template: "pet",         templatePremium: "salon",       bizName: "Happy Paws Pet Care",   bizNamePremium: "Velvet Studio",       phone: "(908) 555-0123", phonePremium: "(908) 555-0167", city: "Cranford",    cityPremium: "Westfield" },
+  hvac:        { template: "hvac",        templatePremium: "plumbing",    bizName: "Cool Breeze HVAC",      bizNamePremium: "FlowRight",           phone: "(908) 555-0134", phonePremium: "(908) 555-0112", city: "Union",       cityPremium: "Westfield" },
+  bakery:      { template: "restaurant",  templatePremium: "pet",         bizName: "La Bella Cucina",       bizNamePremium: "Happy Paws Pet Care", phone: "(201) 555-0134", phonePremium: "(908) 555-0123", city: "Hoboken",     cityPremium: "Cranford" },
+  landscaping: { template: "plumbing",    templatePremium: "hvac",        bizName: "FlowRight",             bizNamePremium: "Cool Breeze HVAC",    phone: "(908) 555-0112", phonePremium: "(908) 555-0134", city: "Westfield",   cityPremium: "Union" },
+  other:       { template: "plumbing",    templatePremium: "salon",       bizName: "FlowRight",             bizNamePremium: "Velvet Studio",       phone: "(908) 555-0112", phonePremium: "(908) 555-0167", city: "Westfield",   cityPremium: "Westfield" },
 };
 
 const STITCH_BASE_URL = "https://www.exsisto.ai/stitch-templates";
@@ -108,12 +112,13 @@ const STITCH_BASE_URL = "https://www.exsisto.ai/stitch-templates";
 // Cache for fetched template HTML
 const templateCache: Record<string, string> = {};
 
-async function fetchStitchTemplate(industry: string): Promise<string> {
+async function fetchStitchTemplate(industry: string, plan: string = "pro"): Promise<string> {
   const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
-  const cacheKey = config.template;
+  const templateName = plan === "premium" ? config.templatePremium : config.template;
+  const cacheKey = templateName;
   if (templateCache[cacheKey]) return templateCache[cacheKey];
   try {
-    const res = await fetch(`${STITCH_BASE_URL}/${config.template}.html`);
+    const res = await fetch(`${STITCH_BASE_URL}/${templateName}.html`);
     if (!res.ok) throw new Error("fetch failed");
     const html = await res.text();
     templateCache[cacheKey] = html;
@@ -429,11 +434,17 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
   useEffect(() => { generateSite(); generateSamples(); }, []);
 
   const [stitchHtml, setStitchHtml] = useState<string>("");
+  const [stitchHtmlPremium, setStitchHtmlPremium] = useState<string>("");
   const [stitchLoading, setStitchLoading] = useState(true);
 
   useEffect(() => {
-    fetchStitchTemplate(industry).then(html => {
-      setStitchHtml(html);
+    setStitchLoading(true);
+    Promise.all([
+      fetchStitchTemplate(industry, "pro"),
+      fetchStitchTemplate(industry, "premium"),
+    ]).then(([pro, premium]) => {
+      setStitchHtml(pro);
+      setStitchHtmlPremium(premium);
       setStitchLoading(false);
     });
   }, [industry]);
@@ -475,9 +486,11 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
     }
 
     // Pro/Premium: real Stitch template with personalization
-    if (!stitchHtml) return "";
+    // Premium uses a different template (fetched separately)
+    const html = planId === "premium" ? stitchHtmlPremium : stitchHtml;
+    if (!html) return "";
     const personalized = personalizeTemplate(
-      stitchHtml,
+      html,
       industry,
       bizType || "Your Business",
       city || "Your City",
