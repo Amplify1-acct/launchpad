@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase-server";
 import { getBusinessImages, generateBusinessPhoto } from "@/lib/nano-banana";
 import { generateStitchSite } from "@/lib/stitch";
+import { generateServicesPage, generateAboutPage, generateContactPage, generateBlogIndexPage } from "@/lib/pageGenerator";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -270,10 +271,22 @@ export async function POST(request: Request) {
       if (existing?.template_name) finalTemplateName = existing.template_name;
     }
 
+    // ── Generate all pages ────────────────────────────────────────────
+    const [servicesHtml, aboutHtml, contactHtml, blogIndexHtml] = await Promise.all([
+      generateServicesPage(business, tokens),
+      generateAboutPage(business, tokens),
+      generateContactPage(business, tokens),
+      generateBlogIndexPage(business, []),
+    ]);
+
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
       custom_html: primary.html,
+      services_html: servicesHtml,
+      about_html: aboutHtml,
+      contact_html: contactHtml,
+      blog_index_html: blogIndexHtml,
       template_name: finalTemplateName,
       generated_tokens: tokens,
       generated_at: new Date().toISOString(),
