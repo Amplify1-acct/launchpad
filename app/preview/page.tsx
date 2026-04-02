@@ -442,7 +442,7 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
                   srcDoc={buildSite(p.id)}
                   className="site-card-iframe"
                   title={`${p.name} preview`}
-                  sandbox="allow-scripts"
+                  sandbox="allow-scripts allow-same-origin"
                 />
               )}
               <div className="site-card-iframe-overlay" onClick={() => { setModalPlan(p.id); setModalDevice("desktop"); }} />
@@ -618,7 +618,7 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
             </div>
             <div className="fs-modal-body">
               <div style={{width: deviceWidths[modalDevice], maxWidth:"100%", margin:"0 auto", height:"100%"}}>
-                <iframe srcDoc={buildSite(modalPlan)} className="fs-iframe" title="Full preview" sandbox="allow-scripts" />
+                <iframe srcDoc={buildSite(modalPlan)} className="fs-iframe" title="Full preview" sandbox="allow-scripts allow-same-origin" />
               </div>
             </div>
           </div>
