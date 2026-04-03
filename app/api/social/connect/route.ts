@@ -16,22 +16,24 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "platform and business_id required" }, { status: 400 });
   }
 
-  // Verify user owns this business
+  // Verify business exists
   const supabase = createAdminClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const { data: business } = await supabase
     .from("businesses")
     .select("id")
     .eq("id", businessId)
     .single();
-  if (!business) return NextResponse.json({ error: "Business not found" }, { status: 404 });
+
+  if (!business) {
+    return NextResponse.json({ error: "Business not found" }, { status: 404 });
+  }
 
   let authUrl = "";
 
   switch (platform) {
-    case "meta": {
+    case "meta":
+    case "facebook":
+    case "instagram": {
       const scopes = [
         "pages_show_list",
         "pages_manage_posts",
