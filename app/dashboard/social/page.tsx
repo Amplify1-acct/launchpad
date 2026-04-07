@@ -124,9 +124,7 @@ function SocialPageInner() {
 
   async function handleConnect(platform: string) {
     if (!businessId) return;
-    window.location.href = platform === "instagram"
-      ? `/api/auth/facebook/connect?business_id=${businessId}`
-      : `/api/auth/${platform}/connect?business_id=${businessId}`;
+    window.location.href = `/api/social/connect?platform=${platform}&business_id=${businessId}`;
   }
 
   async function handleDisconnect(platform: string) {
