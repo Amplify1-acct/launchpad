@@ -858,7 +858,10 @@ function StepSignup({ industry, bizType, city, phone, email, planId, bizDetails,
       if (signInError) throw new Error("Account created but sign-in failed. Please log in.");
 
       // 3. Redirect to success page
-      router.push(`/checkout/success${bizId ? `?business_id=${bizId}` : ""}`);
+      // Store biz data for checkout page
+      sessionStorage.setItem("exsisto_pending_site", JSON.stringify({ businessId: bizId, businessName: bizType, email }));
+      // Go to Stripe checkout
+      router.push(`/checkout?plan=${planId}`);
     } catch(err: unknown) { setError(err instanceof Error ? err.message : "Something went wrong"); setLoading(false); }
   }
 
