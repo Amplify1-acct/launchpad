@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createAdminClient } from "@/lib/supabase-server";
-import { createClient } from "@/lib/supabase";
+import { createAdminClient, createServerSupabaseClient } from "@/lib/supabase-server";
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY not set");
@@ -10,7 +9,7 @@ function getStripe() {
 
 export async function POST(request: Request) {
   try {
-    const supabaseClient = createClient();
+    const supabaseClient = await createServerSupabaseClient();
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -24,7 +23,6 @@ export async function POST(request: Request) {
 
     let stripeCustomerId = customer.stripe_customer_id;
 
-    // Create Stripe customer if not exists
     if (!stripeCustomerId) {
       const stripeCustomer = await stripe.customers.create({
         email: user.email,
