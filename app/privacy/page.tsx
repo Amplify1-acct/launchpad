@@ -4,11 +4,11 @@ export default function PrivacyPage() {
   return (
     <main style={{ maxWidth: 760, margin: "0 auto", padding: "60px 24px 120px", fontFamily: "Inter, sans-serif", color: "#1a1c1d", lineHeight: 1.8 }}>
       <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 8, letterSpacing: "-0.02em" }}>Privacy Policy</h1>
-      <p style={{ color: "#6b7280", marginBottom: 48 }}>Last updated: March 31, 2026</p>
+      <p style={{ color: "#6b7280", marginBottom: 48 }}>Last updated: April 7, 2026</p>
 
       <section style={{ marginBottom: 40 }}>
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>1. Introduction</h2>
-        <p>Exsisto ("we," "our," or "us") operates the digital presence platform available at exsisto.ai. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.</p>
+        <p>Exsisto is operated by 518 Advertising, LLC ("we," "our," or "us"). We operate the digital presence platform available at exsisto.ai. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.</p>
       </section>
 
       <section style={{ marginBottom: 40 }}>
@@ -84,6 +84,27 @@ export default function PrivacyPage() {
           Email: <a href="mailto:privacy@exsisto.ai" style={{ color: "#6366f1" }}>privacy@exsisto.ai</a><br/>
           Website: <a href="https://www.exsisto.ai" style={{ color: "#6366f1" }}>https://www.exsisto.ai</a>
         </p>
+      </section>
+
+      <section style={{ marginBottom: 40 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Data Processors</h2>
+        <p>We use the following third-party service providers (data processors) that may have access to personal data in order to provide our services:</p>
+        <ul style={{ paddingLeft: 24, marginTop: 12 }}>
+          <li style={{ marginBottom: 8 }}><strong>Vercel Inc.</strong> — Cloud hosting and deployment infrastructure (United States)</li>
+          <li style={{ marginBottom: 8 }}><strong>Supabase Inc.</strong> — Database and authentication services (United States)</li>
+          <li style={{ marginBottom: 8 }}><strong>Stripe Inc.</strong> — Payment processing (United States)</li>
+          <li style={{ marginBottom: 8 }}><strong>Meta Platforms, Inc.</strong> — Social media publishing via Facebook and Instagram APIs (United States)</li>
+          <li style={{ marginBottom: 8 }}><strong>Anthropic PBC</strong> — AI content generation (United States)</li>
+          <li style={{ marginBottom: 8 }}><strong>Resend Inc.</strong> — Transactional email delivery (United States)</li>
+        </ul>
+        <p style={{ marginTop: 12 }}>Each of these processors is contractually obligated to protect your data and use it only for the purposes we specify.</p>
+      </section>
+
+      <section style={{ marginBottom: 40 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Contact Us</h2>
+        <p>518 Advertising, LLC<br />
+        Operator of Exsisto.ai<br />
+        Email: <a href="mailto:privacy@exsisto.ai" style={{ color: "#4f46e5" }}>privacy@exsisto.ai</a></p>
       </section>
     </main>
   );
