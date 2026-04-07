@@ -18,7 +18,7 @@ async function generateBlogPost(
   city: string,
   topic: string,
   services: string[]
-): Promise<{ title: string; body: string; word_count: number }> {
+): Promise<{ title: string; content: string; word_count: number }> {
   const servicesText = services.length > 0 ? services.join(", ") : industry;
 
   const response = await client.messages.create({
@@ -48,10 +48,10 @@ Return ONLY the blog post with title on line 1, blank line, then body. No preamb
   const text = response.content[0].type === "text" ? response.content[0].text : "";
   const lines = text.trim().split("\n");
   const title = lines[0].replace(/^#+ /, "").trim();
-  const body = lines.slice(2).join("\n").trim();
-  const word_count = body.split(/\s+/).length;
+  const content = lines.slice(2).join("\n").trim();
+  const word_count = content.split(/\s+/).length;
 
-  return { title, body, word_count };
+  return { title, content, word_count };
 }
 
 function getBlogTopics(industry: string, businessName: string, city: string): string[] {
@@ -263,7 +263,7 @@ export async function POST(request: Request) {
 
     for (const topic of topics) {
       try {
-        const { title, body, word_count } = await generateBlogPost(
+        const { title, content: postContent, word_count } = await generateBlogPost(
           anthropic,
           biz.name,
           biz.industry || "service",
@@ -278,8 +278,7 @@ export async function POST(request: Request) {
         await supabase.from("blog_posts").insert({
           business_id: bizId,
           title,
-          body,
-          content: body,
+          content: postContent,
           word_count,
           status,
           approved_at: approvalMode === "auto" ? now : null,
