@@ -283,12 +283,15 @@ function SocialPageInner() {
                     </span>
                   </div>
 
-                  {/* Image */}
-                  {post.image_url && (
-                    <div style={{ height: "140px", overflow: "hidden", background: "#f5f2ff" }}>
-                      <img src={post.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                  )}
+                  {/* Image — aspect ratio per platform */}
+                  {post.image_url && (() => {
+                    const ratio = post.platform === "tiktok" ? "177%" : post.platform === "instagram" ? "100%" : "56%";
+                    return (
+                      <div style={{ position: "relative", paddingBottom: ratio, overflow: "hidden", background: "#f5f2ff" }}>
+                        <img src={post.image_url} alt="" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                      </div>
+                    );
+                  })()}
 
                   {/* Caption */}
                   <div style={{ padding: "12px 14px" }}>
