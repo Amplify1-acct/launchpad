@@ -161,7 +161,8 @@ function personalizeTemplate(
   heroUrl?: string,
   cardUrls?: string[],
   plan: string = "pro",
-  services: string[] = []
+  services: string[] = [],
+  description: string = ""
 ): string {
   const config = STITCH_TEMPLATE_MAP[industry] || STITCH_TEMPLATE_MAP["plumbing"];
   const isPremium = plan === "premium";
@@ -192,6 +193,14 @@ function personalizeTemplate(
     if (rawOld && rawNew) result = result.split(rawOld).join(rawNew);
   }
 
+
+  // Replace hero description paragraph if user provided one
+  if (description) {
+    result = result.replace(
+      /(<p[^>]*class="[^"]*text-on-surface-variant[^"]*"[^>]*>)[^<]+(<\/p>)/,
+      `$1${description}$2`
+    );
+  }
 
   // Replace template service names with user's actual services
   const templateName = isPremium ? config.templatePremium : config.template;
@@ -552,7 +561,8 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
       imgs[0] || undefined,
       imgs.slice(1),
       planId,
-      bizDetails?.services || []
+      bizDetails?.services || [],
+      bizDetails?.description || ""
     );
 
     // Add plan badge
