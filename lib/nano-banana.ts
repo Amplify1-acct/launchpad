@@ -50,7 +50,7 @@ const BASE_LIBRARY_URL = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUC
 // How many numbered variants exist per slot in Supabase Storage
 // e.g. hero.png + hero_1.png = 2 variants
 const SLOT_VARIANT_COUNT: Record<string, number> = {
-  hero: 2, card1: 2, card2: 2, card3: 2, card4: 2,
+  hero: 3, card1: 2, card2: 2, card3: 2, card4: 2,
 };
 
 function getLibraryUrl(industrySlug: string, slot: string): string {
