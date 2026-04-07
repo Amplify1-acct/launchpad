@@ -158,7 +158,7 @@ export default function DevPanel() {
     const res = await fetch("/api/admin/generate-blogs", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-internal-secret": "exsisto-internal-2026" },
-      body: JSON.stringify({ email: selectedBiz?.email || "matt@amplifyforlawyers.com" }),
+      body: JSON.stringify({ business_id: selectedBiz?.id }),
     });
     const data = await res.json();
     setResult(data);
