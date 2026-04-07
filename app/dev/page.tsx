@@ -154,6 +154,16 @@ export default function DevPanel() {
     return res.json();
   }
 
+  async function testGenerateSocial() {
+    const res = await fetch("/api/generate-social", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ business_id: selectedBiz?.id }),
+    });
+    const data = await res.json();
+    setResults(prev => [{ ok: res.ok, label: "Generate Social Posts", data }, ...prev]);
+  }
+
   async function testGenerateBlogs() {
     const res = await fetch("/api/admin/generate-blogs", {
       method: "POST",
@@ -271,6 +281,7 @@ export default function DevPanel() {
                 { label: "Admin Generate Pipeline", fn: testAdminGenerate },
                 { label: "Generate Images (Nano Banana)", fn: testGenerateImages },
                 { label: "Generate Blog Posts", fn: testGenerateBlogs },
+                { label: "Generate Social Posts", fn: testGenerateSocial },
                 { label: "Inspect Website Record", fn: testGetWebsite },
                 { label: "Publish Site → live", fn: testPublishSite },
                 { label: "Unpublish Site → review", fn: testUnpublishSite },
