@@ -46,7 +46,9 @@ export async function GET(request: Request) {
         `&redirect_uri=${encodeURIComponent(`${BASE_URL}/api/social/callback/meta`)}` +
         `&scope=${encodeURIComponent(scopes)}` +
         `&state=${businessId}` +
-        `&response_type=code`;
+        `&response_type=code` +
+        `&auth_type=rerequest` +
+        `&enable_profile_selector=true`;
       break;
     }
     case "google": {
