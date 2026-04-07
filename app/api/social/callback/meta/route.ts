@@ -43,10 +43,12 @@ export async function GET(request: Request) {
 
     // Get Facebook Pages (for posting)
     const pagesRes = await fetch(
-      `https://graph.facebook.com/v19.0/me/accounts?access_token=${longToken}`
+      `https://graph.facebook.com/v19.0/me/accounts?fields=id,name,access_token&access_token=${longToken}`
     );
     const pagesData = await pagesRes.json();
+    console.log("📘 Pages data:", JSON.stringify(pagesData));
     const page = pagesData.data?.[0]; // Use first page
+    console.log("📘 Selected page:", JSON.stringify(page));
 
     const supabase = createAdminClient();
     const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000); // 60 days
