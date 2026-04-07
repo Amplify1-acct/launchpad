@@ -268,7 +268,7 @@ export default function BlogPage() {
                 {/* Post body */}
                 <div style={{ padding: "20px", maxHeight: "60vh", overflowY: "auto" }}>
                   {selected.featured_image_url && (
-                    <img src={selected.featured_image_url} alt="" style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px", marginBottom: "16px", display: "block" }} />
+                    <img src={selected.featured_image_url} alt="" style={{ width: "100%", height: "auto", maxHeight: "340px", objectFit: "cover", borderRadius: "8px", marginBottom: "16px", display: "block" }} />
                   )}
                   {selected.content ? (
                     <div style={{ fontSize: "14px", color: "#1b1b25", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
