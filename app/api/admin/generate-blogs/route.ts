@@ -166,6 +166,16 @@ function getBlogTopics(industry: string, businessName: string, city: string): st
       `Seasonal flavors: what's fresh at ${businessName} this month`,
       `Why ${city} chooses ${businessName} for every celebration`,
     ],
+    lawn_care: [
+      `Spring lawn care checklist for ${city} homeowners`,
+      `How to choose the right plants for ${city}'s climate`,
+      `The benefits of professional landscaping for your home's value`,
+      `Drought-resistant landscaping ideas for ${city} yards`,
+      `How ${businessName} transforms outdoor spaces`,
+      `Fall landscaping prep: getting your yard ready for winter`,
+      `Irrigation systems: do you really need one in ${city}?`,
+      `Low-maintenance landscaping ideas for busy homeowners`,
+    ],
     landscaping: [
       `Spring lawn care checklist for ${city} homeowners`,
       `How to choose the right plants for ${city}'s climate`,
@@ -178,8 +188,8 @@ function getBlogTopics(industry: string, businessName: string, city: string): st
     ],
   };
 
-  const industryKey = industry.toLowerCase().replace(/[^a-z]/g, "");
-  return topics[industryKey] || [
+  const industryKey = industry.toLowerCase().trim();
+  return topics[industryKey] || topics[industryKey.replace(/[^a-z]/g, "")] || [
     `Why ${city} businesses choose ${businessName}`,
     `How ${businessName} serves the ${city} community`,
     `The ${businessName} difference: quality you can count on`,
