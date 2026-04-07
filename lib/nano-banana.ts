@@ -47,9 +47,22 @@ const INDUSTRY_LIBRARY_MAP: Record<string, string> = {
 
 const BASE_LIBRARY_URL = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}`;
 
+// How many numbered variants exist per slot in Supabase Storage
+// e.g. hero.png + hero_1.png = 2 variants
+const SLOT_VARIANT_COUNT: Record<string, number> = {
+  hero: 2, card1: 2, card2: 2, card3: 2, card4: 2,
+};
+
 function getLibraryUrl(industrySlug: string, slot: string): string {
   const libSlug = INDUSTRY_LIBRARY_MAP[industrySlug] || "other";
-  return `${BASE_LIBRARY_URL}/${libSlug}/${slot}.png`;
+  const variantCount = SLOT_VARIANT_COUNT[slot] || 1;
+
+  // Pick a random variant
+  // variant 0 = base file (hero.png), variant 1 = numbered file (hero_1.png)
+  const pick = Math.floor(Math.random() * variantCount);
+  const filename = pick === 0 ? `${slot}.png` : `${slot}_${pick}.png`;
+
+  return `${BASE_LIBRARY_URL}/${libSlug}/${filename}`;
 }
 
 // ── Nano Banana (Gemini Image API) ────────────────────────────────────────────
