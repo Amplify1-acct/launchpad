@@ -3,6 +3,29 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "exsisto-internal-2026";
+
+const INDUSTRY_IMAGES: Record<string, string[]> = {
+  landscaping: Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_0${i+1}.jpg`),
+  dental:      Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_0${i+1}.jpg`),
+  restaurant:  Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_0${i+1}.jpg`),
+  realestate:  Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_0${i+1}.jpg`),
+  law:         Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_0${i+1}.jpg`),
+  pet:         Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_0${i+1}.jpg`),
+  hvac:        Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_0${i+1}.jpg`),
+  auto:        Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_0${i+1}.jpg`),
+  gym:         Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_0${i+1}.jpg`),
+  salon:       Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_0${i+1}.jpg`),
+  plumbing:    Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_0${i+1}.jpg`),
+  bakery:      Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_0${i+1}.jpg`),
+  other:       Array.from({length: 8}, (_, i) => `https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/other/other_0${i+1}.jpg`),
+};
+
+function getRandomImage(industry: string, usedImages: Set<string>): string | null {
+  const imgs = INDUSTRY_IMAGES[industry] || INDUSTRY_IMAGES["other"] || [];
+  const available = imgs.filter(img => !usedImages.has(img));
+  if (available.length === 0) return imgs[Math.floor(Math.random() * imgs.length)] || null;
+  return available[Math.floor(Math.random() * available.length)];
+}
 export const maxDuration = 120;
 
 const POSTS_PER_PLAN: Record<string, number> = {
@@ -260,6 +283,7 @@ export async function POST(request: Request) {
 
     const services: string[] = Array.isArray(biz.services) ? biz.services : [];
     const generated: string[] = [];
+    const usedImages = new Set<string>();
 
     for (const topic of topics) {
       try {
@@ -275,10 +299,14 @@ export async function POST(request: Request) {
         const status = approvalMode === "auto" ? "published" : "draft";
         const now = new Date().toISOString();
 
+        const imageUrl = getRandomImage(biz.industry || "other", usedImages);
+        if (imageUrl) usedImages.add(imageUrl);
+
         await supabase.from("blog_posts").insert({
           business_id: bizId,
           title,
           content: postContent,
+          featured_image_url: imageUrl,
           word_count,
           status,
           approved_at: approvalMode === "auto" ? now : null,
