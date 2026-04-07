@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>518 Advertising, LLC — Digital Marketing & Presence</title>
+  <meta name="description" content="518 Advertising, LLC is a digital marketing agency specializing in AI-powered digital presence for small businesses." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0f0e;
+      --paper: #f5f2ec;
+      --accent: #c8a96e;
+      --muted: #6b6860;
+      --line: #ddd9d0;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--accent);
+    }
+
+    nav a.cta {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    nav a.cta:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 81px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-left {
+      padding: 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--line);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-body {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.9rem 2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+    .btn-ghost {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .btn-ghost:hover { color: var(--ink); }
+
+    .hero-right {
+      padding: 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: var(--ink);
+      color: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '518';
+      position: absolute;
+      top: -2rem;
+      right: -1rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 18rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.04);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-stat {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 2rem;
+      margin-top: 2rem;
+    }
+
+    .hero-stat:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* SERVICES */
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .service {
+      padding: 4rem;
+      border-right: 1px solid var(--line);
+    }
+
+    .service:last-child { border-right: none; }
+
+    .service-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    .service-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .service-body {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ABOUT */
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .about-left {
+      padding: 5rem 4rem;
+      border-right: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .about-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .about-right {
+      padding: 5rem 4rem;
+    }
+
+    .about-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+    }
+
+    .about-title em { font-style: italic; color: var(--accent); }
+
+    .about-body {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .about-detail {
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* PRODUCT */
+    .product {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 6rem 4rem;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .product-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .product-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .product-body {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 560px;
+      margin: 0 auto 3rem;
+    }
+
+    .product-link {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--ink);
+      padding: 1rem 2.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+
+    .product-link:hover { opacity: 0.85; }
+
+    /* CONTACT */
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .contact-left {
+      padding: 5rem 4rem;
+      border-right: 1px solid var(--line);
+    }
+
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 2rem;
+      line-height: 1.1;
+    }
+
+    .contact-item {
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-item-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .contact-item-value {
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    .contact-item-value a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+    }
+
+    .contact-right {
+      padding: 5rem 4rem;
+      background: #f0ece3;
+    }
+
+    .contact-right p {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 2rem; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 4rem 2rem; }
+      .hero-right { padding: 4rem 2rem; min-height: 300px; }
+      .services { grid-template-columns: 1fr; }
+      .service { border-right: none; border-bottom: 1px solid var(--line); padding: 3rem 2rem; }
+      .about { grid-template-columns: 1fr; }
+      .about-left { display: none; }
+      .about-right { padding: 3rem 2rem; }
+      .contact { grid-template-columns: 1fr; }
+      .contact-left { padding: 3rem 2rem; border-right: none; border-bottom: 1px solid var(--line); }
+      .contact-right { padding: 3rem 2rem; }
+      footer { flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
+      .product { padding: 4rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">518 <span>Advertising</span></a>
+    <a href="/cdn-cgi/l/email-protection#4129242d2d2e017470792025372433352832282f266f222e2c" class="cta">Get in Touch</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Digital Marketing Agency</p>
+      <h1 class="hero-title">
+        Your business,<br />
+        <em>found online.</em>
+      </h1>
+      <p class="hero-body">
+        518 Advertising, LLC builds powerful digital presences for small businesses — websites, content, and social media, fully done for you.
+      </p>
+      <div class="hero-actions">
+        <a href="https://exsisto.ai" class="btn-primary">See Exsisto.ai →</a>
+        <a href="/cdn-cgi/l/email-protection#244c4148484b6411151c4540524156504d574d4a430a474b49" class="btn-ghost">Contact Us</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Powered Content</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">DIFY</div>
+        <div class="stat-label">Done For You</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Always On</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <div class="service">
+      <div class="service-num">01</div>
+      <h2 class="service-title">Website Design</h2>
+      <p class="service-body">Professional, AI-generated websites that look custom-built and launch in days — not months. Fully mobile-optimized and SEO-ready from day one.</p>
+    </div>
+    <div class="service">
+      <div class="service-num">02</div>
+      <h2 class="service-title">Content Creation</h2>
+      <p class="service-body">Weekly blog posts and social media content written by AI, refined for your brand voice, and published automatically to grow your online presence.</p>
+    </div>
+    <div class="service">
+      <div class="service-num">03</div>
+      <h2 class="service-title">Social Media</h2>
+      <p class="service-body">We manage your Facebook and Instagram presence end-to-end — from generating posts to scheduling and publishing — so you can focus on running your business.</p>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about">
+    <div class="about-left">
+      <span class="about-label">About Us</span>
+    </div>
+    <div class="about-right">
+      <h2 class="about-title">
+        Built for the businesses<br />
+        <em>that keep America running.</em>
+      </h2>
+      <p class="about-body">
+        518 Advertising, LLC was founded to give small business owners access to the same quality of digital marketing that large corporations enjoy — without the agency overhead, long contracts, or confusing dashboards.
+      </p>
+      <p class="about-body">
+        Our flagship product, Exsisto.ai, uses artificial intelligence to generate websites, blog content, and social media posts tailored to each business. Everything is done for you — you focus on your customers, we handle your online presence.
+      </p>
+      <p class="about-detail">
+        518 Advertising, LLC · Registered in New York
+      </p>
+    </div>
+  </section>
+
+  <!-- PRODUCT CTA -->
+  <section class="product">
+    <p class="product-eyebrow">Our Platform</p>
+    <h2 class="product-title">Meet Exsisto.ai</h2>
+    <p class="product-body">
+      The done-for-you digital presence platform for small businesses. Website, blog, and social media — all generated by AI, all managed for you.
+    </p>
+    <a href="https://exsisto.ai" class="product-link">Visit Exsisto.ai</a>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact">
+    <div class="contact-left">
+      <h2 class="contact-title">Let's Talk</h2>
+      <div class="contact-item">
+        <div class="contact-item-label">Email</div>
+        <div class="contact-item-value"><a href="/cdn-cgi/l/email-protection#3a525f5656557a0f0b025b5e4c5f484e534953545d14595557"><span class="__cf_email__" data-cfemail="caa2afa6a6a58afffbf2abaebcafb8bea3b9a3a4ade4a9a5a7">[email&#160;protected]</span></a></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-label">Website</div>
+        <div class="contact-item-value"><a href="https://exsisto.ai">exsisto.ai</a></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-label">Legal</div>
+        <div class="contact-item-value">518 Advertising, LLC</div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <p>Interested in working with us or learning more about Exsisto?</p>
+      <p>Send us an email and we'll get back to you within one business day.</p>
+      <br />
+      <a href="/cdn-cgi/l/email-protection#d6beb3babab996e3e7eeb7b2a0b3a4a2bfa5bfb8b1f8b5b9bb"
