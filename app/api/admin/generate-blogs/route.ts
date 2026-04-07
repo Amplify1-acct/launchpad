@@ -301,15 +301,18 @@ export async function POST(request: Request) {
 
         const imageUrl = getRandomImage(biz.industry || "other", usedImages);
         if (imageUrl) usedImages.add(imageUrl);
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
 
         await supabase.from("blog_posts").insert({
           business_id: bizId,
           title,
           content: postContent,
+          slug,
           featured_image_url: imageUrl,
           word_count,
           status,
           approved_at: approvalMode === "auto" ? now : null,
+          published_at: approvalMode === "auto" ? now : null,
         });
 
         generated.push(title);
