@@ -10,6 +10,7 @@ type BlogPost = {
   id: string;
   title: string;
   content: string | null;
+  featured_image_url: string | null;
   status: string;
   word_count: number | null;
   created_at: string;
@@ -204,13 +205,18 @@ export default function BlogPage() {
                         background: post.status === "published" ? "#16a34a" : post.status === "rejected" ? "#dc2626" : "#f59e0b",
                       }} />
 
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: "14px", fontWeight: 700, color: "#1b1b25", marginBottom: "4px", lineHeight: 1.4 }}>
-                          {post.title || "Untitled post"}
-                        </div>
-                        <div style={{ fontSize: "11px", color: "#9090a8", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                          <span>{new Date(post.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                          {post.word_count && <span>~{post.word_count} words</span>}
+                      <div style={{ flex: 1, minWidth: 0, display: "flex", gap: "12px", alignItems: "center" }}>
+                        {post.featured_image_url && (
+                          <img src={post.featured_image_url} alt="" style={{ width: "56px", height: "56px", borderRadius: "8px", objectFit: "cover", flexShrink: 0 }} />
+                        )}
+                        <div>
+                          <div style={{ fontSize: "14px", fontWeight: 700, color: "#1b1b25", marginBottom: "4px", lineHeight: 1.4 }}>
+                            {post.title || "Untitled post"}
+                          </div>
+                          <div style={{ fontSize: "11px", color: "#9090a8", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                            <span>{new Date(post.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                            {post.word_count && <span>~{post.word_count} words</span>}
+                          </div>
                         </div>
                       </div>
 
@@ -261,6 +267,9 @@ export default function BlogPage() {
 
                 {/* Post body */}
                 <div style={{ padding: "20px", maxHeight: "60vh", overflowY: "auto" }}>
+                  {selected.featured_image_url && (
+                    <img src={selected.featured_image_url} alt="" style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px", marginBottom: "16px", display: "block" }} />
+                  )}
                   {selected.content ? (
                     <div style={{ fontSize: "14px", color: "#1b1b25", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
                       {selected.content}
