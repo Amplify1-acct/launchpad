@@ -279,6 +279,7 @@ export async function POST(request: Request) {
           business_id: bizId,
           title,
           body,
+          content: body,
           word_count,
           status,
           approved_at: approvalMode === "auto" ? now : null,
