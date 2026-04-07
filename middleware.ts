@@ -23,6 +23,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // ── 518advertising.com ────────────────────────────────────────────────
+  const is518 = host === "518advertising.com" || host === "www.518advertising.com";
+  if (is518) {
+    url.pathname = "/518/index.html";
+    return NextResponse.rewrite(url);
+  }
+
   // ── Normal app routing ─────────────────────────────────────────────────
   return NextResponse.next({ request });
 }
