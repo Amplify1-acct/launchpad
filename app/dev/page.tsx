@@ -161,7 +161,7 @@ export default function DevPanel() {
       body: JSON.stringify({ business_id: selectedBiz?.id }),
     });
     const data = await res.json();
-    setResult(data);
+    setResults(prev => [{ ok: res.ok, label: "Generate Blog Posts", data }, ...prev]);
   }
 
   async function testGenerateImages() {
