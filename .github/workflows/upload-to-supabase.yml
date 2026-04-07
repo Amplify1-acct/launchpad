@@ -1,0 +1,36 @@
+name: 📤 Upload Images to Supabase
+
+on:
+  workflow_dispatch:
+    inputs:
+      industries:
+        description: 'Industries to upload (space-separated or "all")'
+        required: false
+        default: 'all'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Upload to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          I="${{ github.event.inputs.industries }}"
+          if [ "$I" = "all" ] || [ -z "$I" ]; then
+            python upload_to_supabase.py
+          else
+            python upload_to_supabase.py $I
+          fi
