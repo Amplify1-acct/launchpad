@@ -9,7 +9,7 @@ import MobileNav from "@/components/MobileNav";
 type BlogPost = {
   id: string;
   title: string;
-  body: string | null;
+  content: string | null;
   status: string;
   word_count: number | null;
   created_at: string;
@@ -261,9 +261,9 @@ export default function BlogPage() {
 
                 {/* Post body */}
                 <div style={{ padding: "20px", maxHeight: "60vh", overflowY: "auto" }}>
-                  {selected.body ? (
+                  {selected.content ? (
                     <div style={{ fontSize: "14px", color: "#1b1b25", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
-                      {selected.body}
+                      {selected.content}
                     </div>
                   ) : (
                     <div style={{ textAlign: "center", padding: "40px", color: "#9090a8" }}>
