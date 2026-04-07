@@ -86,8 +86,8 @@ export default function BlogPage() {
     showToast("Post rejected", false);
   }
 
-  const filtered = posts.filter(p => filter === "all" ? true : p.status === filter || (filter === "pending" && p.status === "draft"));
-  const pending = posts.filter(p => p.status === "pending" || p.status === "draft").length;
+  const filtered = posts.filter(p => filter === "all" ? true : p.status === filter || (p.status === "draft"));
+  const pending = posts.filter(p => p.status === "draft").length;
   const published = posts.filter(p => p.status === "published").length;
 
   const blogFreq: Record<string, string> = { starter: "2/month", pro: "4/month", premium: "8/month" };
@@ -221,7 +221,7 @@ export default function BlogPage() {
                           padding: "3px 10px", borderRadius: "100px",
                         }}>{badge.label}</span>
 
-                        {(post.status === "pending" || post.status === "draft") && (
+                        {(post.status === "draft") && (
                           <button onClick={e => { e.stopPropagation(); approve(post); }} disabled={approving === post.id} style={{
                             background: "#4648d4", color: "#fff",
                             border: "none", borderRadius: "6px",
@@ -275,7 +275,7 @@ export default function BlogPage() {
                 </div>
 
                 {/* Action footer */}
-                {(selected.status === "pending" || selected.status === "draft") && (
+                {(selected.status === "draft") && (
                   <div style={{
                     padding: "16px 20px", borderTop: "1px solid #ede9f8",
                     display: "flex", gap: "10px",
