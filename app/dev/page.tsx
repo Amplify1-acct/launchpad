@@ -154,6 +154,16 @@ export default function DevPanel() {
     return res.json();
   }
 
+  async function testGenerateBlogs() {
+    const res = await fetch("/api/admin/generate-blogs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-internal-secret": "exsisto-internal-2026" },
+      body: JSON.stringify({ email: selectedBusiness?.email || "matt@amplifyforlawyers.com" }),
+    });
+    const data = await res.json();
+    setResult(data);
+  }
+
   async function testGenerateImages() {
     if (!selectedBiz) return;
     const res = await fetch("/api/generate-images", {
@@ -260,6 +270,7 @@ export default function DevPanel() {
                 { label: "Generate Site (full)", fn: testGenerateSite },
                 { label: "Admin Generate Pipeline", fn: testAdminGenerate },
                 { label: "Generate Images (Nano Banana)", fn: testGenerateImages },
+                { label: "Generate Blog Posts", fn: testGenerateBlogs },
                 { label: "Inspect Website Record", fn: testGetWebsite },
                 { label: "Publish Site → live", fn: testPublishSite },
                 { label: "Unpublish Site → review", fn: testUnpublishSite },
