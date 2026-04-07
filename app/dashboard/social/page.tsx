@@ -148,10 +148,10 @@ function SocialPageInner() {
   const socialFreq: Record<string, string> = { starter: "8/month", pro: "16/month", premium: "32/month" };
 
   function statusBadge(status: string) {
-    if (status === "published") return { bg: "#dcfce7", color: "#166534", label: "Published" };
+    if (status === "posted")    return { bg: "#dcfce7", color: "#166534", label: "Published" };
     if (status === "scheduled") return { bg: "#eeeeff", color: "#4648d4", label: "Scheduled" };
     if (status === "failed")    return { bg: "#fee2e2", color: "#991b1b", label: "Failed" };
-    return { bg: "#fef3c7", color: "#92400e", label: "Draft" };
+    return { bg: "#fef3c7", color: "#92400e", label: "Queued" };
   }
 
   return (
@@ -315,7 +315,7 @@ function SocialPageInner() {
                     ) : (
                       <>
                         <button onClick={() => { setEditingId(post.id); setEditCaption(post.caption); }} style={{ flex: 1, padding: "7px", borderRadius: "6px", border: "1px solid #ede9f8", background: "#fff", color: "#6b6b8a", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Edit</button>
-                        {post.status === "draft" && (
+                        {post.status === "queued" && (
                           <button onClick={() => handleApprove(post.id)} style={{ flex: 1, padding: "7px", borderRadius: "6px", border: "none", background: "#4648d4", color: "#fff", fontSize: "11px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Approve</button>
                         )}
                         <button onClick={() => handleDelete(post.id)} style={{ padding: "7px 10px", borderRadius: "6px", border: "1px solid #fee2e2", background: "#fff", color: "#dc2626", fontSize: "11px", cursor: "pointer", fontFamily: "inherit" }}>✕</button>
