@@ -1,7 +1,7 @@
 import styles from "./Footer.module.css";
 
 const links = [
-  { label: "Privacy Policy", href: "#" },
+  { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "#" },
   { label: "Support", href: "#" },
   { label: "Blog", href: "/blog" },
