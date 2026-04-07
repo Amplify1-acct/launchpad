@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
     const { data: customer } = await supabase
-      .from("customers").select("id, stripe_customer_id, email").eq("user_id", user.id).single();
+      .from("customers").select("id, stripe_customer_id").eq("user_id", user.id).single();
     if (!customer) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
 
     const stripe = getStripe();
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     // Create Stripe customer if not exists
     if (!stripeCustomerId) {
       const stripeCustomer = await stripe.customers.create({
-        email: customer.email || user.email,
+        email: user.email,
         metadata: { supabase_customer_id: customer.id },
       });
       stripeCustomerId = stripeCustomer.id;
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: portalSession.url });
   } catch (err: any) {
-    console.error("Portal error:", err);
+    console.error("Portal error:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
