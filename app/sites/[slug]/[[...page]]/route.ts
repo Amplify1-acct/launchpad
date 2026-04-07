@@ -39,7 +39,7 @@ export async function GET(
     const postSlug = blogMatch[1];
     const { data: post } = await supabase
       .from("blog_posts")
-      .select("title, body, excerpt, featured_image_url, published_at")
+      .select("title, content, excerpt, featured_image_url, approved_at")
       .eq("business_id", business.id)
       .eq("slug", postSlug)
       .eq("status", "published")
@@ -211,7 +211,7 @@ function renderBlogPost(bizName: string, post: any): string {
   </nav>
   ${post.featured_image_url ? `<img class="hero-img" src="${post.featured_image_url}" alt="${post.title}"/>` : ""}
   <article>
-    <div class="date">${post.published_at ? new Date(post.published_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
+    <div class="date">${post.approved_at ? new Date(post.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
     <h1>${post.title}</h1>
     <div class="body">${(post.content || "").split("\n\n").map((p: string) => `<p>${p}</p>`).join("")}</div>
   </article>
