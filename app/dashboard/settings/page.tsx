@@ -31,6 +31,9 @@ function SettingsInner() {
   const [disconnecting, setDisconnecting] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [editingBiz, setEditingBiz] = useState(false);
+  const [blogMode, setBlogMode] = useState<"manual" | "auto">("manual");
+  const [socialMode, setSocialMode] = useState<"manual" | "auto">("manual");
+  const [savingMode, setSavingMode] = useState(false);
   const [bizForm, setBizForm] = useState({ name: "", city: "", state: "", phone: "", email: "" });
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -60,7 +63,34 @@ function SettingsInner() {
     if (sub?.plan) setPlan(sub.plan);
     const { data: accts } = await supabase.from("social_accounts").select("*").eq("business_id", biz?.id);
     setAccounts(accts || []);
+
+    // Load approval modes
+    const modesRes = await fetch("/api/settings/approval-mode");
+    if (modesRes.ok) {
+      const modes = await modesRes.json();
+      setBlogMode(modes.blog_approval_mode || "manual");
+      setSocialMode(modes.social_approval_mode || "manual");
+    }
+
     setLoading(false);
+  }
+
+  async function handleBillingPortal() {
+    const res = await fetch("/api/billing/portal", { method: "POST" });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showToast("Could not open billing portal", false);
+  }
+
+  async function saveApprovalModes() {
+    setSavingMode(true);
+    await fetch("/api/settings/approval-mode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blog_approval_mode: blogMode, social_approval_mode: socialMode }),
+    });
+    setSavingMode(false);
+    showToast("Preferences saved ✓");
   }
 
   function showToast(msg: string, ok = true) {
@@ -209,14 +239,14 @@ function SettingsInner() {
                   </div>
                 ))}
               </div>
-              <a href="mailto:support@exsisto.ai?subject=Plan upgrade" style={{
-                display: "block", textAlign: "center", padding: "10px",
-                border: "1px solid #ede9f8", borderRadius: "8px",
-                fontSize: "13px", fontWeight: 600, color: "#4648d4",
-                textDecoration: "none",
+              <button onClick={handleBillingPortal} style={{
+                display: "block", width: "100%", textAlign: "center", padding: "10px",
+                border: "none", borderRadius: "8px", background: "#4648d4",
+                fontSize: "13px", fontWeight: 700, color: "#fff",
+                cursor: "pointer", fontFamily: "inherit",
               }}>
-                Upgrade plan →
-              </a>
+                Manage billing & upgrade →
+              </button>
             </div>
           </div>
 
@@ -295,6 +325,45 @@ function SettingsInner() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Approval mode */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardTitle}>Content preferences</div>
+            </div>
+            <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: "20px" }}>
+              {[
+                { label: "Blog posts", desc: "Auto-publish blog posts without review, or review each one first.", mode: blogMode, setMode: setBlogMode },
+                { label: "Social posts", desc: "Auto-schedule social posts, or approve each one before it goes out.", mode: socialMode, setMode: setSocialMode },
+              ].map(({ label, desc, mode, setMode }) => (
+                <div key={label}>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1b1b25", marginBottom: "4px" }}>{label}</div>
+                  <div style={{ fontSize: "12px", color: "#9090a8", marginBottom: "10px" }}>{desc}</div>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    {(["manual", "auto"] as const).map(v => (
+                      <button key={v} onClick={() => setMode(v)} style={{
+                        flex: 1, padding: "8px", borderRadius: "8px",
+                        border: mode === v ? "none" : "1px solid #ede9f8",
+                        background: mode === v ? "#4648d4" : "#fff",
+                        color: mode === v ? "#fff" : "#6b6b8a",
+                        fontSize: "12px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                      }}>
+                        {v === "manual" ? "✋ Manual review" : "⚡ Auto-publish"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <button onClick={saveApprovalModes} disabled={savingMode} style={{
+                padding: "10px", borderRadius: "8px", border: "none",
+                background: "#4648d4", color: "#fff",
+                fontSize: "13px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                opacity: savingMode ? 0.7 : 1,
+              }}>
+                {savingMode ? "Saving…" : "Save preferences"}
+              </button>
             </div>
           </div>
 
