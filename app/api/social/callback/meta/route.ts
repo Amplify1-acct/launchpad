@@ -41,13 +41,38 @@ export async function GET(request: Request) {
     );
     const me = await meRes.json();
 
-    // Get Facebook Pages (for posting)
+    // Get Facebook Pages — check personal pages first, then Business Manager pages
+    let page: any = null;
+
     const pagesRes = await fetch(
       `https://graph.facebook.com/v19.0/me/accounts?fields=id,name,access_token&access_token=${longToken}`
     );
     const pagesData = await pagesRes.json();
-    console.log("📘 Pages data:", JSON.stringify(pagesData));
-    const page = pagesData.data?.[0]; // Use first page
+    console.log("📘 Personal pages:", JSON.stringify(pagesData));
+
+    if (pagesData.data?.length > 0) {
+      page = pagesData.data[0];
+    } else {
+      // Try Business Manager pages
+      console.log("📘 No personal pages, checking Business Manager...");
+      const bizRes = await fetch(
+        `https://graph.facebook.com/v19.0/me/businesses?fields=id,name&access_token=${longToken}`
+      );
+      const bizData = await bizRes.json();
+      console.log("📘 Businesses:", JSON.stringify(bizData));
+
+      if (bizData.data?.length > 0) {
+        const bizId = bizData.data[0].id;
+        const bizPagesRes = await fetch(
+          `https://graph.facebook.com/v19.0/${bizId}/owned_pages?fields=id,name,access_token&access_token=${longToken}`
+        );
+        const bizPages = await bizPagesRes.json();
+        console.log("📘 Business pages:", JSON.stringify(bizPages));
+        if (bizPages.data?.length > 0) {
+          page = bizPages.data[0];
+        }
+      }
+    }
     console.log("📘 Selected page:", JSON.stringify(page));
 
     const supabase = createAdminClient();
