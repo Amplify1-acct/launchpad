@@ -272,7 +272,7 @@ export async function POST(request: Request) {
           services
         );
 
-        const status = approvalMode === "auto" ? "published" : "pending";
+        const status = approvalMode === "auto" ? "published" : "draft";
         const now = new Date().toISOString();
 
         await supabase.from("blog_posts").insert({
