@@ -57,6 +57,10 @@ export default function WebsitePage() {
         body: JSON.stringify({ business_id: business.id, force }),
       });
       const data = await res.json();
+      if (res.status === 403 && data.upgrade) {
+        showToast("Google Reviews is a Premium feature — upgrade to unlock", false);
+        return;
+      }
       if (!res.ok) { showToast(data.error || "Failed to fetch reviews", false); return; }
       if (data.found) {
         setReviewsData({ count: data.reviewCount, rating: data.rating, mapsUrl: data.mapsUrl });
@@ -350,21 +354,29 @@ export default function WebsitePage() {
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <div className={styles.cardTitle}>Google Reviews</div>
-                  {business?.google_rating && (
-                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#f59e0b" }}>
-                      ★ {business.google_rating.toFixed(1)}
-                    </span>
-                  )}
+                  {plan === "premium" && business?.google_rating ? (
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#f59e0b" }}>★ {business.google_rating.toFixed(1)}</span>
+                  ) : plan !== "premium" ? (
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: "#7c3aed", background: "#ede9fe", padding: "2px 8px", borderRadius: "100px" }}>PREMIUM</span>
+                  ) : null}
                 </div>
                 <div style={{ padding: "16px 18px" }}>
-                  {business?.google_place_id ? (
+                  {plan !== "premium" ? (
+                    <div>
+                      <p style={{ fontSize: "12px", color: "#9090a8", marginBottom: "12px", lineHeight: 1.6 }}>
+                        Automatically pull your real Google reviews onto your site. No setup required — we find them for you.
+                      </p>
+                      <a href="/checkout?plan=premium"
+                        style={{ display: "block", textAlign: "center", padding: "10px", borderRadius: "8px", border: "none", background: "#7c3aed", color: "#fff", fontSize: "13px", fontWeight: 700, textDecoration: "none" }}>
+                        Upgrade to Premium →
+                      </a>
+                    </div>
+                  ) : business?.google_place_id ? (
                     <div>
                       <div style={{ fontSize: "13px", color: "#1b1b25", marginBottom: "4px", fontWeight: 600 }}>
                         {business.google_rating_count ? `${business.google_rating_count.toLocaleString()} reviews on Google` : "Connected to Google"}
                       </div>
-                      <div style={{ fontSize: "11px", color: "#9090a8", marginBottom: "12px" }}>
-                        Real reviews are showing on your site
-                      </div>
+                      <div style={{ fontSize: "11px", color: "#9090a8", marginBottom: "12px" }}>Real reviews are showing on your site</div>
                       <div style={{ display: "flex", gap: "8px" }}>
                         {business.google_maps_url && (
                           <a href={business.google_maps_url} target="_blank" rel="noreferrer"
