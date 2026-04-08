@@ -227,7 +227,7 @@ export async function getBusinessImages(params: {
 /**
  * Generate a single business photo.
  * For known industries: returns a library URL instantly.
- * For "other" industries or social/blog content: calls Gemini to generate a fresh image.
+ * For "other" industries or social/blog posts: calls Gemini for a fresh image.
  */
 export async function generateBusinessPhoto(
   businessName: string,
@@ -240,31 +240,31 @@ export async function generateBusinessPhoto(
   const industry = inferIndustryFromDescription(businessDescription);
   const slot = photoType === "about" ? "card1" : "hero";
 
-  // For social/blog posts or unknown industries, generate fresh with Gemini
+  // For social posts or unknown "other" industries, generate fresh with Gemini
   if (photoType === "social" || industry === "other") {
     try {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY not set");
 
-      // Build a prompt based on context
       const platformCtx = platform === "tiktok" ? "vertical 9:16 portrait"
         : platform === "instagram" ? "square 1:1"
         : "landscape 16:9";
-      const prompt = photoType === "social"
-        ? `photorealistic photograph only, no text, no UI, no illustration, no watermarks. Professional ${industry !== "other" ? industry : businessDescription.slice(0, 50)} business photo for ${platformCtx} social media post. ${businessName}. Vibrant, eye-catching, high quality.`
-        : `photorealistic photograph only, no text, no UI, no illustration, no watermarks. Professional ${industry !== "other" ? industry : businessDescription.slice(0, 50)} business hero photo. ${businessName}. Clean, well-lit, high quality.`;
 
-      const res = await fetch(
-        \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=\${apiKey}\`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseModalities: ["image", "text"] },
-          }),
-        }
-      );
+      const industryContext = industry !== "other" ? industry : businessDescription.slice(0, 50);
+      const prompt = photoType === "social"
+        ? "photorealistic photograph only, no text, no UI, no illustration, no watermarks. Professional " + industryContext + " business photo for " + platformCtx + " social media. " + businessName + ". Vibrant, eye-catching, high quality."
+        : "photorealistic photograph only, no text, no UI, no illustration, no watermarks. Professional " + industryContext + " business photo. " + businessName + ". Clean, well-lit, high quality.";
+
+      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=" + apiKey;
+
+      const res = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["image", "text"] },
+        }),
+      });
 
       if (res.ok) {
         const data = await res.json();
@@ -272,32 +272,29 @@ export async function generateBusinessPhoto(
           (p: any) => p.inlineData?.mimeType?.startsWith("image/")
         );
         if (imagePart?.inlineData?.data) {
-          // Upload to Supabase Storage so it's permanent
           const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
           const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
           const imageBytes = Buffer.from(imagePart.inlineData.data, "base64");
-          const fileName = \`\${industry !== "other" ? industry : "other"}/\${photoType}/\${Date.now()}-\${Math.random().toString(36).slice(2, 8)}.jpg\`;
+          const folder = industry !== "other" ? industry : "other";
+          const fileName = folder + "/" + photoType + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".jpg";
 
-          const uploadRes = await fetch(
-            \`\${supabaseUrl}/storage/v1/object/industry-images/\${fileName}\`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: \`Bearer \${serviceKey}\`,
-                "Content-Type": "image/jpeg",
-                "x-upsert": "true",
-              },
-              body: imageBytes,
-            }
-          );
+          const uploadRes = await fetch(supabaseUrl + "/storage/v1/object/industry-images/" + fileName, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + serviceKey,
+              "Content-Type": "image/jpeg",
+              "x-upsert": "true",
+            },
+            body: imageBytes,
+          });
 
           if (uploadRes.ok) {
-            return \`\${supabaseUrl}/storage/v1/object/public/industry-images/\${fileName}\`;
+            return supabaseUrl + "/storage/v1/object/public/industry-images/" + fileName;
           }
         }
       }
     } catch (e: any) {
-      console.error("Gemini image generation failed, falling back to library:", e.message);
+      console.error("Gemini image generation failed, using library fallback:", e.message);
     }
   }
 
