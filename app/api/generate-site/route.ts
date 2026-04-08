@@ -460,6 +460,35 @@ export async function POST(request: Request) {
       image_source: imageSource,
     }, { onConflict: "business_id" });
 
+    // If business has Google reviews already, apply them to the new HTML
+    const { data: bizWithReviews } = await supabase
+      .from("businesses")
+      .select("google_place_id, google_maps_url, google_rating, google_rating_count")
+      .eq("id", business_id)
+      .single();
+
+    if (bizWithReviews?.google_place_id) {
+      // Fetch stored reviews and rebuild the section
+      const { data: storedReviews } = await supabase
+        .from("google_reviews")
+        .select("author_name, rating, text, initials")
+        .eq("business_id", business_id)
+        .order("sort_order");
+
+      if (storedReviews && storedReviews.length > 0) {
+        // Trigger review section rebuild (non-blocking)
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+        fetch(`${appUrl}/api/fetch-reviews`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+          },
+          body: JSON.stringify({ business_id, force: true }),
+        }).catch(() => {});
+      }
+    }
+
     return NextResponse.json({
       success: true,
       plan,
