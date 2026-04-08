@@ -133,15 +133,17 @@ export async function POST(request: Request) {
           body: JSON.stringify({ business_id: targetBizId }),
         }).catch(e => console.error("Blog generation failed:", e));
 
-        // Non-blocking: fetch Google reviews
-        fetch(`${appUrl}/api/fetch-reviews`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
-          },
-          body: JSON.stringify({ business_id: targetBizId }),
-        }).catch(e => console.error("Reviews fetch failed:", e));
+        // Non-blocking: fetch Google reviews (Premium only)
+        if (plan === "premium") {
+          fetch(`${appUrl}/api/fetch-reviews`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+            },
+            body: JSON.stringify({ business_id: targetBizId }),
+          }).catch(e => console.error("Reviews fetch failed:", e));
+        }
       }
 
     } catch (err: any) {
