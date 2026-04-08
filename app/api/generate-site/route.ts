@@ -26,6 +26,135 @@ function injectTokens(html: string, tokens: Record<string, string>): string {
   return result;
 }
 
+// Map service/feature names to emojis using keyword matching
+function getServiceIcon(name: string): string {
+  const n = name.toLowerCase();
+  // Hair & Beauty
+  if (n.match(/cut|trim|haircut|style|blow/)) return "✂️";
+  if (n.match(/color|colour|highlight|balayage|dye/)) return "🎨";
+  if (n.match(/curl|perm|wave/)) return "🌀";
+  if (n.match(/condition|moisture|treatment|mask/)) return "💧";
+  if (n.match(/braid|loc|dread|protective/)) return "🪢";
+  if (n.match(/consult|assess|analys/)) return "📋";
+  if (n.match(/scalp|dandruff/)) return "🔬";
+  if (n.match(/extension|weave/)) return "✨";
+  if (n.match(/nail|mani|pedi/)) return "💅";
+  if (n.match(/wax|thread|brow|lash/)) return "👁️";
+  if (n.match(/facial|skin|derma/)) return "🧴";
+  if (n.match(/massage|spa|relax/)) return "💆";
+  // Dental
+  if (n.match(/clean|hygiene|prophyl/)) return "🦷";
+  if (n.match(/whitening|bleach/)) return "⭐";
+  if (n.match(/implant/)) return "🔩";
+  if (n.match(/invisalign|brace|ortho|align/)) return "😁";
+  if (n.match(/root canal|endodon/)) return "🔧";
+  if (n.match(/emergency|urgent|pain/)) return "🚨";
+  if (n.match(/crown|veneer|porcelain/)) return "👑";
+  if (n.match(/filling|cavity/)) return "🦺";
+  if (n.match(/extraction|oral surgery/)) return "⚕️";
+  if (n.match(/pediatric|child|kid/)) return "👶";
+  // Auto
+  if (n.match(/oil change/)) return "🛢️";
+  if (n.match(/brake/)) return "🛑";
+  if (n.match(/tire|tyre/)) return "🔄";
+  if (n.match(/engine|diagnos/)) return "🔧";
+  if (n.match(/transmiss/)) return "⚙️";
+  if (n.match(/body|dent|collision/)) return "🚗";
+  if (n.match(/ac|air condition|heat|hvac|cool/)) return "❄️";
+  if (n.match(/electric|battery/)) return "⚡";
+  if (n.match(/inspect|check/)) return "🔍";
+  if (n.match(/detail|wash|clean/)) return "✨";
+  // Plumbing
+  if (n.match(/drain|clog/)) return "🪣";
+  if (n.match(/leak|pipe|repar/)) return "🔧";
+  if (n.match(/water heater|boiler/)) return "🔥";
+  if (n.match(/toilet|bathroom/)) return "🚿";
+  if (n.match(/sewer|septic/)) return "🪠";
+  if (n.match(/gas/)) return "💨";
+  if (n.match(/install/)) return "🔨";
+  // Law
+  if (n.match(/personal injury|accident/)) return "⚖️";
+  if (n.match(/criminal|defense/)) return "🛡️";
+  if (n.match(/family|divorce|custody/)) return "👨‍👩‍👧";
+  if (n.match(/real estate|property/)) return "🏠";
+  if (n.match(/business|corporate|contract/)) return "📄";
+  if (n.match(/estate|will|probate|trust/)) return "📜";
+  if (n.match(/immigrat/)) return "🌍";
+  if (n.match(/employ|worker/)) return "👷";
+  if (n.match(/bankruptcy/)) return "💰";
+  // Real Estate
+  if (n.match(/buy|purchas|buyer/)) return "🏡";
+  if (n.match(/sell|list|seller/)) return "📋";
+  if (n.match(/commerc/)) return "🏢";
+  if (n.match(/invest|rental|income/)) return "💹";
+  if (n.match(/manag|property mgmt/)) return "🔑";
+  if (n.match(/relocat/)) return "📦";
+  if (n.match(/luxury|high.end/)) return "💎";
+  if (n.match(/new construction|build/)) return "🏗️";
+  // Gym / Fitness
+  if (n.match(/personal train|pt/)) return "🏋️";
+  if (n.match(/yoga/)) return "🧘";
+  if (n.match(/cardio|run|cycling|spin/)) return "🚴";
+  if (n.match(/nutrition|diet|meal/)) return "🥗";
+  if (n.match(/class|group/)) return "👥";
+  if (n.match(/weight|strength|muscle/)) return "💪";
+  if (n.match(/pilates/)) return "🤸";
+  if (n.match(/hiit|interval/)) return "⏱️";
+  // Restaurant / Bakery
+  if (n.match(/breakfast|brunch/)) return "🍳";
+  if (n.match(/lunch/)) return "🥪";
+  if (n.match(/dinner|supper/)) return "🍽️";
+  if (n.match(/cater/)) return "🍱";
+  if (n.match(/cake|bak|pastry/)) return "🎂";
+  if (n.match(/coffee|espresso/)) return "☕";
+  if (n.match(/pizza/)) return "🍕";
+  if (n.match(/delivery|takeout/)) return "🛵";
+  if (n.match(/vegan|vegetarian|gluten/)) return "🌱";
+  if (n.match(/wine|cocktail|bar/)) return "🍷";
+  // Pet
+  if (n.match(/groom/)) return "🐾";
+  if (n.match(/bath|wash/)) return "🛁";
+  if (n.match(/walk/)) return "🦮";
+  if (n.match(/board|stay|hotel/)) return "🏠";
+  if (n.match(/train|behav/)) return "🎓";
+  if (n.match(/vet|medic|health/)) return "💉";
+  if (n.match(/daycare|day care/)) return "☀️";
+  // HVAC
+  if (n.match(/install/)) return "🔧";
+  if (n.match(/repair|fix/)) return "🛠️";
+  if (n.match(/mainten|service/)) return "📋";
+  if (n.match(/heat|furnace/)) return "🔥";
+  if (n.match(/cool|air con|ac/)) return "❄️";
+  if (n.match(/duct|ventil/)) return "💨";
+  if (n.match(/indoor air|filter/)) return "🌬️";
+  if (n.match(/emergency/)) return "🚨";
+  // Landscaping
+  if (n.match(/mow|lawn/)) return "🌿";
+  if (n.match(/tree|trim|prune/)) return "🌳";
+  if (n.match(/design|plan/)) return "📐";
+  if (n.match(/irrigat|sprinkler/)) return "💧";
+  if (n.match(/fertili|treat/)) return "🌱";
+  if (n.match(/mulch|bed/)) return "🪴";
+  if (n.match(/patio|hardscape|stone/)) return "🪨";
+  if (n.match(/snow|plow/)) return "❄️";
+  // Generic fallbacks
+  if (n.match(/consult|advise/)) return "💬";
+  if (n.match(/repair|fix|restore/)) return "🔧";
+  if (n.match(/install/)) return "🔨";
+  if (n.match(/clean|sanitize/)) return "🧹";
+  if (n.match(/inspect|audit|check/)) return "🔍";
+  if (n.match(/design|creative/)) return "🎨";
+  if (n.match(/delivery|transport/)) return "🚚";
+  if (n.match(/train|educate|coach/)) return "🎓";
+  if (n.match(/protect|secur/)) return "🛡️";
+  if (n.match(/financ|account|tax|book/)) return "💰";
+  if (n.match(/market|advertis|seo/)) return "📢";
+  if (n.match(/photo|video|media/)) return "📸";
+  if (n.match(/it|tech|computer|software/)) return "💻";
+  if (n.match(/print|sign|brand/)) return "🖨️";
+  return "⭐"; // default
+}
+
 async function generateTokens(
   business: Record<string, any>,
   revisionNotes?: string,
@@ -249,8 +378,22 @@ export async function POST(request: Request) {
         differentiator: (business as any).differentiator || "",
         revisionNotes: revision_notes || "",
       });
-      // Strip any unfilled {{token}} placeholders Stitch may leave behind
-      finalHtml = injectTokens(rawStitchHtml, tokens);
+      // Inject service icons into Stitch HTML, then strip remaining unfilled tokens
+      let stitchWithIcons = rawStitchHtml;
+      // Replace service icon tokens with emoji based on the service name in the same card
+      // Pattern: {{service_N_icon}} appears just before the service name
+      stitchWithIcons = stitchWithIcons.replace(
+        /\{\{service_(\d+)_icon\}\}/g,
+        (match: string, num: string) => {
+          // Find the service name near this token in the HTML
+          const idx = stitchWithIcons.indexOf(match);
+          const nearby = stitchWithIcons.slice(idx, idx + 300);
+          const nameMatch = nearby.match(/class="service-name"[^>]*>([^<]+)</);
+          const svcName = nameMatch ? nameMatch[1] : "";
+          return getServiceIcon(svcName);
+        }
+      );
+      finalHtml = injectTokens(stitchWithIcons, tokens);
       console.log("✓ Stitch site generated");
     } catch (stitchErr: any) {
       // Stitch quota or error — fall back to skeleton templates
