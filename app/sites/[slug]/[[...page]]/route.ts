@@ -101,6 +101,26 @@ export async function GET(
     });
   }
 
+  // Handle /services/[slug] — service detail pages
+  if (pagePath.startsWith("services/")) {
+    const serviceSlug = pagePath.replace("services/", "");
+    const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const tokens = website.generated_tokens ? JSON.parse(website.generated_tokens) : {};
+    for (let i = 1; i <= 6; i++) {
+      const svcName = tokens[`service_${i}_name`];
+      if (svcName && toSlug(svcName) === serviceSlug) {
+        const detailHtml = (website as any)[`service_detail_${i}_html`];
+        if (detailHtml) {
+          return new NextResponse(detailHtml, {
+            headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" },
+          });
+        }
+      }
+    }
+    // Service detail page not found or not generated for this plan
+    return new NextResponse("Page not found", { status: 404 });
+  }
+
   // Pick the right page HTML
   const col = PAGE_COLUMNS[pagePath] || "custom_html";
   const html = (website as any)[col] || website.custom_html;
