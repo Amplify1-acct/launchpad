@@ -108,7 +108,17 @@ export async function POST(request: Request) {
       }),
     }).catch((e) => console.error("Image pre-generation failed (non-fatal):", e));
 
-    // 7. Send welcome email (non-blocking)
+    // 7. Auto-fetch Google reviews in background (non-blocking)
+    fetch(`${appUrl}/api/fetch-reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+      },
+      body: JSON.stringify({ business_id: business.id }),
+    }).catch((e) => console.error("Reviews fetch failed (non-fatal):", e));
+
+    // 8. Send welcome email (non-blocking)
     fetch(`${appUrl}/api/send-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
