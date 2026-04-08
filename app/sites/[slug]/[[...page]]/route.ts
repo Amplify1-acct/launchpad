@@ -77,7 +77,7 @@ export async function GET(
   let website: Record<string, any> | null = null;
   try {
     const siteRes = await fetch(
-      `${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=custom_html,services_html,about_html,contact_html,blog_index_html,status&limit=1`,
+      `${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=custom_html,services_html,about_html,contact_html,blog_index_html,status,service_detail_1_html,service_detail_2_html,service_detail_3_html,service_detail_4_html,service_detail_5_html,service_detail_6_html,generated_tokens&limit=1`,
       { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "Cache-Control": "no-cache" }, cache: "no-store" }
     );
     const siteData = await siteRes.json();
