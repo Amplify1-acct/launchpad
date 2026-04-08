@@ -378,3 +378,111 @@ export async function generateBlogIndexPage(
     nav, content, footer
   );
 }
+
+// ── Service Detail Page ───────────────────────────────────────────────────────
+export async function generateServiceDetailPage(
+  business: Business,
+  serviceName: string,
+  serviceDescription: string,
+  icon: string = "🔧",
+  relatedServices: string[] = [],
+  tokens: Record<string, string> = {}
+): Promise<string> {
+  const nav = sharedNav(business.name, business.phone || "");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+  const slug = serviceName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+  // Generate 3 benefit bullets from the service description
+  const benefits = [
+    "Expert technicians with years of hands-on experience",
+    "Transparent pricing with no hidden fees",
+    "100% satisfaction guaranteed on every job",
+  ];
+
+  const content = `
+  <section style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e);color:#fff;padding:80px 24px 96px;text-align:center;">
+    <div style="max-width:640px;margin:0 auto;">
+      <div style="font-size:48px;margin-bottom:20px;">${icon}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Our Services</div>
+      <h1 style="font-size:clamp(32px,6vw,52px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:20px;">
+        ${serviceName}
+      </h1>
+      <p style="font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;">
+        ${serviceDescription || "Professional service delivered with expertise and care."}
+      </p>
+    </div>
+  </section>
+
+  <section style="max-width:880px;margin:0 auto;padding:80px 24px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;">
+      <div>
+        <h2 style="font-size:clamp(22px,4vw,32px);font-weight:900;margin-bottom:24px;line-height:1.1;">
+          What's Included
+        </h2>
+        <p style="font-size:16px;color:#444;line-height:1.8;margin-bottom:32px;">
+          ${serviceDescription || "We provide professional " + serviceName.toLowerCase() + " services tailored to your specific needs. Our team brings the expertise and tools to get the job done right the first time."}
+        </p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          ${benefits.map(b => `
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:24px;height:24px;background:#4648d4;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;">✓</div>
+            <p style="font-size:15px;color:#444;line-height:1.6;">${b}</p>
+          </div>`).join("")}
+        </div>
+      </div>
+      <div>
+        <div style="background:#f9f9ff;border-radius:20px;padding:36px;border:1.5px solid #ede9f8;">
+          <h3 style="font-size:20px;font-weight:800;margin-bottom:8px;">Get a Free Quote</h3>
+          <p style="font-size:14px;color:#666;margin-bottom:24px;line-height:1.6;">
+            Ready to get started? Contact us today and we'll provide a free, no-obligation estimate.
+          </p>
+          ${business.phone ? `
+          <a href="tel:${(business.phone || "").replace(/\D/g, "")}" style="display:flex;align-items:center;gap:12px;background:#111;color:#fff;padding:14px 20px;border-radius:10px;text-decoration:none;margin-bottom:12px;">
+            <span style="font-size:20px;">📞</span>
+            <div>
+              <div style="font-size:11px;opacity:0.6;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Call Us</div>
+              <div style="font-size:16px;font-weight:800;">${business.phone}</div>
+            </div>
+          </a>` : ""}
+          <a href="/contact" style="display:flex;align-items:center;gap:12px;background:#4648d4;color:#fff;padding:14px 20px;border-radius:10px;text-decoration:none;">
+            <span style="font-size:20px;">✉️</span>
+            <div>
+              <div style="font-size:11px;opacity:0.6;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Message Us</div>
+              <div style="font-size:16px;font-weight:800;">Send a Message</div>
+            </div>
+          </a>
+        </div>
+        ${relatedServices.length > 0 ? `
+        <div style="margin-top:24px;">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;margin-bottom:12px;">Other Services</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            ${relatedServices.map(s => {
+              const sSlug = s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+              return `<a href="/services/${sSlug}" style="font-size:14px;color:#4648d4;text-decoration:none;font-weight:600;">→ ${s}</a>`;
+            }).join("")}
+          </div>
+        </div>` : ""}
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#111;color:#fff;padding:64px 24px;text-align:center;">
+    <div style="max-width:560px;margin:0 auto;">
+      <h2 style="font-size:clamp(24px,4vw,36px);font-weight:900;margin-bottom:16px;">
+        Ready to get started?
+      </h2>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:32px;line-height:1.7;">
+        Serving ${business.city || "your area"} and surrounding communities. Contact us today for a free estimate.
+      </p>
+      <a href="/contact" style="background:#4648d4;color:#fff;padding:16px 32px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;">
+        Get Free Estimate →
+      </a>
+    </div>
+  </section>`;
+
+  return baseHTML(
+    `${serviceName} | ${business.name}`,
+    `${serviceName} services from ${business.name} in ${business.city}. ${serviceDescription?.slice(0, 100) || "Professional, reliable service."}`,
+    nav, content, footer
+  );
+}
