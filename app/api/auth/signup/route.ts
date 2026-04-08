@@ -120,7 +120,31 @@ export async function POST(request: Request) {
       }).catch((e) => console.error("Reviews fetch failed (non-fatal):", e));
     }
 
-    // 8. Send welcome email (non-blocking)
+    // 8. Trigger site + blog generation immediately (non-blocking)
+    // This runs for all signups regardless of payment status
+    // Stripe webhook will also trigger this but generate-site is idempotent
+    fetch(`${appUrl}/api/generate-site`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+      },
+      body: JSON.stringify({ business_id: business.id }),
+    }).then(async (r) => {
+      if (r.ok) {
+        // After site generates, kick off blog generation
+        fetch(`${appUrl}/api/generate-blog`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+          },
+          body: JSON.stringify({ business_id: business.id }),
+        }).catch((e) => console.error("Blog generation failed (non-fatal):", e));
+      }
+    }).catch((e) => console.error("Site generation failed (non-fatal):", e));
+
+    // 9. Send welcome email (non-blocking)
     fetch(`${appUrl}/api/send-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
