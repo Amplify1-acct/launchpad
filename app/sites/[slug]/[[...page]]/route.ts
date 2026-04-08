@@ -32,10 +32,11 @@ export async function GET(
     } catch(e: any) { return NextResponse.json({ error: e.message }); }
   }
 
-  // Look up business by subdomain using direct REST fetch
+  // Shared Supabase credentials for all REST fetches
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+  // Look up business by subdomain using direct REST fetch
   let business: { id: string; name: string } | null = null;
   try {
     const bizRes = await fetch(
@@ -89,9 +90,6 @@ export async function GET(
   }
 
   // Get website record using direct REST fetch (bypasses any env var issues with supabase-js on subdomains)
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  
   let website: Record<string, any> | null = null;
   try {
     const siteRes = await fetch(
