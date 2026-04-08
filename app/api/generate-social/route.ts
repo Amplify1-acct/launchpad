@@ -29,7 +29,7 @@ async function getPhotoForPost(
   try {
     const platformCtx = platform === "tiktok" ? "vertical portrait" : platform === "instagram" ? "square" : "landscape";
     const prompt = `photorealistic photograph only, no text, no UI, no illustration. Professional ${industry} business photo, ${platformCtx} composition. ${caption.slice(0, 80)}.`;
-    const photoUrl = await generateBusinessPhoto(prompt, businessName, "social");
+    const photoUrl = await generateBusinessPhoto(businessName, prompt, "social");
     if (!photoUrl) return null;
 
     // Download and upload to Supabase Storage so it persists in the shared library
