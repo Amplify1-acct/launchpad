@@ -367,6 +367,7 @@ export default function WebsitePage() {
                       <span style={{ fontSize: "12px", color: "#1b1b25", fontWeight: 500, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value}</span>
                     </div>
                   ))}
+                </div>
               </div>
 
               {/* Custom Domain */}
