@@ -494,7 +494,7 @@ export async function POST(request: Request) {
 
     await supabase.from("websites").upsert({
       business_id,
-      status: "ready_for_review",
+      status: "live", // auto-publish — customer can request changes from dashboard
       custom_html: cleanedHtml,
       services_html: servicesHtml,
       about_html: aboutHtml,
