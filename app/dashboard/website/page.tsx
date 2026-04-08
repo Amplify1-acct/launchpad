@@ -292,11 +292,11 @@ export default function WebsitePage() {
                       <span className={styles.actionArrow}>→</span>
                     </a>
                   )}
-                  <a href="/dashboard/preview" className={styles.actionItem}>
+                  <a href={siteUrl || "#"} target="_blank" rel="noreferrer" className={styles.actionItem}>
                     <div className={styles.actionIcon} style={{ background: "#fef3c7" }}>⤢</div>
                     <div className={styles.actionInfo}>
-                      <div className={styles.actionLabel}>Full preview</div>
-                      <div className={styles.actionSub}>Review with approve/reject tools</div>
+                      <div className={styles.actionLabel}>Open live site</div>
+                      <div className={styles.actionSub}>View your published website</div>
                     </div>
                     <span className={styles.actionArrow}>→</span>
                   </a>
