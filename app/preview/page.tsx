@@ -479,10 +479,11 @@ function StepDetails({ industry, bizType, onNext, onBack }: {
 function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
   industry: string; bizType: string;
   bizDetails: { description: string; years: string; differentiator: string; stat: string; statLabel: string; services: string[] };
-  onNext: (city: string, phone: string, email: string, planId: string) => void;
+  onNext: (city: string, state: string, phone: string, email: string, planId: string) => void;
   onBack: () => void;
 }) {
   const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [selectedPlan, setSelectedPlan] = useState("pro");
@@ -577,9 +578,10 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 
   function handleNext() {
     if (!city.trim()) return setError("Please enter your city");
+    if (!state.trim()) return setError("Please enter your state (e.g. NJ)");
     if (!email.trim() || !email.includes("@")) return setError("Please enter a valid email");
     setError("");
-    onNext(city, phone, email, selectedPlan);
+    onNext(city, state, phone, email, selectedPlan);
   }
 
   const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
@@ -793,7 +795,10 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 
           <div className="plan-chooser-divider" />
 
-          <div className="form-group"><label>City *</label><input className="form-input" type="text" placeholder="e.g. Westfield" value={city} onChange={e => setCity(e.target.value)} /></div>
+          <div style={{display:"flex",gap:"0.75rem"}}>
+            <div className="form-group" style={{flex:2}}><label>City *</label><input className="form-input" type="text" placeholder="e.g. Westfield" value={city} onChange={e => setCity(e.target.value)} /></div>
+            <div className="form-group" style={{flex:1}}><label>State *</label><input className="form-input" type="text" placeholder="NJ" maxLength={2} value={state} onChange={e => setState(e.target.value.toUpperCase())} /></div>
+          </div>
           <div className="form-group"><label>Phone</label><input className="form-input" type="tel" placeholder="(908) 555-0100" value={phone} onChange={e => setPhone(e.target.value)} /></div>
           <div className="form-group"><label>Email *</label><input className="form-input" type="email" placeholder="you@yourbusiness.com" value={email} onChange={e => setEmail(e.target.value)} /></div>
 
@@ -840,8 +845,8 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
 }
 
 // ─── STEP 4 ───────────────────────────────────────────────────────────────────
-function StepSignup({ industry, bizType, city, phone, email, planId, bizDetails, onBack }: {
-  industry: string; bizType: string; city: string; phone: string; email: string; planId: string;
+function StepSignup({ industry, bizType, city, state, phone, email, planId, bizDetails, onBack }: {
+  industry: string; bizType: string; city: string; state: string; phone: string; email: string; planId: string;
   bizDetails: { description: string; years: string; differentiator: string; stat: string; statLabel: string; services: string[] };
   onBack: () => void;
 }) {
@@ -857,7 +862,7 @@ function StepSignup({ industry, bizType, city, phone, email, planId, bizDetails,
     setLoading(true); setError("");
     try {
       // 1. Create the account server-side
-      const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, phone, planId, description: bizDetails.description, years: bizDetails.years, differentiator: bizDetails.differentiator, stat: bizDetails.stat, statLabel: bizDetails.statLabel, services: bizDetails.services }) });
+      const res = await fetch("/api/auth/signup", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password, businessName:bizType, industry, city, state, phone, planId, description: bizDetails.description, years: bizDetails.years, differentiator: bizDetails.differentiator, stat: bizDetails.stat, statLabel: bizDetails.statLabel, services: bizDetails.services }) });
       const d = await res.json();
       if (!res.ok) { throw new Error(d.error||"Signup failed"); }
       const bizId = d.businessId || "";
@@ -911,6 +916,7 @@ function PreviewPageInner() {
   const [industry, setIndustry] = useState("");
   const [bizType, setBizType] = useState("");
   const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [planId, setPlanId] = useState("pro");
@@ -934,8 +940,8 @@ function PreviewPageInner() {
         {step===0 && <StepIndustry onNext={id => { setIndustry(id); setStep(1); }} />}
         {step===1 && <StepBizType industry={industry} onNext={t => { setBizType(t); setStep(2); }} onBack={() => setStep(0)} />}
         {step===2 && <StepDetails industry={industry} bizType={bizType} onNext={details => { setBizDetails(details); setStep(3); }} onBack={() => setStep(1)} />}
-        {step===3 && <StepSite industry={industry} bizType={bizType} bizDetails={bizDetails} onNext={(c,p,e,pid) => { setCity(c); setPhone(p); setEmail(e); setPlanId(pid); setStep(4); }} onBack={() => setStep(2)} />}
-        {step===4 && <StepSignup industry={industry} bizType={bizType} city={city} phone={phone} email={email} planId={planId} bizDetails={bizDetails} onBack={() => setStep(3)} />}
+        {step===3 && <StepSite industry={industry} bizType={bizType} bizDetails={bizDetails} onNext={(c,s,p,e,pid) => { setCity(c); setState(s); setPhone(p); setEmail(e); setPlanId(pid); setStep(4); }} onBack={() => setStep(2)} />}
+        {step===4 && <StepSignup industry={industry} bizType={bizType} city={city} state={state} phone={phone} email={email} planId={planId} bizDetails={bizDetails} onBack={() => setStep(3)} />}
       </div>
     </div>
   );
