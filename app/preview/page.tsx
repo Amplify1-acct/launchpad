@@ -248,12 +248,12 @@ function personalizeTemplate(
 }
 
 const PLANS = [
-  { id: "starter", name: "Starter", price: "$99", period: "/mo", images: 5,
-    features: ["AI website + 5 images","1 blog/week","Custom domain","On-page SEO"] },
-  { id: "pro", name: "Pro", price: "$299", period: "/mo", images: 5, popular: true,
-    features: ["AI website + 5 images","2 blogs/week","Social media (FB, IG, TT)","Custom domain","Advanced SEO"] },
-  { id: "premium", name: "Premium", price: "$599", period: "/mo", images: 5,
-    features: ["AI website + 5 images","4 blogs/week","Automated social posting","Google Reviews on site","Custom domain","Priority support"] },
+  { id: "starter", name: "Starter", price: "$99", period: "/mo", images: 2,
+    features: ["3-page website","2 AI images","2 blogs/month","Custom domain","Basic SEO"] },
+  { id: "pro", name: "Pro", price: "$299", period: "/mo", images: 8, popular: true,
+    features: ["8-page website","8 AI images","2 blogs/week","On-site SEO & Schema","Custom domain"] },
+  { id: "premium", name: "Premium", price: "$599", period: "/mo", images: 12,
+    features: ["12-page website","12 AI images","3 blogs/week","Local Google SEO","GBP posting","Google Reviews","Custom domain","Social (coming soon)"] },
 ];
 
 // ─── STEP BAR ─────────────────────────────────────────────────────────────────
