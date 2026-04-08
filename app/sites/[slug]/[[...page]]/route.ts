@@ -68,6 +68,22 @@ export async function GET(
     });
   }
 
+  // Debug endpoint
+  if (pagePath === "debug") {
+    const { data: debugSite } = await supabase
+      .from("websites")
+      .select("status, id")
+      .eq("business_id", business.id)
+      .maybeSingle();
+    return NextResponse.json({ 
+      businessId: business.id, 
+      businessName: business.name,
+      siteStatus: debugSite?.status || "not found",
+      siteId: debugSite?.id || null,
+      env: { hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY }
+    });
+  }
+
   // Get website record (bypass RLS with service role)
   const { data: website, error: webError } = await supabase
     .from("websites")
