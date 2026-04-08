@@ -40,9 +40,9 @@ const supabase = createClient(
 
 // Images per tier
 const TIER_SLOTS: Record<string, string[]> = {
-  starter: ['hero'],                               // 1 image
-  pro:     ['hero', 'card1', 'card2'],             // 3 images
-  premium: ['hero', 'card1', 'card2', 'card3', 'card4'], // 5 images
+  starter: ['hero', 'card1'],                      // 2 images
+  pro:     ['hero', 'card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7'],   // 8 images
+  premium: ['hero', 'card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7', 'card8', 'card9', 'card10', 'card11'], // 12 images
 }
 
 function buildPrompt(slot: string, businessName: string, industry: string, city: string, services: string[]): string {
