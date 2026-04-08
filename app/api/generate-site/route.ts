@@ -453,13 +453,22 @@ export async function POST(request: Request) {
          tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
       ).filter(Boolean).slice(0, serviceCount);
 
+      // Fetch recent published blog posts for internal linking
+      const { data: recentPosts } = await supabase
+        .from("blog_posts")
+        .select("title, slug, featured_image_url")
+        .eq("business_id", business_id)
+        .eq("status", "published")
+        .order("approved_at", { ascending: false })
+        .limit(3);
+
       for (let i = 0; i < allServices.length; i++) {
         const svc = allServices[i];
         const desc = tokens[`service_${i + 1}_description`] || "";
         const icon = tokens[`service_${i + 1}_icon`] || "🔧";
         const related = allServices.filter((s: string) => s !== svc).slice(0, 4);
         serviceDetailPages[`service_detail_${i + 1}_html`] = await generateServiceDetailPage(
-          business as any, svc, desc, icon, related, tokens
+          business as any, svc, desc, icon, related, tokens, recentPosts || []
         );
       }
     }
