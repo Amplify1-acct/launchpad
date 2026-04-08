@@ -93,7 +93,7 @@ function baseHTML(title: string, description: string, nav: string, content: stri
 }
 
 // ── Services Page ─────────────────────────────────────────────────────────────
-export async function generateServicesPage(business: Business, tokens: Record<string, string>): Promise<string> {
+export async function generateServicesPage(business: Business, tokens: Record<string, string>, plan: string = "starter"): Promise<string> {
   const services = business.services?.length ? business.services : 
     [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name, 
      tokens.service_4_name, tokens.service_5_name, tokens.service_6_name].filter(Boolean);
@@ -125,14 +125,14 @@ export async function generateServicesPage(business: Business, tokens: Record<st
 
   <section style="max-width:960px;margin:0 auto;padding:80px 24px;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
-      ${services.map((svc, i) => `
+      ${services.map((svc: string, i: number) => `
         <div style="border:1.5px solid #f0f0f0;border-radius:16px;padding:32px;transition:box-shadow 0.2s;">
           <div style="width:48px;height:48px;background:#f5f3ff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:22px;">
             ${["🔧","⚡","🏠","🌿","✨","🛠️","🔑","📋","🚗","🔩"][i % 10]}
           </div>
           <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;">${svc}</h3>
           <p style="font-size:14px;color:#666;line-height:1.7;">${serviceDescriptions[svc] || `Professional ${svc.toLowerCase()} services delivered with care and expertise.`}</p>
-          <a href="/contact" style="display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:#4648d4;text-decoration:none;">Get a quote →</a>
+          ${(plan === 'pro' && i < 3) || plan === 'premium' ? `<a href="/services/${svc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}" style="display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:#4648d4;text-decoration:none;">Learn more →</a>` : `<a href="/contact" style="display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:#4648d4;text-decoration:none;">Get a quote →</a>`}
         </div>
       `).join("")}
     </div>
