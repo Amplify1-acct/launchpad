@@ -1,597 +1,566 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Exsisto | Light Mode — Your entire digital presence. Done for you.</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<style>
-body { background:#fcf8ff; color:#1b1b25; font-family:'Inter',sans-serif; }
-.material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-.glass-nav { background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); }
-.primary-gradient { background:linear-gradient(135deg,#4648d4,#6366f1); }
-.indigo-glow { box-shadow:0 10px 40px -10px rgba(99,102,241,0.15); }
-.surface-low { background:#f5f2ff; }
-</style>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Exsisto — Done-For-You Digital Presence for Small Businesses</title>
+  <meta name="description" content="Exsisto builds and manages your entire digital presence — AI website, weekly blog posts, local SEO, and Google Business Profile — all done for you. Starting at $99/mo."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0d0d14;
+      --ink2: #1e1e2e;
+      --mid: #6b6b80;
+      --pale: #f4f4f8;
+      --white: #ffffff;
+      --indigo: #4648d4;
+      --indigo-light: #6366f1;
+      --indigo-pale: #eef0ff;
+      --green: #10b981;
+      --gold: #f59e0b;
+      --radius: 14px;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
 
-<style id="mobile-layout-fixes">
-/* ── Kill any leftover old nav remnants ───────────────────────────── */
-header:not(#exsisto-nav) { display: none !important; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ── Body top offset for fixed nav ───────────────────────────────── */
-body > main:first-of-type,
-body > section:first-of-type { margin-top: 64px; }
+    h1, h2, h3, h4 { font-family: 'Syne', sans-serif; line-height: 1.1; }
 
-@media (max-width: 767px) {
-  /* ── Pricing: stack single column on mobile ───────────────────── */
-  /* Tailwind grid */
-  .grid.grid-cols-1.md\:grid-cols-3,
-  .grid.md\:grid-cols-3 {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
-  }
-  /* Inline style grids (v2, v3) */
-  [style*="grid-template-columns:repeat(3"] {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-  [style*="grid-template-columns: repeat(3"] {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
+    a { text-decoration: none; color: inherit; }
 
-  /* ── Pro card: remove scale, fix badge ───────────────────────── */
-  .scale-105 { transform: none !important; margin-top: 0 !important; }
-  .absolute.-top-4 { top: -12px !important; }
-  [style*="transform:translateY(-8px)"] { transform: none !important; }
-  [style*="transform: translateY(-8px)"] { transform: none !important; }
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 0 24px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--indigo); }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--mid); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      background: var(--indigo); color: #fff;
+      padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .nav-cta:hover { background: var(--indigo-light); transform: translateY(-1px); }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+    }
 
-  /* ── Pricing card padding ─────────────────────────────────────── */
-  .p-8 { padding: 20px !important; }
-  [style*="padding:48px"] { padding: 24px !important; }
-  [style*="padding: 48px"] { padding: 24px !important; }
-  [style*="padding:32px"] { padding: 20px !important; }
-  [style*="padding: 32px"] { padding: 20px !important; }
+    /* ── HERO ── */
+    .hero {
+      padding: 140px 24px 100px;
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; }
+      .hero-visual { display: none; }
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--indigo-pale); color: var(--indigo);
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .hero-tag::before { content: "●"; font-size: 8px; }
+    .hero h1 {
+      font-size: clamp(36px, 5.5vw, 58px);
+      font-weight: 800; letter-spacing: -1.5px;
+      color: var(--ink); margin-bottom: 20px;
+      line-height: 1.05;
+    }
+    .hero h1 em { color: var(--indigo); font-style: normal; }
+    .hero-sub {
+      font-size: 18px; color: var(--mid); line-height: 1.7;
+      margin-bottom: 36px; font-weight: 400; max-width: 460px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--indigo); color: #fff;
+      padding: 15px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: var(--indigo-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(70,72,212,0.3); }
+    .btn-outline {
+      border: 1.5px solid #e0e0e0; color: var(--ink);
+      padding: 14px 24px; border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--indigo); color: var(--indigo); }
 
-  /* ── Hero headline ─────────────────────────────────────────────── */
-  h1 {
-    font-size: clamp(2rem, 8vw, 3rem) !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.04em !important;
-  }
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+    }
+    .hero-mockup {
+      background: var(--ink2);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .mockup-bar {
+      background: #2a2a3e; padding: 10px 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-url {
+      margin-left: 8px; flex: 1;
+      background: #1a1a2e; border-radius: 4px;
+      padding: 4px 10px; font-size: 11px; color: rgba(255,255,255,0.4);
+      font-family: monospace;
+    }
+    .mockup-content {
+      padding: 24px;
+      background: linear-gradient(135deg, #1a1a2e, #0d0d1a);
+      min-height: 220px;
+    }
+    .mockup-hero-text { color: #fff; font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .mockup-sub { color: rgba(255,255,255,0.5); font-size: 12px; margin-bottom: 16px; }
+    .mockup-btn {
+      display: inline-block; background: var(--indigo);
+      color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    }
+    .mockup-badges {
+      display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+    }
+    .mockup-badge {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 100px; font-size: 10px; font-weight: 600;
+    }
+    .hero-float {
+      position: absolute; right: -20px; bottom: -20px;
+      background: #fff; border-radius: 12px; padding: 14px 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 12px;
+    }
+    .hero-float-label { color: var(--mid); margin-bottom: 4px; }
+    .hero-float-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--green); }
 
-  /* ── Section headings ─────────────────────────────────────────── */
-  h2 {
-    font-size: clamp(1.6rem, 6vw, 2.4rem) !important;
-    line-height: 1.15 !important;
-  }
-  [style*="font-size:56px"], [style*="font-size: 56px"],
-  [style*="font-size:72px"], [style*="font-size: 72px"] {
-    font-size: clamp(1.8rem, 7vw, 2.6rem) !important;
-    letter-spacing: -1px !important;
-  }
+    /* ── SOCIAL PROOF ── */
+    .proof {
+      background: var(--pale); padding: 40px 24px;
+      text-align: center;
+    }
+    .proof-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--mid); margin-bottom: 20px; }
+    .proof-items { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .proof-item { font-size: 13px; font-weight: 600; color: var(--mid); }
+    .proof-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--ink); display: block; }
 
-  /* ── Demo browser: shorter on mobile ─────────────────────────── */
-  [style*="height:520px"], [style*="height: 520px"],
-  [style*="height:500px"], [style*="height: 500px"] {
-    height: 240px !important;
-  }
+    /* ── HOW IT WORKS ── */
+    .section { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--indigo); margin-bottom: 12px;
+    }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .section-sub { font-size: 16px; color: var(--mid); max-width: 520px; line-height: 1.7; margin-bottom: 56px; }
 
-  /* ── Demo thumbnails: 3 col → 2 col on very small ──────────────  */
-  #demo-thumbnails {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-  }
+    .steps {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    @media (max-width: 768px) { .steps { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+    .step {
+      background: var(--pale); border-radius: var(--radius);
+      padding: 28px; position: relative;
+    }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--indigo); color: #fff;
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .step h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: var(--mid); line-height: 1.6; }
 
-  /* ── Section vertical padding ─────────────────────────────────── */
-  .py-32 { padding-top: 48px !important; padding-bottom: 48px !important; }
-  .py-40, .py-24 { padding-top: 40px !important; padding-bottom: 40px !important; }
-  [style*="padding:80px 64px"], [style*="padding: 80px 64px"] { padding: 48px 20px !important; }
-  [style*="padding:120px 64px"] { padding: 56px 20px !important; }
-  [style*="padding:40px 64px"] { padding: 24px 20px !important; }
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 640px) { .features-grid { grid-template-columns: 1fr; } }
+    .feature-card {
+      border: 1.5px solid #ebebf0; border-radius: var(--radius);
+      padding: 28px; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { border-color: var(--indigo); box-shadow: 0 4px 24px rgba(70,72,212,0.08); }
+    .feature-icon { font-size: 28px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--mid); line-height: 1.7; }
+    .feature-badge {
+      display: inline-block; margin-top: 12px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .badge-pro { background: #eef0ff; color: var(--indigo); }
+    .badge-premium { background: #fef3c7; color: #92400e; }
+    .badge-all { background: #d1fae5; color: #065f46; }
 
-  /* ── Horizontal padding ────────────────────────────────────────── */
-  .px-8 { padding-left: 20px !important; padding-right: 20px !important; }
-  .max-w-7xl.mx-auto.px-8 { padding-left: 20px !important; padding-right: 20px !important; }
+    /* ── PRICING ── */
+    .pricing-bg { background: var(--ink); padding: 100px 24px; }
+    .pricing-inner { max-width: 1100px; margin: 0 auto; }
+    .pricing-header { text-align: center; margin-bottom: 56px; }
+    .pricing-header .section-eyebrow { color: rgba(255,255,255,0.4); }
+    .pricing-header .section-title { color: #fff; }
+    .pricing-header .section-sub { color: rgba(255,255,255,0.5); margin: 0 auto; }
 
-  /* ── Hero CTAs: stack ──────────────────────────────────────────── */
-  .flex.flex-col.sm\:flex-row { flex-direction: column !important; }
-  .flex-col.sm\:flex-row > a, .flex-col.sm\:flex-row > button { width: 100% !important; }
+    .pricing-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    @media (max-width: 820px) { .pricing-cards { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
 
-  /* ── How it works grid ─────────────────────────────────────────── */
-  .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 32px 16px !important;
-  }
-  [style*="grid-template-columns:repeat(4"] {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 32px 16px !important;
-  }
+    .pricing-card {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 36px 28px;
+      position: relative;
+    }
+    .pricing-card.popular {
+      background: rgba(70,72,212,0.15);
+      border-color: var(--indigo);
+    }
+    .popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--indigo); color: #fff;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+      padding: 4px 14px; border-radius: 100px; white-space: nowrap;
+    }
+    .card-plan { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+    .card-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+    .card-price-num { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: #fff; }
+    .card-price-mo { font-size: 14px; color: rgba(255,255,255,0.4); }
+    .card-desc { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 28px; line-height: 1.6; }
+    .card-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
+    .card-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.75); }
+    .card-features li::before { content: "✓"; color: var(--green); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+    .card-features li.coming { color: rgba(255,255,255,0.35); }
+    .card-features li.coming::before { content: "◷"; color: rgba(255,255,255,0.25); }
+    .card-cta {
+      display: block; width: 100%; padding: 13px; border-radius: 10px;
+      text-align: center; font-size: 14px; font-weight: 700;
+      transition: all 0.2s;
+    }
+    .card-cta-outline {
+      border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8);
+    }
+    .card-cta-outline:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+    .card-cta-filled { background: var(--indigo); color: #fff; }
+    .card-cta-filled:hover { background: var(--indigo-light); transform: translateY(-1px); }
 
-  /* ── Footer ───────────────────────────────────────────────────── */
-  .grid.grid-cols-1.md\:grid-cols-4 { gap: 20px !important; }
-  [style*="justify-content:space-between"] { flex-direction: column !important; gap: 16px !important; align-items: flex-start !important; }
+    /* ── FINAL CTA ── */
+    .final-cta {
+      padding: 100px 24px; text-align: center;
+      background: linear-gradient(135deg, var(--indigo), #7c3aed);
+    }
+    .final-cta h2 { font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: #fff; margin-bottom: 16px; }
+    .final-cta p { font-size: 17px; color: rgba(255,255,255,0.7); margin-bottom: 36px; }
+    .final-cta .btn-white {
+      background: #fff; color: var(--indigo);
+      padding: 16px 32px; border-radius: 10px;
+      font-size: 16px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .final-cta .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.2); }
 
-  /* ── Editorial hero cards stack ───────────────────────────────── */
-  .lg\:col-span-5 { display: none !important; }
-  .lg\:col-span-7 { grid-column: span 12 !important; }
-
-  /* ── Stats row ─────────────────────────────────────────────────── */
-  .flex.flex-wrap.gap-8, .flex.flex-wrap.gap-12 { gap: 20px !important; }
-
-  /* ── CTA buttons ───────────────────────────────────────────────── */
-  a > button, .btn-primary { min-width: 0 !important; }
-}
-
-@media (max-width: 480px) {
-  #demo-thumbnails { grid-template-columns: repeat(2, 1fr) !important; }
-  [style*="height:240px"], [style*="height: 240px"] { height: 200px !important; }
-}
-</style>
-
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--ink); border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 48px 24px 32px;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+    @media (max-width: 640px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-brand { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .footer-brand span { color: var(--indigo); }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+    .footer-col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.3); margin-bottom: 14px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { max-width: 1100px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.3); flex-wrap: wrap; gap: 8px; }
+  </style>
 </head>
 <body>
-<!-- ══ RESPONSIVE NAV ══════════════════════════════════════════════ -->
-<style>
-#exsisto-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-}
-#exsisto-logo {
-  background: linear-gradient(135deg,#4648d4,#7c3aed);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.5px;
-  text-decoration: none;
-}
-.nav-desktop-links {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-.nav-desktop-links a {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #464554;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.nav-desktop-links a:hover { color: #1b1b25; }
-#nav-cta-desktop {
-  background: linear-gradient(135deg,#4648d4,#6366f1);
-  color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 10px 22px;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: opacity 0.2s, transform 0.15s;
-}
-#nav-cta-desktop:hover { opacity: 0.9; transform: scale(1.02); }
-#hamburger-btn {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  color: #6366f1;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-}
-#hamburger-btn span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 2px;
-  transition: all 0.3s;
-}
-#hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-#hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-#hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* Mobile drawer */
-#mobile-drawer {
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  background: rgba(255,255,255,0.98);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 4px 24px rgba(99,102,241,0.1), inset 0 1px 0 rgba(99,102,241,0.1);
-  padding: 16px 16px 24px;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  border-radius: 0 0 20px 20px;
-  transform: translateY(-10px);
-  opacity: 0;
-  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
-}
-#mobile-drawer.open {
-  display: flex;
-  transform: translateY(0);
-  opacity: 1;
-}
-.drawer-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  text-decoration: none;
-  color: #464554;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  transition: background 0.15s, color 0.15s;
-}
-.drawer-item:hover {
-  background: #eef2ff;
-  color: #1b1b25;
-}
-.drawer-item.active {
-  background: #eef2ff;
-  color: #4648d4;
-}
-.drawer-divider {
-  height: 1px;
-  background: rgba(0,0,0,0.08);
-  margin: 8px 16px;
-}
-#drawer-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 8px;
-  padding: 16px;
-  background: linear-gradient(135deg,#4648d4,#6366f1);
-  color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 0.2s, transform 0.15s;
-}
-#drawer-cta:hover { opacity: 0.92; transform: scale(0.99); }
-#nav-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 998;
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(2px);
-}
-#nav-overlay.open { display: block; }
-
-@media (max-width: 767px) {
-  .nav-desktop-links { display: none; }
-  #nav-cta-desktop { display: none; }
-  #hamburger-btn { display: flex; }
-}
-@media (min-width: 768px) {
-  #mobile-drawer { display: none !important; }
-  #nav-overlay { display: none !important; }
-}
-</style>
-
-<header id="exsisto-nav">
-  <a href="/" id="exsisto-logo">Exsisto</a>
-
-  <!-- Desktop links -->
-  <nav class="nav-desktop-links">
+<!-- NAV -->
+<header class="nav">
+  <a href="/" class="nav-logo">Ex<span>sisto</span></a>
+  <nav class="nav-links">
     <a href="#how-it-works">How It Works</a>
+    <a href="#features">What You Get</a>
     <a href="#pricing">Pricing</a>
-    <a href="#demo">Examples</a>
-    <a href="/login" style="color:#4648d4;font-weight:600;">Log in</a>
+    <a href="/login" style="color:var(--indigo);font-weight:600;">Log in</a>
+    <a href="/preview" class="nav-cta">Get Started →</a>
   </nav>
-
-  <!-- Desktop CTA -->
-  <a href="/preview" id="nav-cta-desktop">See Your Site →</a>
-
-  <!-- Hamburger -->
-  <button id="hamburger-btn" onclick="toggleNav()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
 </header>
 
-<!-- Mobile overlay -->
-<div id="nav-overlay" onclick="closeNav()"></div>
-
-<!-- Mobile drawer -->
-<div id="mobile-drawer">
-  <a class="drawer-item" href="#how-it-works">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    How It Works
-  </a>
-  <a class="drawer-item active" href="#pricing">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-    Pricing
-  </a>
-  <a class="drawer-item" href="#demo">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-    Examples
-  </a>
-  <a class="drawer-item" href="/login" style="color:#4648d4;font-weight:600;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-    Log in
-  </a>
-  <div class="drawer-divider"></div>
-  <a id="drawer-cta" href="/preview">
-    See Your Site →
-  </a>
-</div>
-
-<script>
-function toggleNav() {
-  var btn = document.getElementById('hamburger-btn');
-  var drawer = document.getElementById('mobile-drawer');
-  var overlay = document.getElementById('nav-overlay');
-  var isOpen = btn.classList.contains('open');
-  if (isOpen) { closeNav(); } else {
-    btn.classList.add('open');
-    drawer.classList.add('open');
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-}
-function closeNav() {
-  document.getElementById('hamburger-btn').classList.remove('open');
-  document.getElementById('mobile-drawer').classList.remove('open');
-  document.getElementById('nav-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-// Close on escape
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeNav(); });
-</script>
-<!-- ════════════════════════════════════════════════════════════════ -->
-
-<!-- NAVBAR -->
-
-
 <!-- HERO -->
-<section class="bg-white pt-24 pb-20 px-8 text-center">
-  <div class="max-w-5xl mx-auto">
-    <div class="flex flex-wrap justify-center gap-2 mb-8">
-      <span class="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider">⚡ 48H Site Live</span>
-      <span class="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider">📈 4× More Traffic</span>
-      <span class="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider">0 Tech Skills Needed</span>
+<section style="padding-top:64px;">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-tag">Done For You</div>
+      <h1>Your entire digital presence — <em>handled</em></h1>
+      <p class="hero-sub">Exsisto builds and manages your website, blog, local SEO, and Google Business Profile. You run your business. We handle the rest.</p>
+      <div class="hero-actions">
+        <a href="/preview" class="btn-primary">See Your Site in 60 Seconds →</a>
+        <a href="#pricing" class="btn-outline">View Pricing</a>
+      </div>
     </div>
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:72px;font-weight:900;letter-spacing:-2.5px;line-height:1.0;color:#1b1b25;margin-bottom:20px;">
-      Your entire digital presence.<br/><span style="color:#6366f1;">Done for you.</span>
-    </h1>
-    <p style="font-size:20px;color:#464554;max-width:540px;margin:0 auto 32px;line-height:1.7;">We build your website, write your blogs, and run your social media. You do nothing.</p>
-    <div class="flex flex-wrap justify-center gap-3 mb-10">
-      <span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600">Law Firms</span>
-      <span class="px-5 py-2 rounded-full bg-indigo-50 border border-indigo-200 text-sm font-medium text-indigo-700">Restaurants</span>
-      <span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600">Dentists</span>
-      <span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600">Contractors</span>
-      <span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600">Gyms</span>
-      <span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600">Real Estate</span>
-    </div>
-    <div class="flex justify-center gap-4">
-      <a href="/preview"><button class="primary-gradient text-white px-8 py-4 rounded-full text-lg font-bold indigo-glow hover:opacity-90 transition-all" style="font-family:'Space Grotesk',sans-serif;">See Your Site →</button></a>
-      <button class="bg-slate-50 text-slate-700 px-8 py-4 rounded-full text-lg font-bold border border-slate-200 hover:bg-slate-100 transition-all" style="font-family:'Space Grotesk',sans-serif;">Watch How It Works</button>
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#ff5f57;"></div>
+          <div class="mockup-dot" style="background:#febc2e;"></div>
+          <div class="mockup-dot" style="background:#28c840;"></div>
+          <div class="mockup-url">mattysmechanical.exsisto.ai</div>
+        </div>
+        <div class="mockup-content">
+          <div class="mockup-hero-text">Matty's Mechanical</div>
+          <div class="mockup-sub">Trusted Auto Repair · Clark, NJ</div>
+          <div class="mockup-btn">Book Appointment →</div>
+          <div class="mockup-badges">
+            <div class="mockup-badge">★ 4.9 Google Rating</div>
+            <div class="mockup-badge">500+ Happy Customers</div>
+            <div class="mockup-badge">ASE Certified</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-float">
+        <div class="hero-float-label">New blog post published</div>
+        <div class="hero-float-val">✓ Auto-posted to GBP</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- SOCIAL PROOF -->
-<section class="py-6 bg-slate-50 border-y border-slate-100">
-  <div class="max-w-7xl mx-auto px-8 text-center">
-    <p class="text-slate-500 text-sm font-medium">Trusted by <strong class="text-slate-800">500+ small businesses</strong> across 40+ industries &nbsp;★★★★★</p>
+<div class="proof">
+  <div class="proof-label">Trusted by small businesses across New Jersey</div>
+  <div class="proof-items">
+    <div class="proof-item"><span class="proof-num">$99</span>Starting per month</div>
+    <div class="proof-item"><span class="proof-num">48hr</span>Site goes live</div>
+    <div class="proof-item"><span class="proof-num">0</span>Hours of your time</div>
+    <div class="proof-item"><span class="proof-num">12</span>Industries served</div>
   </div>
-</section>
-
-<!-- DEMO SHOWCASE -->
-<section id="demo" class="py-24 px-8 bg-white">
-  <div class="max-w-7xl mx-auto">
-    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:#6366f1;margin-bottom:12px;">✦ The Work</p>
-    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:900;letter-spacing:-1.5px;color:#1b1b25;margin-bottom:12px;">Real sites. Real businesses.</h2>
-    <p style="font-size:16px;color:#464554;max-width:480px;margin-bottom:40px;line-height:1.7;">Every site is built by AI and tailored to your specific business type.</p>
-
-    <!-- Browser Chrome - Light Mode -->
-    <div style="border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;box-shadow:0 20px 60px rgba(99,102,241,0.08);margin-bottom:16px;">
-      <div style="background:#f3f4f6;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #e5e7eb;">
-        <div style="display:flex;gap:6px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:#ef4444;opacity:0.6;"></div>
-          <div style="width:12px;height:12px;border-radius:50%;background:#f59e0b;opacity:0.6;"></div>
-          <div style="width:12px;height:12px;border-radius:50%;background:#22c55e;opacity:0.6;"></div>
-        </div>
-        <div style="flex:1;background:#fff;border-radius:6px;padding:5px 14px;font-size:11px;color:#6b7280;max-width:320px;margin:0 auto;text-align:center;border:1px solid #e5e7eb;" id="v4-url">coastaldental.exsisto.ai</div>
-      </div>
-      <div style="height:500px;overflow:hidden;background:#fff;">
-        <iframe id="v4-iframe" src="/stitch-templates/dental.html" style="width:200%;height:200%;border:none;transform:scale(0.5);transform-origin:top left;pointer-events:none;" title="demo"></iframe>
-      </div>
-    </div>
-
-    <!-- Thumbnails - Light -->
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:32px;">
-      <button onclick="v4Switch('dental','coastaldental.exsisto.ai',0)" id="v4t0" style="background:#fff;border:2px solid #6366f1;border-radius:12px;padding:12px;text-align:left;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.1);">
-        <div style="font-size:20px;margin-bottom:6px;">🦷</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1b1b25;">Coastal Dental</div>
-        <div style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Santa Monica</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#eff6ff;"><div style="height:3px;background:#3b82f6;"></div></div>
-      </button>
-      <button onclick="v4Switch('gym','ironoakgym.exsisto.ai',1)" id="v4t1" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:left;cursor:pointer;">
-        <div style="font-size:20px;margin-bottom:6px;">💪</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#6b7280;">Iron & Oak Gym</div>
-        <div style="font-size:9px;color:#d1d5db;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Austin, TX</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#f0fdf4;"><div style="height:3px;background:#22c55e;"></div></div>
-      </button>
-      <button onclick="v4Switch('restaurant','villarosso.exsisto.ai',2)" id="v4t2" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:left;cursor:pointer;">
-        <div style="font-size:20px;margin-bottom:6px;">🍝</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#6b7280;">Villa Rosso</div>
-        <div style="font-size:9px;color:#d1d5db;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Brooklyn, NY</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#fff7ed;"><div style="height:3px;background:#f59e0b;"></div></div>
-      </button>
-      <button onclick="v4Switch('law','summitlaw.exsisto.ai',3)" id="v4t3" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:left;cursor:pointer;">
-        <div style="font-size:20px;margin-bottom:6px;">⚖️</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#6b7280;">Summit Law</div>
-        <div style="font-size:9px;color:#d1d5db;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Chicago, IL</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#eef2ff;"><div style="height:3px;background:#6366f1;"></div></div>
-      </button>
-      <button onclick="v4Switch('salon','bloomhair.exsisto.ai',4)" id="v4t4" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:left;cursor:pointer;">
-        <div style="font-size:20px;margin-bottom:6px;">✂️</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#6b7280;">Bloom Hair</div>
-        <div style="font-size:9px;color:#d1d5db;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Portland, OR</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#fdf2f8;"><div style="height:3px;background:#ec4899;"></div></div>
-      </button>
-      <button onclick="v4Switch('hvac','apexhvac.exsisto.ai',5)" id="v4t5" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:left;cursor:pointer;">
-        <div style="font-size:20px;margin-bottom:6px;">❄️</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#6b7280;">Apex HVAC</div>
-        <div style="font-size:9px;color:#d1d5db;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Phoenix, AZ</div>
-        <div style="height:16px;border-radius:4px;overflow:hidden;background:#eff6ff;"><div style="height:3px;background:#3b82f6;"></div></div>
-      </button>
-    </div>
-    <div style="text-align:center;">
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;">
-        <div style="position:relative;width:8px;height:8px;"><div style="position:absolute;inset:0;border-radius:50%;background:#6366f1;opacity:0.5;animation:ping 1.5s infinite;"></div><div style="position:relative;width:8px;height:8px;border-radius:50%;background:#6366f1;"></div></div>
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#9ca3af;">All built by Exsisto AI in under 48 hours</span>
-      </div>
-      <a href="/preview"><button class="primary-gradient text-white px-10 py-4 rounded-full font-bold text-lg indigo-glow hover:opacity-90 transition-all" style="font-family:'Space Grotesk',sans-serif;">Build Mine →</button></a>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- HOW IT WORKS -->
-<section id="how-it-works" class="py-24 px-8 bg-slate-50">
-  <div class="max-w-7xl mx-auto">
-    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;">See it happen in 60 seconds</h2>
-    <p style="color:#464554;font-size:16px;margin-bottom:48px;">Four simple steps. You only do step one.</p>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
-      <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:12px;right:16px;font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:900;color:#6366f1;opacity:0.05;line-height:1;">01</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;">Tell us your business</h3>
-        <p style="font-size:13px;color:#464554;line-height:1.7;">Takes 3 minutes. Industry, city, what you do.</p>
+<div id="how-it-works">
+  <div class="section">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="section-title">Up and running in 48 hours</h2>
+    <p class="section-sub">Tell us about your business. We do everything else — AI website, content, SEO, and ongoing management.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Tell Us About Your Business</h3>
+        <p>Fill out a quick form with your business name, location, and services. Takes 3 minutes.</p>
       </div>
-      <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:12px;right:16px;font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:900;color:#6366f1;opacity:0.05;line-height:1;">02</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;">AI builds everything</h3>
-        <p style="font-size:13px;color:#464554;line-height:1.7;">Site, blog content, social posts — all handled.</p>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>We Build Your Website</h3>
+        <p>Our AI generates a professional website with your branding, services, and photos — no templates.</p>
       </div>
-      <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:12px;right:16px;font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:900;color:#6366f1;opacity:0.05;line-height:1;">03</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;">You approve & go live</h3>
-        <p style="font-size:13px;color:#464554;line-height:1.7;">Review your site and launch with one click.</p>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Pick Your Domain</h3>
+        <p>Connect your existing domain or use a free subdomain. Goes live in minutes.</p>
       </div>
-      <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:12px;right:16px;font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:900;color:#6366f1;opacity:0.05;line-height:1;">04</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;">Autopilot forever</h3>
-        <p style="font-size:13px;color:#464554;line-height:1.7;">New blogs and social posts every week, automatically.</p>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>We Manage Everything</h3>
+        <p>Weekly blog posts, local SEO, Google Business Profile updates — all done for you, automatically.</p>
       </div>
     </div>
   </div>
-</section>
+</div>
+
+<!-- FEATURES -->
+<div id="features" style="background:var(--pale); padding: 100px 0;">
+  <div class="section" style="padding-top:0;padding-bottom:0;">
+    <div class="section-eyebrow">What You Get</div>
+    <h2 class="section-title">Everything a small business needs online</h2>
+    <p class="section-sub">No agencies. No monthly retainers. No technical knowledge required.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>AI-Generated Website</h3>
+        <p>A real, professional website built specifically for your business — not a generic template. Fully mobile-responsive with your services, photos, and content.</p>
+        <span class="feature-badge badge-all">All Plans</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✍️</div>
+        <h3>Weekly Blog Posts</h3>
+        <p>Fresh, SEO-optimized blog content published automatically. Each post is written by AI trained on your industry, complete with relevant images.</p>
+        <span class="feature-badge badge-all">All Plans</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>On-Site SEO & Schema</h3>
+        <p>Full schema markup (LocalBusiness, Service, BreadcrumbList) on every page. Google knows exactly what you do and where you are.</p>
+        <span class="feature-badge badge-pro">Pro + Premium</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>Local Google SEO</h3>
+        <p>Location landing pages, enhanced local schema, automatic sitemap generation, and Google Search Console submission to dominate local search results.</p>
+        <span class="feature-badge badge-premium">Premium Only</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h3>Google Reviews on Your Site</h3>
+        <p>We automatically find and display your real Google reviews on your website. No setup needed — just a better-looking site that builds instant trust.</p>
+        <span class="feature-badge badge-premium">Premium Only</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📢</div>
+        <h3>Google Business Profile Posting</h3>
+        <p>Every blog post automatically gets shared to your Google Business Profile — boosting your local visibility without you lifting a finger.</p>
+        <span class="feature-badge badge-premium">Premium Only</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- PRICING -->
-<section id="pricing" class="py-24 px-8 bg-white">
-  <div class="max-w-7xl mx-auto">
-    <div style="text-align:center;margin-bottom:48px;">
-      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;">Simple pricing. No surprises.</h2>
-      <p style="color:#464554;font-size:16px;">Choose the plan that matches your growth.</p>
+<div id="pricing" class="pricing-bg">
+  <div class="pricing-inner">
+    <div class="pricing-header">
+      <div class="section-eyebrow">Pricing</div>
+      <h2 class="section-title">Simple pricing. No surprises.</h2>
+      <p class="section-sub">Start with a website. Grow into full digital presence. Cancel anytime.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:32px;">
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;">Starter</h3>
-        <div style="margin-bottom:24px;"><span style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:900;letter-spacing:-1px;">$99</span><span style="color:#9ca3af;font-size:14px;">/mo</span></div>
-        <ul style="margin-bottom:28px;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#464554;">
-          <li>✓ 3-page AI website</li><li>✓ 2 AI images</li><li>✓ 2 blogs/month</li><li>✓ Custom domain</li><li>✓ Basic SEO</li>
-        </ul>
-        <a href="/preview"><button style="width:100%;padding:12px;border:1.5px solid #e5e7eb;border-radius:100px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;background:#fff;cursor:pointer;color:#1b1b25;" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e5e7eb'">Choose Starter</button></a>
-      </div>
-      <div style="background:#fff;border:2px solid #6366f1;border-radius:20px;padding:32px;transform:translateY(-8px);box-shadow:0 20px 60px rgba(99,102,241,0.12);position:relative;">
-        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#6366f1;color:#fff;font-size:10px;font-weight:700;padding:4px 14px;border-radius:100px;white-space:nowrap;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:1px;">Most Popular</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;">Pro</h3>
-        <div style="margin-bottom:24px;"><span style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:900;letter-spacing:-1px;">$299</span><span style="color:#9ca3af;font-size:14px;">/mo</span></div>
-        <ul style="margin-bottom:28px;display:flex;flex-direction:column;gap:10px;font-size:13px;">
-          <li>✓ 8-page AI website</li><li>✓ 8 AI images</li><li>✓ 2 blogs/week</li><li>✓ On-site SEO &amp; Schema</li><li>✓ Custom domain</li>
-        </ul>
-        <a href="/preview"><button style="width:100%;padding:14px;background:linear-gradient(135deg,#4648d4,#6366f1);color:#fff;border:none;border-radius:100px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Get Started with Pro</button></a>
-      </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:32px;">
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;">Premium</h3>
-        <div style="margin-bottom:24px;"><span style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:900;letter-spacing:-1px;">$599</span><span style="color:#9ca3af;font-size:14px;">/mo</span></div>
-        <ul style="margin-bottom:28px;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#464554;">
-          <li>✓ 12-page AI website</li><li>✓ 12 AI images</li><li>✓ 3 blogs/week</li><li>✓ Local Google SEO + GBP</li><li>✓ Google Reviews on site</li><li>✓ Custom domain</li><li>✓ Social (coming soon)</li>
-        </ul>
-        <a href="/preview"><button style="width:100%;padding:12px;border:1.5px solid #e5e7eb;border-radius:100px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;background:#fff;cursor:pointer;color:#1b1b25;" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e5e7eb'">Choose Premium</button></a>
-      </div>
-    </div>
-  </div>
-</section>
+    <div class="pricing-cards">
 
-<!-- FINAL CTA — Indigo gradient, the one bold section -->
-<section style="padding:80px 64px;background:linear-gradient(135deg,#4648d4,#7c3aed);text-align:center;position:relative;overflow:hidden;">
-  <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.05);"></div>
-  <div style="position:relative;z-index:1;">
-    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:56px;font-weight:900;letter-spacing:-2px;color:#fff;margin-bottom:12px;">Ready to see your site?</h2>
-    <p style="font-size:18px;color:rgba(255,255,255,0.75);margin-bottom:32px;">Takes 60 seconds. No credit card required.</p>
-    <a href="/preview"><button style="background:#fff;color:#4648d4;padding:16px 48px;border-radius:100px;font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:18px;border:none;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">Build My Site →</button></a>
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="card-plan">Starter</div>
+        <div class="card-price">
+          <span class="card-price-num">$99</span>
+          <span class="card-price-mo">/mo</span>
+        </div>
+        <div class="card-desc">A professional website with fresh content to get found online.</div>
+        <ul class="card-features">
+          <li>3-page AI website (Home, About, Blog)</li>
+          <li>2 AI-generated images</li>
+          <li>2 blog posts per month</li>
+          <li>Custom domain included</li>
+          <li>Basic SEO</li>
+        </ul>
+        <a href="/preview?plan=starter" class="card-cta card-cta-outline">Get Started →</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="pricing-card popular">
+        <div class="popular-badge">Most Popular</div>
+        <div class="card-plan">Pro</div>
+        <div class="card-price">
+          <span class="card-price-num">$299</span>
+          <span class="card-price-mo">/mo</span>
+        </div>
+        <div class="card-desc">A full website with regular content and advanced SEO to grow your presence.</div>
+        <ul class="card-features">
+          <li>8-page AI website + service pages</li>
+          <li>8 AI-generated images</li>
+          <li>2 blog posts per week</li>
+          <li>On-site SEO &amp; Schema markup</li>
+          <li>Custom domain included</li>
+          <li class="coming">Social media (coming soon)</li>
+        </ul>
+        <a href="/preview?plan=pro" class="card-cta card-cta-filled">Get Started →</a>
+      </div>
+
+      <!-- Premium -->
+      <div class="pricing-card">
+        <div class="card-plan">Premium</div>
+        <div class="card-price">
+          <span class="card-price-num">$599</span>
+          <span class="card-price-mo">/mo</span>
+        </div>
+        <div class="card-desc">Full digital presence — local SEO, Google Reviews, and GBP posting on autopilot.</div>
+        <ul class="card-features">
+          <li>12-page AI website + service pages</li>
+          <li>12 AI-generated images</li>
+          <li>3 blog posts per week</li>
+          <li>Local Google SEO + location pages</li>
+          <li>Google Business Profile posting</li>
+          <li>Google Reviews auto-displayed</li>
+          <li>Custom domain included</li>
+          <li class="coming">Social media (coming soon)</li>
+        </ul>
+        <a href="/preview?plan=premium" class="card-cta card-cta-outline">Get Started →</a>
+      </div>
+
+    </div>
   </div>
-</section>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <h2>Your business deserves a real digital presence</h2>
+  <p>See your AI-generated website in 60 seconds — no credit card required.</p>
+  <a href="/preview" class="btn-white">Build My Site Free →</a>
+</div>
 
 <!-- FOOTER -->
-<footer style="background:#fff;border-top:1px solid #f1f5f9;padding:40px 64px;">
-  <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+<footer class="footer">
+  <div class="footer-inner">
     <div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;background:linear-gradient(135deg,#4648d4,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">Exsisto</div>
-      <p style="font-size:12px;color:#9ca3af;">Your business, brought to life.</p>
+      <div class="footer-brand">Ex<span>sisto</span></div>
+      <div class="footer-tagline">Done-for-you digital presence for small businesses. Website, content, SEO — all managed for you.</div>
     </div>
-    <div style="display:flex;gap:32px;font-size:13px;color:#9ca3af;">
-      <a href="#how-it-works" style="hover:color:#6366f1;text-decoration:none;color:#9ca3af;">How It Works</a>
-      <a href="/preview" style="text-decoration:none;color:#9ca3af;">Pricing</a>
-      <a href="/privacy" style="text-decoration:none;color:#9ca3af;">Privacy</a>
+    <div>
+      <div class="footer-col-title">Product</div>
+      <div class="footer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/preview">Get Started</a>
+      </div>
     </div>
-    <p style="font-size:12px;color:#9ca3af;">© 2026 Exsisto</p>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <div class="footer-links">
+        <a href="/login">Log In</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="mailto:support@exsisto.ai">Contact Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Exsisto · HS Advertising, LLC</span>
+    <span>Built with AI. Managed with care.</span>
   </div>
 </footer>
 
-<style>@keyframes ping{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(2);opacity:0;}}</style>
-<script>
-var demos=['dental','gym','restaurant','law','salon','hvac'];
-var urls=['coastaldental.exsisto.ai','ironoakgym.exsisto.ai','villarosso.exsisto.ai','summitlaw.exsisto.ai','bloomhair.exsisto.ai','apexhvac.exsisto.ai'];
-var cur=0; var timer;
-function v4Switch(ind,url,idx){
-  document.getElementById('v4-iframe').src='/stitch-templates/'+ind+'.html';
-  document.getElementById('v4-url').textContent=url;
-  for(var i=0;i<6;i++){
-    var t=document.getElementById('v4t'+i);
-    t.style.borderWidth=i===idx?'2px':'1px';
-    t.style.borderColor=i===idx?'#6366f1':'#e5e7eb';
-    t.style.boxShadow=i===idx?'0 4px 12px rgba(99,102,241,0.1)':'none';
-  }
-  cur=idx; clearInterval(timer); startAuto();
-}
-function startAuto(){timer=setInterval(function(){cur=(cur+1)%6;v4Switch(demos[cur],urls[cur],cur);},4000);}
-startAuto();
-</script>
-
-
-</body></html>
+</body>
+</html>
