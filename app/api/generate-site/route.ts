@@ -443,6 +443,27 @@ export async function POST(request: Request) {
       generateBlogIndexPage(business, []),
     ]);
 
+    // Generate service detail pages — 3 for Pro, 6 for Premium, 0 for Starter
+    const serviceDetailPages: Record<string, string> = {};
+    const serviceCount = plan === "premium" ? 6 : plan === "pro" ? 3 : 0;
+    if (serviceCount > 0) {
+      const { generateServiceDetailPage } = await import("@/lib/pageGenerator");
+      const allServices = (business.services?.length ? business.services :
+        [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+         tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
+      ).filter(Boolean).slice(0, serviceCount);
+
+      for (let i = 0; i < allServices.length; i++) {
+        const svc = allServices[i];
+        const desc = tokens[`service_${i + 1}_description`] || "";
+        const icon = tokens[`service_${i + 1}_icon`] || "🔧";
+        const related = allServices.filter((s) => s !== svc).slice(0, 4);
+        serviceDetailPages[`service_detail_${i + 1}_html`] = await generateServiceDetailPage(
+          business as any, svc, desc, icon, related, tokens
+        );
+      }
+    }
+
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
@@ -451,6 +472,7 @@ export async function POST(request: Request) {
       about_html: aboutHtml,
       contact_html: contactHtml,
       blog_index_html: blogIndexHtml,
+      ...serviceDetailPages,
       template_name: finalTemplateName,
       generated_tokens: tokens,
       generated_at: new Date().toISOString(),
