@@ -404,6 +404,51 @@ export default function WebsitePage() {
                 </div>
               </div>
 
+              {/* Google Business Profile */}
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.cardTitle}>Google Business Profile</div>
+                  {plan === "premium" && business?.gbp_connected_at ? (
+                    <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: 700 }}>● Connected</span>
+                  ) : plan !== "premium" ? (
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: "#7c3aed", background: "#ede9fe", padding: "2px 8px", borderRadius: "100px" }}>PREMIUM</span>
+                  ) : null}
+                </div>
+                <div style={{ padding: "16px 18px" }}>
+                  {plan !== "premium" ? (
+                    <div>
+                      <p style={{ fontSize: "12px", color: "#9090a8", marginBottom: "12px", lineHeight: 1.6 }}>
+                        Automatically post your blog content to your Google Business Profile to boost local search rankings.
+                      </p>
+                      <a href="/checkout?plan=premium"
+                        style={{ display: "block", textAlign: "center", padding: "10px", borderRadius: "8px", border: "none", background: "#7c3aed", color: "#fff", fontSize: "13px", fontWeight: 700, textDecoration: "none" }}>
+                        Upgrade to Premium →
+                      </a>
+                    </div>
+                  ) : business?.gbp_connected_at ? (
+                    <div>
+                      <div style={{ fontSize: "13px", color: "#1b1b25", marginBottom: "4px", fontWeight: 600 }}>GBP posting active</div>
+                      <div style={{ fontSize: "11px", color: "#9090a8", marginBottom: "12px" }}>
+                        Blog posts automatically publish to your Google Business Profile
+                      </div>
+                      <div style={{ fontSize: "11px", color: "#9090a8" }}>
+                        Connected {business.gbp_connected_at ? new Date(business.gbp_connected_at).toLocaleDateString() : ""}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p style={{ fontSize: "12px", color: "#9090a8", marginBottom: "12px", lineHeight: 1.6 }}>
+                        Connect your Google Business Profile so we can automatically post your blog content there.
+                      </p>
+                      <a href={business ? `/api/gbp/auth?business_id=${business.id}` : "#"}
+                        style={{ display: "block", textAlign: "center", padding: "10px", borderRadius: "8px", border: "none", background: "#4648d4", color: "#fff", fontSize: "13px", fontWeight: 700, textDecoration: "none" }}>
+                        Connect Google Business Profile →
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Custom Domain */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
