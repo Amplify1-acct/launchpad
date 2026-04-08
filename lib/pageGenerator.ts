@@ -5,6 +5,7 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import { localBusinessSchema, serviceSchema, breadcrumbSchema, injectSchema } from "./schemaGenerator";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -147,11 +148,21 @@ export async function generateServicesPage(business: Business, tokens: Record<st
     </div>
   </section>`;
 
-  return baseHTML(
+  const html = baseHTML(
     `Services | ${business.name}`,
     `Professional ${business.industry} services in ${business.city}. ${services.slice(0,3).join(", ")} and more.`,
     nav, content, footer
   );
+
+  // Inject schema for Pro + Premium
+  if (plan === "pro" || plan === "premium") {
+    const schemas = [
+      localBusinessSchema(business as any, plan),
+      breadcrumbSchema(business.name, "", "Services", "/services"),
+    ];
+    return injectSchema(html, schemas);
+  }
+  return html;
 }
 
 // ── About Page ────────────────────────────────────────────────────────────────
@@ -207,11 +218,20 @@ export async function generateAboutPage(business: Business, tokens: Record<strin
     </div>
   </section>`;
 
-  return baseHTML(
+  const aboutHtml = baseHTML(
     `About | ${business.name}`,
     `Learn about ${business.name} — ${business.industry} serving ${business.city}. ${business.description || ""}`.slice(0, 160),
     nav, content, footer
   );
+
+  const aboutPlan = tokens.plan || "starter";
+  if (aboutPlan === "pro" || aboutPlan === "premium") {
+    return injectSchema(aboutHtml, [
+      localBusinessSchema(business as any, aboutPlan),
+      breadcrumbSchema(business.name, "", "About", "/about"),
+    ]);
+  }
+  return aboutHtml;
 }
 
 // ── Contact Page ──────────────────────────────────────────────────────────────
@@ -495,9 +515,20 @@ export async function generateServiceDetailPage(
     </div>
   </section>`;
 
-  return baseHTML(
+  const html = baseHTML(
     `${serviceName} | ${business.name}`,
     `${serviceName} services from ${business.name} in ${business.city}. ${serviceDescription?.slice(0, 100) || "Professional, reliable service."}`,
     nav, content, footer
   );
+
+  // Inject schema for Pro + Premium (passed via tokens.plan)
+  const pagePlan = tokens.plan || "starter";
+  if (pagePlan === "pro" || pagePlan === "premium") {
+    const schemas = [
+      serviceSchema(business as any, serviceName, serviceDescription),
+      breadcrumbSchema(business.name, "", serviceName, `/services/${slug}`),
+    ];
+    return injectSchema(html, schemas);
+  }
+  return html;
 }
