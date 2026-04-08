@@ -159,7 +159,8 @@ export async function POST(request: Request) {
 
       // Auto-post to GBP for Premium customers (non-blocking)
       if (inserted && plan === "premium") {
-        fetch(`${appUrl}/api/gbp/post`, {
+        const gbpAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+        fetch(`${gbpAppUrl}/api/gbp/post`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
