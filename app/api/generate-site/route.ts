@@ -436,6 +436,9 @@ export async function POST(request: Request) {
     }
 
     // ── Generate all pages ────────────────────────────────────────────
+    // Pass plan into tokens so pageGenerator functions can gate schema by plan
+    tokens.plan = plan;
+
     const [servicesHtml, aboutHtml, contactHtml, blogIndexHtml] = await Promise.all([
       generateServicesPage(business, tokens, plan),
       generateAboutPage(business, tokens),
