@@ -227,26 +227,47 @@ function toSlug(s: string): string {
 }
 
 // Inject service page links into blog post body text
+// Build a list of matchable keywords from a service name
+// "Organic Deep Conditioning" -> ["deep conditioning", "conditioning"]
+function getServiceKeywords(name: string): string[] {
+  const stop = new Set(["and","or","the","a","an","for","of","in","with","our","your",
+    "natural","organic","professional","expert","special","events","services","bridal","care"]);
+  const lower = name.toLowerCase();
+  const words = lower.split(/\s+/).filter((w: string) => w.length > 3 && !stop.has(w));
+  const kws: string[] = [];
+  // Cleaned full name (strip leading/trailing stop words)
+  const cleaned = lower.replace(/^(natural|organic|professional|expert)\s+/,"").replace(/\s+(services|solutions|care)$/,"");
+  if (cleaned.length > 4 && cleaned !== lower) kws.push(cleaned);
+  // Full name
+  kws.push(lower);
+  // First two significant words
+  if (words.length >= 2) kws.push(words[0] + " " + words[1]);
+  // Individual significant words
+  words.forEach((w: string) => { if (w.length > 4) kws.push(w); });
+  return [...new Set(kws)].sort((a: string, b: string) => b.length - a.length);
+}
+
 function injectServiceLinks(text: string, services: string[]): string {
   if (!services?.length || !text) return text;
   let result = text;
-  // Sort by length desc so "Dental Implants" is matched before "Dental"
-  const sorted = [...services].sort((a, b) => b.length - a.length);
-  for (const svc of sorted) {
+  const linked = new Set<string>();
+  for (const svc of services) {
     const slug = toSlug(svc);
-    // Match whole word/phrase, case-insensitive, not already inside an <a> tag
-    const escaped = svc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(
-      "(?<!<a[^>]*>)(?<!href="[^"]*)" + escaped + "(?![^<]*<\/a>)",
-      "gi"
-    );
-    let replaced = false;
-    result = result.replace(regex, (match) => {
-      if (replaced) return match; // only link first occurrence
-      replaced = true;
-      return `<a href="/services/${slug}" style="color:#4648d4;text-decoration:underline;font-weight:600;">${match}</a>`;
-    });
+    if (linked.has(slug)) continue;
+    for (const kw of getServiceKeywords(svc)) {
+      const esc = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const rx = new RegExp("\\b(" + esc + ")\\b", "gi");
+      let hit = false;
+      const attempt = result.replace(rx, (m: string) => {
+        if (hit) return m;
+        hit = true;
+        return `<a href="/services/${slug}" style="color:#4648d4;text-decoration:underline;font-weight:600;">${m}</a>`;
+      });
+      if (hit) { result = attempt; linked.add(slug); break; }
+    }
   }
+  return result;
+}
   return result;
 }
 
