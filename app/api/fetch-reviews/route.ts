@@ -57,7 +57,7 @@ async function findBusinessReviews(name: string, city: string, state: string): P
   // If less than 40% character match and names share no significant words, skip
   const nameWords = name.toLowerCase().split(/\s+/).filter(w => w.length > 3);
   const resultNameWords = placeName.toLowerCase().split(/\s+/);
-  const wordMatch = nameWords.some(w => resultNameWords.some(rw => rw.includes(w) || w.includes(rw)));
+  const wordMatch = nameWords.some((w: string) => resultNameWords.some((rw: string) => rw.includes(w) || w.includes(rw)));
 
   if (similarity < 0.4 && !wordMatch) {
     console.log(`Low confidence match: "${name}" vs "${placeName}" — skipping`);
