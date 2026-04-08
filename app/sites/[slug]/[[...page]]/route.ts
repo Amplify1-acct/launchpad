@@ -55,7 +55,27 @@ export async function GET(
       return new NextResponse(notFoundHTML(slug), { status: 404, headers: { "Content-Type": "text/html" } });
     }
 
-    return new NextResponse(renderBlogPost(business.name, post), {
+    // Fetch services for internal linking
+    const tokensRes = await fetch(
+      `${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=generated_tokens&limit=1`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }
+    );
+    const tokensData = await tokensRes.json();
+    const tokens = tokensData?.[0]?.generated_tokens || {};
+    const services: string[] = [];
+    for (let i = 1; i <= 6; i++) {
+      const s = tokens[`service_${i}_name`];
+      if (s) services.push(s);
+    }
+
+    // Fetch related posts (exclude current)
+    const relatedRes = await fetch(
+      `${supabaseUrl}/rest/v1/blog_posts?business_id=eq.${business.id}&status=eq.published&slug=neq.${encodeURIComponent(postSlug)}&select=title,slug,featured_image_url&order=approved_at.desc&limit=3`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }
+    );
+    const relatedPosts = await relatedRes.json() || [];
+
+    return new NextResponse(renderBlogPost(business.name, post, services, relatedPosts), {
       headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" },
     });
   }
@@ -201,7 +221,36 @@ function renderBlogIndex(bizName: string, posts: any[]): string {
 </html>`;
 }
 
-function renderBlogPost(bizName: string, post: any): string {
+// Convert service name to URL slug
+function toSlug(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+// Inject service page links into blog post body text
+function injectServiceLinks(text: string, services: string[]): string {
+  if (!services?.length || !text) return text;
+  let result = text;
+  // Sort by length desc so "Dental Implants" is matched before "Dental"
+  const sorted = [...services].sort((a, b) => b.length - a.length);
+  for (const svc of sorted) {
+    const slug = toSlug(svc);
+    // Match whole word/phrase, case-insensitive, not already inside an <a> tag
+    const escaped = svc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(
+      "(?<!<a[^>]*>)(?<!href="[^"]*)" + escaped + "(?![^<]*<\/a>)",
+      "gi"
+    );
+    let replaced = false;
+    result = result.replace(regex, (match) => {
+      if (replaced) return match; // only link first occurrence
+      replaced = true;
+      return `<a href="/services/${slug}" style="color:#4648d4;text-decoration:underline;font-weight:600;">${match}</a>`;
+    });
+  }
+  return result;
+}
+
+function renderBlogPost(bizName: string, post: any, services: string[] = [], relatedPosts: any[] = []): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -239,7 +288,18 @@ function renderBlogPost(bizName: string, post: any): string {
   <article>
     <div class="date">${post.approved_at ? new Date(post.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
     <h1>${post.title}</h1>
-    <div class="body">${(post.content || "").split("\n\n").map((p: string) => `<p>${p}</p>`).join("")}</div>
+    <div class="body">${injectServiceLinks((post.content || ""), services).split("\n\n").map((p: string) => `<p>${p}</p>`).join("")}</div>
+    ${relatedPosts.length > 0 ? `
+    <div style="margin-top:48px;padding-top:32px;border-top:1.5px solid #f0f0f0;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;margin-bottom:20px;">Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        ${relatedPosts.map((p: any) => `
+          <a href="/blog/${p.slug}" style="display:flex;gap:16px;text-decoration:none;color:inherit;align-items:center;">
+            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title}"/>` : `<div style="width:80px;height:60px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
+            <div style="font-size:15px;font-weight:700;color:#111;line-height:1.4;">${p.title}</div>
+          </a>`).join("")}
+      </div>
+    </div>` : ""}
   </article>
   <footer>${bizName} · Powered by Exsisto</footer>
 </body>
