@@ -55,21 +55,39 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // Upsert subscription with real Stripe IDs
-      const { error: subErr } = await supabase
+      // Check if subscription already exists for this customer
+      const { data: existingSub } = await supabase
         .from("subscriptions")
-        .upsert({
-          customer_id: customer.id,
-          stripe_customer_id: stripeCustomerId,
-          stripe_subscription_id: stripeSubscriptionId,
-          plan,
-          status: "trialing",
-          trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "customer_id" });
+        .select("id")
+        .eq("customer_id", customer.id)
+        .single();
 
-      if (subErr) {
-        console.error("Subscription upsert failed:", subErr);
-        throw subErr;
+      const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      if (existingSub) {
+        // Update existing subscription with real Stripe IDs + correct plan
+        await supabase
+          .from("subscriptions")
+          .update({
+            stripe_customer_id: stripeCustomerId,
+            stripe_subscription_id: stripeSubscriptionId,
+            plan,
+            status: "trialing",
+            trial_end: trialEnd,
+          })
+          .eq("id", existingSub.id);
+      } else {
+        // Create new subscription
+        await supabase
+          .from("subscriptions")
+          .insert({
+            customer_id: customer.id,
+            stripe_customer_id: stripeCustomerId,
+            stripe_subscription_id: stripeSubscriptionId,
+            plan,
+            status: "trialing",
+            trial_end: trialEnd,
+          });
       }
 
       // Update customer record with plan + stripe customer ID
@@ -83,15 +101,15 @@ export async function POST(request: Request) {
 
       console.log(`✅ Subscription saved: customer=${customer.id} plan=${plan}`);
 
-      // Kick off site generation if we have a business ID
-      const targetBizId = businessId || (await (async () => {
+      // Kick off site generation
+      const targetBizId = businessId || await (async () => {
         const { data: biz } = await supabase
           .from("businesses")
           .select("id")
           .eq("customer_id", customer.id)
           .single();
         return biz?.id;
-      })());
+      })();
 
       if (targetBizId) {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
@@ -118,7 +136,6 @@ export async function POST(request: Request) {
 
     } catch (err: any) {
       console.error("Post-payment setup failed:", err);
-      // Don't return error — Stripe will retry, we don't want duplicate processing
     }
   }
 
