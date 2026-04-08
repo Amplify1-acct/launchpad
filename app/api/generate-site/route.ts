@@ -22,7 +22,7 @@ function injectTokens(html: string, tokens: Record<string, string>): string {
   for (const [key, value] of Object.entries(tokens)) {
     result = result.replace(new RegExp(`{{${key}}}`, "g"), value || "");
   }
-  result = result.replace(/{{[a-z_]+}}/g, "");
+  result = result.replace(/{{[a-z_0-9]+}}/g, "");
   return result;
 }
 
@@ -237,7 +237,7 @@ export async function POST(request: Request) {
     let templateName = "stitch";
 
     try {
-      finalHtml = await generateStitchSite({
+      const rawStitchHtml = await generateStitchSite({
         businessName: business.name,
         industry: business.industry || business.description || "",
         city: business.city || "",
@@ -249,6 +249,8 @@ export async function POST(request: Request) {
         differentiator: (business as any).differentiator || "",
         revisionNotes: revision_notes || "",
       });
+      // Strip any unfilled {{token}} placeholders Stitch may leave behind
+      finalHtml = injectTokens(rawStitchHtml, tokens);
       console.log("✓ Stitch site generated");
     } catch (stitchErr: any) {
       // Stitch quota or error — fall back to skeleton templates
