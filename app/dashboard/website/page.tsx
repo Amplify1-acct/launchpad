@@ -19,6 +19,8 @@ export default function WebsitePage() {
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsData, setReviewsData] = useState<{ count: number; rating: number | null; mapsUrl: string | null } | null>(null);
 
   useEffect(() => { load(); }, []);
 
@@ -44,6 +46,29 @@ export default function WebsitePage() {
 
 
 
+
+  async function handleFetchReviews(force = false) {
+    if (!business) return;
+    setReviewsLoading(true);
+    try {
+      const res = await fetch("/api/fetch-reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: business.id, force }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast(data.error || "Failed to fetch reviews", false); return; }
+      if (data.found) {
+        setReviewsData({ count: data.reviewCount, rating: data.rating, mapsUrl: data.mapsUrl });
+        showToast(data.reviewCount > 0 ? `Found ${data.reviewCount} Google reviews ✓` : "Business found but no reviews yet");
+        if (data.reviewCount > 0) setTimeout(() => load(), 2000);
+      } else {
+        showToast("Business not found on Google Maps — try adding your Google Maps URL in settings", false);
+      }
+    } finally {
+      setReviewsLoading(false);
+    }
+  }
 
   async function handleRequestChanges() {
     if (!feedback.trim() || !business) return;
@@ -318,6 +343,52 @@ export default function WebsitePage() {
                       <span style={{ fontSize: "12px", color: "#1b1b25", fontWeight: 500, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Google Reviews */}
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.cardTitle}>Google Reviews</div>
+                  {business?.google_rating && (
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#f59e0b" }}>
+                      ★ {business.google_rating.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                <div style={{ padding: "16px 18px" }}>
+                  {business?.google_place_id ? (
+                    <div>
+                      <div style={{ fontSize: "13px", color: "#1b1b25", marginBottom: "4px", fontWeight: 600 }}>
+                        {business.google_rating_count ? `${business.google_rating_count.toLocaleString()} reviews on Google` : "Connected to Google"}
+                      </div>
+                      <div style={{ fontSize: "11px", color: "#9090a8", marginBottom: "12px" }}>
+                        Real reviews are showing on your site
+                      </div>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        {business.google_maps_url && (
+                          <a href={business.google_maps_url} target="_blank" rel="noreferrer"
+                            style={{ flex: 1, padding: "8px", borderRadius: "8px", border: "1px solid #ede9f8", background: "#fff", color: "#4648d4", fontSize: "12px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}>
+                            View on Google ↗
+                          </a>
+                        )}
+                        <button onClick={() => handleFetchReviews(true)} disabled={reviewsLoading}
+                          style={{ flex: 1, padding: "8px", borderRadius: "8px", border: "none", background: "#f5f2ff", color: "#4648d4", fontSize: "12px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                          {reviewsLoading ? "Refreshing…" : "Refresh"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p style={{ fontSize: "12px", color: "#9090a8", marginBottom: "12px", lineHeight: 1.6 }}>
+                        We&apos;ll automatically find your Google reviews using your business name and location.
+                      </p>
+                      <button onClick={() => handleFetchReviews(false)} disabled={reviewsLoading}
+                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "none", background: reviewsLoading ? "#ede9f8" : "#4648d4", color: reviewsLoading ? "#9090a8" : "#fff", fontSize: "13px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                        {reviewsLoading ? "Searching Google…" : "Find My Google Reviews →"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
