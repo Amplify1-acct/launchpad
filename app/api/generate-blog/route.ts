@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase-server";
+import { generateBusinessPhoto } from "@/lib/nano-banana";
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -109,6 +110,37 @@ export async function POST(request: Request) {
       const scheduledDate = new Date();
       scheduledDate.setDate(scheduledDate.getDate() + results.length * 7); // one per week
 
+      // Generate a Nano Banana image for this post
+      let featuredImageUrl: string | null = null;
+      try {
+        const imagePrompt = `photorealistic photograph only, no text, no UI, no illustration. ${business.industry} business photo related to: ${post.title}. Professional, high quality, well lit.`;
+        const photoUrl = await generateBusinessPhoto(imagePrompt, business.name, "blog");
+        if (photoUrl) {
+          // Upload to Supabase Storage to make it permanent and add to shared library
+          const imageRes = await fetch(photoUrl);
+          const imageBuffer = await imageRes.arrayBuffer();
+          const ext = "jpg";
+          const fileName = `${business.industry}/blog/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+          const uploadRes = await fetch(
+            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/industry-images/${fileName}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+                "Content-Type": "image/jpeg",
+                "x-upsert": "true",
+              },
+              body: imageBuffer,
+            }
+          );
+          if (uploadRes.ok) {
+            featuredImageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/industry-images/${fileName}`;
+          }
+        }
+      } catch (imgErr: any) {
+        console.error("Blog image generation failed (non-fatal):", imgErr.message);
+      }
+
       const { data: inserted } = await supabase
         .from("blog_posts")
         .insert({
@@ -118,6 +150,7 @@ export async function POST(request: Request) {
           word_count: post.word_count,
           status: "pending",
           scheduled_for: scheduledDate.toISOString(),
+          featured_image_url: featuredImageUrl,
         })
         .select()
         .single();
