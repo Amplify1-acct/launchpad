@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
-import { createClient } from "@/lib/supabase";
 
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
 const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID;
@@ -121,7 +120,6 @@ export async function GET(request: Request) {
     const data = await res.json();
 
     const verified = data.verified === true;
-    const status = verified ? "active" : "pending";
 
     // Update status in Supabase if verified
     if (verified) {
@@ -134,7 +132,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       verified,
-      status,
+      status: verified ? "active" : "pending",
       domain,
       verification: data.verification || [],
     });
