@@ -50,7 +50,8 @@ export async function GET(
     ]);
     const [siteArr, posts] = await Promise.all([siteRes.json(), postsRes.json()]);
     const site = siteArr?.[0];
-    const tokens = site?.generated_tokens || {};
+    const rawSitemapTokens = site?.generated_tokens;
+    const tokens = rawSitemapTokens ? (typeof rawSitemapTokens === 'string' ? JSON.parse(rawSitemapTokens) : rawSitemapTokens) : {};
     const plan = site?.plan || "starter";
     const toSlug2 = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     const domain = slug + ".exsisto.ai";
@@ -164,7 +165,8 @@ export async function GET(
   if (pagePath.startsWith("services/")) {
     const serviceSlug = pagePath.replace("services/", "");
     const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const tokens = website.generated_tokens ? JSON.parse(website.generated_tokens) : {};
+    const rawTokens = website.generated_tokens;
+    const tokens = rawTokens ? (typeof rawTokens === 'string' ? JSON.parse(rawTokens) : rawTokens) : {};
     for (let i = 1; i <= 6; i++) {
       const svcName = tokens[`service_${i}_name`];
       if (svcName && toSlug(svcName) === serviceSlug) {
