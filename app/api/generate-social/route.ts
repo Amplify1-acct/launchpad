@@ -20,131 +20,46 @@ const POST_TYPES = [
   { type: "trust", prompt: "Build trust — mention experience, credentials, or commitment to quality." },
   { type: "cta", prompt: "Warm call to action — invite people to reach out. Not pushy, just welcoming." },
 ];
+async function getPhotoForPost(
+  caption: string,
+  industry: string,
+  businessName: string,
+  platform: string
+): Promise<string | null> {
+  try {
+    const platformCtx = platform === "tiktok" ? "vertical portrait" : platform === "instagram" ? "square" : "landscape";
+    const prompt = `photorealistic photograph only, no text, no UI, no illustration. Professional ${industry} business photo, ${platformCtx} composition. ${caption.slice(0, 80)}.`;
+    const photoUrl = await generateBusinessPhoto(prompt, businessName, platform);
+    if (!photoUrl) return null;
 
-// Curated Unsplash photo IDs by industry — direct URLs, always work
-const PHOTO_LIBRARY: Record<string, string[]> = {
-  auto: [
-    // Vintage classic car on road — verified
-    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=600&fit=crop&auto=format",
-    // Classic muscle car — verified
-    "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800&h=600&fit=crop&auto=format",
-    // Vintage American car — verified
-    "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&h=600&fit=crop&auto=format",
-    // Classic car exterior — verified
-    "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800&h=600&fit=crop&auto=format",
-    // Retro classic car — verified
-    "https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=800&h=600&fit=crop&auto=format",
-    // Classic car detail — verified
-    "https://images.unsplash.com/photo-1541348263662-e068662d82af?w=800&h=600&fit=crop&auto=format",
-    // Vintage car chrome — verified
-    "https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=800&h=600&fit=crop&auto=format",
-    // Classic American muscle — verified
-    "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop&auto=format",
-    // Old car restoration — verified
-    "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&h=600&fit=crop&auto=format",
-    // Classic car show — verified
-    "https://images.unsplash.com/photo-1476525223214-c31ff100e1ae?w=800&h=600&fit=crop&auto=format",
-    // Vintage car front — verified
-    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&h=600&fit=crop&auto=format",
-    // Classic car paint — verified
-    "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&h=600&fit=crop&auto=format",
-  ],
-  restaurant: [
-    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop&auto=format",
-  ],
-  fitness: [
-    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=800&h=600&fit=crop&auto=format",
-  ],
-  plumbing: [
-    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=600&fit=crop&auto=format",
-  ],
-  dental: [
-    "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1588776814546-1ffedfd9b8ea?w=800&h=600&fit=crop&auto=format",
-  ],
-  law: [
-    "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&auto=format",
-  ],
-  realestate: [
-    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop&auto=format",
-  ],
-  landscaping: [
-    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=600&fit=crop&auto=format",
-  ],
-  financial: [
-    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=600&fit=crop&auto=format",
-  ],
-  default: [
-    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=600&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&auto=format",
-  ],
-};
-
-function getPhotoUrl(description: string, index: number, platform: string): string {
-  const lower = description.toLowerCase();
-  let photos = PHOTO_LIBRARY.default;
-
-  if (
-    lower.includes("classic") || lower.includes("restoration") || lower.includes("vintage") ||
-    lower.includes("muscle") || lower.includes("antique") || lower.includes("old car") ||
-    lower.includes("auto") || lower.includes("car") || lower.includes("vehicle")
-  ) {
-    photos = PHOTO_LIBRARY.auto;
-  } else if (lower.includes("restaurant") || lower.includes("food") || lower.includes("cafe") || lower.includes("dining")) {
-    photos = PHOTO_LIBRARY.restaurant;
-  } else if (lower.includes("gym") || lower.includes("fitness") || lower.includes("trainer") || lower.includes("workout")) {
-    photos = PHOTO_LIBRARY.fitness;
-  } else if (lower.includes("plumb") || lower.includes("pipe") || lower.includes("drain") || lower.includes("hvac")) {
-    photos = PHOTO_LIBRARY.plumbing;
-  } else if (lower.includes("dental") || lower.includes("dentist") || lower.includes("medical")) {
-    photos = PHOTO_LIBRARY.dental;
-  } else if (lower.includes("law") || lower.includes("attorney") || lower.includes("legal")) {
-    photos = PHOTO_LIBRARY.law;
-  } else if (lower.includes("real estate") || lower.includes("realtor") || lower.includes("property")) {
-    photos = PHOTO_LIBRARY.realestate;
-  } else if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("garden")) {
-    photos = PHOTO_LIBRARY.landscaping;
-  } else if (lower.includes("financ") || lower.includes("account") || lower.includes("tax") || lower.includes("wealth")) {
-    photos = PHOTO_LIBRARY.financial;
-  }
-
-  // Get base photo URL and set correct dimensions per platform
-  const baseUrl = photos[index % photos.length];
-
-  if (platform === "tiktok") {
-    // TikTok: 9:16 vertical (1080x1920)
-    return baseUrl.replace("w=800&h=600", "w=608&h=1080");
-  } else if (platform === "instagram") {
-    // Instagram: 1:1 square (1080x1080)
-    return baseUrl.replace("w=800&h=600", "w=800&h=800");
-  } else {
-    // Facebook: 16:9 landscape (1200x630)
-    return baseUrl.replace("w=800&h=600", "w=1200&h=630");
+    // Download and upload to Supabase Storage so it persists in the shared library
+    const imageRes = await fetch(photoUrl);
+    const imageBuffer = await imageRes.arrayBuffer();
+    const fileName = `${industry}/social/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const uploadRes = await fetch(
+      `${supabaseUrl}/storage/v1/object/industry-images/${fileName}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${serviceKey}`,
+          "Content-Type": "image/jpeg",
+          "x-upsert": "true",
+        },
+        body: imageBuffer,
+      }
+    );
+    if (uploadRes.ok) {
+      return `${supabaseUrl}/storage/v1/object/public/industry-images/${fileName}`;
+    }
+    return photoUrl; // fallback to temp Nano Banana URL if upload fails
+  } catch (e: any) {
+    console.error("Social image generation failed (non-fatal):", e.message);
+    return null;
   }
 }
+
 
 async function generateAllPosts(
   business: Record<string, any>,
