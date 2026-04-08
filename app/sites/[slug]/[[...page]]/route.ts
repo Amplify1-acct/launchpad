@@ -83,7 +83,7 @@ export async function GET(
     console.log("DEBUG: no website found for business", business.id);
     return new NextResponse(buildingHTML(business.name), {
       status: 200,
-      headers: { "Content-Type": "text/html" },
+      headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
     });
   }
 
@@ -91,7 +91,7 @@ export async function GET(
     console.log("DEBUG: website not live, status =", website.status);
     return new NextResponse(buildingHTML(business.name), {
       status: 200,
-      headers: { "Content-Type": "text/html" },
+      headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
     });
   }
 
@@ -101,7 +101,7 @@ export async function GET(
 
   if (!html) {
     return new NextResponse(buildingHTML(business.name), {
-      headers: { "Content-Type": "text/html" },
+      headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
     });
   }
 
