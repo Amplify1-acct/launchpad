@@ -244,7 +244,7 @@ function getServiceKeywords(name: string): string[] {
   if (words.length >= 2) kws.push(words[0] + " " + words[1]);
   // Individual significant words
   words.forEach((w: string) => { if (w.length > 4) kws.push(w); });
-  return [...new Set(kws)].sort((a: string, b: string) => b.length - a.length);
+  return Array.from(new Set(kws)).sort((a: string, b: string) => b.length - a.length);
 }
 
 function injectServiceLinks(text: string, services: string[]): string {
