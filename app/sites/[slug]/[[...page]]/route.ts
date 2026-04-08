@@ -40,6 +40,45 @@ export async function GET(
     });
   }
 
+  // Sitemap
+  if (pagePath === "sitemap.xml") {
+    const [siteRes, postsRes] = await Promise.all([
+      fetch(`${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=generated_tokens,plan,service_detail_1_html,service_detail_2_html,service_detail_3_html,service_detail_4_html,service_detail_5_html,service_detail_6_html&limit=1`,
+        { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }),
+      fetch(`${supabaseUrl}/rest/v1/blog_posts?business_id=eq.${business.id}&status=eq.published&select=slug,approved_at&order=approved_at.desc&limit=50`,
+        { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }),
+    ]);
+    const [siteArr, posts] = await Promise.all([siteRes.json(), postsRes.json()]);
+    const site = siteArr?.[0];
+    const tokens = site?.generated_tokens || {};
+    const plan = site?.plan || "starter";
+    const toSlug2 = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const domain = slug + ".exsisto.ai";
+    const base = `https://${domain}`;
+    const now = new Date().toISOString();
+    const urls: string[] = [
+      `<url><loc>${base}</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>`,
+      `<url><loc>${base}/about</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>`,
+      `<url><loc>${base}/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>`,
+      `<url><loc>${base}/blog</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>`,
+    ];
+    if (plan !== "starter") {
+      urls.push(`<url><loc>${base}/services</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>`);
+      const maxSvc = plan === "premium" ? 6 : 3;
+      for (let i = 1; i <= maxSvc; i++) {
+        const svcName = tokens[`service_${i}_name`];
+        if (svcName && (site as any)?.[`service_detail_${i}_html`]) {
+          urls.push(`<url><loc>${base}/services/${toSlug2(svcName)}</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>`);
+        }
+      }
+    }
+    for (const post of (posts || [])) {
+      urls.push(`<url><loc>${base}/blog/${post.slug}</loc><lastmod>${(post.approved_at || now).split("T")[0]}</lastmod><priority>0.7</priority><changefreq>never</changefreq></url>`);
+    }
+    const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}</urlset>`;
+    return new NextResponse(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+  }
+
   // Blog post: /blog/[post-slug]
   const blogMatch = pagePath.match(/^blog\/(.+)$/);
   if (blogMatch) {
