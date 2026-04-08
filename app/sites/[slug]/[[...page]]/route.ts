@@ -403,18 +403,61 @@ function readyHTML(name: string): string {
 }
 
 function buildingHTML(name: string): string {
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${name} — Coming Soon</title>
-  <meta http-equiv="refresh" content="15"/>
-  <style>body{font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fcf8ff;margin:0;}
-  .box{text-align:center;padding:48px;}.logo{font-size:24px;font-weight:800;color:#1b1b25;margin-bottom:8px;}
-  .logo span{color:#4648d4;}.title{font-size:28px;font-weight:800;color:#1b1b25;margin:24px 0 8px;}
-  .sub{color:#9090a8;font-size:14px;max-width:320px;margin:0 auto;line-height:1.6;}
-  .spinner{width:32px;height:32px;border:3px solid #ede9f8;border-top-color:#4648d4;border-radius:50%;animation:spin 1s linear infinite;margin:24px auto;}
-  @keyframes spin{to{transform:rotate(360deg);}}</style></head>
-  <body><div class="box">
+  return `<!DOCTYPE html>
+<html><head>
+  <meta charset="UTF-8"/>
+  <title>${name} — Building Your Site</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f9f9ff;color:#1b1b25}
+    .box{text-align:center;padding:48px 32px;max-width:480px;width:100%}
+    .logo{font-size:20px;font-weight:800;color:#1b1b25;margin-bottom:40px}
+    .logo span{color:#4648d4}
+    .icon{font-size:52px;margin-bottom:20px;display:block}
+    h1{font-size:24px;font-weight:800;margin-bottom:10px}
+    .sub{color:#9090a8;font-size:15px;line-height:1.7;margin-bottom:28px}
+    .progress-bar{width:100%;height:6px;background:#ede9f8;border-radius:100px;margin-bottom:12px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#4648d4,#6366f1);border-radius:100px;animation:prog 270s linear forwards}
+    @keyframes prog{from{width:2%}to{width:95%}}
+    .timer{font-size:13px;color:#9090a8;margin-bottom:28px}
+    .timer b{color:#4648d4}
+    .steps{display:flex;flex-direction:column;gap:10px;text-align:left;margin-bottom:28px}
+    .step{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;background:#fff;border:1.5px solid #ede9f8}
+    .step-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+    .step-label{font-weight:600;color:#1b1b25}
+    .step-desc{font-size:12px;color:#9090a8;margin-top:2px}
+    .note{font-size:12px;color:#c0c0d0}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4648d4;animation:pulse 1.5s ease-in-out infinite;margin-right:6px;vertical-align:middle}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  </style>
+</head>
+<body>
+<div class="box">
   <div class="logo">Ex<span>sisto</span></div>
-  <div class="spinner"></div>
-  <div class="title">${name}</div>
-  <p class="sub">Your site is being built. This page will refresh automatically.</p>
-  </div></body></html>`;
+  <span class="icon">🚀</span>
+  <h1>Building ${name}</h1>
+  <p class="sub">Your AI-powered website is being created right now. This usually takes 3–5 minutes.</p>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+  <p class="timer">Estimated time remaining: <b id="t">4:30</b></p>
+  <div class="steps">
+    <div class="step"><span class="step-icon">✍️</span><div><div class="step-label">Writing your content</div><div class="step-desc">AI generating copy, headlines &amp; descriptions</div></div></div>
+    <div class="step"><span class="step-icon">🎨</span><div><div class="step-label">Generating your images</div><div class="step-desc">Creating custom photos for your business</div></div></div>
+    <div class="step"><span class="step-icon">🔍</span><div><div class="step-label">Setting up SEO &amp; schema</div><div class="step-desc">Optimizing pages for local search</div></div></div>
+    <div class="step"><span class="step-icon">📝</span><div><div class="step-label">Writing your first blog posts</div><div class="step-desc">Fresh content ready to publish</div></div></div>
+  </div>
+  <p class="note"><span class="dot"></span>Page refreshes every 20 seconds</p>
+</div>
+<script>
+  var s=270;
+  function tick(){
+    if(s<=0){location.reload();return;}
+    var m=Math.floor(s/60),sec=s%60;
+    var el=document.getElementById('t');
+    if(el)el.textContent=m+':'+(sec<10?'0':'')+sec;
+    s--;
+  }
+  tick();setInterval(tick,1000);
+  setTimeout(function(){location.reload();},20000);
+</script>
+</body></html>`;
 }
