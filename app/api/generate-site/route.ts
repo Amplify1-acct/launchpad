@@ -437,7 +437,7 @@ export async function POST(request: Request) {
 
     // ── Generate all pages ────────────────────────────────────────────
     const [servicesHtml, aboutHtml, contactHtml, blogIndexHtml] = await Promise.all([
-      generateServicesPage(business, tokens),
+      generateServicesPage(business, tokens, plan),
       generateAboutPage(business, tokens),
       generateContactPage(business, tokens),
       generateBlogIndexPage(business, []),
