@@ -476,10 +476,26 @@ export async function POST(request: Request) {
       }
     }
 
+    // Replace any fake testimonial sections from Stitch templates with empty CTA
+    // (Google Reviews for Premium are added separately via fetch-reviews API)
+    const cleanedHtml = primary.html.replace(
+      /<section[^>]*(?:id|class)=["'][^"']*(?:review|testimonial)[^"']*["'][^>]*>[\s\S]*?<\/section>/gi,
+      `<section class="reviews" style="padding:80px 20px;background:#f9fafb">
+  <div style="max-width:700px;margin:0 auto;text-align:center">
+    <div style="font-size:40px;margin-bottom:16px">⭐</div>
+    <h2 style="font-size:28px;font-weight:800;color:#111;margin-bottom:12px">Happy with our service?</h2>
+    <p style="font-size:16px;color:#6b7280;margin-bottom:28px;line-height:1.6">Reviews help other customers find us and help us keep improving. If you enjoyed your experience, we'd love to hear from you.</p>
+    <a href="https://maps.google.com" target="_blank" rel="noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:#4648d4;color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none">
+      Leave us a Google Review
+    </a>
+  </div>
+</section>`
+    );
+
     await supabase.from("websites").upsert({
       business_id,
       status: "ready_for_review",
-      custom_html: primary.html,
+      custom_html: cleanedHtml,
       services_html: servicesHtml,
       about_html: aboutHtml,
       contact_html: contactHtml,
