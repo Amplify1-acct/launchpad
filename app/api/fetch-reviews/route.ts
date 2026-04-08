@@ -80,6 +80,24 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
+    // Check plan — Google Reviews is Premium only
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("plan")
+      .eq("customer_id",
+        (await supabase.from("businesses").select("customer_id").eq("id", business_id).single()).data?.customer_id
+      )
+      .single();
+
+    const plan = sub?.plan || "starter";
+    if (plan !== "premium") {
+      return NextResponse.json({
+        error: "Google Reviews is a Premium feature",
+        plan,
+        upgrade: true,
+      }, { status: 403 });
+    }
+
     // Get business details
     const { data: biz } = await supabase
       .from("businesses")
