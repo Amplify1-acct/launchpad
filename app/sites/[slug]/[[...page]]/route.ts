@@ -24,7 +24,7 @@ export async function GET(
   try {
     const bizRes = await fetch(
       `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name&limit=1`,
-      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "Cache-Control": "no-cache" }, cache: "no-store" }
     );
     const bizData = await bizRes.json();
     business = Array.isArray(bizData) && bizData.length > 0 ? bizData[0] : null;
@@ -80,7 +80,7 @@ export async function GET(
   try {
     const siteRes = await fetch(
       `${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=custom_html,services_html,about_html,contact_html,blog_index_html,status&limit=1`,
-      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "Cache-Control": "no-cache" }, cache: "no-store" }
     );
     const siteData = await siteRes.json();
     website = Array.isArray(siteData) && siteData.length > 0 ? siteData[0] : null;
