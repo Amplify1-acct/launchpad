@@ -386,7 +386,8 @@ export async function generateServiceDetailPage(
   serviceDescription: string,
   icon: string = "🔧",
   relatedServices: string[] = [],
-  tokens: Record<string, string> = {}
+  tokens: Record<string, string> = {},
+  relatedPosts: Array<{ title: string; slug: string; featured_image_url?: string }> = []
 ): Promise<string> {
   const nav = sharedNav(business.name, business.phone || "");
   const footer = sharedFooter(business.name, business.city || "", business.phone || "");
@@ -465,6 +466,20 @@ export async function generateServiceDetailPage(
       </div>
     </div>
   </section>
+
+  ${relatedPosts.length > 0 ? `
+  <section style="max-width:880px;margin:0 auto;padding:0 24px 64px;">
+    <div style="border-top:1.5px solid #f0f0f0;padding-top:48px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;margin-bottom:24px;">From Our Blog</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+        ${relatedPosts.map(p => `
+          <a href="/blog/${p.slug}" style="display:flex;gap:14px;text-decoration:none;color:inherit;align-items:center;padding:16px;border:1.5px solid #f0f0f0;border-radius:12px;">
+            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:64px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title}"/>` : `<div style="width:64px;height:48px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
+            <div style="font-size:14px;font-weight:700;color:#111;line-height:1.4;">${p.title}</div>
+          </a>`).join("")}
+      </div>
+    </div>
+  </section>` : ""}
 
   <section style="background:#111;color:#fff;padding:64px 24px;text-align:center;">
     <div style="max-width:560px;margin:0 auto;">
