@@ -156,6 +156,18 @@ export async function POST(request: Request) {
         .single();
 
       results.push(inserted);
+
+      // Auto-post to GBP for Premium customers (non-blocking)
+      if (inserted && plan === "premium") {
+        fetch(`${appUrl}/api/gbp/post`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+          },
+          body: JSON.stringify({ business_id, blog_post_id: inserted.id }),
+        }).catch(e => console.error("GBP post failed (non-fatal):", e.message));
+      }
     } catch (e: any) {
       console.error("Failed to generate post:", topic, e.message);
       errors.push({ topic, error: e.message });
