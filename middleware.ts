@@ -1,12 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
 
 export async function middleware(request: NextRequest) {
   const host = request.headers.get("host") || "";
   const url = request.nextUrl.clone();
 
   // ── Subdomain detection ────────────────────────────────────────────────
-  // Matches: mattysautomotive.exsisto.ai
   const isExsistoDomain = host.endsWith(".exsisto.ai");
   const isWww = host === "www.exsisto.ai";
   const isRoot = host === "exsisto.ai";
@@ -29,26 +27,34 @@ export async function middleware(request: NextRequest) {
   }
 
   // ── Custom domain routing ──────────────────────────────────────────────
-  // If request is to a non-Exsisto domain, look up customer by custom_domain
+  // For non-Exsisto domains, look up the customer via Supabase REST API
+  // (using fetch directly — edge-runtime safe, no Node.js Supabase client)
   const isKnownDomain = isExsistoDomain || isWww || isRoot || isVercelPreview || isLocalhost || is518;
 
   if (!isKnownDomain && !url.pathname.startsWith("/sites/") && !url.pathname.startsWith("/api/")) {
-    try {
-      const supabase = createAdminClient();
-      // Strip www. for lookup
-      const cleanHost = host.replace(/^www\./, "");
-      const { data: biz } = await supabase
-        .from("businesses")
-        .select("subdomain")
-        .eq("custom_domain", cleanHost)
-        .single();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-      if (biz?.subdomain) {
-        url.pathname = `/sites/${biz.subdomain}${url.pathname === "/" ? "" : url.pathname}`;
-        return NextResponse.rewrite(url);
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const cleanHost = host.replace(/^www\./, "");
+        const res = await fetch(
+          `${supabaseUrl}/rest/v1/businesses?custom_domain=eq.${encodeURIComponent(cleanHost)}&select=subdomain&limit=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${supabaseKey}`,
+              apikey: supabaseKey,
+            },
+          }
+        );
+        const data: { subdomain: string }[] = await res.json();
+        if (data?.[0]?.subdomain) {
+          url.pathname = `/sites/${data[0].subdomain}${url.pathname === "/" ? "" : url.pathname}`;
+          return NextResponse.rewrite(url);
+        }
+      } catch {
+        // Not a customer domain — fall through
       }
-    } catch {
-      // Not a customer domain — fall through to normal routing
     }
   }
 
@@ -57,5 +63,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)" ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
