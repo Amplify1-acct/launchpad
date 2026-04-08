@@ -88,8 +88,8 @@ export async function GET(
   }
 
   if (website.status !== "live") {
-    console.log("DEBUG: website not live, status =", website.status);
-    return new NextResponse(buildingHTML(business.name), {
+    const isReady = website.status === "ready_for_review";
+    return new NextResponse(isReady ? readyHTML(business.name) : buildingHTML(business.name), {
       status: 200,
       headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
     });
@@ -228,6 +228,31 @@ function notFoundHTML(slug: string): string {
   <body><div class="box"><div class="logo">Ex<span>sisto</span></div>
   <p class="sub">Page not found on <strong>${slug}.exsisto.ai</strong></p>
   <p style="margin-top:16px"><a href="/" style="color:#4648d4">← Back to home</a></p>
+  </div></body></html>`;
+}
+
+function readyHTML(name: string): string {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${name} — Coming Soon</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fcf8ff;margin:0}
+    .box{text-align:center;padding:48px 32px;max-width:440px}
+    .logo{font-size:22px;font-weight:800;color:#1b1b25;margin-bottom:32px}
+    .logo span{color:#4648d4}
+    .badge{display:inline-block;background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:20px}
+    .title{font-size:26px;font-weight:800;color:#1b1b25;margin-bottom:10px;line-height:1.2}
+    .sub{color:#6b6b8a;font-size:14px;line-height:1.6;margin-bottom:28px}
+    .btn{display:inline-block;background:#4648d4;color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;transition:opacity 0.2s}
+    .btn:hover{opacity:0.9}
+    .hint{font-size:12px;color:#9090a8;margin-top:16px}
+  </style></head>
+  <body><div class="box">
+    <div class="logo">Ex<span>sisto</span></div>
+    <div class="badge">✓ Site Ready</div>
+    <div class="title">${name} is almost live!</div>
+    <p class="sub">Your website has been built and is ready to review. Log in to your dashboard to preview and publish it.</p>
+    <a class="btn" href="https://exsisto.ai/login">Review &amp; Publish →</a>
+    <p class="hint">Already logged in? <a href="https://exsisto.ai/dashboard/website" style="color:#4648d4">Go to your dashboard</a></p>
   </div></body></html>`;
 }
 
