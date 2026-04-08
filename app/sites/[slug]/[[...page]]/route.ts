@@ -16,22 +16,6 @@ export async function GET(
 ) {
   const { slug } = params;
   const pagePath = (params.page || []).join("/").toLowerCase();
-  // Debug: return JSON status info
-  if (request.url.includes("?debug=1")) {
-    const supabaseUrl2 = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceKey2 = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    try {
-      const r1 = await fetch(`${supabaseUrl2}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name&limit=1`,
-        { headers: { Authorization: `Bearer ${serviceKey2}`, apikey: serviceKey2 ?? "", "Cache-Control": "no-cache" }, cache: "no-store" });
-      const b1 = await r1.json();
-      const biz2 = b1?.[0];
-      const r2 = biz2 ? await fetch(`${supabaseUrl2}/rest/v1/websites?business_id=eq.${biz2.id}&select=status&limit=1`,
-        { headers: { Authorization: `Bearer ${serviceKey2}`, apikey: serviceKey2 ?? "", "Cache-Control": "no-cache" }, cache: "no-store" }) : null;
-      const w2 = r2 ? await r2.json() : null;
-      return NextResponse.json({ slug, bizFound: !!biz2, bizId: biz2?.id, siteStatus: w2?.[0]?.status, hasUrl: !!supabaseUrl2, hasKey: !!serviceKey2, keyPrefix: serviceKey2?.substring(0, 10) });
-    } catch(e: any) { return NextResponse.json({ error: e.message }); }
-  }
-
   // Shared Supabase credentials for all REST fetches
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
