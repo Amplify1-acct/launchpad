@@ -590,7 +590,7 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
     <div className="step-content step-wide">
       <div className="step-header">
         <h2>Here's your complete digital presence</h2>
-        <p>{`${bizType} · ${city||"Your City"} · Website + Blog + Social, all handled`}</p>
+        <p>{`${bizType} · ${city||"Your City"} · Website + Blog + Local SEO, all handled`}</p>
       </div>
 
       {(siteLoading || stitchLoading) ? (
@@ -657,81 +657,24 @@ function StepSite({ industry, bizType, bizDetails, onNext, onBack }: {
         ))}
       </div>
 
-      {/* ── ROW 2: Three social posts ───────────────────────────────────── */}
-      <div className="site-row-label" style={{marginTop:"36px"}}>
-        Your social media — written &amp; posted automatically every week
-      </div>
-      <div className="social-row">
-
-        {/* Facebook — wide 16:9 */}
-        <div className="social-post-card">
-          <div className="social-post-header">
-            <div className="social-avatar-wrap" style={{background:"#1877f2"}}>
-              <span style={{color:"#fff",fontWeight:700,fontSize:"13px"}}>{bizType.charAt(0)}</span>
-            </div>
-            <div>
-              <div className="social-biz-name">{bizType}</div>
-              <div className="social-platform-name">📘 Facebook</div>
-            </div>
-          </div>
-          <div className="social-img-wide">
-            {imgs[0] ? <img src={imgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} /> : <div className="social-img-placeholder">Photo</div>}
-          </div>
-          <div className="social-post-text">
-            {samplesLoading ? <div className="social-loading-text" /> : (samples?.social[0]?.content || `Serving ${city||"your city"} with pride! 🏆 Licensed, insured, and local. Call today for a free estimate!`)}
-          </div>
-          <div className="social-engagement">
-            <span>❤️ {samples?.social[0]?.likes||"47"}</span>
-            <span>💬 {samples?.social[0]?.comments||"12"}</span>
-          </div>
+            {/* ── ROW 2: Social coming soon ───────────────────────────────────── */}
+      <div className="site-section" style={{background:"#f8f9ff",borderRadius:16,padding:"28px 32px",textAlign:"center",border:"1.5px dashed #d0d4f8"}}>
+        <div style={{fontSize:32,marginBottom:12}}>📱</div>
+        <div style={{display:"inline-block",background:"#eef0ff",color:"#4648d4",fontSize:11,fontWeight:700,letterSpacing:"1px",textTransform:"uppercase",padding:"3px 10px",borderRadius:100,marginBottom:12}}>
+          Coming Soon
         </div>
-
-        {/* Instagram — square 1:1 */}
-        <div className="social-post-card">
-          <div className="social-post-header">
-            <div className="social-avatar-wrap" style={{background:"linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)"}}>
-              <span style={{color:"#fff",fontWeight:700,fontSize:"13px"}}>{bizType.charAt(0)}</span>
+        <div style={{fontSize:17,fontWeight:700,color:"#1b1b25",marginBottom:8}}>Social Media Posting</div>
+        <p style={{fontSize:14,color:"#6b6b80",lineHeight:1.7,maxWidth:440,margin:"0 auto"}}>
+          Automated posting to Facebook, Instagram, and TikTok is coming soon. 
+          Your content will go live on all platforms automatically — no login needed.
+        </p>
+        <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:20,flexWrap:"wrap"}}>
+          {["📘 Facebook","📸 Instagram","🎵 TikTok"].map(p => (
+            <div key={p} style={{background:"#fff",border:"1.5px solid #ede9f8",borderRadius:8,padding:"8px 16px",fontSize:13,fontWeight:600,color:"#9090a8"}}>
+              {p}
             </div>
-            <div>
-              <div className="social-biz-name">{bizType.toLowerCase().replace(/\s+/g,"_")}</div>
-              <div className="social-platform-name">📸 Instagram</div>
-            </div>
-          </div>
-          <div className="social-img-square">
-            {imgs[1]||imgs[0] ? <img src={imgs[1]||imgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} /> : <div className="social-img-placeholder">Photo</div>}
-          </div>
-          <div className="social-post-text">
-            {samplesLoading ? <div className="social-loading-text" /> : (samples?.social[1]?.content || `✨ Another happy customer! DM us to get started. #${bizType.replace(/\s+/g,"")} #Local`)}
-          </div>
-          <div className="social-engagement">
-            <span>❤️ {samples?.social[1]?.likes||"183"}</span>
-            <span>💬 {samples?.social[1]?.comments||"24"}</span>
-          </div>
+          ))}
         </div>
-
-        {/* TikTok — portrait 9:16 */}
-        <div className="social-post-card">
-          <div className="social-post-header">
-            <div className="social-avatar-wrap" style={{background:"#010101"}}>
-              <span style={{color:"#fff",fontWeight:700,fontSize:"13px"}}>{bizType.charAt(0)}</span>
-            </div>
-            <div>
-              <div className="social-biz-name">@{bizType.toLowerCase().replace(/\s+/g,"")}</div>
-              <div className="social-platform-name">🎵 TikTok</div>
-            </div>
-          </div>
-          <div className="social-img-portrait">
-            {imgs[2]||imgs[0] ? <img src={imgs[2]||imgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} /> : <div className="social-img-placeholder">Photo</div>}
-          </div>
-          <div className="social-post-text">
-            {samplesLoading ? <div className="social-loading-text" /> : (samples?.social[2]?.content || `POV: You finally found a ${bizType.toLowerCase()} you can trust 🙌 Comment INFO! #LocalBiz`)}
-          </div>
-          <div className="social-engagement">
-            <span>❤️ {samples?.social[2]?.likes||"1.2K"}</span>
-            <span>💬 {samples?.social[2]?.comments||"89"}</span>
-          </div>
-        </div>
-
       </div>
 
       {/* ── ROW 3: Two blog cards + plan chooser ───────────────────────── */}
