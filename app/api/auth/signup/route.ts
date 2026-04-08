@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       customer_id: customer.id,
       plan: planId || "starter",
       status: "trialing",
-      trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      trial_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     });
 
     // 5. Create empty website record
