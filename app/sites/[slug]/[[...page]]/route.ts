@@ -154,8 +154,8 @@ export async function GET(
   }
 
   if (website.status !== "live") {
-    const isReady = website.status === "ready_for_review";
-    return new NextResponse(isReady ? readyHTML(business.name) : buildingHTML(business.name), {
+    // If no HTML yet, show building screen
+    return new NextResponse(buildingHTML(business.name), {
       status: 200,
       headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
     });
