@@ -253,7 +253,24 @@ Return this JSON with EXACTLY these keys:
   "phone_raw": "${(business.phone || "").replace(/\D/g, "")}",
   "year": "${new Date().getFullYear()}",
   "accent_color": "#991b1b",
-  "footer_tagline": "short footer tagline"
+  "footer_tagline": "short footer tagline",
+  "step_1_title": "2-3 word step title",
+  "step_1_desc": "One sentence describing this step of the process",
+  "step_2_title": "2-3 word step title",
+  "step_2_desc": "One sentence describing this step of the process",
+  "step_3_title": "2-3 word step title",
+  "step_3_desc": "One sentence describing this step of the process",
+  "step_4_title": "2-3 word step title",
+  "step_4_desc": "One sentence describing this step of the process",
+  "trust_1": "3-5 word trust signal",
+  "trust_2": "3-5 word trust signal",
+  "trust_3": "3-5 word trust signal",
+  "feature_1_title": "2-3 word benefit title",
+  "feature_1_desc": "One sentence expanding on this benefit",
+  "feature_2_title": "2-3 word benefit title",
+  "feature_2_desc": "One sentence expanding on this benefit",
+  "feature_3_title": "2-3 word benefit title",
+  "feature_3_desc": "One sentence expanding on this benefit"
 }`;
 
   const response = await anthropic.messages.create({
