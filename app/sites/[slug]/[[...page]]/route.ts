@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +16,21 @@ export async function GET(
 ) {
   const { slug } = params;
   const pagePath = (params.page || []).join("/").toLowerCase();
-  const supabase = createAdminClient();
+  // Look up business by subdomain using direct REST fetch
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-  // Look up business by subdomain
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("id, name")
-    .eq("subdomain", slug)
-    .single();
+  let business: { id: string; name: string } | null = null;
+  try {
+    const bizRes = await fetch(
+      `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name&limit=1`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+    );
+    const bizData = await bizRes.json();
+    business = Array.isArray(bizData) && bizData.length > 0 ? bizData[0] : null;
+  } catch (e) {
+    console.error("Business fetch failed:", e);
+  }
 
   if (!business) {
     return new NextResponse(notFoundHTML(slug), {
@@ -37,13 +43,12 @@ export async function GET(
   const blogMatch = pagePath.match(/^blog\/(.+)$/);
   if (blogMatch) {
     const postSlug = blogMatch[1];
-    const { data: post } = await supabase
-      .from("blog_posts")
-      .select("title, content, excerpt, featured_image_url, approved_at")
-      .eq("business_id", business.id)
-      .eq("slug", postSlug)
-      .eq("status", "published")
-      .single();
+    const postRes = await fetch(
+      `${supabaseUrl}/rest/v1/blog_posts?business_id=eq.${business.id}&slug=eq.${encodeURIComponent(postSlug)}&status=eq.published&select=title,content,excerpt,featured_image_url,approved_at&limit=1`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+    );
+    const postArr = await postRes.json();
+    const post = Array.isArray(postArr) && postArr.length > 0 ? postArr[0] : null;
 
     if (!post) {
       return new NextResponse(notFoundHTML(slug), { status: 404, headers: { "Content-Type": "text/html" } });
@@ -56,31 +61,34 @@ export async function GET(
 
   // Blog index: /blog
   if (pagePath === "blog") {
-    const { data: posts } = await supabase
-      .from("blog_posts")
-      .select("title, slug, excerpt, featured_image_url, approved_at, word_count")
-      .eq("business_id", business.id)
-      .eq("status", "published")
-      .order("approved_at", { ascending: false });
+    const postsRes = await fetch(
+      `${supabaseUrl}/rest/v1/blog_posts?business_id=eq.${business.id}&status=eq.published&select=title,slug,excerpt,featured_image_url,approved_at,word_count&order=approved_at.desc`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+    );
+    const posts = await postsRes.json();
 
     return new NextResponse(renderBlogIndex(business.name, posts || []), {
       headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=60" },
     });
   }
 
-  // Get website record (bypass RLS with service role)
-  const { data: website, error: webError } = await supabase
-    .from("websites")
-    .select("custom_html, services_html, about_html, contact_html, blog_index_html, status")
-    .eq("business_id", business.id)
-    .maybeSingle();
+  // Get website record using direct REST fetch (bypasses any env var issues with supabase-js on subdomains)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   
-  console.log("DEBUG website query:", { businessId: business.id, status: website?.status, error: webError?.message, found: !!website });
+  let website: Record<string, any> | null = null;
+  try {
+    const siteRes = await fetch(
+      `${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=custom_html,services_html,about_html,contact_html,blog_index_html,status&limit=1`,
+      { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } }
+    );
+    const siteData = await siteRes.json();
+    website = Array.isArray(siteData) && siteData.length > 0 ? siteData[0] : null;
+  } catch (e) {
+    console.error("Website fetch failed:", e);
+  }
 
-  console.log("DEBUG site route:", { slug, pagePath, businessId: business.id, websiteStatus: website?.status, hasHtml: !!website?.custom_html });
-  
   if (!website) {
-    console.log("DEBUG: no website found for business", business.id);
     return new NextResponse(buildingHTML(business.name), {
       status: 200,
       headers: { "Content-Type": "text/html", "Cache-Control": "no-store" },
