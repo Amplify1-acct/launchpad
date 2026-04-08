@@ -5,7 +5,7 @@ const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
 export const maxDuration = 30;
 
-// Search for a business and fetch its Google reviews
+// Search for a business and fetch its Google reviews using Places API (New)
 async function findBusinessReviews(name: string, city: string, state: string): Promise<{
   placeId: string | null;
   placeName: string | null;
@@ -24,52 +24,59 @@ async function findBusinessReviews(name: string, city: string, state: string): P
 
   const query = `${name} ${city} ${state}`.trim();
 
-  // Step 1: Text search to find the place
+  // Step 1: Text search using Places API (New)
   const searchRes = await fetch(
-    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${GOOGLE_API_KEY}`,
-    { cache: "no-store" }
+    "https://places.googleapis.com/v1/places:searchText",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GOOGLE_API_KEY,
+        "X-Goog-FieldMask": "places.id,places.displayName,places.rating,places.userRatingCount,places.googleMapsUri",
+      },
+      body: JSON.stringify({ textQuery: query, maxResultCount: 1 }),
+      cache: "no-store",
+    }
   );
   const searchData = await searchRes.json();
 
-  if (searchData.status !== "OK" || !searchData.results?.length) {
+  if (!searchData.places?.length) {
     return { placeId: null, placeName: null, rating: null, totalRatings: null, mapsUrl: null, reviews: [] };
   }
 
-  const place = searchData.results[0];
-  const placeId = place.place_id;
-  const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+  const place = searchData.places[0];
+  const placeId = place.id;
+  const mapsUrl = place.googleMapsUri || `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+  const rating = place.rating || null;
+  const totalRatings = place.userRatingCount || null;
+  const placeName = place.displayName?.text || name;
 
-  // Step 2: Fetch place details including reviews
+  // Step 2: Fetch reviews using Places API (New)
   const detailsRes = await fetch(
-    `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,user_ratings_total,reviews&key=${GOOGLE_API_KEY}`,
-    { cache: "no-store" }
+    `https://places.googleapis.com/v1/places/${placeId}`,
+    {
+      headers: {
+        "X-Goog-Api-Key": GOOGLE_API_KEY,
+        "X-Goog-FieldMask": "reviews",
+      },
+      cache: "no-store",
+    }
   );
   const detailsData = await detailsRes.json();
 
-  if (detailsData.status !== "OK") {
-    return { placeId, placeName: place.name, rating: place.rating || null, totalRatings: place.user_ratings_total || null, mapsUrl, reviews: [] };
-  }
-
-  const details = detailsData.result;
-  const reviews = (details.reviews || [])
-    .filter((r: any) => r.rating >= 4 && r.text?.length > 30) // only 4-5 star reviews with real content
+  const reviews = (detailsData.reviews || [])
+    .filter((r: any) => r.rating >= 4 && r.text?.text?.length > 30)
     .slice(0, 5)
     .map((r: any) => ({
-      author: r.author_name,
+      author: r.authorAttribution?.displayName || "Google User",
       rating: r.rating,
-      text: r.text,
-      time: r.time,
-      initials: r.author_name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
+      text: r.text?.text || "",
+      time: r.publishTime ? new Date(r.publishTime).getTime() / 1000 : Date.now() / 1000,
+      initials: (r.authorAttribution?.displayName || "GU")
+        .split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
     }));
 
-  return {
-    placeId,
-    placeName: details.name || place.name,
-    rating: details.rating || place.rating || null,
-    totalRatings: details.user_ratings_total || place.user_ratings_total || null,
-    mapsUrl,
-    reviews,
-  };
+  return { placeId, placeName, rating, totalRatings, mapsUrl, reviews };
 }
 
 // POST: fetch and store reviews for a business
