@@ -54,7 +54,7 @@ const PLANS = [
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
-  const [selectedPlan, setSelectedPlan] = useState("pro");
+  const [selectedPlan, setSelectedPlan] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -93,7 +93,7 @@ function CheckoutContent() {
     }
   }
 
-  const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
+  const plan = PLANS.find(p => p.id === selectedPlan) || PLANS.find(p => p.id === "pro") || PLANS[1];
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "\'DM Sans\', sans-serif" }}>
