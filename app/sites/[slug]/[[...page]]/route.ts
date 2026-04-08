@@ -268,8 +268,6 @@ function injectServiceLinks(text: string, services: string[]): string {
   }
   return result;
 }
-  return result;
-}
 
 function renderBlogPost(bizName: string, post: any, services: string[] = [], relatedPosts: any[] = []): string {
   return `<!DOCTYPE html>
