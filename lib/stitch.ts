@@ -182,7 +182,7 @@ export async function generateStitchSite(params: {
 }): Promise<string> {
   const { businessName, industry, city, state, services, phone, accentColor = "#0d7694", description, yearsInBusiness, differentiator, revisionNotes } = params;
 
-  const serviceList = services.slice(0, 6).join(", ");
+  const serviceList = services.length > 0 ? services.slice(0, 6).join(", ") : `professional ${industry} services`;
 
   // Use Claude to understand any free-text industry
   const industryContext = await normalizeIndustry(industry);
@@ -209,7 +209,7 @@ Page sections required:
 1. Sticky nav: business name logo, nav links (Home / ${navLabel} / About / Contact), phone number, "${ctaLabel}" button
 2. Hero: strong headline mentioning ${city}, subheadline using the business description, two CTAs ("${ctaLabel}" + secondary), hero image area
 3. Stats bar: 3-4 trust indicators (years in business, customers served, rating, etc.) using real numbers if provided
-4. ${navLabel} section: 6 service cards for ${serviceList || "their main services"}, each with icon, title, description
+4. ${navLabel} section: exactly 6 service cards. IMPORTANT — use ONLY these specific services the customer listed: ${serviceList}. Do NOT invent generic services. Each card needs icon, title (from the list), short description
 5. About section: why choose us, what makes them different, featuring: "${differentiator || "quality service"}"
 6. Reviews section: 3 compelling customer reviews with star ratings
 7. CTA banner: strong headline, "${ctaLabel}" button
