@@ -384,9 +384,25 @@ export default function WebsitePage() {
                 <div style={{ padding: "16px 18px" }}>
                   {!business?.custom_domain ? (
                     <>
-                      <p style={{ fontSize: "12px", color: "#9090a8", marginBottom: "12px", lineHeight: 1.6 }}>
-                        Use your own domain instead of your Exsisto subdomain. Enter your domain and we&apos;ll give you the DNS settings.
-                      </p>
+                      {/* How it works */}
+                      <div style={{ background: "#f8f7ff", border: "1px solid #ede9f8", borderRadius: "8px", padding: "12px 14px", marginBottom: "14px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 700, color: "#4648d4", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>How it works</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          {[
+                            { n: "1", text: "Enter your domain name below (e.g. mattysauto.com)" },
+                            { n: "2", text: "We'll show you a CNAME record to add at your registrar (GoDaddy, Namecheap, etc.)" },
+                            { n: "3", text: "Once DNS updates (15 min – 48 hrs), your domain goes live automatically" },
+                          ].map(({ n, text }) => (
+                            <div key={n} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                              <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: "#4648d4", color: "#fff", fontSize: "10px", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "1px" }}>{n}</div>
+                              <span style={{ fontSize: "11px", color: "#6b6b8a", lineHeight: 1.5 }}>{text}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #ede9f8", fontSize: "11px", color: "#9090a8", lineHeight: 1.5 }}>
+                          💡 Don&apos;t have a domain yet? You can get one at <a href="https://namecheap.com" target="_blank" rel="noreferrer" style={{ color: "#4648d4" }}>Namecheap</a> or <a href="https://godaddy.com" target="_blank" rel="noreferrer" style={{ color: "#4648d4" }}>GoDaddy</a> for ~$12/year.
+                        </div>
+                      </div>
                       <div style={{ display: "flex", gap: "8px" }}>
                         <input
                           type="text"
