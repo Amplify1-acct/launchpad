@@ -45,11 +45,29 @@ async function findBusinessReviews(name: string, city: string, state: string): P
   }
 
   const place = searchData.places[0];
+  const placeName = place.displayName?.text || name;
+
+  // Confidence check: make sure the found business name is reasonably similar
+  // to what we searched for — prevents attaching wrong business reviews
+  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const searchWords = normalize(name).slice(0, 8); // first 8 chars of normalized name
+  const resultWords = normalize(placeName).slice(0, 8);
+  const similarity = searchWords.split("").filter((c, i) => resultWords[i] === c).length / Math.max(searchWords.length, 1);
+
+  // If less than 40% character match and names share no significant words, skip
+  const nameWords = name.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const resultNameWords = placeName.toLowerCase().split(/\s+/);
+  const wordMatch = nameWords.some(w => resultNameWords.some(rw => rw.includes(w) || w.includes(rw)));
+
+  if (similarity < 0.4 && !wordMatch) {
+    console.log(`Low confidence match: "${name}" vs "${placeName}" — skipping`);
+    return { placeId: null, placeName: null, rating: null, totalRatings: null, mapsUrl: null, reviews: [] };
+  }
+
   const placeId = place.id;
   const mapsUrl = place.googleMapsUri || `https://www.google.com/maps/place/?q=place_id:${placeId}`;
   const rating = place.rating || null;
   const totalRatings = place.userRatingCount || null;
-  const placeName = place.displayName?.text || name;
 
   // Step 2: Fetch reviews using Places API (New)
   const detailsRes = await fetch(
@@ -169,6 +187,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       found: !!result.placeId,
+      placeName: result.placeName,
       reviewCount: result.reviews.length,
       rating: result.rating,
       totalRatings: result.totalRatings,
