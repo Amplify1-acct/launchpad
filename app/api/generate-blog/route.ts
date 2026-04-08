@@ -114,7 +114,7 @@ export async function POST(request: Request) {
       let featuredImageUrl: string | null = null;
       try {
         const imagePrompt = `photorealistic photograph only, no text, no UI, no illustration. ${business.industry} business photo related to: ${post.title}. Professional, high quality, well lit.`;
-        const photoUrl = await generateBusinessPhoto(imagePrompt, business.name, "about");
+        const photoUrl = await generateBusinessPhoto(business.name, imagePrompt, "about");
         if (photoUrl) {
           // Upload to Supabase Storage to make it permanent and add to shared library
           const imageRes = await fetch(photoUrl);
