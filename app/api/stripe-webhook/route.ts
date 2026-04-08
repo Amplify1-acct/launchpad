@@ -26,134 +26,103 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
 
+  // ── Payment success ──────────────────────────────────────────────────────
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const pendingSiteId = session.metadata?.pending_site_id;
     const email = session.customer_email;
+    const plan = (session.metadata?.plan || "starter") as string;
+    const businessId = session.metadata?.business_id;
+    const stripeCustomerId = session.customer as string;
+    const stripeSubscriptionId = session.subscription as string;
 
-    if (!pendingSiteId) {
-      console.error("No pending_site_id in session metadata");
-      return NextResponse.json({ received: true });
-    }
+    console.log(`Payment completed: ${email} plan=${plan} biz=${businessId}`);
 
-    // Get the pending site data
-    const { data: pendingSite } = await supabase
-      .from("pending_sites")
-      .select("*")
-      .eq("id", pendingSiteId)
-      .single();
-
-    if (!pendingSite) {
-      console.error("Pending site not found:", pendingSiteId);
+    if (!email) {
+      console.error("No email in session");
       return NextResponse.json({ received: true });
     }
 
     try {
-      // 1. Create Supabase user account
-      const tempPassword = Math.random().toString(36).slice(-12) + "!A1";
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: email || pendingSite.email,
-        password: tempPassword,
-        email_confirm: true,
-        user_metadata: { full_name: pendingSite.business_name },
-      });
-
-      if (authError) throw authError;
-      const userId = authData.user.id;
-
-      // 2. Get customer record (auto-created by trigger)
-      await new Promise(r => setTimeout(r, 1000)); // wait for trigger
-      const { data: customer } = await supabase
+      // Find customer by email
+      const { data: customer, error: custErr } = await supabase
         .from("customers")
         .select("id")
-        .eq("user_id", userId)
+        .eq("email", email)
         .single();
 
-      if (!customer) throw new Error("Customer not created");
+      if (custErr || !customer) {
+        console.error("Customer not found for email:", email, custErr);
+        return NextResponse.json({ received: true });
+      }
 
-      // 3. Create business record from site data
-      const sd = pendingSite.site_data;
-      const { data: business } = await supabase
-        .from("businesses")
-        .insert({
+      // Upsert subscription with real Stripe IDs
+      const { error: subErr } = await supabase
+        .from("subscriptions")
+        .upsert({
           customer_id: customer.id,
-          name: sd.business?.name || pendingSite.business_name,
-          description: sd.business?.description || "",
-          industry: pendingSite.site_data?.industry || "",
-          tagline: sd.business?.tagline || "",
-          accent_color: sd.business?.accent_color || "#2563eb",
-          phone: sd.business?.phone || "",
-          email: sd.business?.email || "",
-          city: sd.business?.city || "",
-          state: sd.business?.state || "",
-        })
-        .select("id")
-        .single();
+          stripe_customer_id: stripeCustomerId,
+          stripe_subscription_id: stripeSubscriptionId,
+          plan,
+          status: "trialing",
+          trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        }, { onConflict: "customer_id" });
 
-      if (!business) throw new Error("Business not created");
+      if (subErr) {
+        console.error("Subscription upsert failed:", subErr);
+        throw subErr;
+      }
 
-      // 4. Create subscription record
-      await supabase.from("subscriptions").insert({
-        customer_id: customer.id,
-        stripe_customer_id: session.customer as string,
-        stripe_subscription_id: session.subscription as string,
-        plan: pendingSite.plan || "growth",
-        status: "trialing",
-      });
-
-      // 5. Save website content to DB
-      await supabase.from("websites").insert({
-        business_id: business.id,
-        status: "generating",
-        services: sd.website?.services || [],
-        stats: sd.website?.stats || [],
-        testimonials: [],
-        meta_title: sd.website?.meta_title || "",
-        meta_description: sd.website?.meta_description || "",
-        keywords: sd.website?.keywords || [],
-      });
-
-      // 6. Kick off site deployment (non-blocking)
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://exsisto.ai";
-      fetch(`${appUrl}/api/deploy-site`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          business_id: business.id,
-          pages: sd.pages, // pass pre-generated HTML pages directly
-        }),
-      }).catch(e => console.error("Deploy failed:", e));
-
-      // 7. Send magic link email so user can access their dashboard
-      await supabase.auth.admin.generateLink({
-        type: "magiclink",
-        email: email || pendingSite.email,
-        options: { redirectTo: `${appUrl}/dashboard` },
-      });
-
-      // 8. Mark pending site as converted
+      // Update customer record with plan + stripe customer ID
       await supabase
-        .from("pending_sites")
+        .from("customers")
         .update({
-          status: "converted",
-          user_id: userId,
-          business_id: business.id,
-          converted_at: new Date().toISOString(),
+          plan,
+          stripe_customer_id: stripeCustomerId,
         })
-        .eq("id", pendingSiteId);
+        .eq("id", customer.id);
 
-      console.log(`✅ New customer onboarded: ${email} → business ${business.id}`);
+      console.log(`✅ Subscription saved: customer=${customer.id} plan=${plan}`);
+
+      // Kick off site generation if we have a business ID
+      const targetBizId = businessId || (await (async () => {
+        const { data: biz } = await supabase
+          .from("businesses")
+          .select("id")
+          .eq("customer_id", customer.id)
+          .single();
+        return biz?.id;
+      })());
+
+      if (targetBizId) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+        // Non-blocking: generate site
+        fetch(`${appUrl}/api/generate-site`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+          },
+          body: JSON.stringify({ business_id: targetBizId }),
+        }).catch(e => console.error("Site generation failed:", e));
+
+        // Non-blocking: generate blog posts
+        fetch(`${appUrl}/api/generate-blog`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+          },
+          body: JSON.stringify({ business_id: targetBizId }),
+        }).catch(e => console.error("Blog generation failed:", e));
+      }
 
     } catch (err: any) {
       console.error("Post-payment setup failed:", err);
-      await supabase
-        .from("pending_sites")
-        .update({ status: "error", error: err.message })
-        .eq("id", pendingSiteId);
+      // Don't return error — Stripe will retry, we don't want duplicate processing
     }
   }
 
-  // Handle subscription cancellation
+  // ── Subscription canceled ────────────────────────────────────────────────
   if (event.type === "customer.subscription.deleted") {
     const sub = event.data.object as Stripe.Subscription;
     await supabase
@@ -162,7 +131,7 @@ export async function POST(request: Request) {
       .eq("stripe_subscription_id", sub.id);
   }
 
-  // Handle payment failure
+  // ── Payment failed ───────────────────────────────────────────────────────
   if (event.type === "invoice.payment_failed") {
     const invoice = event.data.object as Stripe.Invoice;
     const subId = (invoice as any).subscription;
@@ -171,6 +140,18 @@ export async function POST(request: Request) {
         .from("subscriptions")
         .update({ status: "past_due" })
         .eq("stripe_subscription_id", subId);
+    }
+  }
+
+  // ── Subscription updated (plan change) ──────────────────────────────────
+  if (event.type === "customer.subscription.updated") {
+    const sub = event.data.object as Stripe.Subscription;
+    const newPlan = sub.metadata?.plan;
+    if (newPlan) {
+      await supabase
+        .from("subscriptions")
+        .update({ plan: newPlan, status: sub.status })
+        .eq("stripe_subscription_id", sub.id);
     }
   }
 
