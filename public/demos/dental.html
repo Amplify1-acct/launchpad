@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bright Smiles Dental | Modern Dentistry in Westfield, NJ</title>
+  <meta name="description" content="Bright Smiles Dental in Westfield, NJ. Cosmetic dentistry, implants, and family care in a modern, comfortable setting. Call (908) 555-0192.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:      #1352cc;
+      --blue-dark: #0c3a99;
+      --blue-mid:  #1e6be6;
+      --blue-pale: #e8f0fe;
+      --blue-soft: #d0e2ff;
+      --accent:    #00c4b4;
+      --white:     #ffffff;
+      --off:       #f7f9ff;
+      --text:      #0d1b3e;
+      --mid:       #4a5568;
+      --light:     #718096;
+      --border:    #dce6ff;
+      --nav-h:     68px;
+      --r:         10px;
+      --r-lg:      18px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--text); background: #fff; overflow-x: hidden; line-height: 1.6; }
+    img { display: block; width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Demo bar ── */
+    #demo-bar {
+      background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%);
+      color: #fff;
+      text-align: center;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    #demo-bar a { color: #b3d4ff; text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      height: var(--nav-h);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo-mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); font-weight: 700; }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 15px; font-weight: 500; color: var(--mid); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta {
+      background: var(--blue); color: #fff !important;
+      padding: 10px 22px; border-radius: 8px;
+      font-weight: 600 !important; font-size: 14px !important;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    #hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    #hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      background: var(--off);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-left {
+      padding: 80px 60px 80px 64px;
+      position: relative; z-index: 2;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue-pale); color: var(--blue);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .hero-badge::before { content: '●'; font-size: 8px; color: var(--accent); }
+    .hero-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 4.5vw, 62px);
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .hero-left h1 em { color: var(--blue); font-style: normal; }
+    .hero-sub {
+      font-size: 18px; color: var(--mid); font-weight: 300;
+      max-width: 440px; margin-bottom: 36px; line-height: 1.65;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--r); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: transform 0.18s, box-shadow 0.18s, background 0.18s; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 4px 20px rgba(19,82,204,0.28); }
+    .btn-primary:hover { background: var(--blue-dark); box-shadow: 0 6px 28px rgba(19,82,204,0.38); }
+    .btn-ghost { background: transparent; color: var(--blue); border: 1.5px solid var(--blue-soft); }
+    .btn-ghost:hover { background: var(--blue-pale); }
+    .btn-white { background: #fff; color: var(--blue); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    .btn-white-ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.5); }
+    .btn-white-ghost:hover { background: rgba(255,255,255,0.12); }
+    .btn-dark { background: var(--text); color: #fff; }
+    .btn-dark:hover { background: #1a2b56; }
+
+    .hero-trust {
+      margin-top: 40px; display: flex; align-items: center; gap: 16px;
+      padding-top: 32px; border-top: 1px solid var(--border);
+    }
+    .trust-avatars { display: flex; }
+    .trust-avatars span {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--blue-pale); border: 2px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: var(--blue);
+      margin-left: -8px;
+    }
+    .trust-avatars span:first-child { margin-left: 0; }
+    .trust-text { font-size: 13px; color: var(--mid); }
+    .trust-text strong { color: var(--text); }
+    .trust-stars { color: #f59e0b; font-size: 13px; }
+
+    .hero-right {
+      position: relative; height: 100%; min-height: 600px;
+      display: flex; align-items: stretch;
+    }
+    .hero-img-wrap {
+      flex: 1; position: relative; overflow: hidden;
+    }
+    .hero-img-wrap img { height: 100%; object-fit: cover; }
+
+    /* Floating card on hero */
+    .hero-float {
+      position: absolute; left: -120px; bottom: 80px; z-index: 10;
+      background: #fff; border-radius: var(--r-lg);
+      padding: 18px 22px;
+      box-shadow: 0 20px 60px rgba(19,82,204,0.18);
+      min-width: 200px;
+    }
+    .hero-float-label { font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .hero-float-value { font-size: 28px; font-weight: 700; color: var(--text); font-family: 'Playfair Display', serif; }
+    .hero-float-sub { font-size: 12px; color: var(--mid); margin-top: 2px; }
+
+    .hero-float-2 {
+      position: absolute; right: 24px; top: 60px; z-index: 10;
+      background: var(--blue); border-radius: var(--r-lg);
+      padding: 16px 20px;
+      box-shadow: 0 16px 48px rgba(19,82,204,0.35);
+      min-width: 180px;
+    }
+    .hero-float-2 .f2-icon { font-size: 22px; margin-bottom: 8px; }
+    .hero-float-2 .f2-val { font-size: 22px; font-weight: 700; color: #fff; }
+    .hero-float-2 .f2-lbl { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+
+    /* ── Stats Strip ── */
+    .stats-strip {
+      background: var(--blue);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 0;
+    }
+    .stat-cell {
+      padding: 36px 24px;
+      border-right: 1px solid rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 48px);
+      color: #fff; font-weight: 700;
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-lbl { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ── Sections ── */
+    .sec { padding: 96px 64px; }
+    .sec-sm { padding: 72px 64px; }
+    .sec-tag { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+    .sec-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 46px); color: var(--text); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .sec-body { font-size: 17px; color: var(--mid); max-width: 560px; line-height: 1.75; font-weight: 300; }
+    .sec-header { margin-bottom: 56px; }
+
+    /* ── Services ── */
+    #services-sec { background: var(--off); }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .service-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 36px 30px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--accent));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .service-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(19,82,204,0.12); border-color: var(--blue-soft); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .svc-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--blue-pale); display: flex; align-items: center;
+      justify-content: center; font-size: 24px; margin-bottom: 20px;
+    }
+    .service-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); margin-bottom: 10px; }
+    .service-card p { font-size: 15px; color: var(--mid); line-height: 1.65; font-weight: 300; }
+    .svc-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 14px; font-weight: 600; color: var(--blue); }
+    .svc-link:hover { gap: 10px; }
+
+    /* ── About split ── */
+    #about-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 560px; padding: 0;
+    }
+    #about-img { overflow: hidden; position: relative; }
+    #about-img img { height: 100%; object-fit: cover; }
+    #about-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 70%, rgba(247,249,255,0.3));
+    }
+    #about-text {
+      padding: 80px 64px; background: var(--off);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .about-check-list { margin: 28px 0; display: flex; flex-direction: column; gap: 16px; }
+    .check-item { display: flex; align-items: flex-start; gap: 14px; }
+    .check-mark {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--blue-pale); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .check-mark::after { content: '✓'; font-size: 12px; font-weight: 700; color: var(--blue); }
+    .check-item p { font-size: 15px; color: var(--mid); font-weight: 300; line-height: 1.5; }
+    .check-item strong { color: var(--text); font-weight: 600; }
+
+    /* ── Gallery ── */
+    .gallery-mosaic {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      grid-template-rows: 260px 260px;
+      gap: 14px;
+    }
+    .gal-item { border-radius: var(--r-lg); overflow: hidden; position: relative; }
+    .gal-item.tall { grid-row: span 2; }
+    .gal-item img { height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .gal-item:hover img { transform: scale(1.04); }
+    .gal-item::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(13,27,62,0.35));
+      pointer-events: none;
+    }
+
+    /* ── Testimonials ── */
+    #testimonials-sec { background: var(--blue); }
+    #testimonials-sec .sec-title { color: #fff; }
+    #testimonials-sec .sec-tag { color: var(--accent); }
+    #testimonials-sec .sec-body { color: rgba(255,255,255,0.75); }
+    .test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .test-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--r-lg); padding: 32px 28px;
+      transition: background 0.25s;
+    }
+    .test-card:hover { background: rgba(255,255,255,0.13); }
+    .test-stars { color: #fbbf24; font-size: 15px; margin-bottom: 16px; letter-spacing: 2px; }
+    .test-quote { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.75; font-weight: 300; font-style: italic; margin-bottom: 20px; }
+    .test-author { display: flex; align-items: center; gap: 12px; }
+    .test-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: #fff;
+      flex-shrink: 0;
+    }
+    .test-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .test-loc { font-size: 12px; color: rgba(255,255,255,0.55); }
+
+    /* ── CTA section ── */
+    #cta-sec {
+      background: var(--off);
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 48px;
+      padding: 72px 64px;
+    }
+    #cta-sec .sec-title { margin-bottom: 8px; }
+    .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0; }
+
+    /* ── Contact ── */
+    #contact-split { display: grid; grid-template-columns: 1fr 1fr; padding: 0; min-height: 580px; }
+    #contact-info {
+      background: var(--blue); padding: 80px 56px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    #contact-info .sec-title { color: #fff; }
+    #contact-info .sec-tag { color: var(--accent); }
+    .contact-rows { margin-top: 40px; display: flex; flex-direction: column; gap: 28px; }
+    .con-row { display: flex; gap: 16px; align-items: flex-start; }
+    .con-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: rgba(255,255,255,0.12); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .con-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .con-val { font-size: 16px; color: #fff; font-weight: 500; }
+    #contact-form-wrap { padding: 80px 56px; background: #fff; }
+    #contact-form-wrap .sec-title { margin-bottom: 32px; font-size: 28px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grp { margin-bottom: 18px; }
+    .form-grp label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 6px; }
+    .form-grp input, .form-grp textarea, .form-grp select {
+      width: 100%; padding: 13px 16px;
+      border: 1px solid var(--border); border-radius: var(--r);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
+      background: var(--off); transition: border-color 0.2s, background 0.2s;
+    }
+    .form-grp input:focus, .form-grp textarea:focus, .form-grp select:focus {
+      outline: none; border-color: var(--blue); background: #fff;
+    }
+    .form-grp textarea { min-height: 110px; resize: vertical; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--text); padding: 40px 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .foot-logo { display: flex; align-items: center; gap: 10px; }
+    .foot-logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .foot-logo-text { font-family: 'Playfair Display', serif; font-size: 17px; color: #fff; }
+    .foot-copy { font-size: 13px; color: rgba(255,255,255,0.4); }
+    .foot-links { display: flex; gap: 24px; }
+    .foot-links a { font-size: 13px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .foot-links a:hover { color: #fff; }
+
+    /* ── Mobile ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: #fff; flex-direction: column; padding: 24px 20px; gap: 20px; border-bottom: 1px solid var(--border); z-index: 199; }
+      .nav-links.open { display: flex; }
+      #hamburger { display: flex; }
+      #hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { display: none; }
+      .hero-left { padding: 56px 24px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      .sec, .sec-sm { padding: 60px 24px; }
+      #about-split, #contact-split { grid-template-columns: 1fr; }
+      #about-img { min-height: 300px; }
+      #about-text, #contact-info, #contact-form-wrap { padding: 56px 24px; }
+      .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .gal-item.tall { grid-row: auto; min-height: 220px; }
+      .gal-item { min-height: 180px; }
+      .test-grid { grid-template-columns: 1fr; }
+      #cta-sec { grid-template-columns: 1fr; padding: 56px 24px; gap: 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+      .foot-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="demo-bar">
+  ✦ Demo site — images generated by Nano Banana AI ·
+  <a href="https://exsisto.ai" target="_blank">Get your real site at Exsisto.ai →</a>
+</div>
+
+<nav id="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">🦷</div>
+    <span class="nav-logo-text">Bright Smiles Dental</span>
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('services')">Services</a></li>
+    <li><a href="#" onclick="showPage('about')">About</a></li>
+    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+    <li><a href="tel:9085550192" class="nav-cta">Book Appointment</a></li>
+  </ul>
+  <button id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════════ HOME -->
+<div id="page-home" class="page active">
+
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-badge">Westfield, NJ · Accepting New Patients</div>
+      <h1>Your Best Smile <em>Starts Here</em></h1>
+      <p class="hero-sub">Modern dentistry in a calm, comfortable setting. From routine cleanings to complete smile transformations — we do it all.</p>
+      <div class="hero-actions">
+        <a href="tel:9085550192" class="btn btn-primary">📅 Book Appointment</a>
+        <button class="btn btn-ghost" onclick="showPage('services')">View Services</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <span>DR</span><span>KM</span><span>PL</span><span>+</span>
+        </div>
+        <div>
+          <div class="trust-stars">★★★★★</div>
+          <div class="trust-text"><strong>4.9/5</strong> from 340+ patient reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <!-- Nano Banana image: hero slot -->
+        <img src="https://images.unsplash.com/photo-1629909615957-be38d48fbbe4?w=900&q=85" style="height:100%;min-height:600px;object-fit:cover;" alt="Modern dental office">
+      </div>
+
+      <div class="hero-float">
+        <div class="hero-float-label">Happy Patients</div>
+        <div class="hero-float-value">3,200<span style="font-size:20px;color:var(--accent)">+</span></div>
+        <div class="hero-float-sub">Served since 2006</div>
+      </div>
+
+      <div class="hero-float-2">
+        <div class="f2-icon">🏆</div>
+        <div class="f2-val">Top 10</div>
+        <div class="f2-lbl">NJ Dentist · 2025</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <div class="stat-num">18<span>+</span></div>
+      <div class="stat-lbl">Years in Practice</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">3.2<span>k</span></div>
+      <div class="stat-lbl">Smiles Transformed</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">4.9<span>★</span></div>
+      <div class="stat-lbl">Average Rating</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">24<span>h</span></div>
+      <div class="stat-lbl">Emergency Line</div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <section class="sec" id="services-sec">
+    <div class="sec-header">
+      <p class="sec-tag">What We Offer</p>
+      <h2 class="sec-title">Comprehensive Dental Care</h2>
+      <p class="sec-body">Every service under one roof, with the latest technology and a gentle touch.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="svc-icon">✨</div>
+        <h3>Teeth Whitening</h3>
+        <p>Professional-grade whitening up to 8 shades brighter in a single visit using our advanced LED system.</p>
+        <div class="svc-link">Learn more →</div>
+      </div>
+      <div class="service-card">
+        <div class="svc-icon">🦷</div>
+        <h3>Dental Implants</h3>
+        <p>Permanent tooth replacement that looks, feels, and functions exactly like your natural teeth.</p>
+        <div class="svc-link">Learn more →</div>
+      </div>
+      <div class="service-card">
+        <div class="svc-icon">😁</div>
+        <h3>Invisalign®</h3>
+        <p>Straighten your teeth with clear, removable aligners — no brackets, no wires, no lifestyle changes.</p>
+        <div class="svc-link">Learn more →</div>
+      </div>
+      <div class="service-card">
+        <div class="svc-icon">🔬</div>
+        <h3>Preventive Care</h3>
+        <p>Routine cleanings, exams, and X-rays that catch small problems before they become expensive ones.</p>
+        <div class="svc-link">Learn more →</div>
+      </div>
+      <div class="service-card">
+        <div class="svc-icon">🎨</div>
+        <h3>Porcelain Veneers</h3>
+        <p>Ultra-thin custom shells that mask chips, cracks, gaps, and discoloration for a flawless smile.</p>
+        <div class="svc-link">Learn more →</div>
+      </div>
+      <div class="service-card">
+        <div class="svc-icon">🚨</div>
+        <h3>Emergency Dentistry</h3>
+        <p>Same-day emergency appointments available. Call us now — we'll see you today.</p>
+        <div class="svc-link">Call now →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Split -->
+  <div id="about-split">
+    <div id="about-img">
+      <img src="https://images.unsplash.com/photo-1588776814546-1ffbb23e8b30?w=900&q=85" style="height:100%;min-height:480px;object-fit:cover;" alt="Dental team">
+    </div>
+    <div id="about-text">
+      <p class="sec-tag">Our Story</p>
+      <h2 class="sec-title">Westfield's Most Trusted Dental Practice</h2>
+      <p class="sec-body">Founded by Dr. Sarah Chen in 2006, Bright Smiles Dental was built on one idea: that going to the dentist shouldn't be something you dread. We've spent 18 years proving that great dentistry and a warm, welcoming experience go hand in hand.</p>
+      <div class="about-check-list">
+        <div class="check-item">
+          <div class="check-mark"></div>
+          <p><strong>State-of-the-art technology</strong> — 3D imaging, digital X-rays, and same-day crowns</p>
+        </div>
+        <div class="check-item">
+          <div class="check-mark"></div>
+          <p><strong>All insurances accepted</strong> — plus flexible in-house payment plans</p>
+        </div>
+        <div class="check-item">
+          <div class="check-mark"></div>
+          <p><strong>Anxiety-free environment</strong> — sedation options available for nervous patients</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('about')">Meet Our Team</button>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <section class="sec">
+    <div class="sec-header">
+      <p class="sec-tag">Our Work</p>
+      <h2 class="sec-title">Real Patient Transformations</h2>
+      <p class="sec-body">Every image below is a real result from our Westfield practice — generated for this demo by Nano Banana AI.</p>
+    </div>
+    <div class="gallery-mosaic">
+      <div class="gal-item tall">
+        <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=700&q=85" style="height:100%;object-fit:cover;" alt="Smile transformation">
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&q=85" style="height:100%;min-height:260px;object-fit:cover;" alt="Dental office">
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1498842812179-c81beecf902c?w=600&q=85" style="height:100%;min-height:260px;object-fit:cover;" alt="Patient smile">
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=85" style="height:100%;min-height:260px;object-fit:cover;" alt="Dental team">
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600&q=85" style="height:100%;min-height:260px;object-fit:cover;" alt="Patient care">
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="sec" id="testimonials-sec">
+    <div class="sec-header">
+      <p class="sec-tag">Patient Reviews</p>
+      <h2 class="sec-title">What Our Patients Say</h2>
+      <p class="sec-body" style="color:rgba(255,255,255,0.65)">Hundreds of 5-star reviews from families across Union County.</p>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"I've been terrified of dentists my entire life. Dr. Chen completely changed that. She was so patient and explained every step. I actually look forward to my checkups now."</p>
+        <div class="test-author">
+          <div class="test-avatar">LM</div>
+          <div>
+            <div class="test-name">Laura M.</div>
+            <div class="test-loc">Westfield, NJ</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Got Invisalign here 18 months ago and the results are incredible. The whole process was smooth, they were always responsive, and my smile looks better than it ever has."</p>
+        <div class="test-author">
+          <div class="test-avatar">RT</div>
+          <div>
+            <div class="test-name">Ryan T.</div>
+            <div class="test-loc">Summit, NJ</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Emergency crown broke on a Friday afternoon. Called Bright Smiles and they got me in same-day. Incredible service. The whole family goes here now and we won't go anywhere else."</p>
+        <div class="test-author">
+          <div class="test-avatar">SK</div>
+          <div>
+            <div class="test-name">Susan K.</div>
+            <div class="test-loc">Cranford, NJ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div id="cta-sec">
+    <div>
+      <p class="sec-tag">Ready to Get Started?</p>
+      <h2 class="sec-title">Book Your Appointment Today</h2>
+      <p class="sec-body">New patients welcome. Most insurance accepted. Same-week appointments available.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="tel:9085550192" class="btn btn-primary">📞 (908) 555-0192</a>
+      <button class="btn btn-ghost" onclick="showPage('contact')">Send a Message</button>
+    </div>
+  </div>
+
+</div><!-- /home -->
+
+
+<!-- ══════════════════════════════════════════════════════════ SERVICES -->
+<div id="page-services" class="page">
+  <section class="sec" style="padding-top:80px;">
+    <div class="sec-header">
+      <p class="sec-tag">Complete Care</p>
+      <h2 class="sec-title">Everything Your Smile Needs</h2>
+      <p class="sec-body">From your first cleaning to a complete cosmetic makeover — Bright Smiles handles it all in Westfield, NJ.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card"><div class="svc-icon">✨</div><h3>Teeth Whitening</h3><p>Professional-grade whitening up to 8 shades brighter in a single visit using our advanced LED system.</p></div>
+      <div class="service-card"><div class="svc-icon">🦷</div><h3>Dental Implants</h3><p>Permanent tooth replacement that looks, feels, and functions exactly like your natural teeth.</p></div>
+      <div class="service-card"><div class="svc-icon">😁</div><h3>Invisalign®</h3><p>Straighten your teeth with clear, removable aligners — no brackets, no wires, no lifestyle changes.</p></div>
+      <div class="service-card"><div class="svc-icon">🔬</div><h3>Preventive Care</h3><p>Routine cleanings, exams, and X-rays that catch small problems before they become expensive ones.</p></div>
+      <div class="service-card"><div class="svc-icon">🎨</div><h3>Porcelain Veneers</h3><p>Ultra-thin custom shells that mask chips, cracks, gaps, and discoloration for a flawless smile.</p></div>
+      <div class="service-card"><div class="svc-icon">🚨</div><h3>Emergency Dentistry</h3><p>Same-day emergency appointments available. Call us now — we'll see you today.</p></div>
+    </div>
+  </section>
+  <div id="cta-sec">
+    <div><p class="sec-tag">Get Started</p><h2 class="sec-title">Ready to Book?</h2><p class="sec-body">Same-week availability. All insurance accepted.</p></div>
+    <div class="cta-actions">
+      <a href="tel:9085550192" class="btn btn-primary">📞 (908) 555-0192</a>
+      <button class="btn btn-ghost" onclick="showPage('contact')">Contact Us</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ ABOUT -->
+<div id="page-about" class="page">
+  <div id="about-split" style="min-height:520px;">
+    <div id="about-img">
+      <img src="https://images.unsplash.com/photo-1588776814546-1ffbb23e8b30?w=900&q=85" style="height:100%;min-height:520px;object-fit:cover;" alt="Dental team">
+    </div>
+    <div id="about-text">
+      <p class="sec-tag">Our Story</p>
+      <h2 class="sec-title">18 Years of Healthy Smiles</h2>
+      <p class="sec-body">Dr. Sarah Chen founded Bright Smiles Dental in 2006 with a mission to make dental care something patients actually look forward to. Today our team of four dentists and twelve staff members serves over 3,200 families across Union County. We invest in the latest technology so you get better results with less time in the chair.</p>
+      <div class="about-check-list">
+        <div class="check-item"><div class="check-mark"></div><p><strong>3D digital imaging</strong> — pinpoint accuracy, less radiation</p></div>
+        <div class="check-item"><div class="check-mark"></div><p><strong>CEREC same-day crowns</strong> — one appointment, no temporaries</p></div>
+        <div class="check-item"><div class="check-mark"></div><p><strong>Sedation dentistry</strong> — oral and IV options for anxious patients</p></div>
+      </div>
+    </div>
+  </div>
+  <section class="sec" id="testimonials-sec">
+    <div class="sec-header">
+      <p class="sec-tag">Patient Reviews</p>
+      <h2 class="sec-title">What People Are Saying</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-quote">"I've been terrified of dentists my entire life. Dr. Chen completely changed that."</p><div class="test-author"><div class="test-avatar">LM</div><div><div class="test-name">Laura M.</div><div class="test-loc">Westfield, NJ</div></div></div></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-quote">"Got Invisalign here 18 months ago and the results are incredible."</p><div class="test-author"><div class="test-avatar">RT</div><div><div class="test-name">Ryan T.</div><div class="test-loc">Summit, NJ</div></div></div></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-quote">"Emergency crown broke on a Friday. They got me in same-day. Incredible."</p><div class="test-author"><div class="test-avatar">SK</div><div><div class="test-name">Susan K.</div><div class="test-loc">Cranford, NJ</div></div></div></div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ CONTACT -->
+<div id="page-contact" class="page">
+  <div id="contact-split">
+    <div id="contact-info">
+      <p class="sec-tag">Reach Us</p>
+      <h2 class="sec-title" style="color:#fff;">We'd Love to Hear From You</h2>
+      <div class="contact-rows">
+        <div class="con-row"><div class="con-icon">📞</div><div><div class="con-label">Phone</div><div class="con-val">(908) 555-0192</div></div></div>
+        <div class="con-row"><div class="con-icon">✉️</div><div><div class="con-label">Email</div><div class="con-val">hello@brightsmilesnj.com</div></div></div>
+        <div class="con-row"><div class="con-icon">📍</div><div><div class="con-label">Location</div><div class="con-val">Westfield, NJ 07090</div></div></div>
+        <div class="con-row"><div class="con-icon">🕐</div><div><div class="con-label">Hours</div><div class="con-val">Mon–Thu: 8am–6pm<br>Fri: 8am–4pm · Sat: 9am–2pm</div></div></div>
+      </div>
+    </div>
+    <div id="contact-form-wrap">
+      <p class="sec-tag">Send a Message</p>
+      <h2 class="sec-title">Book or Ask a Question</h2>
+      <div class="form-row-2">
+        <div class="form-grp"><label>First Name</label><input type="text" placeholder="Sarah"></div>
+        <div class="form-grp"><label>Last Name</label><input type="text" placeholder="Johnson"></div>
+      </div>
+      <div class="form-grp"><label>Email</label><input type="email" placeholder="sarah@email.com"></div>
+      <div class="form-grp"><label>Phone</label><input type="tel" placeholder="(908) 000-0000"></div>
+      <div class="form-grp"><label>What Can We Help With?</label>
+        <select><option>Select a service...</option><option>Teeth Whitening</option><option>Dental Implants</option><option>Invisalign</option><option>Routine Cleaning</option><option>Emergency</option><option>Other</option></select>
+      </div>
+      <div class="form-grp"><label>Message</label><textarea placeholder="Tell us about your dental goals or any concerns..."></textarea></div>
+      <button class="btn btn-primary" style="width:100%" onclick="handleSubmit(this)">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">
+    <div class="foot-logo-mark">🦷</div>
+    <span class="foot-logo-text">Bright Smiles Dental</span>
+  </div>
+  <span class="foot-copy">© 2026 Bright Smiles Dental · Westfield, NJ · All rights reserved</span>
+  <div class="foot-links">
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('services')">Services</a>
+    <a href="#" onclick="showPage('contact')">Contact</a>
+  </div>
+</footer>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-' + name);
+    if (page) { page.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    document.getElementById('nav-links').classList.remove('open');
+  }
+  function toggleMenu() { document.getElementById('nav-links').classList.toggle('open'); }
+  function handleSubmit(btn) {
+    btn.textContent = '✅ Message Sent!';
+    btn.style.background = '#059669';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; btn.disabled = false; }, 4000);
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.service-card, .test-card, .gal-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(22px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
