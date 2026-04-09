@@ -175,21 +175,25 @@ Location: ${location}
     const parsed = JSON.parse(raw.replace(/\`\`\`json|\`\`\`/g, "").trim());
 
     // Inject the headline — find the <h1> tag and replace its text content
-    // Each template has a different h1 structure, so we do a targeted replacement
+    // Use string index approach to avoid regex escaping issues
     if (parsed.headline) {
-      // Replace the first significant h1 text block
-      html = html.replace(
-        /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/,
-        `$1${parsed.headline}$3`
-      );
+      const h1Start = html.indexOf("<h1");
+      const h1TagEnd = html.indexOf(">", h1Start) + 1;
+      const h1Close = html.indexOf("</h1>", h1Start);
+      if (h1Start > -1 && h1Close > -1) {
+        html = html.slice(0, h1TagEnd) + parsed.headline + html.slice(h1Close);
+      }
     }
     if (parsed.subheadline) {
-      // Replace the first <p> after the h1 that looks like a subheadline
-      html = html.replace(
-        /(<h1[\s\S]*?<\/h1>[\s
-]*<p[^>]*>)([\s\S]*?)(<\/p>)/,
-        `$1${parsed.subheadline}$3`
-      );
+      const h1CloseIdx = html.indexOf("</h1>");
+      if (h1CloseIdx > -1) {
+        const pStart = html.indexOf("<p ", h1CloseIdx);
+        const pTagEnd = html.indexOf(">", pStart) + 1;
+        const pClose = html.indexOf("</p>", pStart);
+        if (pStart > -1 && pClose > -1) {
+          html = html.slice(0, pTagEnd) + parsed.subheadline + html.slice(pClose);
+        }
+      }
     }
   } catch (e) {
     // Headline generation failed — keep original, that's fine
