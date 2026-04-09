@@ -43,9 +43,34 @@ export default function AdminClientActions({ businessId, adminSecret }: Props) {
     setLoading(null);
   }
 
+  async function deleteClient() {
+    if (!confirm("DELETE this client permanently?\n\nThis will remove their business, website, blog posts, social posts, subscription, account, and auth user.\n\nThis cannot be undone.")) return;
+    setLoading("delete");
+    setError("");
+    try {
+      const res = await fetch("/api/admin/delete-client", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-secret": adminSecret,
+        },
+        body: JSON.stringify({ business_id: businessId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = "/admin";
+      } else {
+        setError(data.error || "Delete failed");
+        setLoading(null);
+      }
+    } catch (e: any) {
+      setError(e.message);
+      setLoading(null);
+    }
+  }
+
   return (
     <div style={{
-      // Sits BELOW the fixed admin banner, full width, not overlapping sidebar
       position: "fixed",
       top: "37px",
       left: 0,
@@ -53,7 +78,7 @@ export default function AdminClientActions({ businessId, adminSecret }: Props) {
       zIndex: 9998,
       background: "#23232f",
       borderBottom: "1px solid #35354a",
-      padding: "8px 20px 8px 232px", // 232px = sidebar width + padding
+      padding: "8px 20px 8px 232px",
       display: "flex",
       alignItems: "center",
       gap: "8px",
@@ -91,6 +116,33 @@ export default function AdminClientActions({ businessId, adminSecret }: Props) {
           {loading === a.key ? "Running…" : results[a.key] || a.label}
         </button>
       ))}
+
+      {/* Spacer */}
+      <div style={{ flex: 1 }} />
+
+      {/* Delete — separated to the right, red */}
+      <button
+        onClick={deleteClient}
+        disabled={loading !== null}
+        title="Permanently delete this client and all their data"
+        style={{
+          padding: "5px 13px",
+          borderRadius: "6px",
+          border: "1px solid #7f1d1d",
+          background: loading === "delete" ? "#dc2626" : "#2d1515",
+          color: loading === "delete" ? "#fff" : "#f87171",
+          fontSize: "12px",
+          fontWeight: 700,
+          cursor: loading !== null ? "not-allowed" : "pointer",
+          opacity: loading !== null && loading !== "delete" ? 0.5 : 1,
+          whiteSpace: "nowrap",
+          fontFamily: "inherit",
+          transition: "background 0.15s",
+        }}
+      >
+        {loading === "delete" ? "Deleting…" : "🗑 Delete client"}
+      </button>
+
       {error && <span style={{ fontSize: "11px", color: "#f87171", marginLeft: "8px" }}>{error}</span>}
     </div>
   );
