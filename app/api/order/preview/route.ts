@@ -633,10 +633,24 @@ Return JSON with these exact keys:
   // Build content map
   const content = buildContent(cleanBizName, cleanCity, cleanState, phone || "", description || "", cleanServices, generated);
 
+  // Add nav-specific content to content map
+  const navContent: Record<string, string> = {
+    nav_home:     "Home",
+    nav_services: "Services",
+    nav_about:    "About",
+    nav_reviews:  "Reviews",
+    nav_contact:  "Contact",
+    nav1: svcList[0] || "Services",
+    nav2: svcList[1] || "About",
+    nav3: svcList[2] || "Contact",
+    nav4: svcList[3] || "More",
+  };
+  const fullContent = { ...content, ...navContent };
+
   // Apply all swaps
   const swaps = TEMPLATE_SWAPS[templateKey] || [];
   for (const [search, key] of swaps) {
-    const replacement = content[key] !== undefined ? content[key] : search;
+    const replacement = fullContent[key] !== undefined ? fullContent[key] : search;
     html = html.replaceAll(search, replacement);
   }
 
