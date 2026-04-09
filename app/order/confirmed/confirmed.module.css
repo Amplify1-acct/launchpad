@@ -97,6 +97,26 @@
   line-height: 1.5;
 }
 
+
+.dashBtn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: #4648d4;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: background 0.15s, transform 0.1s;
+}
+.dashBtn:hover {
+  background: #3b3dc4;
+  transform: translateY(-1px);
+}
+
 .note {
   font-size: 13px;
   color: #9090a8;
