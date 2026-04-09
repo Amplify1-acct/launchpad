@@ -556,3 +556,23 @@
   .reviewLayout { grid-template-columns: 1fr; }
   .checkoutCard { position: static; }
 }
+
+.previewBtn {
+  padding: 13px 28px;
+  background: #fff;
+  color: #4648d4;
+  border: 2px solid #4648d4;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.previewBtn:hover {
+  background: #f5f2ff;
+}
+.previewBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

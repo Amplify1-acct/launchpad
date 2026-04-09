@@ -91,6 +91,44 @@ export default function OrderPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("skeleton-clean");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  async function generatePreview() {
+    if (!form.businessName || !form.industry) {
+      setError("Please fill in your business name and industry first.");
+      return;
+    }
+    setPreviewLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/order/preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName: form.businessName,
+          industry: form.industry,
+          city: form.city,
+          state: form.state,
+          phone: form.phone,
+          description: form.description,
+          services: form.services,
+          template: selectedTemplate,
+        }),
+      });
+      const data = await res.json();
+      if (data.html) {
+        setPreviewHtml(data.html);
+        setPreviewOpen(true);
+      } else {
+        setError("Preview failed. Please try again.");
+      }
+    } catch {
+      setError("Preview failed. Please try again.");
+    }
+    setPreviewLoading(false);
+  }
 
   const [form, setForm] = useState({
     businessName: "",
@@ -321,6 +359,13 @@ export default function OrderPage() {
             </div>
             <div className={styles.nextWrap}>
               <button className={styles.backBtn} onClick={() => setStep("template")}>← Back</button>
+              <button
+                className={styles.previewBtn}
+                onClick={generatePreview}
+                disabled={previewLoading}
+              >
+                {previewLoading ? "Generating preview…" : "👁 Preview my site"}
+              </button>
               <button className={styles.nextBtn} onClick={() => setStep("checkout")}>
                 Review order →
               </button>
