@@ -28,7 +28,7 @@ export default function OrderConfirmedPage() {
             <div className={styles.dot}>3</div>
             <div>
               <div className={styles.timelineLabel}>Account email incoming</div>
-              <div className={styles.timelineSub}>You'll get a login link to access your dashboard</div>
+              <div className={styles.timelineSub}>Check your inbox for a login link to your dashboard</div>
             </div>
           </div>
           <div className={styles.timelineItem}>
@@ -39,6 +39,11 @@ export default function OrderConfirmedPage() {
             </div>
           </div>
         </div>
+
+        <a href="/dashboard" className={styles.dashBtn}>
+          Go to my dashboard →
+        </a>
+
         <div className={styles.note}>
           Questions? Email us at <a href="mailto:support@exsisto.ai">support@exsisto.ai</a>
         </div>
