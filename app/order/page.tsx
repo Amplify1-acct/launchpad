@@ -439,9 +439,8 @@ export default function OrderPage() {
         )}
 
       </main>
-    </div>
 
-      {/* ── Preview Modal ──────────────────────────────────────────────── */}
+      {/* ── Preview Modal ── */}
       {previewOpen && previewHtml && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 1000,
@@ -492,7 +491,7 @@ export default function OrderPage() {
             padding: "7px 16px", fontSize: "12px", color: "#854d0e",
             display: "flex", alignItems: "center", gap: "8px", flexShrink: 0,
           }}>
-            ⚠️&nbsp;<strong>Preview only.</strong>&nbsp;Sample images are shown as placeholders. Your real site will have custom AI-generated photos, refined copy reviewed by our team, and your full business details throughout. Content may vary.
+            ⚠️&nbsp;<strong>Preview only.</strong>&nbsp;Sample images are shown as placeholders. Your real site will have custom AI-generated photos, refined copy reviewed by our team, and your full business details throughout.
           </div>
 
           {/* Site iframe */}
