@@ -6,25 +6,26 @@ import { join } from "path";
 const client = new Anthropic();
 export const maxDuration = 45;
 
-// Per-template: what hardcoded strings to swap out
-// Each entry: [searchString, replacementKey]
-// replacementKey maps to the generated content object
 const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
   auto: [
     ["MATTY'S AUTOMOTIVE | The Art of Mechanical Resurrection", "meta_title"],
     ["MATTY'S AUTOMOTIVE", "biz_name_upper"],
+    ["Matty's Automotive", "biz_name"],
     ["Est. 2004 | Clark, New Jersey", "est_location"],
+    ["Clark, New Jersey", "city_state"],
+    ["(732) 555-0192", "phone_formatted"],
+    ["7325550192", "phone_raw"],
     ["The Art of", "hero_line1"],
     ["Mechanical Resurrection.", "hero_line2"],
     ["20+ Years. 500+ Masterpieces.", "hero_stat_line"],
     ["One surgical pursuit of perfection.", "hero_sub"],
     ["Industrial", "services_heading_1"],
     ["Services", "services_heading_2"],
-    ["From structural integrity to the final glass-like finish, our atelier handles every facet of restoration.", "services_intro"],
+    ["From structural integrity to the final glass-like finish, our atelier handles every millimeter in-house.", "services_intro"],
     ["Full Body Restoration", "svc1_name"],
     ["Complete rotisserie restoration focusing on structural perfection and historical accuracy.", "svc1_desc"],
     ["Custom Paint & Body", "svc2_name"],
-    ["Show-quality finishes using multiple stages of hand-sanded lacquer and premium coatings.", "svc2_desc"],
+    ["Show-quality finishes using multiple stages of hand-sanded lacquer and premium clear coats.", "svc2_desc"],
     ["Panel Fabrication", "svc3_name"],
     ["English wheel work and bespoke panel creation for rare silhouettes and custom modifications.", "svc3_desc"],
     ["Chrome & Detailing", "svc4_name"],
@@ -32,29 +33,38 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Ready to Restore", "cta_heading1"],
     ["Your Legacy?", "cta_heading2"],
     ["Consultations by appointment only. Clark, New Jersey.", "cta_sub"],
-    ["(732) 555-0192", "phone_formatted"],
     ["Initiate Consultation", "cta_btn"],
+    ["© 2024 Matty's Automotive · Clark, NJ · (732) 555-0192 · Powered by Exsisto Premium", "footer_copy"],
   ],
   dental: [
     ["Bright Smile Dental | Scotch Plains NJ", "meta_title"],
     ["Bright Smile Dental", "biz_name"],
     ["Excellence in Scotch Plains", "hero_eyebrow"],
     ["Redefining the Modern Dental Experience.", "hero_headline"],
-    ["Step into a clinical environment designed for serenity. We combine high-end technology with exceptional care.", "hero_sub"],
+    ["Step into a clinical environment designed for serenity. We combine high-end technology with a warm, personalized approach to care.", "hero_sub"],
+    ["Our Expertise", "services_eyebrow"],
+    ["Curated Clinical Solutions", "services_heading"],
+    ["Precision-led treatments tailored to your unique anatomy and lifestyle goals.", "services_intro"],
     ["General Care", "svc1_name"],
     ["Comprehensive cleanings and preventative diagnostics for lasting oral health.", "svc1_desc"],
+    ["Preventative", "svc1_tag"],
     ["Teeth Whitening", "svc2_name"],
     ["Professional-grade whitening treatments for a noticeably brighter smile.", "svc2_desc"],
+    ["Cosmetic", "svc2_tag"],
     ["Invisalign", "svc3_name"],
     ["Modern clear aligners for a straighter smile without metal braces.", "svc3_desc"],
+    ["Orthodontics", "svc3_tag"],
     ["Dental Implants", "svc4_name"],
     ["Permanent, natural-feeling restorations for missing or damaged teeth.", "svc4_desc"],
+    ["Restoration", "svc4_tag"],
     ["Ready for a Brighter Smile?", "cta_heading"],
     ["Join our community of healthy smiles today. Our expert team is ready to welcome you.", "cta_sub"],
+    ["Schedule Your Appointment", "cta_btn"],
     ["(908) 555-0156", "phone_formatted"],
     ["(908) 555-0134", "phone_formatted"],
     ["9085550156", "phone_raw"],
     ["9085550134", "phone_raw"],
+    ["Scotch Plains, NJ · (908) 555-0156 · Mon-Fri 8AM-6PM · Powered by Exsisto Premium", "footer_copy"],
     ["Scotch Plains, NJ", "city_state"],
     ["Scotch Plains", "city"],
   ],
@@ -69,22 +79,27 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["FORGE", "hero_line1"],
     ["YOUR", "hero_line2"],
     ["PEAK", "hero_line3"],
+    ["START YOUR EVOLUTION", "hero_cta"],
     ["ELITE", "services_heading_1"],
     ["DISCIPLINES", "services_heading_2"],
-    ["We don't do 'workouts'. We execute programmed performance sessions designed to build elite athletes.", "services_intro"],
+    ["We don't do 'workouts'. We execute programmed performance sessions designed to break through human potential.", "services_intro"],
     ["Personal Training", "svc1_name"],
     ["One-on-One Mastery", "svc1_detail"],
+    ["groups", "svc2_icon"],
     ["Group Classes", "svc2_name"],
     ["Synchronized aggression. High-intensity metabolic conditioning.", "svc2_desc"],
+    ["View Schedule", "svc2_cta"],
+    ["restaurant", "svc3_icon"],
     ["Nutrition Coaching", "svc3_name"],
     ["Science-backed performance fueling protocols.", "svc3_desc"],
+    ["Get the Blueprint", "svc3_cta"],
     ["Open Gym", "svc4_name"],
     ["Unlimited Access", "svc4_detail"],
     ["READY TO START?", "cta_heading"],
     ["JOIN IRON PEAK TODAY", "cta_btn_upper"],
+    ["SUMMIT, NEW JERSEY · (908) 555-0178", "city_phone_upper"],
     ["IRON PEAK FITNESS", "biz_name_upper_full"],
-    ["restaurant", "svc3_icon"],
-    ["groups", "svc2_icon"],
+    ["© 2024 Iron Peak Fitness · Summit, NJ · (908) 555-0178 · Powered by Exsisto Premium", "footer_copy"],
   ],
   hvac: [
     ["Cool Breeze HVAC", "biz_name"],
@@ -92,8 +107,14 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["(908) 555-0134", "phone_formatted"],
     ["9085550134", "phone_raw"],
     ["Union, NJ Authority", "hero_eyebrow"],
+    ["Union, NJ", "city_state"],
+    ["Union", "city"],
     ["Precision Climate Engineering.", "hero_headline"],
-    ["Beyond standard maintenance. We provide clinical-grade HVAC solutions for high-performance homes.", "hero_sub"],
+    ["Beyond standard maintenance. We provide clinical-grade HVAC solutions for high-performance residential and commercial spaces.", "hero_sub"],
+    ["Status: Active Service", "hero_status_label"],
+    ["Precision Diagnostic in Progress", "hero_status"],
+    ["Mastered Environments", "services_heading"],
+    ["Our service spectrum is designed for total environmental control.", "services_intro"],
     ["AC Installation", "svc1_name"],
     ["Next-generation cooling systems engineered for silent, high-efficiency performance.", "svc1_desc"],
     ["Heating Repair", "svc2_name"],
@@ -102,7 +123,17 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Clinical particulate extraction for aerospace-grade indoor air quality.", "svc3_desc"],
     ["Maintenance Plans", "svc4_name"],
     ["Predictive system analysis and optimization to prevent critical failures.", "svc4_desc"],
-    ["Precision Diagnostic in Progress", "hero_status"],
+    ["Visible Precision. Measurable Results.", "results_heading"],
+    ["System neglect reduces efficiency by up to 40% while compromising air quality and system lifespan.", "results_sub"],
+    ["Aerodynamic Flow Restoration", "feature1_name"],
+    ["Removing years of obstruction for optimal static pressure.", "feature1_desc"],
+    ["Energy Consumption Mitigation", "feature2_name"],
+    ["Precision tuning to minimize draw and maximize output.", "feature2_desc"],
+    ["Secure Your Environmental Comfort", "cta_heading"],
+    ["Available 24/7 for critical system restoration in Union, NJ and surrounding areas.", "cta_sub"],
+    ["Direct Priority Line", "cta_phone_label"],
+    ["Schedule Your Service", "cta_btn"],
+    ["Union, NJ · (908) 555-0134 · Licensed & Bonded · 24/7 Emergency · Powered by Exsisto Premium", "footer_copy"],
   ],
   law: [
     ["Morgan & Associates | Newark, NJ Law Firm", "meta_title"],
@@ -114,7 +145,7 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Newark", "city"],
     ["Unwavering Defense.", "hero_line1"],
     ["Exceptional Results.", "hero_line2"],
-    ["Serving Newark and the surrounding communities with sophisticated legal counsel for over two decades.", "hero_sub"],
+    ["Serving Newark and the surrounding communities with sophisticated legal counsel since 2004. We protect what matters most.", "hero_sub"],
     ["Strategic Expertise", "services_heading"],
     ["Personal Injury", "svc1_name"],
     ["Securing maximum compensation for catastrophic accidents and professional negligence.", "svc1_desc"],
@@ -128,9 +159,16 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Estate Planning", "svc4_name"],
     ["Preserving generational wealth through meticulous legal structures and trust management.", "svc4_desc"],
     ["Plan Legacy", "svc4_cta"],
-    ["$500M+", "stat1_value"],
+    ["Proven Outcomes", "stat_eyebrow"],
     ["Multi-Million Dollar Recoveries", "stat1_label"],
-    ["Our firm has consistently secured landmark settlements and verdicts for our clients.", "stat1_desc"],
+    ["Our firm has consistently secured landmark settlements and verdicts for our clients across New Jersey.", "stat1_desc"],
+    ["\"Morgan & Associates provided a level of strategic precision I didn't think was possible. Their presence in the courtroom is commanding.\"", "review1_text"],
+    ["Alexander V. Sterling", "review1_name"],
+    ["Chief Executive Officer", "review1_title"],
+    ["Secure Your Future Today", "cta_heading"],
+    ["Consultations are strictly confidential and provided at no initial cost.", "cta_sub"],
+    ["Request Free Evaluation", "cta_btn"],
+    ["© 2024 Morgan & Associates · Newark, NJ · Powered by Exsisto Premium", "footer_copy"],
   ],
   pet: [
     ["Happy Paws Pet Care | Cranford, NJ", "meta_title"],
@@ -144,16 +182,24 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Where every tail", "hero_line1"],
     ["tells a story", "hero_line2"],
     ["of joy.", "hero_line3"],
-    ["Premium pet care that feels like home. From spa-day grooming to adventurous daycare — your pet deserves the best.", "hero_sub"],
+    ["Premium pet care that feels like home. From spa-day grooming to adventurous daycare, we treat your pets like family.", "hero_sub"],
+    ["Our Services", "services_eyebrow"],
+    ["Unmatched Care", "services_heading"],
+    ["Four specialized ways we make your pet's life extraordinary.", "services_intro"],
     ["Grooming", "svc1_name"],
     ["Bespoke styling, soothing baths, and meticulous pawdicures for the discerning pet.", "svc1_desc"],
     ["Daycare", "svc2_name"],
-    ["Socialization, supervised play, and mental stimulation in our climate-controlled facility.", "svc2_desc"],
+    ["Socialization, supervised play, and mental stimulation in our climate-controlled parks.", "svc2_desc"],
     ["Boarding", "svc3_name"],
     ["Luxury suites and overnight care that mimics the comfort of home.", "svc3_desc"],
     ["Expert Training", "svc4_name"],
     ["From puppy basics to advanced behavioral coaching with positive reinforcement.", "svc4_desc"],
+    ["Positive Only", "svc4_tag1"],
+    ["All Breeds", "svc4_tag2"],
+    ["Begin Your Journey", "cta_heading"],
     ["Join the Happy Paws family. First-time visitors get 20% off their first grooming session.", "cta_sub"],
+    ["Book Your First Visit", "cta_btn"],
+    ["Cranford, NJ · (908) 555-0123 · Grooming · Boarding · Daycare · Training · Powered by Exsisto Premium", "footer_copy"],
   ],
   plumbing: [
     ["FlowRight | Premium Plumbing Services Westfield NJ", "meta_title"],
@@ -167,29 +213,44 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Precision Plumbing", "hero_line1"],
     ["Perfectly", "hero_line2"],
     ["Restored.", "hero_line3"],
-    ["Elevating residential mechanical integrity through boutique engineering and archival parts expertise.", "hero_sub"],
+    ["Elevating residential mechanical integrity through boutique engineering and architectural precision.", "hero_sub"],
     ["Mastered Solutions", "services_heading"],
     ["Emergency Repairs", "svc1_name"],
-    ["Immediate response for critical failures. Burst pipes, major floods, and sewer backups resolved fast.", "svc1_desc"],
+    ["Immediate response for critical failures. Burst pipes, major floods, and sewer backups handled around the clock.", "svc1_desc"],
+    ["Immediate Response", "svc1_tag"],
     ["Leak Detection", "svc2_name"],
     ["Non-invasive ultrasonic technology to pinpoint hidden issues before they cause damage.", "svc2_desc"],
+    ["Request Scan", "svc2_cta"],
     ["Water Heaters", "svc3_name"],
     ["Installation and maintenance of tankless and traditional systems from premium manufacturers.", "svc3_desc"],
     ["Drain Cleaning", "svc4_name"],
     ["High-pressure hydro-jetting that clears obstructions without damaging aging infrastructure.", "svc4_desc"],
     ["Client Perspectives", "reviews_heading"],
+    ["\"Professionalism that matches the standard of our home. They diagnosed a leak that three others missed.\"", "review1_text"],
     ["Jonathan A. · Westfield", "review1_author"],
+    ["\"The tankless heater installation was incredibly clean. Their technicians treated our home like their own.\"", "review2_text"],
+    ["Sarah L. · Property Manager", "review2_author"],
+    ["\"Emergency response on a Sunday was exceptional. They arrived in 45 minutes and solved it quickly.\"", "review3_text"],
+    ["Michael P. · Homeowner", "review3_author"],
+    ["Ready to Get Started?", "cta_heading"],
+    ["Westfield, NJ · Licensed & Insured · 24/7 Emergency Service", "cta_sub"],
+    ["© 2024 FlowRight Plumbing · Westfield, NJ · (908) 555-0112 · Powered by Exsisto Premium", "footer_copy"],
   ],
   realestate: [
     ["Summit Realty Group | Premier Luxury Real Estate", "meta_title"],
     ["Summit Realty Group", "biz_name"],
     ["Summit Realty", "biz_name_short"],
+    ["SUMMIT REALTY GROUP", "biz_name_upper"],
     ["(908) 555-0145", "phone_formatted"],
     ["9085550145", "phone_raw"],
+    ["Summit, NJ", "city_state"],
+    ["Short Hills, NJ", "city_state_alt"],
+    ["Summit", "city"],
     ["Exclusively New Jersey", "hero_eyebrow"],
     ["Your Legacy,", "hero_line1"],
     ["Found.", "hero_line2"],
-    ["Premier Real Estate for the Discerning Collector. Discover a portfolio of architecturally significant properties.", "hero_sub"],
+    ["Premier Real Estate for the Discerning Collector. Discover a portfolio of architectural masterpieces.", "hero_sub"],
+    ["Our Methodology", "services_eyebrow"],
     ["The Summit Standard", "services_heading"],
     ["Beyond transactions, we curate experiences. Our bespoke approach ensures your real estate journey is extraordinary.", "services_intro"],
     ["Buyer Representation", "svc1_name"],
@@ -200,6 +261,21 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Specializing in architectural significance across Summit and Short Hills.", "svc3_desc"],
     ["Investment Properties", "svc4_name"],
     ["Data-driven analysis and portfolio optimization for high-net-worth collectors.", "svc4_desc"],
+    ["Current Portfolio", "portfolio_eyebrow"],
+    ["Featured Estates", "portfolio_heading"],
+    ["The Glass Pavilion", "listing1_name"],
+    ["Summit, NJ · $12,500,000", "listing1_location"],
+    ["6 Beds · 8 Baths · 9,400 SQ FT", "listing1_details"],
+    ["Willow Glen Manor", "listing2_name"],
+    ["Short Hills, NJ · $8,950,000", "listing2_location"],
+    ["7 Beds · 9 Baths · 11,200 SQ FT", "listing2_details"],
+    ["Echo Ridge Sanctuary", "listing3_name"],
+    ["Summit, NJ · $15,200,000", "listing3_location"],
+    ["5 Beds · 7 Baths · 8,100 SQ FT", "listing3_details"],
+    ["\"Summit Realty Group doesn't just sell homes; they manage legacies. Their attention to detail and absolute discretion set a new standard.\"", "review1_text"],
+    ["The Sterling Family", "review1_name"],
+    ["Former Owners of The Eastgate Estate", "review1_title"],
+    ["Summit, NJ · (908) 555-0145 · Powered by Exsisto Premium", "footer_copy"],
   ],
   restaurant: [
     ["La Bella Cucina | Authentic Italian Excellence in Hoboken", "meta_title"],
@@ -212,42 +288,62 @@ const TEMPLATE_SWAPS: Record<string, Array<[string, string]>> = {
     ["Established 1987 — Hoboken, NJ", "est_location"],
     ["The Art of Italian", "hero_line1"],
     ["Ritual", "hero_line2"],
+    ["Our Heritage", "about_eyebrow"],
     ["A Symphony of", "about_heading1"],
     ["Italian Heritage", "about_heading2"],
-    ["For over three decades, La Bella Cucina has stood as a beacon of culinary tradition.", "about_desc"],
+    ["For over three decades, La Bella Cucina has stood as a beacon of culinary tradition in the heart of Hoboken.", "about_desc"],
     ["The Seasonal Collection", "menu_eyebrow"],
     ["Signature Offerings", "menu_heading"],
     ["Polpo Croccante", "dish1_name"],
-    ["Wild-caught Mediterranean octopus, charred over cherry wood, served with Nduja-infused polenta.", "dish1_desc"],
+    ["Wild-caught Mediterranean octopus, charred over cherry wood, served with Nduja-infused potato crema.", "dish1_desc"],
     ["Agnello in Crosta", "dish2_name"],
-    ["Herb-crusted rack of lamb, pistachio brittle, mint reduction, roasted root vegetables.", "dish2_desc"],
+    ["Herb-crusted rack of lamb, pistachio brittle, mint reduction, roasted root vegetables and truffle jus.", "dish2_desc"],
     ["Bistecca Fiorentina", "dish3_name"],
-    ["Prime 32oz dry-aged porterhouse, seasoned with sea salt and rosemary, finished with truffle jus.", "dish3_desc"],
-    ["Limited seating available nightly. We recommend booking two weeks in advance for the best experience.", "cta_sub"],
+    ["Prime 32oz dry-aged porterhouse, seasoned with sea salt and rosemary, finished with first-press olive oil.", "dish3_desc"],
+    ["Begin Your Experience", "cta_heading"],
+    ["Limited seating available nightly. We recommend booking two weeks in advance for weekend service.", "cta_sub"],
+    ["Direct Line", "cta_phone_label"],
+    ["Book a Table", "cta_btn"],
+    ["© 2024 La Bella Cucina · Est. 1987, Hoboken NJ · (201) 555-0134 · Powered by Exsisto Premium", "footer_copy"],
   ],
   salon: [
     ["Velvet Studio | Westfield NJ Hair Salon", "meta_title"],
     ["Velvet Studio", "biz_name"],
     ["(908) 555-0167", "phone_formatted"],
     ["9085550167", "phone_raw"],
-    ["Westfield, New Jersey", "city_state"],
+    ["Westfield, New Jersey", "city_state_long"],
     ["Westfield, NJ", "city_state"],
+    ["128 East Broad Street, Westfield, NJ 07090", "address"],
     ["Westfield", "city"],
     ["Artistry", "hero_line1"],
     ["In Motion", "hero_line2"],
-    ["A boutique collective dedicated to editorial excellence and the craft of modern hair artistry.", "hero_sub"],
+    ["A boutique collective dedicated to editorial excellence and the craft of modern hair. We don't just style — we transform.", "hero_sub"],
+    ["Curated Services", "services_eyebrow"],
     ["The Service Menu", "services_heading"],
     ["Balayage & Color", "svc1_name"],
     ["Bespoke hand-painted highlights that mimic the sun's natural touch.", "svc1_desc"],
+    ["Starting at $245", "svc1_price"],
     ["Bridal & Editorial", "svc2_name"],
     ["Exclusive styling for your most significant moments.", "svc2_desc"],
+    ["By Consultation", "svc2_price"],
     ["Precision Cuts", "svc3_name"],
     ["Architectural shaping designed to enhance your facial structure and movement.", "svc3_desc"],
+    ["Starting at $110", "svc3_price"],
     ["Keratin & Therapy", "svc4_name"],
     ["Advanced smoothing treatments and restorative rituals for hair health and shine.", "svc4_desc"],
-    ["128 East Broad Street, Westfield, NJ 07090", "address"],
+    ["Starting at $350", "svc4_price"],
+    ["\"Beauty is the illumination of your soul. We simply provide the frame.\"", "quote_text"],
+    ["Velvet Studio Philosophy", "quote_attr"],
+    ["Visit the Atelier", "cta_heading"],
+    ["Book a Consultation", "cta_btn"],
+    ["© 2024 Velvet Studio · Westfield, NJ · (908) 555-0167 · Powered by Exsisto Premium", "footer_copy"],
   ],
 };
+
+function toTitleCase(str: string): string {
+  if (!str) return str;
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 function buildContent(
   businessName: string,
@@ -259,122 +355,172 @@ function buildContent(
   generated: Record<string, string>
 ): Record<string, string> {
   const cityState = [city, state].filter(Boolean).join(", ");
+  const cityStateLong = city && state ? `${city}, ${state === "NJ" ? "New Jersey" : state === "NY" ? "New York" : state === "CA" ? "California" : state === "TX" ? "Texas" : state === "FL" ? "Florida" : state}` : cityState;
+  const cityStateUpper = cityState.toUpperCase();
   const phoneRaw = phone.replace(/\D/g, "");
   const year = new Date().getFullYear();
-
-  // Parse services into array
-  const svcList = services
-    ? services.split(/[,;|\n]/).map(s => s.trim()).filter(Boolean)
-    : [];
+  const svcList = services ? services.split(/[,;|\n]/).map(s => s.trim()).filter(Boolean) : [];
 
   return {
     // Identity
-    biz_name: businessName,
-    biz_name_upper: businessName.toUpperCase(),
-    biz_name_short: businessName.split(" ").slice(0, 2).join(" "),
-    biz_name_full: businessName,
+    biz_name:           businessName,
+    biz_name_upper:     businessName.toUpperCase(),
+    biz_name_short:     businessName.split(" ").slice(0, 2).join(" "),
+    biz_name_full:      businessName,
+    biz_name_upper_full:businessName.toUpperCase(),
 
     // Location
-    city: city || "Your City",
-    state: state || "",
-    city_state: cityState || "Your City",
-    city_state_upper: cityState.toUpperCase() || "YOUR CITY",
+    city:               city || "Your City",
+    state:              state || "",
+    city_state:         cityState || "Your City",
+    city_state_long:    cityStateLong,
+    city_state_upper:   cityStateUpper,
+    city_state_alt:     cityState,
+    address:            city ? `${city}, ${state}` : "Your City",
+    est_location:       cityState,
 
     // Contact
-    phone_formatted: phone || "(555) 555-5555",
-    phone_raw: phoneRaw || "5555555555",
+    phone_formatted:    phone || "(555) 555-5555",
+    phone_raw:          phoneRaw || "5555555555",
+    city_phone_upper:   `${cityStateUpper} · ${phone || "(555) 555-5555"}`,
 
     // Meta
-    meta_title: `${businessName} | ${cityState}`,
-    est_location: `${cityState}`,
-    address: `${city}, ${state}`,
+    meta_title:         `${businessName} | ${cityState}`,
+
+    // Footer
+    footer_copy:        `© ${year} ${businessName} · ${cityState} · ${phone || "(555) 555-5555"} · Powered by Exsisto`,
 
     // Hero
-    hero_eyebrow: `Serving ${cityState}`,
-    hero_line1: generated.hero_line1 || businessName,
-    hero_line2: generated.hero_line2 || "Expert Service",
-    hero_line3: generated.hero_line3 || "Done Right.",
-    hero_headline: generated.hero_headline || `Expert ${description || "Services"} in ${city}`,
-    hero_stat_line: generated.hero_stat_line || `Trusted by ${city} since ${year - 10}`,
-    hero_sub: generated.hero_sub || `Professional service in ${cityState}. Contact us today.`,
-    hero_status: generated.hero_status || "Active Service",
+    hero_eyebrow:       generated.hero_eyebrow   || `Serving ${cityState}`,
+    hero_line1:         generated.hero_line1      || businessName,
+    hero_line2:         generated.hero_line2      || "Expert Service",
+    hero_line3:         generated.hero_line3      || "Done Right.",
+    hero_headline:      generated.hero_headline   || `Expert ${description || "Services"} in ${city}`,
+    hero_stat_line:     generated.hero_stat_line  || `Trusted in ${city}`,
+    hero_sub:           generated.hero_sub        || `Professional service in ${cityState}.`,
+    hero_status:        generated.hero_status     || `Serving ${city} Now`,
+    hero_status_label:  "Status: Active",
+    hero_cta:           generated.hero_cta        || "GET STARTED TODAY",
 
-    // Services headings
-    services_heading: generated.services_heading || "Our Services",
-    services_heading_1: generated.services_heading_1 || "Our",
-    services_heading_2: generated.services_heading_2 || "Services",
-    services_intro: generated.services_intro || `Professional ${description || "services"} delivered with expertise and care.`,
+    // Services section
+    services_eyebrow:   generated.services_eyebrow   || "Our Services",
+    services_heading:   generated.services_heading    || "What We Do",
+    services_heading_1: generated.services_heading_1  || "Our",
+    services_heading_2: generated.services_heading_2  || "Services",
+    services_intro:     generated.services_intro      || `Professional ${description || "services"} delivered with expertise and care.`,
 
     // Services
-    svc1_name: svcList[0] || generated.svc1_name || "Service One",
-    svc1_sub: generated.svc1_sub || "Expert Level",
-    svc1_detail: generated.svc1_sub || generated.svc1_detail || "Available Now",
-    svc1_desc: generated.svc1_desc || `Professional ${svcList[0] || "service"} delivered with care.`,
-    svc1_cta: "Learn More",
-    svc2_name: svcList[1] || generated.svc2_name || "Service Two",
-    svc2_sub: generated.svc2_sub || "Premium Quality",
-    svc2_detail: generated.svc2_sub || generated.svc2_detail || "Premium Quality",
-    svc2_desc: generated.svc2_desc || `Expert ${svcList[1] || "service"} for every need.`,
-    svc2_icon: "build",
-    svc2_cta: "Learn More",
-    svc3_name: svcList[2] || generated.svc3_name || "Service Three",
-    svc3_sub: generated.svc3_sub || "Reliable Results",
-    svc3_detail: generated.svc3_sub || generated.svc3_detail || "Reliable Results",
-    svc3_desc: generated.svc3_desc || `Trusted ${svcList[2] || "service"} you can count on.`,
-    svc3_icon: "handyman",
-    svc3_cta: "Learn More",
-    svc4_name: svcList[3] || generated.svc4_name || "Service Four",
-    svc4_sub: generated.svc4_sub || "Fast & Efficient",
-    svc4_detail: generated.svc4_sub || generated.svc4_detail || "Fast & Efficient",
-    svc4_desc: generated.svc4_desc || `Quality ${svcList[3] || "service"} at competitive prices.`,
-    svc4_cta: "Learn More",
+    svc1_name:  svcList[0] || generated.svc1_name || "Our Primary Service",
+    svc1_sub:   generated.svc1_sub    || "Expert Level",
+    svc1_detail:generated.svc1_detail || "Available Now",
+    svc1_desc:  generated.svc1_desc   || `Professional ${svcList[0] || "service"} delivered with care.`,
+    svc1_tag:   generated.svc1_tag    || "Professional",
+    svc1_cta:   "Learn More",
+    svc1_price: generated.svc1_price  || "Call for Pricing",
 
-    // Menu items (restaurant)
-    dish1_name: svcList[0] || generated.dish1_name || "Signature Dish",
-    dish1_desc: generated.dish1_desc || "Our signature offering, prepared with the finest ingredients.",
+    svc2_name:  svcList[1] || generated.svc2_name || "Second Service",
+    svc2_sub:   generated.svc2_sub    || "Premium Quality",
+    svc2_detail:generated.svc2_detail || "Premium Quality",
+    svc2_desc:  generated.svc2_desc   || `Expert ${svcList[1] || "service"} for every need.`,
+    svc2_tag:   generated.svc2_tag    || "Trusted",
+    svc2_icon:  "build",
+    svc2_cta:   "Learn More",
+    svc2_price: generated.svc2_price  || "Call for Pricing",
+
+    svc3_name:  svcList[2] || generated.svc3_name || "Third Service",
+    svc3_sub:   generated.svc3_sub    || "Reliable Results",
+    svc3_detail:generated.svc3_detail || "Reliable Results",
+    svc3_desc:  generated.svc3_desc   || `Trusted ${svcList[2] || "service"} you can count on.`,
+    svc3_tag:   generated.svc3_tag    || "Reliable",
+    svc3_icon:  "handyman",
+    svc3_cta:   "Learn More",
+    svc3_price: generated.svc3_price  || "Call for Pricing",
+
+    svc4_name:  svcList[3] || generated.svc4_name || "Fourth Service",
+    svc4_sub:   generated.svc4_sub    || "Fast & Efficient",
+    svc4_detail:generated.svc4_detail || "Fast & Efficient",
+    svc4_desc:  generated.svc4_desc   || `Quality ${svcList[3] || "service"} at fair prices.`,
+    svc4_tag:   generated.svc4_tag    || "Efficient",
+    svc4_tag1:  generated.svc4_tag1   || "Professional",
+    svc4_tag2:  generated.svc4_tag2   || "Reliable",
+    svc4_cta:   "Learn More",
+    svc4_price: generated.svc4_price  || "Call for Pricing",
+
+    // Menu / dishes (restaurant template)
+    dish1_name: svcList[0] || generated.dish1_name || "Signature Item",
+    dish1_desc: generated.dish1_desc || "Our signature offering, crafted with care.",
     dish2_name: svcList[1] || generated.dish2_name || "House Specialty",
-    dish2_desc: generated.dish2_desc || "A beloved classic crafted with care.",
-    dish3_name: svcList[2] || generated.dish3_name || "Chef's Choice",
+    dish2_desc: generated.dish2_desc || "A beloved classic prepared to perfection.",
+    dish3_name: svcList[2] || generated.dish3_name || "Chef's Selection",
     dish3_desc: generated.dish3_desc || "The chef's personal recommendation.",
 
-    // Gym-specific
-    biz_name_upper_full: businessName.toUpperCase(),
-    cta_btn_upper: "CONTACT US TODAY",
-
     // Stats
-    stat1_value: generated.stat1_value || "500+",
-    stat1_label: generated.stat1_label || "Happy Customers",
-    stat1_desc: generated.stat1_desc || `${businessName} has served hundreds of satisfied customers in ${cityState}.`,
+    stat_eyebrow:  "Proven Results",
+    stat1_value:   generated.stat1_value || "500+",
+    stat1_label:   generated.stat1_label || "Happy Customers",
+    stat1_desc:    generated.stat1_desc  || `${businessName} has served hundreds of satisfied customers in ${cityState}.`,
 
-    // CTA
-    cta_heading: generated.cta_heading || `Ready to Get Started?`,
-    cta_heading1: generated.cta_heading1 || "Ready to Get",
-    cta_heading2: generated.cta_heading2 || "Started?",
-    cta_sub: generated.cta_sub || `Contact ${businessName} today. Serving ${cityState}.`,
-    cta_btn: "Contact Us",
-
-    // About
-    about_heading1: generated.about_heading1 || "About",
-    about_heading2: generated.about_heading2 || businessName,
-    about_desc: generated.about_desc || `${businessName} has been proudly serving ${cityState} with professional, reliable service.`,
+    // Real estate listings (swapped to services for non-RE businesses)
+    portfolio_eyebrow:  "Our Work",
+    portfolio_heading:  "Featured Projects",
+    listing1_name:      svcList[0] || generated.svc1_name || "Our Services",
+    listing1_location:  `${cityState}`,
+    listing1_details:   "Contact us for details",
+    listing2_name:      svcList[1] || generated.svc2_name || "Our Expertise",
+    listing2_location:  `${cityState}`,
+    listing2_details:   "Contact us for details",
+    listing3_name:      svcList[2] || generated.svc3_name || "Our Work",
+    listing3_location:  `${cityState}`,
+    listing3_details:   "Contact us for details",
 
     // Reviews
     reviews_heading: "What Our Customers Say",
-    review1_author: `Happy Customer · ${city}`,
+    review1_text:    generated.review1_text   || `"${businessName} provided outstanding service. Highly recommended to anyone in ${city}."`,
+    review1_author:  `Happy Customer · ${city}`,
+    review1_name:    "A. Johnson",
+    review1_title:   `Customer in ${city}`,
+    review2_text:    generated.review2_text   || `"Professional, punctual, and worth every penny. ${businessName} is the best in ${city}."`,
+    review2_author:  `Satisfied Client · ${city}`,
+    review3_text:    generated.review3_text   || `"I've used many providers but ${businessName} stands above them all. Five stars."`,
+    review3_author:  `Local Resident · ${city}`,
 
-    // Footer / copyright
-    year: String(year),
+    // About
+    about_eyebrow:    "Our Story",
+    about_heading1:   generated.about_heading1 || "About",
+    about_heading2:   generated.about_heading2 || businessName,
+    about_desc:       generated.about_desc     || `${businessName} has proudly served ${cityState} with professional, reliable service.`,
+
+    // Features / results
+    results_heading:  generated.results_heading  || "Proven Results",
+    results_sub:      generated.results_sub      || `${businessName} delivers measurable results for every customer.`,
+    feature1_name:    generated.feature1_name    || (svcList[0] || "Quality Work"),
+    feature1_desc:    generated.feature1_desc    || "Professional service delivered to the highest standard.",
+    feature2_name:    generated.feature2_name    || (svcList[1] || "Fast Response"),
+    feature2_desc:    generated.feature2_desc    || "We show up on time and get the job done right.",
+
+    // CTA
+    cta_heading:      generated.cta_heading      || `Ready to Get Started?`,
+    cta_heading1:     generated.cta_heading1     || "Ready to Get",
+    cta_heading2:     generated.cta_heading2     || "Started?",
+    cta_sub:          generated.cta_sub          || `Contact ${businessName} today. Serving ${cityState}.`,
+    cta_btn:          "Contact Us",
+    cta_btn_upper:    "CONTACT US TODAY",
+    cta_phone_label:  "Call Us Directly",
+    cta_phone_label2: "Call Now",
+
+    // Misc
+    quote_text:       generated.quote_text  || `"Dedicated to excellence in ${city} and beyond."`,
+    quote_attr:       `${businessName}`,
+    year:             String(year),
+    services_eyebrow2: "Why Choose Us",
   };
 }
 
 export async function POST(request: Request) {
   const { businessName, industry, city, state, phone, description, services, template } = await request.json();
-
   if (!businessName) return NextResponse.json({ error: "businessName required" }, { status: 400 });
 
   const templateKey = template || "plumbing";
-
-  // Load the Stitch template HTML
   let html: string;
   try {
     html = readFileSync(join(process.cwd(), "public", "stitch-templates", `${templateKey}.html`), "utf-8");
@@ -382,129 +528,130 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Template ${templateKey} not found` }, { status: 404 });
   }
 
-  // Step 1: Generate content with Claude Haiku
+  // Clean inputs
+  const cleanBizName = businessName.trim() === businessName.trim().toLowerCase() ||
+                       businessName.trim() === businessName.trim().toUpperCase()
+    ? toTitleCase(businessName.trim()) : businessName.trim();
+  const cleanCity  = toTitleCase((city  || "").trim());
+  const cleanState = (state || "").trim().toUpperCase().slice(0, 2);
+  const svcList    = (services || "")
+    .split(/[,;|\n]/).map((s: string) => toTitleCase(s.trim())).filter(Boolean);
+  const cleanServices = svcList.join(", ");
+
+  // Generate with Claude Haiku
   let generated: Record<string, string> = {};
   try {
-    const svcList = services ? services.split(/[,;|\n]/).map((s: string) => s.trim()).filter(Boolean) : [];
     const msg = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 800,
+      max_tokens: 1000,
       messages: [{
         role: "user",
-        content: `You are a professional copywriter. First, silently fix any spelling errors and apply proper capitalization to the business name, services, description, and location provided. Then generate polished website copy. Return ONLY valid JSON, no markdown.
+        content: `You are a professional copywriter. Fix any spelling errors and apply proper capitalization. Generate polished website copy for this business. Return ONLY valid JSON, no markdown.
 
-Business: ${businessName}
-What they do: ${description || services || industry || "professional services"}
-Services: ${svcList.join(", ") || ""}
-Location: ${[city, state].filter(Boolean).join(", ")}
+Business: ${cleanBizName}
+What they do: ${description || cleanServices || industry || "professional services"}
+Services: ${cleanServices}
+Location: ${[cleanCity, cleanState].filter(Boolean).join(", ")}
 
-IMPORTANT: Apply these rules to ALL output:
-- Proper title case for business names, service names, and headings
-- Fix any obvious spelling mistakes from the input
-- Professional, polished language throughout
-- Never use all-caps except where the template style demands it
-
-Return JSON with these keys (all strings, keep them SHORT — 2-6 words for names, 1 sentence for descriptions):
+Return JSON with these exact keys:
 {
-  "hero_line1": "First line of big hero headline",
-  "hero_line2": "Second line of hero headline",
-  "hero_line3": "Third line (1-2 words, punchy)",
-  "hero_headline": "Full single hero headline",
+  "hero_eyebrow": "Short authority line e.g. 'Serving ${cleanCity || "Your City"} Since 2005'",
+  "hero_line1": "First line of bold hero headline (2-4 words)",
+  "hero_line2": "Second line of hero headline (2-4 words)",
+  "hero_line3": "Final punchy 1-2 word line",
+  "hero_headline": "Single complete hero headline",
+  "hero_stat_line": "Credibility line e.g. '20+ Years Serving ${cleanCity || "Your City"}'",
   "hero_sub": "One compelling sentence about the business",
-  "hero_stat_line": "Short credibility line e.g. '15+ Years Serving ${city || "Your City"}'",
-  "hero_status": "2-4 word active status e.g. 'Serving ${city || "Your City"} Now'",
-  "hero_eyebrow": "Short location/authority line",
-  "services_heading": "2-3 word services section heading",
-  "services_heading_1": "First word of services heading",
-  "services_heading_2": "Second word of services heading",
-  "services_intro": "One sentence about their range of services",
-  "svc1_name": "${svcList[0] || "Primary service name"}",
+  "hero_status": "2-4 word active status",
+  "hero_cta": "SHORT ALL-CAPS CTA e.g. 'GET STARTED TODAY'",
+  "services_eyebrow": "2-3 word section intro",
+  "services_heading": "2-4 word section heading",
+  "services_heading_1": "First 1-2 words of heading",
+  "services_heading_2": "Second 1-2 words of heading",
+  "services_intro": "One sentence about their services range",
+  "svc1_name": "${svcList[0] || "Primary Service"}",
   "svc1_sub": "2-3 word subtitle",
-  "svc1_desc": "One sentence description",
-  "svc2_name": "${svcList[1] || "Second service name"}",
+  "svc1_detail": "2-3 word status e.g. 'Available Now'",
+  "svc1_desc": "One sentence",
+  "svc1_tag": "One word tag",
+  "svc1_price": "Price or 'Call for Quote'",
+  "svc2_name": "${svcList[1] || "Second Service"}",
   "svc2_sub": "2-3 word subtitle",
-  "svc2_desc": "One sentence description",
-  "svc3_name": "${svcList[2] || "Third service name"}",
+  "svc2_detail": "2-3 word status",
+  "svc2_desc": "One sentence",
+  "svc2_tag": "One word tag",
+  "svc2_price": "Price or 'Call for Quote'",
+  "svc3_name": "${svcList[2] || "Third Service"}",
   "svc3_sub": "2-3 word subtitle",
-  "svc3_desc": "One sentence description",
-  "svc4_name": "${svcList[3] || "Fourth service name"}",
+  "svc3_detail": "2-3 word status",
+  "svc3_desc": "One sentence",
+  "svc3_tag": "One word tag",
+  "svc3_price": "Price or 'Call for Quote'",
+  "svc4_name": "${svcList[3] || "Fourth Service"}",
   "svc4_sub": "2-3 word subtitle",
-  "svc4_desc": "One sentence description",
-  "dish1_name": "If restaurant: first item name, else first service",
-  "dish1_desc": "If restaurant: menu description, else service description",
-  "dish2_name": "Second item/service",
-  "dish2_desc": "Description",
-  "dish3_name": "Third item/service",
-  "dish3_desc": "Description",
-  "cta_heading": "Short CTA heading question",
-  "cta_heading1": "First half of CTA heading",
-  "cta_heading2": "Second half of CTA heading",
-  "cta_sub": "One sentence CTA supporting text mentioning ${city || "the area"}",
+  "svc4_detail": "2-3 word status",
+  "svc4_desc": "One sentence",
+  "svc4_tag": "One word tag",
+  "svc4_tag1": "Tag word 1",
+  "svc4_tag2": "Tag word 2",
+  "svc4_price": "Price or 'Call for Quote'",
+  "dish1_name": "First item/service name",
+  "dish1_desc": "One sentence description",
+  "dish2_name": "Second item/service name",
+  "dish2_desc": "One sentence description",
+  "dish3_name": "Third item/service name",
+  "dish3_desc": "One sentence description",
+  "results_heading": "2-4 word results heading",
+  "results_sub": "One sentence about their results",
+  "feature1_name": "First feature/benefit name",
+  "feature1_desc": "One sentence",
+  "feature2_name": "Second feature/benefit name",
+  "feature2_desc": "One sentence",
+  "stat1_value": "Impressive number e.g. '500+'",
+  "stat1_label": "What it represents",
+  "stat1_desc": "One sentence about this achievement",
   "about_heading1": "First part of about heading",
-  "about_heading2": "Second part (often business name or focus)",
-  "about_desc": "One sentence about the business history/mission",
-  "stat1_value": "Impressive stat like '500+' or '$2M+'",
-  "stat1_label": "What the stat represents",
-  "stat1_desc": "One sentence about this achievement"
+  "about_heading2": "Second part",
+  "about_desc": "One sentence about the business",
+  "cta_heading": "Short question CTA heading",
+  "cta_heading1": "First half of CTA",
+  "cta_heading2": "Second half of CTA",
+  "cta_sub": "One sentence with location mention",
+  "review1_text": "Realistic 1-2 sentence review in quotes",
+  "review2_text": "Different realistic review in quotes",
+  "review3_text": "Third realistic review in quotes",
+  "quote_text": "Short inspirational quote in quotes"
 }`,
       }],
     });
-
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "{}";
     generated = JSON.parse(raw.replace(/```json|```/g, "").trim());
   } catch (e) {
     console.error("Content generation failed:", e);
   }
 
-  // Step 2: Clean inputs — fix capitalization and basic formatting
-  function toTitleCase(str: string): string {
-    if (!str) return str;
-    // Don't title-case if already has mixed case (user intentional)
-    const lower = str.toLowerCase();
-    return lower.replace(/\b\w/g, (c) => c.toUpperCase());
-  }
+  // Build content map
+  const content = buildContent(cleanBizName, cleanCity, cleanState, phone || "", description || "", cleanServices, generated);
 
-  // Apply title case to business name if it's all lower or all upper
-  const cleanBizName = businessName.trim() === businessName.trim().toLowerCase() ||
-                       businessName.trim() === businessName.trim().toUpperCase()
-    ? toTitleCase(businessName.trim())
-    : businessName.trim();
-
-  const cleanCity = toTitleCase((city || "").trim());
-  const cleanState = (state || "").trim().toUpperCase().slice(0, 2);
-
-  // Clean services list — title case each one
-  const cleanServices = (services || "")
-    .split(/[,;|\n]/)
-    .map((s: string) => toTitleCase(s.trim()))
-    .filter(Boolean)
-    .join(", ");
-
-  // Build full content map
-  const content = buildContent(
-    cleanBizName, cleanCity, cleanState, phone || "",
-    description || "", cleanServices, generated
-  );
-
-  // Step 3: Apply all swaps for this template (using cleaned inputs)
+  // Apply all swaps
   const swaps = TEMPLATE_SWAPS[templateKey] || [];
   for (const [search, key] of swaps) {
-    const replacement = content[key] || search;
+    const replacement = content[key] !== undefined ? content[key] : search;
     html = html.replaceAll(search, replacement);
   }
 
-  // Step 4: Fix phone href attributes
+  // Fix phone href attributes
   const phoneRaw = (phone || "").replace(/\D/g, "");
-  if (phoneRaw) {
-    html = html.replace(/href="tel:\d+"/g, `href="tel:${phoneRaw}"`);
-  }
+  if (phoneRaw) html = html.replace(/href="tel:\d+"/g, `href="tel:${phoneRaw}"`);
 
-  // Step 5: Update page title
-  html = html.replace(/<title>[^<]*<\/title>/, `<title>${businessName} | ${content.city_state}</title>`);
+  // Fix copyright year
+  html = html.replace(/© 20\d\d /g, `© ${new Date().getFullYear()} `);
 
-  // Step 6: Add disclaimer bar
-  const disclaimer = `<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#1b1b25;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-family:-apple-system,sans-serif;font-size:12px;gap:12px;flex-wrap:wrap;pointer-events:none;"><div style="display:flex;align-items:center;gap:10px;"><span style="color:#6366f1;font-weight:700;letter-spacing:0.5px;font-size:11px;">PREVIEW</span><span style="color:#fff;font-weight:600;">${businessName}</span><span style="background:#2d2d3d;color:#9090a8;font-size:11px;padding:3px 10px;border-radius:100px;">Images are samples · Copy customized for your business</span></div></div><div style="height:42px;"></div>`;
+  // Update page title
+  html = html.replace(/<title>[^<]*<\/title>/, `<title>${cleanBizName} | ${content.city_state}</title>`);
 
+  // Add disclaimer bar
+  const disclaimer = `<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#1b1b25;display:flex;align-items:center;padding:8px 16px;font-family:-apple-system,sans-serif;font-size:12px;gap:10px;pointer-events:none;"><span style="color:#6366f1;font-weight:700;letter-spacing:0.5px;font-size:11px;">PREVIEW</span><span style="color:#fff;font-weight:600;">${cleanBizName}</span><span style="background:#2d2d3d;color:#9090a8;font-size:11px;padding:3px 10px;border-radius:100px;">Images are samples · Copy customized for your business</span></div><div style="height:42px;"></div>`;
   html = html.replace(/(<body[^>]*>)/, `$1${disclaimer}`);
 
   return NextResponse.json({ html, templateKey });
