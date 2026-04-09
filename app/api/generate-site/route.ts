@@ -422,6 +422,26 @@ export async function POST(request: Request) {
         }
       );
       finalHtml = injectTokens(stitchWithIcons, tokens);
+
+      // Post-process: cycle through library images so each img slot gets a unique photo
+      const allImgUrls = [images.hero, images.card1, images.card2, images.card3, images.card4]
+        .filter(Boolean) as string[];
+      if (allImgUrls.length > 1) {
+        const seenUrls = new Map<string, number>();
+        let nextIdx = 1;
+        finalHtml = finalHtml.replace(
+          /src="(https:\/\/njfulajlqjhukfxmfexv[^"]+(?:\.png|\.jpg))"/g,
+          (_m: string, url: string) => {
+            const count = seenUrls.get(url) ?? 0;
+            seenUrls.set(url, count + 1);
+            if (count > 0 && nextIdx < allImgUrls.length) {
+              return `src="${allImgUrls[nextIdx++]}"`;
+            }
+            return `src="${url}"`;
+          }
+        );
+      }
+
       console.log("✓ Stitch site generated");
     } catch (stitchErr: any) {
       // Stitch quota or error — fall back to skeleton templates
