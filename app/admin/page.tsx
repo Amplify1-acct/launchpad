@@ -252,14 +252,16 @@ export default function AdminPage() {
 
                   {/* Action row */}
                   <div className={styles.orderActions}>
-                    {/* Preview site HTML */}
+                    {/* Preview site — full navigable preview in new tab */}
                     {order.websites?.custom_html && (
-                      <button
+                      <a
                         className={styles.actionBtn}
-                        onClick={() => setPreview(preview?.id === order.id ? null : order)}
+                        href={`/api/admin/preview/${order.id}?secret=${ADMIN_SECRET}`}
+                        target="_blank"
+                        rel="noreferrer"
                       >
-                        {preview?.id === order.id ? "Hide preview" : "Preview site"}
-                      </button>
+                        Preview site ↗
+                      </a>
                     )}
 
                     {/* View live site */}
