@@ -14,11 +14,30 @@ export default async function DashboardPage() {
 
   const { data: customer } = await supabase
     .from("customers").select("*").eq("user_id", user.id).single();
-  if (!customer) redirect("/onboarding");
+  if (!customer) redirect("/login");
 
   const { data: business } = await supabase
     .from("businesses").select("*").eq("customer_id", customer.id).single();
-  if (!business) redirect("/onboarding");
+
+  // New order-flow customers: site is being built, show a waiting screen
+  if (!business) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#fcf8ff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ textAlign: "center", maxWidth: "420px", padding: "40px 24px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "20px" }}>🔨</div>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, color: "#1b1b25", marginBottom: "10px", letterSpacing: "-0.5px" }}>
+            We're building your site
+          </h1>
+          <p style={{ fontSize: "15px", color: "#6b6b8a", lineHeight: 1.7, marginBottom: "24px" }}>
+            Your website is being built and reviewed by our team. You'll get an email with your login and live site link within 48 hours.
+          </p>
+          <p style={{ fontSize: "13px", color: "#9090a8" }}>
+            Questions? <a href="mailto:support@exsisto.ai" style={{ color: "#4648d4", fontWeight: 600 }}>support@exsisto.ai</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: subscription } = await supabase
     .from("subscriptions").select("*").eq("customer_id", customer.id).single();
@@ -134,6 +153,17 @@ export default async function DashboardPage() {
               {pendingBlogs} blog post{pendingBlogs > 1 ? "s are" : " is"} ready for your review
             </div>
             <a href="/dashboard/blog" className={styles.alertBtn}>Review now →</a>
+          </div>
+        )}
+
+        {(!siteStatus || siteStatus === "pending" || siteStatus === "building") && (
+          <div className={styles.deployBanner} style={{ background: "linear-gradient(135deg, #f5f2ff, #eeeeff)", borderColor: "#c7c4f0" }}>
+            <div>
+              <div className={styles.deployBannerTitle}>🔨 {siteStatus === "building" ? "Building your website…" : "Your website is being built"}</div>
+              <div className={styles.deployBannerSub}>
+                Our team is putting it together now. You'll get an email when it's ready — usually within 48 hours.
+              </div>
+            </div>
           </div>
         )}
 
@@ -423,5 +453,6 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
 
 
