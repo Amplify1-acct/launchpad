@@ -72,16 +72,22 @@ function buildCustomPrompt(
   businessType: string,
   industry: string,
   city: string,
-  slot: string
+  slot: string,
+  description?: string
 ): string {
   const base = "photorealistic photograph, professional quality, no text, no logos, no watermarks, no UI elements";
 
+  // Use description for hero if available — makes it specific to this business
+  const heroDetail = description
+    ? `${description}. `
+    : `${businessType} business. `;
+
   const prompts: Record<string, string> = {
-    hero:  `${base}. Hero image for a ${businessType} business called "${businessName}" in ${city}. Show a professional ${businessType.toLowerCase()} service being performed, clean and trustworthy, natural lighting, wide composition suitable for a website hero banner.`,
-    card1: `${base}. Service showcase image for ${businessName}, a ${businessType} business. Show the primary service with quality craftsmanship, close detail, warm professional lighting.`,
-    card2: `${base}. Trust image for a ${businessType} business in ${city}. Show a professional service vehicle, team member, or completed work result. Clean and high-quality.`,
-    card3: `${base}. Customer satisfaction image for ${businessName}. Show a happy customer with a professional, or a beautiful finished result. Warm and inviting.`,
-    card4: `${base}. Quality showcase for a ${businessType} business. Show the craftsmanship or materials used. High detail, professional photography style.`,
+    hero:  `${base}. Hero image for "${businessName}" in ${city}. ${heroDetail}Wide composition for a website hero banner. Natural lighting, professional quality, no people's faces.`,
+    card1: `${base}. Service showcase image for a ${businessType} business. Show the primary work or product with quality craftsmanship, close detail, warm professional lighting.`,
+    card2: `${base}. Team or equipment image for a ${businessType} business in ${city}. Professional, clean, high-quality.`,
+    card3: `${base}. Finished result or customer experience for a ${businessType} business. Warm and inviting, showing quality outcome.`,
+    card4: `${base}. Detail or materials image for a ${businessType} business. High detail, professional photography style.`,
   };
 
   return prompts[slot] || prompts.hero;
@@ -171,6 +177,7 @@ export async function getBusinessImages(params: {
   industry: string;     // e.g. "plumbing", "hvac", "other"
   city: string;
   plan: "starter" | "pro" | "premium";
+  description?: string; // business description — used for custom hero generation
 }): Promise<{
   hero: string;
   card1: string;
@@ -184,29 +191,63 @@ export async function getBusinessImages(params: {
     plan === "pro" ? ["hero", "card1", "card2"] :
     ["hero", "card1", "card2", "card3", "card4"];
 
-  if (!isCustom) {
-    // ── Library path: instant, free ──────────────────────────────────────
-    // Always return all image slots (hero + 4 cards) with guaranteed variety
-    const allSlots = ["hero", "card1", "card2", "card3", "card4"];
-    const result: Record<string, string> = {};
-    const libSlug = INDUSTRY_LIBRARY_MAP[industry] || "other";
-    const variantCounts = INDUSTRY_VARIANT_COUNT[libSlug] || INDUSTRY_VARIANT_COUNT.default;
+  // ── Always use library for card images (fast, varied) ───────────────────
+  const libSlug = INDUSTRY_LIBRARY_MAP[industry] || "other";
+  const variantCounts = INDUSTRY_VARIANT_COUNT[libSlug] || INDUSTRY_VARIANT_COUNT.default;
+  const cardSlots = ["card1", "card2", "card3", "card4"];
+  const libraryCards: Record<string, string> = {};
+  cardSlots.forEach((slot, i) => {
+    const maxV = variantCounts[slot] ?? variantCounts["card1"] ?? 1;
+    const pick = i % maxV;
+    const filename = pick === 0 ? `${slot}.png` : `${slot}_${pick}.png`;
+    libraryCards[slot] = `${BASE_LIBRARY_URL}/${libSlug}/${filename}`;
+  });
 
-    // Shuffle through variants deterministically so each slot gets a different image
-    const usedVariants: Record<string, number> = {};
-    for (const slot of allSlots) {
-      const baseSlot = slot.replace(/\d+$/, "").replace(/card\d+/, "card1");
-      const slotKey = slot === "hero" ? "hero" : "card" + (["card1","card2","card3","card4"].indexOf(slot) + 1 || 1);
-      const maxVariants = variantCounts[slotKey] || variantCounts["card1"] || 1;
-
-      // Cycle through variants so each card gets a different image
-      const cardIndex = ["hero","card1","card2","card3","card4"].indexOf(slot);
-      const pick = cardIndex % maxVariants;
-      const filename = pick === 0 ? `${slotKey}.png` : `${slotKey}_${pick}.png`;
-      result[slot] = `${BASE_LIBRARY_URL}/${libSlug}/${filename}`;
-    }
-    return result as any;
+  if (!isCustom && !params.description) {
+    // No description — use library for hero too (fast path)
+    const heroV = variantCounts["hero"] ?? 1;
+    const heroPick = Math.floor(Math.random() * heroV);
+    const heroFile = heroPick === 0 ? "hero.png" : `hero_${heroPick}.png`;
+    return {
+      hero: `${BASE_LIBRARY_URL}/${libSlug}/${heroFile}`,
+      ...libraryCards,
+    } as any;
   }
+
+  // ── Generate hero via Nano Banana using business description ─────────────
+  // Cards still come from library — only hero is custom-generated
+  console.log(\`🍌 Generating custom hero image for \${businessName}...\`);
+  let heroUrl = `${BASE_LIBRARY_URL}/${libSlug}/hero.png`; // fallback
+
+  const heroPrompt = buildCustomPrompt(businessName, businessType, industry, city, "hero", params.description);
+  const heroBuffer = await generateNanoBananaImage(heroPrompt);
+
+  if (heroBuffer && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    try {
+      const timestamp = Date.now();
+      const storagePath = \`\${businessId}/hero_\${timestamp}.png\`;
+      const uploadRes = await fetch(
+        \`\${SUPABASE_URL}/storage/v1/object/\${CUSTOMER_BUCKET}/\${storagePath}\`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": \`Bearer \${SUPABASE_SERVICE_KEY}\`,
+            "Content-Type": "image/png",
+            "x-upsert": "true",
+          },
+          body: heroBuffer,
+        }
+      );
+      if (uploadRes.ok) {
+        heroUrl = \`\${SUPABASE_URL}/storage/v1/object/public/\${CUSTOMER_BUCKET}/\${storagePath}\`;
+        console.log("✓ Custom hero uploaded:", heroUrl);
+      }
+    } catch (uploadErr) {
+      console.error("Hero upload failed, using library fallback:", uploadErr);
+    }
+  }
+
+  return { hero: heroUrl, ...libraryCards } as any;
 
   // ── Custom path: generate via Nano Banana ────────────────────────────
   console.log(`🍌 Generating custom Nano Banana images for ${businessName} (${businessType})`);
