@@ -735,6 +735,74 @@ Return JSON with these exact keys:
   // Update page title
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${cleanBizName} | ${content.city_state}</title>`);
 
+  // ── POST-PROCESS: Replace nav link text with customer services ──────────────
+  // Each template nav has <a class="...">ServiceName</a>
+  // We replace the text content of nav links with customer's service names
+  // keeping all CSS classes intact
+  const navServices = [
+    svcList[0] || "Services",
+    svcList[1] || "About",
+    svcList[2] || "Contact",
+    svcList[3] || "More",
+  ];
+
+  // Per-template: the exact nav text strings to replace
+  const NAV_TEXTS: Record<string, string[]> = {
+    auto:       ["Restorations", "Services", "Process", "Inquire"],
+    dental:     ["Home", "Treatments", "Our Team", "Contact"],
+    gym:        ["Services", "Schedule", "Location", "Join"],
+    hvac:       ["AC Installation", "Heating Repair", "Duct Cleaning", "Maintenance"],
+    law:        ["Personal Injury", "Criminal Defense", "Family Law", "Estate Planning"],
+    pet:        ["Grooming", "Boarding", "Daycare", "Training"],
+    plumbing:   ["Services", "About", "Reviews", "Contact"],
+    realestate: ["Buy", "Sell", "Luxury", "About"],
+    restaurant: ["Dine In", "Private Events", "Catering", "Wine Cellar"],
+    salon:      ["Services", "Stylists", "Gallery", "Contact"],
+  };
+
+  const navTexts = NAV_TEXTS[templateKey] || [];
+  navTexts.forEach((oldText, i) => {
+    const newText = navServices[i] || oldText;
+    // Replace text between >OLDTEXT< in anchor tags
+    html = html.replace(
+      new RegExp(`(href="#[^"]*">)${oldText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(<\/a>)`, "g"),
+      `$1${newText}$2`
+    );
+    // Also handle href="#services", "#about" etc
+    html = html.replace(
+      new RegExp(`(href="#\w+">)${oldText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(<\/a>)`, "g"),
+      `$1${newText}$2`
+    );
+  });
+
+  // ── POST-PROCESS: Replace any remaining hardcoded about/hero text ─────────
+  // Some templates have deeply nested text that didn't match swap table
+  // Do a final targeted pass for the most common offenders
+
+  // Restaurant about section hardcoded text
+  html = html.replace(
+    /For over three decades, [^<]+has stood as a beacon of culinary tradition[^<]+\./g,
+    content.about_desc
+  );
+  html = html.replace(/Italian Heritage/g, content.about_heading2);
+  html = html.replace(/A Symphony of/g, content.about_heading1);
+
+  // "Reservations" button in restaurant
+  html = html.replace(/>Reservations</g, ">Book Now<");
+
+  // Any remaining "Est. 1987" references
+  html = html.replace(/Est\. 1987[^<]*/g, content.est_location || cityState);
+
+  // Remaining old business name fragments that might have slipped through
+  const oldNames = ["La Bella Cucina", "FlowRight", "Cool Breeze", "Morgan & Associates",
+                    "Summit Realty", "Happy Paws", "Velvet Studio", "Iron Peak",
+                    "IRON PEAK", "Bright Smile Dental", "Matty's Automotive", "MATTY'S AUTOMOTIVE"];
+  for (const oldName of oldNames) {
+    if (html.includes(oldName)) {
+      html = html.replaceAll(oldName, cleanBizName);
+    }
+  }
+
   // Add disclaimer bar
   const disclaimer = `<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#1b1b25;display:flex;align-items:center;padding:8px 16px;font-family:-apple-system,sans-serif;font-size:12px;gap:10px;pointer-events:none;"><span style="color:#6366f1;font-weight:700;letter-spacing:0.5px;font-size:11px;">PREVIEW</span><span style="color:#fff;font-weight:600;">${cleanBizName}</span><span style="background:#2d2d3d;color:#9090a8;font-size:11px;padding:3px 10px;border-radius:100px;">Images are samples · Copy customized for your business</span></div><div style="height:42px;"></div>`;
   html = html.replace(/(<body[^>]*>)/, `$1${disclaimer}`);
