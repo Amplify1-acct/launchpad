@@ -14,32 +14,24 @@ export async function POST(request: Request) {
     if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
 
     const supabase = createAdminClient();
-    const demoEmail = email || `demo-${Date.now()}@exsisto.ai`;
+    const demoEmail = email || `demo-${Date.now()}-${Math.random().toString(36).slice(2)}@exsisto.ai`;
 
-    // 1. Create auth user
-    const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
-      email: demoEmail,
-      password: Math.random().toString(36).slice(2) + "Aa1!",
-      email_confirm: true,
-    });
-    if (authErr) return NextResponse.json({ error: "Auth: " + authErr.message }, { status: 500 });
-    const userId = authData.user.id;
-
-    // 2. Create customer
+    // Create customer without auth user (demo accounts)
     const { data: customer, error: custErr } = await supabase
       .from("customers")
-      .insert({ email: demoEmail, plan: plan || "pro", user_id: userId })
+      .insert({ email: demoEmail, plan: plan || "pro" })
       .select("id").single();
     if (custErr) return NextResponse.json({ error: "Customer: " + custErr.message }, { status: 500 });
 
-    // 3. Create subscription
-    await supabase.from("subscriptions").insert({
+    // Create subscription
+    const { error: subErr } = await supabase.from("subscriptions").insert({
       customer_id: customer.id,
       plan: plan || "pro",
       status: "active",
     });
+    if (subErr) return NextResponse.json({ error: "Sub: " + subErr.message }, { status: 500 });
 
-    // 4. Create business — services stored as string
+    // Create business
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
       .insert({
@@ -55,7 +47,7 @@ export async function POST(request: Request) {
       .select("id").single();
     if (bizErr) return NextResponse.json({ error: "Business: " + bizErr.message }, { status: 500 });
 
-    // 5. Create website record
+    // Create website record
     const { error: siteErr } = await supabase.from("websites").insert({
       business_id: business.id,
       status: "pending",
