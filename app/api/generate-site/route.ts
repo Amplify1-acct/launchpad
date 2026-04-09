@@ -372,6 +372,7 @@ export async function POST(request: Request) {
         industry: business.industry || "other",
         city: business.city || "",
         plan,
+        description: (business.description || business.services || "").slice(0, 200),
       });
       if (images.hero)  tokens.hero_image_url    = images.hero;
       if (images.card1) tokens.about_image_url   = images.card1;
