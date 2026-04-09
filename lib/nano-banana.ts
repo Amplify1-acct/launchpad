@@ -193,7 +193,11 @@ export async function getBusinessImages(params: {
 
   // ── Always use library for card images (fast, varied) ───────────────────
   const libSlug = INDUSTRY_LIBRARY_MAP[industry] || "other";
-  const variantCounts = INDUSTRY_VARIANT_COUNT[libSlug] || INDUSTRY_VARIANT_COUNT.default;
+  // Use per-slot variant counts (automotive has fewer variants)
+  const isAutomotive = libSlug === "automotive";
+  const variantCounts: Record<string, number> = isAutomotive
+    ? { hero: 1, card1: 1, card2: 1, card3: 1, card4: 1 }
+    : { hero: 3, card1: 2, card2: 2, card3: 2, card4: 2 };
   const cardSlots = ["card1", "card2", "card3", "card4"];
   const libraryCards: Record<string, string> = {};
   cardSlots.forEach((slot, i) => {
