@@ -20,30 +20,33 @@ export async function GET() {
     const BASE = "https://stitch.googleapis.com/v1";
 
     // Create project
-    const proj = await (await fetch(`${BASE}/projects`,{method:"POST",headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json","x-goog-user-project":PID},body:JSON.stringify({title:"Test Law Site"})})).json() as any;
+    const proj = await (await fetch(`${BASE}/projects`,{method:"POST",headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json","x-goog-user-project":PID},body:JSON.stringify({title:"Test"})})).json() as any;
     const projectId = proj.name?.split("/").pop();
-    if (!projectId) return NextResponse.json({ step:"create_project", error: proj });
 
-    // Generate screen
-    const prompt = `Design a homepage for "Sunrise Law Group", a personal injury and family law firm in Austin, TX. Bold professional design with dark navy and gold accents. Include nav, hero, services (Personal Injury, Family Law, Car Accidents), stats, about, reviews, footer.`;
-    const genRes = await fetch(`${BASE}/projects/${projectId}/screens:generate`,{
-      method:"POST",
-      headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json","x-goog-user-project":PID},
-      body:JSON.stringify({prompt, device_type:"DESKTOP", model_id:"GEMINI_3_PRO"})
-    });
-    const genText = await genRes.text();
-    let genData: any;
-    try { genData = JSON.parse(genText); } catch { genData = { raw: genText.slice(0,500) }; }
+    // Try different model IDs and endpoint variants
+    const attempts = [
+      { model_id: "GEMINI_3_PRO", endpoint: `${BASE}/projects/${projectId}/screens:generate` },
+      { model_id: "GEMINI_2_0_FLASH", endpoint: `${BASE}/projects/${projectId}/screens:generate` },
+      { model_id: "GEMINI_3_1_PRO", endpoint: `${BASE}/projects/${projectId}/screens:generate` },
+    ];
 
-    return NextResponse.json({
-      project_id: projectId,
-      generate_status: genRes.status,
-      has_components: !!(genData.outputComponents?.length),
-      components_count: genData.outputComponents?.length || 0,
-      error: genData.error || null,
-      first_screen: genData.outputComponents?.[0]?.design?.screens?.[0]?.id || null,
-      html_url: genData.outputComponents?.[0]?.design?.screens?.[0]?.htmlCode?.downloadUrl || null,
-    });
+    const results: any[] = [];
+    const prompt = "Simple homepage for a law firm. Navy and gold. Hero, services, contact.";
+
+    for (const attempt of attempts) {
+      const res = await fetch(attempt.endpoint, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", "x-goog-user-project": PID },
+        body: JSON.stringify({ prompt, device_type: "DESKTOP", model_id: attempt.model_id })
+      });
+      const text = await res.text();
+      let data: any;
+      try { data = JSON.parse(text); } catch { data = { raw: text.slice(0, 300) }; }
+      results.push({ model_id: attempt.model_id, status: res.status, has_screens: !!(data.outputComponents?.[0]?.design?.screens?.length), error: data.error?.message || data.raw || null });
+      if (res.status === 200 && data.outputComponents?.[0]?.design?.screens?.length) break;
+    }
+
+    return NextResponse.json({ project_id: projectId, results });
   } catch(err:any) {
     return NextResponse.json({ error: err.message });
   }
