@@ -14,15 +14,12 @@ export async function POST(request: Request) {
     if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
 
     const supabase = createAdminClient();
+    const demoEmail = `demo-${Date.now()}-${Math.random().toString(36).slice(2, 6)}@exsisto.ai`;
 
-    // Use unique email per seed call
-    const demoEmail = `demo-${Date.now()}-${Math.random().toString(36).slice(2, 7)}@exsisto.ai`;
-    const demoPassword = Math.random().toString(36).slice(2) + "Aa1!Zz9#";
-
-    // Create auth user
+    // 1. Create auth user — the handle_new_user trigger will auto-create a customers row
     const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
       email: demoEmail,
-      password: demoPassword,
+      password: Math.random().toString(36).slice(2) + "Aa1!Zz9#",
       email_confirm: true,
     });
     if (authErr || !authData?.user) {
@@ -30,19 +27,22 @@ export async function POST(request: Request) {
     }
     const userId = authData.user.id;
 
-    // Create customer
+    // 2. The trigger already created a customer row — just update it with plan
     const { data: customer, error: custErr } = await supabase
       .from("customers")
-      .insert({ email: demoEmail, plan: plan || "pro", user_id: userId })
+      .update({ plan: plan || "pro" })
+      .eq("user_id", userId)
       .select("id").single();
-    if (custErr) return NextResponse.json({ error: "Customer: " + custErr.message }, { status: 500 });
+    if (custErr || !customer) {
+      return NextResponse.json({ error: "Customer update: " + (custErr?.message || "not found") }, { status: 500 });
+    }
 
-    // Create subscription
+    // 3. Create subscription
     await supabase.from("subscriptions").insert({
       customer_id: customer.id, plan: plan || "pro", status: "active",
     });
 
-    // Create business
+    // 4. Create business
     const { data: business, error: bizErr } = await supabase
       .from("businesses")
       .insert({
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       .select("id").single();
     if (bizErr) return NextResponse.json({ error: "Business: " + bizErr.message }, { status: 500 });
 
-    // Create website
+    // 5. Create website record
     await supabase.from("websites").insert({
       business_id: business.id, status: "pending", plan: plan || "pro",
     });
