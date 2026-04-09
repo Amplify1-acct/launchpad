@@ -504,6 +504,7 @@ export default function OrderPage() {
           />
         </div>
       )}
+    </div>
   );
 }
 
