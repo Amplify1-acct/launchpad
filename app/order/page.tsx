@@ -359,7 +359,7 @@ export default function OrderPage() {
               <button className={styles.backBtn} onClick={() => setStep("template")}>← Back</button>
               <button
                 className={styles.previewBtn}
-                onClick={generatePreview}
+                onClick={() => generatePreview()}
                 disabled={previewLoading}
               >
                 {previewLoading ? "Generating preview…" : "👁 Preview my site"}
