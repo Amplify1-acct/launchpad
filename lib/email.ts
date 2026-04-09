@@ -66,66 +66,65 @@ function baseTemplate(content: string) {
 </html>`;
 }
 
-// ─── WELCOME EMAIL ────────────────────────────────────────────────────────────
-export async function sendWelcomeEmail(to: string, businessName: string, plan: string) {
-  const planFreq: Record<string, { blog: string; social: string }> = {
-    starter: { blog: "2 blog posts", social: "8 social posts" },
-    pro:     { blog: "4 blog posts", social: "16 social posts" },
-    premium: { blog: "8 blog posts", social: "32 social posts" },
-  };
-  const freq = planFreq[plan] || planFreq.starter;
-
+// ─── ORDER CONFIRMATION EMAIL ─────────────────────────────────────────────────
+export async function sendOrderConfirmationEmail(to: string, businessName: string, plan: string) {
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
   const html = baseTemplate(`
-    <h1>Welcome to Exsisto, ${businessName}! 🎉</h1>
-    <p>We're building your digital presence right now. In the next few minutes you'll have a professional website, blog posts, and social media content — all ready for your review.</p>
+    <h1>Order received — we're on it! 🎉</h1>
+    <p>Thanks for ordering, <strong>${businessName}</strong>! We've got your <strong>${planLabel}</strong> plan order and we're building your site right now.</p>
 
     <div class="highlight">
-      <p><strong>What's included in your ${plan} plan:</strong></p>
-      <br/>
-      <div class="stat">
-        <div class="stat-value">${freq.blog}</div>
-        <div class="stat-label">per month</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">${freq.social}</div>
-        <div class="stat-label">per month</div>
-      </div>
+      <p>✦ Your custom AI-designed website is being built</p>
+      <p style="margin-top:6px;">✦ We'll review it before sending it your way</p>
+      <p style="margin-top:6px;">✦ You'll get your login link within 48 hours</p>
     </div>
-
-    <a href="https://exsisto.ai/dashboard" class="btn">Go to my dashboard →</a>
 
     <div class="divider"></div>
-    <p style="font-size:13px;">Your 7-day free trial has started. No charge until your trial ends. Cancel anytime from your dashboard settings.</p>
+    <p style="font-size:13px;">Questions? Reply to this email or write to <a href="mailto:support@exsisto.ai" style="color:#4648d4;">support@exsisto.ai</a></p>
   `);
 
-  return send(to, `Welcome to Exsisto — we're building your site now`, html);
+  return send(to, `Order confirmed — building your ${businessName} website now`, html);
 }
 
-// ─── SITE READY EMAIL ─────────────────────────────────────────────────────────
-export async function sendSiteReadyEmail(to: string, businessName: string, previewUrl: string) {
+// ─── ACCOUNT SETUP / MAGIC LINK EMAIL ────────────────────────────────────────
+export async function sendAccountSetupEmail(to: string, businessName: string, magicLink: string) {
   const html = baseTemplate(`
-    <h1>Your website is ready to review 🌐</h1>
-    <p>We've built a custom website for <strong>${businessName}</strong>. Take a look and approve it to go live — it only takes a click.</p>
+    <h1>Your Exsisto account is ready 🔑</h1>
+    <p>Your website for <strong>${businessName}</strong> is live. Click the button below to access your dashboard — no password needed.</p>
 
     <div class="highlight">
-      <p>✦ Custom design tailored to your business</p>
-      <p style="margin-top:6px;">✦ Your services, headlines, and copy — all written by AI</p>
-      <p style="margin-top:6px;">✦ Mobile-friendly and SEO-optimized</p>
+      <p style="font-size:13px;"><strong>This link expires in 24 hours.</strong> Use it to set your password from the dashboard settings.</p>
     </div>
 
-    <a href="${previewUrl}" class="btn">Review my website →</a>
-    <br/>
-    <p style="font-size:12px;color:#9090a8;">Not happy with it? You can request changes directly from the review page and we'll rebuild it.</p>
+    <a href="${magicLink}" class="btn">Access my dashboard →</a>
+
+    <div class="divider"></div>
+    <p style="font-size:13px;">From your dashboard you can view your site, manage blog posts, social media, and request website changes.</p>
   `);
 
-  return send(to, `Your ${businessName} website is ready to review`, html);
+  return send(to, `Your Exsisto dashboard is ready — log in now`, html);
 }
 
-// ─── SITE LIVE EMAIL ──────────────────────────────────────────────────────────
-export async function sendSiteLiveEmail(to: string, businessName: string, siteUrl: string) {
+// ─── SITE LIVE + DNS EMAIL ────────────────────────────────────────────────────
+export async function sendSiteLiveEmail(
+  to: string,
+  businessName: string,
+  siteUrl: string,
+  customDomain?: string,
+  registrar?: string,
+  dnsInstructions?: string
+) {
+  const dnsSection = customDomain ? `
+    <div class="divider"></div>
+    <h1 style="font-size:18px;">Connect your domain 🌐</h1>
+    <p>You provided the domain <strong>${customDomain}</strong>. Here's how to point it to your new site:</p>
+    ${dnsInstructions ? `<div class="highlight"><p style="white-space:pre-line;font-size:13px;">${dnsInstructions}</p></div>` : ""}
+    <p style="font-size:13px;">Registered with <strong>${registrar || "your registrar"}</strong>? Log into your DNS settings and add a CNAME record pointing <code>${customDomain}</code> to <code>cname.vercel-dns.com</code>.</p>
+  ` : "";
+
   const html = baseTemplate(`
     <h1>You're live! 🚀</h1>
-    <p><strong>${businessName}</strong> is now live on the web. Share it with your customers, add it to your business cards, and tell the world.</p>
+    <p><strong>${businessName}</strong> is now published on the web. Your site is live at:</p>
 
     <div class="highlight">
       <p style="font-size:15px;font-weight:700;color:#4648d4;">${siteUrl.replace("https://", "")}</p>
@@ -134,11 +133,13 @@ export async function sendSiteLiveEmail(to: string, businessName: string, siteUr
     <a href="${siteUrl}" class="btn">View my live site →</a>
     <a href="https://exsisto.ai/dashboard" class="btn-outline">Go to dashboard</a>
 
+    ${dnsSection}
+
     <div class="divider"></div>
-    <p style="font-size:13px;">Want to make changes? Head to your dashboard and click "Request changes" — we'll rebuild your site around your feedback.</p>
+    <p style="font-size:13px;">Want to make changes? Head to your dashboard and use the website editor — we'll update your site within 24 hours.</p>
   `);
 
-  return send(to, `${businessName} is now live on the web!`, html);
+  return send(to, `${businessName} is now live!`, html);
 }
 
 // ─── BLOG POSTS READY EMAIL ───────────────────────────────────────────────────
@@ -161,4 +162,53 @@ export async function sendBlogReadyEmail(to: string, businessName: string, postC
   `);
 
   return send(to, `${postCount} new blog post${postCount > 1 ? "s" : ""} ready for ${businessName}`, html);
+}
+
+// ─── WELCOME EMAIL (kept for backwards compat) ────────────────────────────────
+export async function sendWelcomeEmail(to: string, businessName: string, plan: string) {
+  return sendOrderConfirmationEmail(to, businessName, plan);
+}
+
+// ─── SITE READY EMAIL (kept for backwards compat) ─────────────────────────────
+export async function sendSiteReadyEmail(to: string, businessName: string, previewUrl: string) {
+  const html = baseTemplate(`
+    <h1>Your website is ready to review 🌐</h1>
+    <p>We've built a custom website for <strong>${businessName}</strong>. Log in to your dashboard to take a look.</p>
+    <a href="${previewUrl}" class="btn">Review my website →</a>
+  `);
+  return send(to, `Your ${businessName} website is ready`, html);
+}
+
+// ─── ADMIN NEW ORDER NOTIFICATION ─────────────────────────────────────────────
+export async function sendAdminNewOrderEmail(
+  businessName: string,
+  email: string,
+  plan: string,
+  industry: string,
+  city: string,
+  template: string,
+  businessId: string
+) {
+  const adminEmail = process.env.ADMIN_EMAIL || "matt@amplifyforlawyers.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+
+  const html = baseTemplate(`
+    <h1>New order: ${businessName} 📦</h1>
+
+    <div class="highlight">
+      <p><strong>Business:</strong> ${businessName}</p>
+      <p style="margin-top:6px;"><strong>Customer:</strong> ${email}</p>
+      <p style="margin-top:6px;"><strong>Plan:</strong> ${plan}</p>
+      <p style="margin-top:6px;"><strong>Industry:</strong> ${industry}</p>
+      <p style="margin-top:6px;"><strong>City:</strong> ${city}</p>
+      <p style="margin-top:6px;"><strong>Template:</strong> ${template}</p>
+    </div>
+
+    <a href="${appUrl}/admin" class="btn">Go to admin dashboard →</a>
+
+    <div class="divider"></div>
+    <p style="font-size:12px;color:#9090a8;">Business ID: ${businessId}</p>
+  `);
+
+  return send(adminEmail, `New order: ${businessName} (${plan})`, html);
 }

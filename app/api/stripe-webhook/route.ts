@@ -29,13 +29,13 @@ export async function POST(request: Request) {
   // ── Payment success ──────────────────────────────────────────────────────
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const email = session.customer_email;
-    const plan = (session.metadata?.plan || "starter") as string;
-    const businessId = session.metadata?.business_id;
+    const meta = session.metadata || {};
+    const email = session.customer_email || meta.email;
+    const plan = (meta.plan || "starter") as string;
     const stripeCustomerId = session.customer as string;
     const stripeSubscriptionId = session.subscription as string;
 
-    console.log(`Payment completed: ${email} plan=${plan} biz=${businessId}`);
+    console.log(`New order: ${email} plan=${plan}`);
 
     if (!email) {
       console.error("No email in session");
@@ -43,111 +43,207 @@ export async function POST(request: Request) {
     }
 
     try {
-      // Find customer by email
-      const { data: customer, error: custErr } = await supabase
+      // ── 1. Create or find auth user ──────────────────────────────────────
+      // Generate a temporary random password — customer will use magic link
+      const tempPassword = Math.random().toString(36).slice(2, 10) +
+                           Math.random().toString(36).slice(2, 10).toUpperCase() + "!1";
+
+      let authUserId: string;
+
+      // Try to find existing auth user first
+      const { data: existingUsers } = await supabase.auth.admin.listUsers();
+      const existingUser = existingUsers?.users?.find(u => u.email === email);
+
+      if (existingUser) {
+        authUserId = existingUser.id;
+        console.log(`Found existing auth user: ${authUserId}`);
+      } else {
+        const { data: newUser, error: authErr } = await supabase.auth.admin.createUser({
+          email,
+          password: tempPassword,
+          email_confirm: true,
+        });
+        if (authErr || !newUser?.user) {
+          console.error("Failed to create auth user:", authErr);
+          throw new Error(`Auth user creation failed: ${authErr?.message}`);
+        }
+        authUserId = newUser.user.id;
+        console.log(`Created auth user: ${authUserId}`);
+      }
+
+      // ── 2. Create or find customer record ────────────────────────────────
+      let customerId: string;
+
+      const { data: existingCustomer } = await supabase
         .from("customers")
         .select("id")
         .eq("email", email)
         .single();
 
-      if (custErr || !customer) {
-        console.error("Customer not found for email:", email, custErr);
-        return NextResponse.json({ received: true });
+      if (existingCustomer) {
+        customerId = existingCustomer.id;
+        await supabase
+          .from("customers")
+          .update({
+            plan,
+            stripe_customer_id: stripeCustomerId,
+            user_id: authUserId,
+          })
+          .eq("id", customerId);
+      } else {
+        const { data: newCustomer, error: custErr } = await supabase
+          .from("customers")
+          .insert({
+            email,
+            plan,
+            stripe_customer_id: stripeCustomerId,
+            user_id: authUserId,
+          })
+          .select("id")
+          .single();
+
+        if (custErr || !newCustomer) {
+          throw new Error(`Customer creation failed: ${custErr?.message}`);
+        }
+        customerId = newCustomer.id;
       }
 
-      // Check if subscription already exists for this customer
+      // ── 3. Create or find subscription ──────────────────────────────────
       const { data: existingSub } = await supabase
         .from("subscriptions")
         .select("id")
-        .eq("customer_id", customer.id)
+        .eq("customer_id", customerId)
         .single();
 
-      const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-
       if (existingSub) {
-        // Update existing subscription with real Stripe IDs + correct plan
         await supabase
           .from("subscriptions")
           .update({
             stripe_customer_id: stripeCustomerId,
             stripe_subscription_id: stripeSubscriptionId,
             plan,
-            status: "trialing",
-            trial_end: trialEnd,
+            status: "active",
           })
           .eq("id", existingSub.id);
       } else {
-        // Create new subscription
         await supabase
           .from("subscriptions")
           .insert({
-            customer_id: customer.id,
+            customer_id: customerId,
             stripe_customer_id: stripeCustomerId,
             stripe_subscription_id: stripeSubscriptionId,
             plan,
-            status: "trialing",
-            trial_end: trialEnd,
+            status: "active",
           });
       }
 
-      // Update customer record with plan + stripe customer ID
-      await supabase
-        .from("customers")
-        .update({
-          plan,
-          stripe_customer_id: stripeCustomerId,
-        })
-        .eq("id", customer.id);
+      // ── 4. Create or find business record ───────────────────────────────
+      let businessId: string;
 
-      console.log(`✅ Subscription saved: customer=${customer.id} plan=${plan}`);
+      const { data: existingBiz } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("customer_id", customerId)
+        .single();
 
-      // Kick off site generation
-      const targetBizId = businessId || await (async () => {
-        const { data: biz } = await supabase
+      if (existingBiz) {
+        businessId = existingBiz.id;
+        await supabase
           .from("businesses")
+          .update({
+            name: meta.business_name || "My Business",
+            industry: meta.industry || "other",
+            city: meta.city || "",
+            state: meta.state || "",
+            phone: meta.phone || "",
+            description: meta.description || "",
+            services: meta.services || "",
+          })
+          .eq("id", businessId);
+      } else {
+        const { data: newBiz, error: bizErr } = await supabase
+          .from("businesses")
+          .insert({
+            customer_id: customerId,
+            name: meta.business_name || "My Business",
+            industry: meta.industry || "other",
+            city: meta.city || "",
+            state: meta.state || "",
+            phone: meta.phone || "",
+            description: meta.description || "",
+            services: meta.services || "",
+          })
           .select("id")
-          .eq("customer_id", customer.id)
           .single();
-        return biz?.id;
-      })();
 
-      if (targetBizId) {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
-        // Non-blocking: generate site
-        fetch(`${appUrl}/api/generate-site`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
-          },
-          body: JSON.stringify({ business_id: targetBizId }),
-        }).catch(e => console.error("Site generation failed:", e));
-
-        // Non-blocking: generate blog posts
-        fetch(`${appUrl}/api/generate-blog`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
-          },
-          body: JSON.stringify({ business_id: targetBizId }),
-        }).catch(e => console.error("Blog generation failed:", e));
-
-        // Non-blocking: fetch Google reviews (Premium only)
-        if (plan === "premium") {
-          fetch(`${appUrl}/api/fetch-reviews`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
-            },
-            body: JSON.stringify({ business_id: targetBizId }),
-          }).catch(e => console.error("Reviews fetch failed:", e));
+        if (bizErr || !newBiz) {
+          throw new Error(`Business creation failed: ${bizErr?.message}`);
         }
+        businessId = newBiz.id;
       }
+
+      // ── 5. Create websites record with template preference ───────────────
+      const { data: existingWebsite } = await supabase
+        .from("websites")
+        .select("id")
+        .eq("business_id", businessId)
+        .single();
+
+      if (!existingWebsite) {
+        await supabase
+          .from("websites")
+          .insert({
+            business_id: businessId,
+            status: "pending",
+            template_id: meta.template || "skeleton-clean",
+            plan,
+          });
+      } else {
+        await supabase
+          .from("websites")
+          .update({
+            template_id: meta.template || "skeleton-clean",
+            plan,
+            status: "pending",
+          })
+          .eq("business_id", businessId);
+      }
+
+      // ── 6. Store domain preference if provided ───────────────────────────
+      if (meta.domain) {
+        await supabase
+          .from("businesses")
+          .update({ custom_domain: meta.domain })
+          .eq("id", businessId);
+      }
+
+      console.log(`✅ Order saved: customer=${customerId} business=${businessId} plan=${plan}`);
+
+      // ── 7. Send confirmation email to customer ───────────────────────────
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+      fetch(`${appUrl}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "order_confirmation", business_id: businessId }),
+      }).catch(() => {});
+
+      // ── 8. Send magic link / account setup email to customer ─────────────
+      fetch(`${appUrl}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "account_setup", business_id: businessId }),
+      }).catch(() => {});
+
+      // ── 9. Notify Matt (admin notification) ─────────────────────────────
+      fetch(`${appUrl}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "admin_new_order", business_id: businessId }),
+      }).catch(() => {});
 
     } catch (err: any) {
       console.error("Post-payment setup failed:", err);
+      // Still return 200 so Stripe doesn't retry — log and investigate
     }
   }
 
@@ -172,7 +268,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // ── Subscription updated (plan change) ──────────────────────────────────
+  // ── Subscription updated ─────────────────────────────────────────────────
   if (event.type === "customer.subscription.updated") {
     const sub = event.data.object as Stripe.Subscription;
     const newPlan = sub.metadata?.plan;
