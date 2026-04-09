@@ -791,7 +791,7 @@ Return JSON with these exact keys:
   html = html.replace(/>Reservations</g, ">Book Now<");
 
   // Any remaining "Est. 1987" references
-  html = html.replace(/Est\. 1987[^<]*/g, content.est_location || cityState);
+  html = html.replace(/Est\. 1987[^<]*/g, content.est_location || content.city_state);
 
   // Remaining old business name fragments that might have slipped through
   const oldNames = ["La Bella Cucina", "FlowRight", "Cool Breeze", "Morgan & Associates",
