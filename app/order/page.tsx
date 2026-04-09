@@ -84,12 +84,14 @@ export default function OrderPage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  async function generatePreview() {
+  async function generatePreview(templateOverride?: string) {
     if (!form.businessName || !form.industry) {
       setError("Please fill in your business name and industry first.");
       return;
     }
+    const tmpl = templateOverride || selectedTemplate;
     setPreviewLoading(true);
+    if (templateOverride) setSelectedTemplate(templateOverride);
     setError("");
     try {
       const res = await fetch("/api/order/preview", {
@@ -103,7 +105,7 @@ export default function OrderPage() {
           phone: form.phone,
           description: form.description,
           services: form.services,
-          template: selectedTemplate,
+          template: tmpl,
         }),
       });
       const data = await res.json();
@@ -440,33 +442,34 @@ export default function OrderPage() {
       {previewOpen && previewHtml && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 1000,
-          background: "rgba(0,0,0,0.85)",
+          background: "rgba(0,0,0,0.92)",
           display: "flex", flexDirection: "column",
+          fontFamily: "'Inter', sans-serif",
         }}>
+
           {/* Top bar */}
           <div style={{
             background: "#1b1b25", padding: "10px 16px", flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px",
-            flexWrap: "wrap",
+            borderBottom: "1px solid #2d2d3d",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <span style={{ fontSize: "11px", fontWeight: 700, color: "#6366f1", letterSpacing: "0.5px" }}>PREVIEW</span>
               <span style={{ fontSize: "13px", color: "#fff", fontWeight: 600 }}>{form.businessName}</span>
-              <span style={{
-                background: "#2d2d3d", color: "#9090a8", fontSize: "11px",
-                padding: "3px 10px", borderRadius: "100px",
-              }}>Sample content — your real site will look even better</span>
+              <span style={{ background: "#2d2d3d", color: "#9090a8", fontSize: "11px", padding: "3px 10px", borderRadius: "100px" }}>
+                Sample images · copy customized for your business
+              </span>
             </div>
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <button
                 onClick={() => { setPreviewOpen(false); setStep("checkout"); }}
                 style={{
                   background: "#4648d4", color: "#fff", border: "none",
-                  borderRadius: "8px", padding: "8px 18px", fontSize: "13px",
+                  borderRadius: "8px", padding: "8px 20px", fontSize: "13px",
                   fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
                 }}
               >
-                Looks great — continue →
+                This is the one →
               </button>
               <button
                 onClick={() => setPreviewOpen(false)}
@@ -476,27 +479,77 @@ export default function OrderPage() {
                   cursor: "pointer", fontFamily: "inherit",
                 }}
               >
-                ✕ Close
+                ✕
               </button>
             </div>
+          </div>
+
+          {/* Style switcher bar */}
+          <div style={{
+            background: "#14141e", padding: "8px 16px", flexShrink: 0,
+            display: "flex", alignItems: "center", gap: "6px",
+            borderBottom: "1px solid #2d2d3d", overflowX: "auto",
+          }}>
+            <span style={{ fontSize: "11px", color: "#6b6b8a", fontWeight: 700, whiteSpace: "nowrap", marginRight: "4px" }}>
+              TRY A STYLE:
+            </span>
+            {TEMPLATES.map(t => (
+              <button
+                key={t.id}
+                onClick={() => generatePreview(t.id)}
+                disabled={previewLoading}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "6px",
+                  border: selectedTemplate === t.id ? "1px solid #6366f1" : "1px solid #3d3d4d",
+                  background: selectedTemplate === t.id ? "#6366f120" : "#2d2d3d",
+                  color: selectedTemplate === t.id ? "#818cf8" : "#9090a8",
+                  fontSize: "11px",
+                  fontWeight: selectedTemplate === t.id ? 700 : 500,
+                  cursor: previewLoading ? "not-allowed" : "pointer",
+                  whiteSpace: "nowrap",
+                  fontFamily: "inherit",
+                  opacity: previewLoading && selectedTemplate !== t.id ? 0.5 : 1,
+                  transition: "all 0.15s",
+                }}
+              >
+                {previewLoading && selectedTemplate === t.id ? "Loading…" : t.name}
+              </button>
+            ))}
           </div>
 
           {/* Disclaimer */}
           <div style={{
             background: "#fefce8", borderBottom: "1px solid #fde68a",
-            padding: "7px 16px", fontSize: "12px", color: "#854d0e",
-            display: "flex", alignItems: "center", gap: "8px", flexShrink: 0,
+            padding: "6px 16px", fontSize: "11px", color: "#854d0e",
+            display: "flex", alignItems: "center", gap: "6px", flexShrink: 0,
           }}>
-            ⚠️&nbsp;<strong>Preview only.</strong>&nbsp;Sample images are shown as placeholders. Your real site will have custom AI-generated photos, refined copy reviewed by our team, and your full business details throughout.
+            ⚠️ <strong>Preview only.</strong> Sample images shown as placeholders. Your real site will have custom AI photos, refined copy, and your full business details.
           </div>
 
           {/* Site iframe */}
-          <iframe
-            srcDoc={previewHtml}
-            style={{ flex: 1, border: "none", width: "100%", background: "#fff" }}
-            title="Site preview"
-            sandbox="allow-scripts"
-          />
+          {previewLoading ? (
+            <div style={{
+              flex: 1, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center",
+              background: "#0f0f1a", gap: "16px",
+            }}>
+              <div style={{
+                width: "40px", height: "40px", border: "3px solid #3d3d4d",
+                borderTopColor: "#6366f1", borderRadius: "50%",
+                animation: "spin 0.8s linear infinite",
+              }} />
+              <span style={{ color: "#9090a8", fontSize: "14px" }}>Generating your preview…</span>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : (
+            <iframe
+              srcDoc={previewHtml}
+              style={{ flex: 1, border: "none", width: "100%", background: "#fff" }}
+              title="Site preview"
+              sandbox="allow-scripts"
+            />
+          )}
         </div>
       )}
     </div>
