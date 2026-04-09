@@ -373,8 +373,15 @@ export async function POST(request: Request) {
         city: business.city || "",
         plan,
       });
-      if (images.hero) tokens.hero_image_url = images.hero;
-      if (images.card1) tokens.about_image_url = images.card1;
+      if (images.hero)  tokens.hero_image_url    = images.hero;
+      if (images.card1) tokens.about_image_url   = images.card1;
+      if (images.card2) tokens.card2_image_url   = images.card2;
+      if (images.card3) tokens.card3_image_url   = images.card3;
+      if (images.card4) tokens.card4_image_url   = images.card4;
+      if (images.card1) tokens.service_image_url = images.card1;
+      if (images.card2) tokens.gallery_image_url = images.card2;
+      if (images.card3) tokens.team_image_url    = images.card3;
+      if (images.card4) tokens.process_image_url = images.card4;
       console.log(`✓ Images ready (source: ${imageSource})`);
     }
 
