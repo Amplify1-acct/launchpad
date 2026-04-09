@@ -54,7 +54,7 @@ export default async function AdminClientDashboard({
     .select("*")
     .eq("business_id", business_id)
     .order("created_at", { ascending: false })
-    .limit(4);
+    .limit(20);
 
   const { data: socialPosts } = await supabase
     .from("social_posts")
@@ -69,6 +69,7 @@ export default async function AdminClientDashboard({
   const pendingBlogs = (blogPosts || []).filter(
     (p: any) => p.status === "pending" || p.status === "draft"
   ).length;
+  const totalBlogs = (blogPosts || []).length;
 
   const fbPosts = (socialPosts || []).filter((p: any) => p.platform === "facebook");
   const igPosts = (socialPosts || []).filter((p: any) => p.platform === "instagram");
@@ -120,7 +121,8 @@ export default async function AdminClientDashboard({
           ← Back to admin
         </a>
       </div>
-      <div style={{ height: "37px" }} />
+      {/* Two fixed bars: admin banner (37px) + actions bar (45px) */}
+      <div style={{ height: "82px" }} />
       <AdminClientActions businessId={business_id} adminSecret={ADMIN_SECRET} />
 
       <aside className={styles.sidebar}>
@@ -223,10 +225,10 @@ export default async function AdminClientDashboard({
           <div className={styles.statCard}>
             <div className={styles.statLabel}>Blog posts</div>
             <div className={styles.statValue}>
-              {pendingBlogs > 0 ? `${pendingBlogs} pending` : `${blogPosts?.length || 0} total`}
+              {totalBlogs > 0 ? `${totalBlogs} total` : "0 total"}
             </div>
             <div className={`${styles.statSub} ${pendingBlogs > 0 ? styles.statAmber : styles.statGreen}`}>
-              {pendingBlogs > 0 ? "● Needs review" : "● Up to date"}
+              {pendingBlogs > 0 ? `● ${pendingBlogs} pending approval` : totalBlogs > 0 ? "● All approved" : "● None yet"}
             </div>
           </div>
 
