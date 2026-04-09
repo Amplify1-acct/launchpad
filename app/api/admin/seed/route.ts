@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         city: city || "", state: state || "",
         phone: phone || "",
         description: description || "",
-        services: services || "",
+        services: services ? services.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
       })
       .select("id").single();
     if (bizErr) return NextResponse.json({ error: "Business: " + bizErr.message }, { status: 500 });
