@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hargrove & Associates | Personal Injury & Family Law · Newark, NJ</title>
+  <meta name="description" content="Hargrove & Associates in Newark, NJ. Aggressive representation in personal injury, family law, and criminal defense. Free consultations. Call (973) 555-0218.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #0d1f3c;
+      --navy-2:     #152848;
+      --navy-3:     #1c3358;
+      --gold:       #b8973a;
+      --gold-lt:    #d4af56;
+      --gold-pale:  #faf6ec;
+      --cream:      #fdfbf7;
+      --white:      #ffffff;
+      --off:        #f8f7f4;
+      --text:       #1a1a1a;
+      --mid:        #4a4a4a;
+      --light:      #7a7a7a;
+      --border:     #e8e2d6;
+      --border-dk:  #2e3f5c;
+      --nav-h:      76px;
+      --r:          4px;
+      --r-lg:       8px;
+      --serif:      'Cormorant Garamond', Georgia, serif;
+      --sans:       'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--text); background: var(--cream); overflow-x: hidden; line-height: 1.6; }
+    img { display: block; width: 100%; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Demo bar ── */
+    #demo-bar {
+      background: var(--gold); color: var(--navy);
+      text-align: center; padding: 9px 16px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+    }
+    #demo-bar a { color: var(--navy); text-decoration: underline; opacity: 0.75; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      height: var(--nav-h);
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 56px;
+      border-bottom: 1px solid var(--border-dk);
+    }
+    .nav-logo { display: flex; flex-direction: column; }
+    .nav-logo-firm {
+      font-family: var(--serif); font-size: 22px; font-weight: 600;
+      color: #fff; letter-spacing: 0.04em; line-height: 1.1;
+    }
+    .nav-logo-tagline { font-size: 10px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 2px; }
+    .nav-divider { width: 1px; height: 32px; background: var(--border-dk); margin: 0 32px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.65); letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold) !important; color: var(--navy) !important;
+      padding: 10px 22px; border-radius: var(--r);
+      font-size: 12px !important; font-weight: 600 !important;
+      letter-spacing: 0.08em !important; text-transform: uppercase !important;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--gold-lt) !important; transform: translateY(-1px); }
+    #hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    #hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Hero ── */
+    #hero {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - var(--nav-h));
+      background: var(--navy);
+    }
+    .hero-left {
+      padding: 96px 64px 96px 56px;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative;
+    }
+    .hero-left::after {
+      content: ''; position: absolute; top: 60px; bottom: 60px;
+      right: 0; width: 1px; background: var(--border-dk);
+    }
+    .hero-rule {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    }
+    .hero-rule-line { flex: 1; max-width: 40px; height: 1px; background: var(--gold); }
+    .hero-rule-text { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .hero-left h1 {
+      font-family: var(--serif); font-size: clamp(44px, 5vw, 72px);
+      color: #fff; line-height: 1.08; letter-spacing: 0.01em;
+      font-weight: 600; margin-bottom: 24px;
+    }
+    .hero-left h1 em { color: var(--gold); font-style: italic; }
+    .hero-sub {
+      font-size: 16px; color: rgba(255,255,255,0.6); font-weight: 300;
+      max-width: 440px; margin-bottom: 44px; line-height: 1.8;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--r); font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: transform 0.18s, background 0.18s; letter-spacing: 0.04em; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-gold { background: var(--gold); color: var(--navy); }
+    .btn-gold:hover { background: var(--gold-lt); }
+    .btn-outline-gold { background: transparent; color: var(--gold); border: 1px solid rgba(184,151,58,0.5); }
+    .btn-outline-gold:hover { border-color: var(--gold); background: rgba(184,151,58,0.08); }
+    .btn-outline-dk { background: transparent; color: var(--mid); border: 1px solid var(--border); }
+    .btn-outline-dk:hover { border-color: var(--navy); color: var(--navy); }
+    .btn-navy { background: var(--navy); color: #fff; }
+    .btn-navy:hover { background: var(--navy-2); }
+
+    .hero-credentials {
+      margin-top: 48px; padding-top: 36px;
+      border-top: 1px solid var(--border-dk);
+      display: flex; gap: 32px;
+    }
+    .cred-item { text-align: center; }
+    .cred-num { font-family: var(--serif); font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1; }
+    .cred-lbl { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 4px; }
+
+    .hero-right { position: relative; overflow: hidden; }
+    .hero-right img { height: 100%; min-height: 600px; filter: brightness(0.75); }
+    .hero-right::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(13,31,60,0.6) 0%, transparent 60%);
+    }
+    /* Floating badge */
+    .hero-badge-float {
+      position: absolute; bottom: 48px; right: 32px; z-index: 2;
+      background: var(--navy); border: 1px solid var(--gold);
+      border-radius: var(--r-lg); padding: 20px 24px; min-width: 180px;
+      text-align: center;
+    }
+    .hbf-icon { font-size: 24px; margin-bottom: 8px; }
+    .hbf-val { font-family: var(--serif); font-size: 28px; font-weight: 700; color: var(--gold); line-height: 1; }
+    .hbf-lbl { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* ── Practice areas ── */
+    .practice-sec { background: var(--cream); padding: 96px 56px; }
+    .practice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .practice-card {
+      background: var(--cream); padding: 44px 36px;
+      transition: background 0.25s;
+      position: relative; cursor: default;
+    }
+    .practice-card:hover { background: var(--gold-pale); }
+    .practice-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gold); transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .practice-card:hover::after { transform: scaleX(1); }
+    .pc-num {
+      font-family: var(--serif); font-size: 48px; font-weight: 700;
+      color: rgba(184,151,58,0.15); line-height: 1; margin-bottom: 16px;
+    }
+    .practice-card h3 { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--navy); margin-bottom: 12px; letter-spacing: 0.01em; }
+    .practice-card p { font-size: 14px; color: var(--mid); line-height: 1.75; font-weight: 300; }
+    .pc-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; font-size: 13px; font-weight: 600; color: var(--gold); letter-spacing: 0.04em; }
+
+    /* ── Attorney split ── */
+    #attorney-split { display: grid; grid-template-columns: 1fr 1fr; padding: 0; }
+    .atty-img { overflow: hidden; min-height: 540px; }
+    .atty-img img { height: 100%; filter: grayscale(20%); }
+    .atty-text {
+      background: var(--navy); padding: 88px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .atty-quote {
+      font-family: var(--serif); font-size: 22px; font-style: italic;
+      color: rgba(255,255,255,0.85); line-height: 1.65; margin-bottom: 28px;
+      padding-left: 20px; border-left: 2px solid var(--gold);
+    }
+    .atty-list { display: flex; flex-direction: column; gap: 16px; margin: 28px 0; }
+    .atty-item { display: flex; align-items: flex-start; gap: 14px; }
+    .atty-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 8px; }
+    .atty-item p { font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 300; line-height: 1.6; }
+    .atty-item strong { color: #fff; font-weight: 500; }
+
+    /* ── Why us strip ── */
+    .why-strip {
+      background: var(--off); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 64px 56px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+    }
+    .why-item { text-align: center; }
+    .why-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin: 0 auto 16px;
+    }
+    .why-item h4 { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+    .why-item p { font-size: 13px; color: var(--mid); line-height: 1.65; font-weight: 300; }
+
+    /* ── Reviews ── */
+    .reviews-sec { background: var(--cream); padding: 96px 56px; text-align: center; }
+    .reviews-google-card {
+      max-width: 540px; margin: 0 auto;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 44px 52px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.05);
+    }
+    .google-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .google-logo-text { font-size: 28px; font-weight: 700; }
+    .g-blue { color: #4285F4; }
+    .g-red { color: #EA4335; }
+    .g-yellow { color: #FBBC05; }
+    .g-green { color: #34A853; }
+    .reviews-rating { font-family: var(--serif); font-size: 80px; font-weight: 700; color: var(--navy); line-height: 1; }
+    .reviews-stars { color: #FBBC05; font-size: 26px; letter-spacing: 4px; margin: 10px 0; }
+    .reviews-count { font-size: 14px; color: var(--light); margin-bottom: 28px; }
+    .reviews-cta-text { font-size: 15px; color: var(--mid); line-height: 1.7; margin-bottom: 28px; font-weight: 300; }
+    .reviews-note { font-size: 12px; color: var(--light); margin-top: 14px; font-style: italic; }
+
+    /* ── Consultation CTA ── */
+    .consult-cta {
+      background: var(--navy); padding: 96px 56px;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 56px;
+    }
+    .consult-cta h2 { font-family: var(--serif); font-size: clamp(32px, 4vw, 52px); color: #fff; font-weight: 600; line-height: 1.15; letter-spacing: 0.01em; }
+    .consult-cta h2 em { color: var(--gold); font-style: italic; }
+    .consult-cta p { font-size: 16px; color: rgba(255,255,255,0.55); margin-top: 10px; font-weight: 300; }
+    .consult-actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; flex-shrink: 0; min-width: 240px; }
+    .consult-note { font-size: 12px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 8px; letter-spacing: 0.04em; }
+
+    /* ── Contact ── */
+    #contact-split { display: grid; grid-template-columns: 1fr 1fr; padding: 0; }
+    .con-info { background: var(--navy-2); padding: 88px 56px; display: flex; flex-direction: column; justify-content: center; }
+    .con-rows { margin-top: 40px; display: flex; flex-direction: column; gap: 28px; }
+    .con-row { display: flex; gap: 18px; align-items: flex-start; }
+    .con-icon-box { width: 44px; height: 44px; border-radius: var(--r); flex-shrink: 0; border: 1px solid var(--border-dk); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .con-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .con-val { font-size: 16px; color: #fff; font-weight: 400; }
+    .con-form-wrap { padding: 88px 56px; background: var(--off); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grp { margin-bottom: 18px; }
+    .form-grp label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--light); margin-bottom: 6px; }
+    .form-grp input, .form-grp textarea, .form-grp select {
+      width: 100%; padding: 13px 16px;
+      border: 1px solid var(--border); border-radius: var(--r);
+      font-family: var(--sans); font-size: 15px; color: var(--text);
+      background: #fff; transition: border-color 0.2s;
+    }
+    .form-grp input:focus, .form-grp textarea:focus, .form-grp select:focus { outline: none; border-color: var(--gold); }
+    .form-grp textarea { min-height: 120px; resize: vertical; }
+    .form-disclaimer { font-size: 12px; color: var(--light); margin-top: 12px; line-height: 1.6; font-style: italic; }
+
+    /* ── Sections shared ── */
+    .sec-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .sec-title { font-family: var(--serif); font-size: clamp(30px, 4vw, 50px); line-height: 1.1; letter-spacing: 0.01em; margin-bottom: 16px; }
+    .sec-title-dark { color: var(--navy); }
+    .sec-title-light { color: #fff; }
+    .sec-body { font-size: 16px; color: var(--mid); max-width: 560px; line-height: 1.8; font-weight: 300; }
+    .sec-body-light { color: rgba(255,255,255,0.6); }
+    .sec-header { margin-bottom: 52px; }
+
+    /* ── Footer ── */
+    footer {
+      background: #070f1e; padding: 40px 56px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      border-top: 1px solid rgba(184,151,58,0.2);
+    }
+    .foot-logo { font-family: var(--serif); font-size: 18px; color: #fff; font-weight: 600; letter-spacing: 0.03em; }
+    .foot-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .foot-links { display: flex; gap: 24px; }
+    .foot-links a { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+    .foot-links a:hover { color: var(--gold); }
+
+    /* ── Mobile ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-divider { display: none; }
+      .nav-links { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: var(--navy); flex-direction: column; padding: 24px 20px; gap: 20px; border-bottom: 1px solid var(--border-dk); z-index: 199; }
+      .nav-links.open { display: flex; }
+      #hamburger { display: flex; }
+      #hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 60px 24px; }
+      .hero-credentials { gap: 20px; flex-wrap: wrap; }
+      .practice-grid { grid-template-columns: 1fr; }
+      #attorney-split, #contact-split { grid-template-columns: 1fr; }
+      .atty-img { min-height: 300px; }
+      .atty-text, .con-info, .con-form-wrap { padding: 56px 24px; }
+      .why-strip { grid-template-columns: repeat(2, 1fr); padding: 48px 24px; }
+      .practice-sec, .reviews-sec { padding: 72px 24px; }
+      .consult-cta { grid-template-columns: 1fr; padding: 64px 24px; gap: 32px; }
+      .consult-actions { min-width: unset; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+      .foot-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="demo-bar">
+  ✦ Demo site — images generated by Nano Banana AI ·
+  <a href="https://exsisto.ai" target="_blank">Get your real site at Exsisto.ai →</a>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-firm">Hargrove &amp; Associates</div>
+    <div class="nav-logo-tagline">Attorneys at Law · Newark, NJ</div>
+  </div>
+  <div class="nav-divider"></div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('practice')">Practice Areas</a></li>
+    <li><a href="#" onclick="showPage('about')">Our Firm</a></li>
+    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+    <li><a href="tel:9735550218" class="nav-cta">Free Consultation</a></li>
+  </ul>
+  <button id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+
+<!-- ══ HOME ═══════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-rule">
+        <div class="hero-rule-line"></div>
+        <div class="hero-rule-text">Established 2001 · Newark, NJ</div>
+      </div>
+      <h1>When It Matters<br>Most, You Need<br><em>Experience.</em></h1>
+      <p class="hero-sub">Aggressive representation in personal injury, family law, and criminal defense. Over 20 years fighting for clients across Essex County — and winning.</p>
+      <div class="hero-actions">
+        <a href="tel:9735550218" class="btn btn-gold">Free Consultation →</a>
+        <button class="btn btn-outline-gold" onclick="showPage('practice')">Practice Areas</button>
+      </div>
+      <div class="hero-credentials">
+        <div class="cred-item">
+          <div class="cred-num">20+</div>
+          <div class="cred-lbl">Years Experience</div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-num">$40M+</div>
+          <div class="cred-lbl">Recovered for Clients</div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-num">95%</div>
+          <div class="cred-lbl">Success Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=900&q=80" alt="Law office" style="height:100%;min-height:600px;">
+      <div class="hero-badge-float">
+        <div class="hbf-icon">⚖️</div>
+        <div class="hbf-val">AV Rated</div>
+        <div class="hbf-lbl">Martindale-Hubbell</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Practice Areas -->
+  <section class="practice-sec">
+    <div class="sec-header">
+      <p class="sec-tag">Our Practice</p>
+      <h2 class="sec-title sec-title-dark">Areas We Fight For You</h2>
+      <p class="sec-body">We take on the cases that matter — and we don't back down.</p>
+    </div>
+    <div class="practice-grid">
+      <div class="practice-card">
+        <div class="pc-num">01</div>
+        <h3>Personal Injury</h3>
+        <p>Car accidents, slip and fall, wrongful death. We pursue maximum compensation so you can focus on recovery.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+      <div class="practice-card">
+        <div class="pc-num">02</div>
+        <h3>Family Law</h3>
+        <p>Divorce, child custody, support, and adoption. Compassionate counsel during the most difficult moments.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+      <div class="practice-card">
+        <div class="pc-num">03</div>
+        <h3>Criminal Defense</h3>
+        <p>DUI, assault, drug charges, and federal cases. Your rights and your future are worth defending.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+      <div class="practice-card">
+        <div class="pc-num">04</div>
+        <h3>Workers' Compensation</h3>
+        <p>Injured on the job? We fight insurers and employers who try to minimize or deny your rightful benefits.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+      <div class="practice-card">
+        <div class="pc-num">05</div>
+        <h3>Real Estate Law</h3>
+        <p>Residential and commercial closings, contract disputes, landlord-tenant issues, and title matters.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+      <div class="practice-card">
+        <div class="pc-num">06</div>
+        <h3>Estate Planning</h3>
+        <p>Wills, trusts, powers of attorney, and probate. Protect your family's future with a plan that works.</p>
+        <div class="pc-link">Learn more →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Attorney split -->
+  <div id="attorney-split">
+    <div class="atty-img">
+      <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=900&q=80" alt="Attorney at work" style="height:100%;min-height:540px;">
+    </div>
+    <div class="atty-text">
+      <p class="sec-tag">Our Firm</p>
+      <h2 class="sec-title sec-title-light">We Don't Settle.<br>Unless It's Right.</h2>
+      <p class="atty-quote">"Every client who walks through our door deserves the same level of attention and aggression — whether it's a $5,000 fender bender or a $5 million wrongful death case."</p>
+      <div class="atty-list">
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>No fee unless we win</strong> — personal injury cases taken on contingency</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>Direct attorney access</strong> — your calls are returned by your lawyer, not a paralegal</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>Evening and weekend availability</strong> — because legal problems don't wait</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>Bilingual staff</strong> — English and Spanish</p></div>
+      </div>
+      <button class="btn btn-gold" onclick="showPage('about')">Meet Our Attorneys</button>
+    </div>
+  </div>
+
+  <!-- Why us -->
+  <div class="why-strip">
+    <div class="why-item">
+      <div class="why-icon">🏆</div>
+      <h4>AV Rated</h4>
+      <p>Martindale-Hubbell's highest peer-review rating for legal ability and ethics.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">💼</div>
+      <h4>20+ Years</h4>
+      <p>Two decades of courtroom experience across Essex, Hudson, and Bergen Counties.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">📞</div>
+      <h4>Free Consultations</h4>
+      <p>No charge to discuss your case. No obligation. Just honest answers.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">💰</div>
+      <h4>No Fee Unless We Win</h4>
+      <p>Personal injury cases handled on contingency — we only get paid when you do.</p>
+    </div>
+  </div>
+
+  <!-- Google Reviews -->
+  <section class="reviews-sec">
+    <div class="sec-header" style="text-align:center;">
+      <p class="sec-tag">Client Reviews</p>
+      <h2 class="sec-title sec-title-dark">What Clients Are Saying</h2>
+      <p class="sec-body" style="margin:0 auto 44px;">We let our Google reviews speak for us. Over 280 verified client reviews from people we've represented across Essex County.</p>
+    </div>
+    <div class="reviews-google-card">
+      <div class="google-logo">
+        <div class="google-logo-text">
+          <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+        </div>
+        <span style="font-size:16px;color:#555;font-weight:400;">Reviews</span>
+      </div>
+      <div class="reviews-rating">4.9</div>
+      <div class="reviews-stars">★★★★★</div>
+      <div class="reviews-count">Based on 280+ verified client reviews</div>
+      <p class="reviews-cta-text">Read what real clients have said about their experience working with our firm — directly on Google.</p>
+      <a href="https://google.com/maps" target="_blank" class="btn btn-navy" style="width:100%;justify-content:center;font-size:14px;">Read Our Google Reviews →</a>
+      <p class="reviews-note">All reviews are verified Google users. We do not post, solicit, or compensate for reviews.</p>
+    </div>
+  </section>
+
+  <!-- Consultation CTA -->
+  <div class="consult-cta">
+    <div>
+      <h2>Your Case Deserves<br><em>a Real Answer.</em></h2>
+      <p>Free consultations. No pressure. Honest assessment of your options.</p>
+    </div>
+    <div>
+      <div class="consult-actions">
+        <a href="tel:9735550218" class="btn btn-gold" style="justify-content:center;">📞 (973) 555-0218</a>
+        <button class="btn btn-outline-gold" onclick="showPage('contact')" style="justify-content:center;">Send Us a Message</button>
+      </div>
+      <p class="consult-note">Available evenings &amp; weekends</p>
+    </div>
+  </div>
+
+</div><!-- /home -->
+
+
+<!-- ══ PRACTICE AREAS ══════════════════════════════════════════════════ -->
+<div id="page-practice" class="page">
+  <section class="practice-sec" style="padding-top:88px;">
+    <div class="sec-header">
+      <p class="sec-tag">What We Do</p>
+      <h2 class="sec-title sec-title-dark">Our Practice Areas</h2>
+      <p class="sec-body">Serving clients throughout Essex, Hudson, and Bergen Counties, New Jersey.</p>
+    </div>
+    <div class="practice-grid">
+      <div class="practice-card"><div class="pc-num">01</div><h3>Personal Injury</h3><p>Car accidents, slip and fall, wrongful death. We pursue maximum compensation so you can focus on recovery.</p></div>
+      <div class="practice-card"><div class="pc-num">02</div><h3>Family Law</h3><p>Divorce, child custody, support, and adoption. Compassionate counsel during the most difficult moments.</p></div>
+      <div class="practice-card"><div class="pc-num">03</div><h3>Criminal Defense</h3><p>DUI, assault, drug charges, and federal cases. Your rights and your future are worth defending.</p></div>
+      <div class="practice-card"><div class="pc-num">04</div><h3>Workers' Compensation</h3><p>Injured on the job? We fight insurers and employers who try to minimize or deny your rightful benefits.</p></div>
+      <div class="practice-card"><div class="pc-num">05</div><h3>Real Estate Law</h3><p>Residential and commercial closings, contract disputes, landlord-tenant issues, and title matters.</p></div>
+      <div class="practice-card"><div class="pc-num">06</div><h3>Estate Planning</h3><p>Wills, trusts, powers of attorney, and probate. Protect your family's future with a plan that works.</p></div>
+    </div>
+  </section>
+  <div class="consult-cta">
+    <div><h2>Not Sure Which Area<br><em>Applies to You?</em></h2><p>Call us — a free 30-minute consultation will clarify everything.</p></div>
+    <div><div class="consult-actions"><a href="tel:9735550218" class="btn btn-gold" style="justify-content:center;">📞 Free Consultation</a></div></div>
+  </div>
+</div>
+
+
+<!-- ══ ABOUT ═══════════════════════════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div id="attorney-split">
+    <div class="atty-img">
+      <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=900&q=80" alt="Hargrove & Associates" style="height:100%;min-height:580px;">
+    </div>
+    <div class="atty-text">
+      <p class="sec-tag">Our Firm</p>
+      <h2 class="sec-title sec-title-light">Hargrove &amp; Associates</h2>
+      <p class="atty-quote">"We built this firm on one belief: that every person, regardless of their financial situation, deserves fearless legal representation."</p>
+      <div class="atty-list">
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>Founded 2001</strong> by James Hargrove, Esq. — former Essex County prosecutor</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>8 attorneys</strong> covering 6 practice areas across New Jersey</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>$40M+ recovered</strong> for personal injury clients over 20 years</p></div>
+        <div class="atty-item"><div class="atty-dot"></div><p><strong>AV Peer Rated</strong> — Martindale-Hubbell's highest designation</p></div>
+      </div>
+    </div>
+  </div>
+  <section class="reviews-sec">
+    <div class="sec-header" style="text-align:center;">
+      <p class="sec-tag">Client Reviews</p>
+      <h2 class="sec-title sec-title-dark">Verified Google Reviews</h2>
+      <p class="sec-body" style="margin:0 auto 44px;">280+ real reviews from clients we've represented. Read them on Google.</p>
+    </div>
+    <div class="reviews-google-card">
+      <div class="google-logo"><div class="google-logo-text"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></div><span style="font-size:16px;color:#555;">Reviews</span></div>
+      <div class="reviews-rating">4.9</div>
+      <div class="reviews-stars">★★★★★</div>
+      <div class="reviews-count">Based on 280+ verified client reviews</div>
+      <p class="reviews-cta-text">Read what clients say about our firm directly on Google — unfiltered and unedited.</p>
+      <a href="https://google.com/maps" target="_blank" class="btn btn-navy" style="width:100%;justify-content:center;">Read Our Google Reviews →</a>
+      <p class="reviews-note">All reviews are verified Google users. We do not post, solicit, or compensate for reviews.</p>
+    </div>
+  </section>
+</div>
+
+
+<!-- ══ CONTACT ══════════════════════════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div id="contact-split">
+    <div class="con-info">
+      <p class="sec-tag">Reach Us</p>
+      <h2 class="sec-title sec-title-light">Start With a Free Consultation</h2>
+      <div class="con-rows">
+        <div class="con-row"><div class="con-icon-box">📞</div><div><div class="con-lbl">Phone</div><div class="con-val">(973) 555-0218</div></div></div>
+        <div class="con-row"><div class="con-icon-box">✉️</div><div><div class="con-lbl">Email</div><div class="con-val">contact@hargrovelaw.com</div></div></div>
+        <div class="con-row"><div class="con-icon-box">📍</div><div><div class="con-lbl">Office</div><div class="con-val">Newark, NJ 07102</div></div></div>
+        <div class="con-row"><div class="con-icon-box">🕐</div><div><div class="con-lbl">Hours</div><div class="con-val">Mon–Fri: 8:30am–6pm<br>Evenings &amp; weekends by appointment</div></div></div>
+      </div>
+    </div>
+    <div class="con-form-wrap">
+      <p class="sec-tag">Free Consultation</p>
+      <h2 class="sec-title sec-title-dark" style="margin-bottom:8px;">Tell Us About Your Case</h2>
+      <p style="font-size:14px;color:var(--light);margin-bottom:28px;font-weight:300;">All information is kept strictly confidential.</p>
+      <div class="form-row-2">
+        <div class="form-grp"><label>First Name</label><input type="text" placeholder="James"></div>
+        <div class="form-grp"><label>Last Name</label><input type="text" placeholder="Wilson"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-grp"><label>Phone</label><input type="tel" placeholder="(973) 000-0000"></div>
+        <div class="form-grp"><label>Email</label><input type="email" placeholder="james@email.com"></div>
+      </div>
+      <div class="form-grp"><label>Area of Law</label>
+        <select><option>Select a practice area...</option><option>Personal Injury</option><option>Family Law / Divorce</option><option>Criminal Defense</option><option>Workers' Compensation</option><option>Real Estate</option><option>Estate Planning</option><option>Other</option></select>
+      </div>
+      <div class="form-grp"><label>Briefly Describe Your Situation</label><textarea placeholder="Please share any details that will help us understand your case..."></textarea></div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="handleSubmit(this)">Request Free Consultation</button>
+      <p class="form-disclaimer">By submitting this form you are not creating an attorney-client relationship. All communications are confidential. We will respond within one business day.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">Hargrove &amp; Associates · Attorneys at Law</div>
+  <span class="foot-copy">© 2026 Hargrove &amp; Associates, LLC · Newark, NJ · Attorney Advertising</span>
+  <div class="foot-links">
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('practice')">Practice Areas</a>
+    <a href="#" onclick="showPage('contact')">Contact</a>
+  </div>
+</footer>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const p = document.getElementById('page-' + name);
+    if (p) { p.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    document.getElementById('nav-links').classList.remove('open');
+  }
+  function toggleMenu() { document.getElementById('nav-links').classList.toggle('open'); }
+  function handleSubmit(btn) {
+    btn.textContent = '✅ Request Received';
+    btn.style.background = '#2d6a4f';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = 'Request Free Consultation'; btn.style.background = ''; btn.disabled = false; }, 4000);
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.practice-card, .why-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(18px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
