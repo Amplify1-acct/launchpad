@@ -51,8 +51,6 @@ export default function AdminPage() {
   const [orders, setOrders]   = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter]   = useState<string>("all");
-  const [preview, setPreview] = useState<Order | null>(null);
-
   // Per-order action states
   const [actionStates, setActionStates] = useState<Record<string, string>>({});
 
@@ -321,17 +319,7 @@ export default function AdminPage() {
                     )}
                   </div>
 
-                  {/* Inline preview */}
-                  {preview?.id === order.id && order.websites?.custom_html && (
-                    <div className={styles.previewWrap}>
-                      <iframe
-                        srcDoc={order.websites.custom_html}
-                        className={styles.previewFrame}
-                        title="Site preview"
-                        sandbox="allow-scripts"
-                      />
-                    </div>
-                  )}
+
                 </div>
               );
             })}
