@@ -12,7 +12,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const STORAGE_BUCKET = "industry-images";
 const CUSTOMER_BUCKET = "customer-images";
-const GEMINI_MODEL = "gemini-3.1-flash-image-preview";
+const GEMINI_MODEL = "gemini-2.0-flash-preview-image-generation";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 // ── Industry library mapping ───────────────────────────────────────────────────
