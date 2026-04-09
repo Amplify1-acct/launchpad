@@ -440,6 +440,70 @@ export default function OrderPage() {
 
       </main>
     </div>
+
+      {/* ── Preview Modal ──────────────────────────────────────────────── */}
+      {previewOpen && previewHtml && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 1000,
+          background: "rgba(0,0,0,0.85)",
+          display: "flex", flexDirection: "column",
+        }}>
+          {/* Top bar */}
+          <div style={{
+            background: "#1b1b25", padding: "10px 16px", flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px",
+            flexWrap: "wrap",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "#6366f1", letterSpacing: "0.5px" }}>PREVIEW</span>
+              <span style={{ fontSize: "13px", color: "#fff", fontWeight: 600 }}>{form.businessName}</span>
+              <span style={{
+                background: "#2d2d3d", color: "#9090a8", fontSize: "11px",
+                padding: "3px 10px", borderRadius: "100px",
+              }}>Sample content — your real site will look even better</span>
+            </div>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <button
+                onClick={() => { setPreviewOpen(false); setStep("checkout"); }}
+                style={{
+                  background: "#4648d4", color: "#fff", border: "none",
+                  borderRadius: "8px", padding: "8px 18px", fontSize: "13px",
+                  fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                }}
+              >
+                Looks great — continue →
+              </button>
+              <button
+                onClick={() => setPreviewOpen(false)}
+                style={{
+                  background: "none", color: "#9090a8", border: "1px solid #3d3d4d",
+                  borderRadius: "8px", padding: "8px 14px", fontSize: "13px",
+                  cursor: "pointer", fontFamily: "inherit",
+                }}
+              >
+                ✕ Close
+              </button>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <div style={{
+            background: "#fefce8", borderBottom: "1px solid #fde68a",
+            padding: "7px 16px", fontSize: "12px", color: "#854d0e",
+            display: "flex", alignItems: "center", gap: "8px", flexShrink: 0,
+          }}>
+            ⚠️&nbsp;<strong>Preview only.</strong>&nbsp;Sample images are shown as placeholders. Your real site will have custom AI-generated photos, refined copy reviewed by our team, and your full business details throughout. Content may vary.
+          </div>
+
+          {/* Site iframe */}
+          <iframe
+            srcDoc={previewHtml}
+            style={{ flex: 1, border: "none", width: "100%", background: "#fff" }}
+            title="Site preview"
+            sandbox="allow-scripts"
+          />
+        </div>
+      )}
   );
 }
 
