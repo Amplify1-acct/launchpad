@@ -10,6 +10,7 @@ import { localBusinessSchema, serviceSchema, breadcrumbSchema, injectSchema } fr
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 interface Business {
+  id?: string;
   name: string;
   industry: string;
   description?: string;
