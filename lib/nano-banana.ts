@@ -186,9 +186,24 @@ export async function getBusinessImages(params: {
 
   if (!isCustom) {
     // ── Library path: instant, free ──────────────────────────────────────
+    // Always return all image slots (hero + 4 cards) with guaranteed variety
+    const allSlots = ["hero", "card1", "card2", "card3", "card4"];
     const result: Record<string, string> = {};
-    for (const slot of slots) {
-      result[slot] = getLibraryUrl(industry, slot);
+    const libSlug = INDUSTRY_LIBRARY_MAP[industry] || "other";
+    const variantCounts = INDUSTRY_VARIANT_COUNT[libSlug] || INDUSTRY_VARIANT_COUNT.default;
+
+    // Shuffle through variants deterministically so each slot gets a different image
+    const usedVariants: Record<string, number> = {};
+    for (const slot of allSlots) {
+      const baseSlot = slot.replace(/\d+$/, "").replace(/card\d+/, "card1");
+      const slotKey = slot === "hero" ? "hero" : "card" + (["card1","card2","card3","card4"].indexOf(slot) + 1 || 1);
+      const maxVariants = variantCounts[slotKey] || variantCounts["card1"] || 1;
+
+      // Cycle through variants so each card gets a different image
+      const cardIndex = ["hero","card1","card2","card3","card4"].indexOf(slot);
+      const pick = cardIndex % maxVariants;
+      const filename = pick === 0 ? `${slotKey}.png` : `${slotKey}_${pick}.png`;
+      result[slot] = `${BASE_LIBRARY_URL}/${libSlug}/${filename}`;
     }
     return result as any;
   }
