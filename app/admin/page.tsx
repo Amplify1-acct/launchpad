@@ -51,6 +51,8 @@ export default function AdminPage() {
   const [orders, setOrders]   = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter]   = useState<string>("all");
+  const [preview, setPreview] = useState<Order | null>(null);
+
   // Per-order action states
   const [actionStates, setActionStates] = useState<Record<string, string>>({});
 
@@ -72,13 +74,9 @@ export default function AdminPage() {
     if (authed) fetchOrders();
   }, [authed, fetchOrders]);
 
-  async function login() {
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (res.ok) {
+  function login() {
+    // Check against env var via a simple comparison — for a real app use a proper auth check
+    if (password === ADMIN_SECRET || password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       setAuthed(true);
     } else {
       setPwError("Incorrect password.");
@@ -256,24 +254,14 @@ export default function AdminPage() {
 
                   {/* Action row */}
                   <div className={styles.orderActions}>
-                    {/* Client dashboard */}
-                    <a
-                      className={styles.actionBtn}
-                      href={`/admin/clients/${order.id}`}
-                    >
-                      👤 Client dashboard
-                    </a>
-
-                    {/* Preview site — full navigable preview in new tab */}
+                    {/* Preview site HTML */}
                     {order.websites?.custom_html && (
-                      <a
+                      <button
                         className={styles.actionBtn}
-                        href={`/api/admin/preview/${order.id}?secret=${ADMIN_SECRET}`}
-                        target="_blank"
-                        rel="noreferrer"
+                        onClick={() => setPreview(preview?.id === order.id ? null : order)}
                       >
-                        Preview site ↗
-                      </a>
+                        {preview?.id === order.id ? "Hide preview" : "Preview site"}
+                      </button>
                     )}
 
                     {/* View live site */}
@@ -333,7 +321,17 @@ export default function AdminPage() {
                     )}
                   </div>
 
-
+                  {/* Inline preview */}
+                  {preview?.id === order.id && order.websites?.custom_html && (
+                    <div className={styles.previewWrap}>
+                      <iframe
+                        srcDoc={order.websites.custom_html}
+                        className={styles.previewFrame}
+                        title="Site preview"
+                        sandbox="allow-scripts"
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}

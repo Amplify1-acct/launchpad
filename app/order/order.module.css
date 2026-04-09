@@ -244,25 +244,9 @@
 /* ─── TEMPLATE CARDS ─────────────────────────────────────────────────────── */
 .templateGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   margin-bottom: 36px;
-}
-
-.templateIframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  transform: scale(0.25);
-  transform-origin: top left;
-  width: 400%;
-  height: 400%;
-  pointer-events: none;
-}
-
-.templateIframeOverlay {
-  position: absolute;
-  inset: 0;
 }
 
 .templateCard {
@@ -291,10 +275,9 @@
 
 .templatePreview {
   width: 100%;
-  aspect-ratio: 3/2;
+  aspect-ratio: 7/4;
   overflow: hidden;
   background: #f5f2ff;
-  position: relative;
 }
 
 .templateInfo {
@@ -567,29 +550,9 @@
   .main { padding: 32px 16px 64px; }
   .sectionHead h1 { font-size: 24px; }
   .planGrid { grid-template-columns: 1fr; }
-  .templateGrid { grid-template-columns: repeat(2, 1fr); }
+  .templateGrid { grid-template-columns: 1fr; }
   .formGrid { grid-template-columns: 1fr; }
   .fullWidth { grid-column: 1; }
   .reviewLayout { grid-template-columns: 1fr; }
   .checkoutCard { position: static; }
-}
-
-.previewBtn {
-  padding: 13px 28px;
-  background: #fff;
-  color: #4648d4;
-  border: 2px solid #4648d4;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  font-family: inherit;
-}
-.previewBtn:hover {
-  background: #f5f2ff;
-}
-.previewBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }

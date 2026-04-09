@@ -11,9 +11,8 @@ const PLANS = [
     period: "/mo",
     tagline: "Get online fast",
     features: [
-      "Custom Stitch AI-designed website",
+      "AI-designed website",
       "5 custom AI photos",
-      "Home, About, Contact pages",
       "1 blog post/week",
       "Custom domain support",
     ],
@@ -27,10 +26,8 @@ const PLANS = [
     period: "/mo",
     tagline: "Most popular",
     features: [
-      "Custom Stitch AI-designed website",
+      "AI-designed website",
       "5 custom AI photos",
-      "Home, About, Services, Contact pages",
-      "3 service detail pages",
       "2 blog posts/week",
       "Social media posts",
       "Custom domain support",
@@ -45,9 +42,8 @@ const PLANS = [
     period: "/mo",
     tagline: "Full service",
     features: [
-      "Custom Stitch AI-designed website",
+      "AI-designed website",
       "5 custom AI photos",
-      "Full site + 6 service detail pages",
       "4 blog posts/week",
       "Social media (auto-post)",
       "Google Reviews integration",
@@ -59,16 +55,27 @@ const PLANS = [
 ];
 
 const TEMPLATES = [
-  { id: "plumbing",   name: "Trustworthy Blue",   description: "Clean, professional, high-trust" },
-  { id: "dental",     name: "Clean Professional",  description: "Crisp, modern, minimal" },
-  { id: "hvac",       name: "Modern Technical",    description: "Bold, structured, authoritative" },
-  { id: "law",        name: "Prestige Dark",       description: "Premium, sophisticated, serious" },
-  { id: "gym",        name: "Dark & Powerful",     description: "High-energy, dramatic, bold" },
-  { id: "auto",       name: "Industrial Bold",     description: "Gritty, strong, memorable" },
-  { id: "realestate", name: "Luxury Minimal",      description: "Elegant, spacious, premium" },
-  { id: "salon",      name: "Editorial Chic",      description: "Stylish, modern, refined" },
-  { id: "restaurant", name: "Elegant & Rich",      description: "Warm, inviting, upscale" },
-  { id: "pet",        name: "Warm & Friendly",     description: "Approachable, cheerful, welcoming" },
+  {
+    id: "skeleton-bold",
+    name: "Bold & Dark",
+    description: "High-impact, dramatic design",
+    preview: "bg-dark",
+    accent: "#f59e0b",
+  },
+  {
+    id: "skeleton-clean",
+    name: "Clean & Light",
+    description: "Modern, minimal, professional",
+    preview: "bg-light",
+    accent: "#4648d4",
+  },
+  {
+    id: "skeleton-warm",
+    name: "Warm & Classic",
+    description: "Approachable, timeless feel",
+    preview: "bg-warm",
+    accent: "#b45309",
+  },
 ];
 
 const INDUSTRIES = [
@@ -81,49 +88,9 @@ type Step = "plan" | "template" | "info" | "checkout";
 export default function OrderPage() {
   const [step, setStep] = useState<Step>("plan");
   const [selectedPlan, setSelectedPlan] = useState<string>("pro");
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("plumbing");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("skeleton-clean");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
-  const [previewLoading, setPreviewLoading] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-
-  async function generatePreview(templateOverride?: string) {
-    if (!form.businessName || !form.industry) {
-      setError("Please fill in your business name and industry first.");
-      return;
-    }
-    const tmpl = templateOverride || selectedTemplate;
-    setPreviewLoading(true);
-    if (templateOverride) setSelectedTemplate(templateOverride);
-    setError("");
-    try {
-      const res = await fetch("/api/order/preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          businessName: form.businessName,
-          industry: form.industry,
-          city: form.city,
-          state: form.state,
-          phone: form.phone,
-          description: form.description,
-          services: form.services,
-          template: tmpl,
-        }),
-      });
-      const data = await res.json();
-      if (data.html) {
-        setPreviewHtml(data.html);
-        setPreviewOpen(true);
-      } else {
-        setError("Preview failed. Please try again.");
-      }
-    } catch {
-      setError("Preview failed. Please try again.");
-    }
-    setPreviewLoading(false);
-  }
 
   const [form, setForm] = useState({
     businessName: "",
@@ -247,15 +214,8 @@ export default function OrderPage() {
                   className={`${styles.templateCard} ${selectedTemplate === t.id ? styles.templateSelected : ""}`}
                   onClick={() => setSelectedTemplate(t.id)}
                 >
-                  <div className={styles.templatePreview}>
-                    <iframe
-                      src={`/stitch-templates/${t.id}.html`}
-                      className={styles.templateIframe}
-                      title={t.name}
-                      scrolling="no"
-                      sandbox="allow-scripts"
-                    />
-                    <div className={styles.templateIframeOverlay} />
+                  <div className={`${styles.templatePreview} ${styles[t.preview]}`}>
+                    <TemplatePreview id={t.id} accent={t.accent} />
                   </div>
                   <div className={styles.templateInfo}>
                     <div className={styles.templateName}>{t.name}</div>
@@ -361,13 +321,6 @@ export default function OrderPage() {
             </div>
             <div className={styles.nextWrap}>
               <button className={styles.backBtn} onClick={() => setStep("template")}>← Back</button>
-              <button
-                className={styles.previewBtn}
-                onClick={() => generatePreview()}
-                disabled={previewLoading}
-              >
-                {previewLoading ? "Generating preview…" : "👁 Preview my site"}
-              </button>
               <button className={styles.nextBtn} onClick={() => setStep("checkout")}>
                 Review order →
               </button>
@@ -441,121 +394,6 @@ export default function OrderPage() {
         )}
 
       </main>
-
-      {/* ── Preview Modal ── */}
-      {previewOpen && previewHtml && (
-        <div style={{
-          position: "fixed", inset: 0, zIndex: 1000,
-          background: "rgba(0,0,0,0.92)",
-          display: "flex", flexDirection: "column",
-          fontFamily: "'Inter', sans-serif",
-        }}>
-
-          {/* Top bar */}
-          <div style={{
-            background: "#1b1b25", padding: "10px 16px", flexShrink: 0,
-            display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px",
-            borderBottom: "1px solid #2d2d3d",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#6366f1", letterSpacing: "0.5px" }}>PREVIEW</span>
-              <span style={{ fontSize: "13px", color: "#fff", fontWeight: 600 }}>{form.businessName}</span>
-              <span style={{ background: "#2d2d3d", color: "#9090a8", fontSize: "11px", padding: "3px 10px", borderRadius: "100px" }}>
-                Sample images · copy customized for your business
-              </span>
-            </div>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <button
-                onClick={() => { setPreviewOpen(false); setStep("checkout"); }}
-                style={{
-                  background: "#4648d4", color: "#fff", border: "none",
-                  borderRadius: "8px", padding: "8px 20px", fontSize: "13px",
-                  fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
-                }}
-              >
-                This is the one →
-              </button>
-              <button
-                onClick={() => setPreviewOpen(false)}
-                style={{
-                  background: "none", color: "#9090a8", border: "1px solid #3d3d4d",
-                  borderRadius: "8px", padding: "8px 14px", fontSize: "13px",
-                  cursor: "pointer", fontFamily: "inherit",
-                }}
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          {/* Style switcher bar */}
-          <div style={{
-            background: "#14141e", padding: "8px 16px", flexShrink: 0,
-            display: "flex", alignItems: "center", gap: "6px",
-            borderBottom: "1px solid #2d2d3d", overflowX: "auto",
-          }}>
-            <span style={{ fontSize: "11px", color: "#6b6b8a", fontWeight: 700, whiteSpace: "nowrap", marginRight: "4px" }}>
-              TRY A STYLE:
-            </span>
-            {TEMPLATES.map(t => (
-              <button
-                key={t.id}
-                onClick={() => generatePreview(t.id)}
-                disabled={previewLoading}
-                style={{
-                  padding: "5px 12px",
-                  borderRadius: "6px",
-                  border: selectedTemplate === t.id ? "1px solid #6366f1" : "1px solid #3d3d4d",
-                  background: selectedTemplate === t.id ? "#6366f120" : "#2d2d3d",
-                  color: selectedTemplate === t.id ? "#818cf8" : "#9090a8",
-                  fontSize: "11px",
-                  fontWeight: selectedTemplate === t.id ? 700 : 500,
-                  cursor: previewLoading ? "not-allowed" : "pointer",
-                  whiteSpace: "nowrap",
-                  fontFamily: "inherit",
-                  opacity: previewLoading && selectedTemplate !== t.id ? 0.5 : 1,
-                  transition: "all 0.15s",
-                }}
-              >
-                {previewLoading && selectedTemplate === t.id ? "Loading…" : t.name}
-              </button>
-            ))}
-          </div>
-
-          {/* Disclaimer */}
-          <div style={{
-            background: "#fefce8", borderBottom: "1px solid #fde68a",
-            padding: "6px 16px", fontSize: "11px", color: "#854d0e",
-            display: "flex", alignItems: "center", gap: "6px", flexShrink: 0,
-          }}>
-            ⚠️ <strong>Preview only.</strong> Sample images shown as placeholders. Your real site will have custom AI photos, refined copy, and your full business details.
-          </div>
-
-          {/* Site iframe */}
-          {previewLoading ? (
-            <div style={{
-              flex: 1, display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center",
-              background: "#0f0f1a", gap: "16px",
-            }}>
-              <div style={{
-                width: "40px", height: "40px", border: "3px solid #3d3d4d",
-                borderTopColor: "#6366f1", borderRadius: "50%",
-                animation: "spin 0.8s linear infinite",
-              }} />
-              <span style={{ color: "#9090a8", fontSize: "14px" }}>Generating your preview…</span>
-              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-            </div>
-          ) : (
-            <iframe
-              srcDoc={previewHtml}
-              style={{ flex: 1, border: "none", width: "100%", background: "#fff" }}
-              title="Site preview"
-              sandbox="allow-scripts"
-            />
-          )}
-        </div>
-      )}
     </div>
   );
 }
