@@ -11,8 +11,9 @@ const PLANS = [
     period: "/mo",
     tagline: "Get online fast",
     features: [
-      "AI-designed website",
+      "Custom Stitch AI-designed website",
       "5 custom AI photos",
+      "Home, About, Contact pages",
       "1 blog post/week",
       "Custom domain support",
     ],
@@ -26,8 +27,10 @@ const PLANS = [
     period: "/mo",
     tagline: "Most popular",
     features: [
-      "AI-designed website",
+      "Custom Stitch AI-designed website",
       "5 custom AI photos",
+      "Home, About, Services, Contact pages",
+      "3 service detail pages",
       "2 blog posts/week",
       "Social media posts",
       "Custom domain support",
@@ -42,8 +45,9 @@ const PLANS = [
     period: "/mo",
     tagline: "Full service",
     features: [
-      "AI-designed website",
+      "Custom Stitch AI-designed website",
       "5 custom AI photos",
+      "Full site + 6 service detail pages",
       "4 blog posts/week",
       "Social media (auto-post)",
       "Google Reviews integration",
