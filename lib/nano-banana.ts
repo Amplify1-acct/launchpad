@@ -226,24 +226,13 @@ export async function getBusinessImages(params: {
   const heroPrompt = buildCustomPrompt(businessName, businessType, industry, city, "hero", params.description);
   const heroBuffer = await generateNanoBananaImage(heroPrompt);
 
-  if (heroBuffer && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+  if (heroBuffer) {
     try {
       const timestamp = Date.now();
-      const storagePath = `\${businessId}/hero_\${timestamp}.png`;
-      const uploadRes = await fetch(
-        `\${SUPABASE_URL}/storage/v1/object/\${CUSTOMER_BUCKET}/\${storagePath}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer \${SUPABASE_SERVICE_KEY}`,
-            "Content-Type": "image/png",
-            "x-upsert": "true",
-          },
-          body: Buffer.from(heroBuffer!),
-        }
-      );
-      if (uploadRes.ok) {
-        heroUrl = `\${SUPABASE_URL}/storage/v1/object/public/\${CUSTOMER_BUCKET}/\${storagePath}`;
+      const storagePath = `${businessId}/hero_${timestamp}.png`;
+      const uploadedUrl = await uploadToSupabase(heroBuffer, storagePath);
+      if (uploadedUrl) {
+        heroUrl = uploadedUrl;
         console.log("✓ Custom hero uploaded:", heroUrl);
       }
     } catch (uploadErr) {
@@ -264,9 +253,9 @@ export async function getBusinessImages(params: {
 
     if (imageBuffer) {
       const storagePath = `${businessId}/${slot}_${timestamp}.png`;
-      const url = await uploadToSupabase(imageBuffer, storagePath);
+      const url = await uploadToSupabase(imageBuffer!, storagePath);
       if (url) {
-        result[slot] = url;
+        result[slot] = url!;
         console.log(`  ✓ ${slot}: uploaded`);
         // Small delay between generations
         if (slots.indexOf(slot) < slots.length - 1) {
