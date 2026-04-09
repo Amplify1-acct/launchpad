@@ -72,9 +72,13 @@ export default function AdminPage() {
     if (authed) fetchOrders();
   }, [authed, fetchOrders]);
 
-  function login() {
-    // Check against env var via a simple comparison — for a real app use a proper auth check
-    if (password === ADMIN_SECRET || password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+  async function login() {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    if (res.ok) {
       setAuthed(true);
     } else {
       setPwError("Incorrect password.");
@@ -252,6 +256,14 @@ export default function AdminPage() {
 
                   {/* Action row */}
                   <div className={styles.orderActions}>
+                    {/* Client dashboard */}
+                    <a
+                      className={styles.actionBtn}
+                      href={`/admin/clients/${order.id}`}
+                    >
+                      👤 Client dashboard
+                    </a>
+
                     {/* Preview site — full navigable preview in new tab */}
                     {order.websites?.custom_html && (
                       <a
