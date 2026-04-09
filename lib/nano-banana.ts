@@ -239,7 +239,7 @@ export async function getBusinessImages(params: {
             "Content-Type": "image/png",
             "x-upsert": "true",
           },
-          body: Buffer.from(heroBuffer),
+          body: Buffer.from(heroBuffer!),
         }
       );
       if (uploadRes.ok) {
