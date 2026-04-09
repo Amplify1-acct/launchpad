@@ -696,13 +696,17 @@ Return JSON with these exact keys:
   const industryImages = IMAGE_MANIFEST[industryKey];
 
   if (industryImages) {
-    // Replace all expired Google CDN images with industry images in order
+    // Replace ALL external image src URLs with industry images
+    // Match src="https://..." but skip CDN/font/script URLs
     let imgIndex = 0;
-    html = html.replace(/https:\/\/lh3\.googleusercontent\.com[^\s"']+/g, () => {
-      const img = industryImages[imgIndex % industryImages.length];
-      imgIndex++;
-      return img;
-    });
+    html = html.replace(
+      /src="(https:\/\/(?:lh3\.googleusercontent\.com|images\.unsplash\.com|raw\.githubusercontent\.com\/Amplify1-acct\/launchpad\/main\/public\/images)[^"]+)"/g,
+      () => {
+        const img = industryImages[imgIndex % industryImages.length];
+        imgIndex++;
+        return `src="${img}"`;
+      }
+    );
   } else {
     // "other" industry — trigger Nano Banana async (non-blocking) and use placeholder for now
     // The real site will have custom Nano Banana images when Matt builds it in admin
