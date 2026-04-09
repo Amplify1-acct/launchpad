@@ -211,10 +211,8 @@ Location: ${location}
 </div>
 <div style="height:42px;"></div>`;
 
-  html = html.replace("<body", disclaimer + "<body");
-
-  // Actually inject after <body> opening tag
-  html = html.replace(/(<body[^>]*>)/, `$1${disclaimer}`).replace(disclaimer + "<body", "<body");
+  // Inject disclaimer right after opening <body> tag
+  html = html.replace(/(<body[^>]*>)/, (match: string) => match + disclaimer);
 
   return NextResponse.json({ html, templateKey });
 }
