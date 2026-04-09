@@ -379,6 +379,7 @@ export async function POST(request: Request) {
       if (images.card2) tokens.card2_image_url   = images.card2;
       if (images.card3) tokens.card3_image_url   = images.card3;
       if (images.card4) tokens.card4_image_url   = images.card4;
+      // Named tokens Stitch can use directly in its design
       if (images.card1) tokens.service_image_url = images.card1;
       if (images.card2) tokens.gallery_image_url = images.card2;
       if (images.card3) tokens.team_image_url    = images.card3;
