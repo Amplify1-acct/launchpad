@@ -388,7 +388,11 @@ export async function POST(request: Request) {
         industry: business.industry || business.description || "",
         city: business.city || "",
         state: business.state || "",
-        services: (business.services as string[]) || [],
+        services: Array.isArray(business.services)
+          ? (business.services as string[])
+          : typeof business.services === "string" && business.services
+            ? (business.services as string).split(",").map((s: string) => s.trim()).filter(Boolean)
+            : [],
         phone: business.phone || "",
         description: business.description || "",
         yearsInBusiness: (business as any).years_in_business || "",
