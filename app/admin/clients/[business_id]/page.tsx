@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase-server";
 import { cookies } from "next/headers";
 import styles from "@/app/dashboard/dashboard.module.css";
-import MobileNav from "@/components/MobileNav";
+import AdminClientActions from "./AdminClientActions";
 
 export const dynamic = "force-dynamic";
 
@@ -121,6 +121,7 @@ export default async function AdminClientDashboard({
         </a>
       </div>
       <div style={{ height: "37px" }} />
+      <AdminClientActions businessId={business_id} adminSecret={ADMIN_SECRET} />
 
       <aside className={styles.sidebar}>
         <div className={styles.sidebarLogo}>
