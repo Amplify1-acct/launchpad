@@ -104,7 +104,7 @@ export async function POST(request: Request) {
     await supabase
       .from("websites")
       .update({
-        status: "ready_for_review",
+        status: "live",
         vercel_url: siteUrl,
         deployed_at: new Date().toISOString(),
       })
