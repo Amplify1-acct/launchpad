@@ -326,10 +326,10 @@ export async function generateContactPage(business: Business, tokens: Record<str
     btn.disabled = true;
     const data = Object.fromEntries(new FormData(form));
     try {
-      await fetch('/api/contact', {
+      await fetch('https://www.exsisto.ai/api/contact', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({...data, business: '${business.name}', to: '${business.email || ""}'})
+        body: JSON.stringify({...data, business_id: '${business.id}', business: '${business.name}'})
       });
     } catch(e) {}
     form.reset();
