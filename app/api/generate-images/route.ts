@@ -65,26 +65,44 @@ function buildPrompt(slot: string, businessName: string, industry: string, city:
 }
 
 async function generateImage(prompt: string): Promise<Buffer | null> {
-  const resp = await fetch(`${GEMINI_ENDPOINT}?key=${process.env.GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
-    }),
-  })
+  // Try both model names — gemini-2.0 for API key auth, gemini-3.1 for gcloud auth
+  const models = [
+    'gemini-2.0-flash-preview-image-generation',
+    'gemini-2.0-flash-exp',
+  ]
 
-  if (!resp.ok) {
-    console.error('Gemini API error:', resp.status, await resp.text())
-    return null
-  }
+  for (const model of models) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
+    try {
+      const resp = await fetch(`${endpoint}?key=${process.env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+        }),
+        signal: AbortSignal.timeout(60000),
+      })
 
-  const data = await resp.json()
-  const parts = data.candidates?.[0]?.content?.parts ?? []
+      if (!resp.ok) {
+        const errText = await resp.text()
+        console.error(`Gemini ${model} error: ${resp.status}`, errText.slice(0, 200))
+        continue
+      }
 
-  for (const part of parts) {
-    if (part.inlineData?.data) {
-      return Buffer.from(part.inlineData.data, 'base64')
+      const data = await resp.json()
+      const parts = data.candidates?.[0]?.content?.parts ?? []
+      console.log(`Gemini ${model} response parts:`, parts.length, parts.map((p: any) => Object.keys(p)))
+
+      for (const part of parts) {
+        if (part.inlineData?.data) {
+          console.log(`✓ Got image from ${model}`)
+          return Buffer.from(part.inlineData.data, 'base64')
+        }
+      }
+      console.warn(`${model} returned no image data`)
+    } catch (err) {
+      console.error(`${model} fetch error:`, err)
     }
   }
   return null
