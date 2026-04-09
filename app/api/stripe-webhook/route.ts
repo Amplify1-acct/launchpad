@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
       // Try to find existing auth user first
       const { data: existingUsers } = await supabase.auth.admin.listUsers();
-      const existingUser = existingUsers?.users?.find(u => u.email === email);
+      const existingUser = existingUsers?.users?.find((u: any) => u.email === email);
 
       if (existingUser) {
         authUserId = existingUser.id;
