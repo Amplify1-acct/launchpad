@@ -216,7 +216,7 @@ export async function getBusinessImages(params: {
 
   // ── Generate hero via Nano Banana using business description ─────────────
   // Cards still come from library — only hero is custom-generated
-  console.log(\`🍌 Generating custom hero image for \${businessName}...\`);
+  console.log(`🍌 Generating custom hero image for \${businessName}...`);
   let heroUrl = `${BASE_LIBRARY_URL}/${libSlug}/hero.png`; // fallback
 
   const heroPrompt = buildCustomPrompt(businessName, businessType, industry, city, "hero", params.description);
@@ -225,13 +225,13 @@ export async function getBusinessImages(params: {
   if (heroBuffer && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
     try {
       const timestamp = Date.now();
-      const storagePath = \`\${businessId}/hero_\${timestamp}.png\`;
+      const storagePath = `\${businessId}/hero_\${timestamp}.png`;
       const uploadRes = await fetch(
-        \`\${SUPABASE_URL}/storage/v1/object/\${CUSTOMER_BUCKET}/\${storagePath}\`,
+        `\${SUPABASE_URL}/storage/v1/object/\${CUSTOMER_BUCKET}/\${storagePath}`,
         {
           method: "POST",
           headers: {
-            "Authorization": \`Bearer \${SUPABASE_SERVICE_KEY}\`,
+            "Authorization": `Bearer \${SUPABASE_SERVICE_KEY}`,
             "Content-Type": "image/png",
             "x-upsert": "true",
           },
@@ -239,7 +239,7 @@ export async function getBusinessImages(params: {
         }
       );
       if (uploadRes.ok) {
-        heroUrl = \`\${SUPABASE_URL}/storage/v1/object/public/\${CUSTOMER_BUCKET}/\${storagePath}\`;
+        heroUrl = `\${SUPABASE_URL}/storage/v1/object/public/\${CUSTOMER_BUCKET}/\${storagePath}`;
         console.log("✓ Custom hero uploaded:", heroUrl);
       }
     } catch (uploadErr) {
