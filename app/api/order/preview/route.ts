@@ -377,12 +377,18 @@ export async function POST(request: Request) {
       max_tokens: 800,
       messages: [{
         role: "user",
-        content: `Generate website copy for this business. Return ONLY valid JSON, no markdown.
+        content: `You are a professional copywriter. First, silently fix any spelling errors and apply proper capitalization to the business name, services, description, and location provided. Then generate polished website copy. Return ONLY valid JSON, no markdown.
 
 Business: ${businessName}
 What they do: ${description || services || industry || "professional services"}
 Services: ${svcList.join(", ") || ""}
 Location: ${[city, state].filter(Boolean).join(", ")}
+
+IMPORTANT: Apply these rules to ALL output:
+- Proper title case for business names, service names, and headings
+- Fix any obvious spelling mistakes from the input
+- Professional, polished language throughout
+- Never use all-caps except where the template style demands it
 
 Return JSON with these keys (all strings, keep them SHORT — 2-6 words for names, 1 sentence for descriptions):
 {
@@ -436,13 +442,37 @@ Return JSON with these keys (all strings, keep them SHORT — 2-6 words for name
     console.error("Content generation failed:", e);
   }
 
-  // Step 2: Build full content map
+  // Step 2: Clean inputs — fix capitalization and basic formatting
+  function toTitleCase(str: string): string {
+    if (!str) return str;
+    // Don't title-case if already has mixed case (user intentional)
+    const lower = str.toLowerCase();
+    return lower.replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  // Apply title case to business name if it's all lower or all upper
+  const cleanBizName = businessName.trim() === businessName.trim().toLowerCase() ||
+                       businessName.trim() === businessName.trim().toUpperCase()
+    ? toTitleCase(businessName.trim())
+    : businessName.trim();
+
+  const cleanCity = toTitleCase((city || "").trim());
+  const cleanState = (state || "").trim().toUpperCase().slice(0, 2);
+
+  // Clean services list — title case each one
+  const cleanServices = (services || "")
+    .split(/[,;|\n]/)
+    .map((s: string) => toTitleCase(s.trim()))
+    .filter(Boolean)
+    .join(", ");
+
+  // Build full content map
   const content = buildContent(
-    businessName, city || "", state || "", phone || "",
-    description || "", services || "", generated
+    cleanBizName, cleanCity, cleanState, phone || "",
+    description || "", cleanServices, generated
   );
 
-  // Step 3: Apply all swaps for this template
+  // Step 3: Apply all swaps for this template (using cleaned inputs)
   const swaps = TEMPLATE_SWAPS[templateKey] || [];
   for (const [search, key] of swaps) {
     const replacement = content[key] || search;
