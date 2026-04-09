@@ -55,27 +55,16 @@ const PLANS = [
 ];
 
 const TEMPLATES = [
-  {
-    id: "skeleton-bold",
-    name: "Bold & Dark",
-    description: "High-impact, dramatic design",
-    preview: "bg-dark",
-    accent: "#f59e0b",
-  },
-  {
-    id: "skeleton-clean",
-    name: "Clean & Light",
-    description: "Modern, minimal, professional",
-    preview: "bg-light",
-    accent: "#4648d4",
-  },
-  {
-    id: "skeleton-warm",
-    name: "Warm & Classic",
-    description: "Approachable, timeless feel",
-    preview: "bg-warm",
-    accent: "#b45309",
-  },
+  { id: "plumbing",   name: "Trustworthy Blue",   description: "Clean, professional, high-trust" },
+  { id: "dental",     name: "Clean Professional",  description: "Crisp, modern, minimal" },
+  { id: "hvac",       name: "Modern Technical",    description: "Bold, structured, authoritative" },
+  { id: "law",        name: "Prestige Dark",       description: "Premium, sophisticated, serious" },
+  { id: "gym",        name: "Dark & Powerful",     description: "High-energy, dramatic, bold" },
+  { id: "auto",       name: "Industrial Bold",     description: "Gritty, strong, memorable" },
+  { id: "realestate", name: "Luxury Minimal",      description: "Elegant, spacious, premium" },
+  { id: "salon",      name: "Editorial Chic",      description: "Stylish, modern, refined" },
+  { id: "restaurant", name: "Elegant & Rich",      description: "Warm, inviting, upscale" },
+  { id: "pet",        name: "Warm & Friendly",     description: "Approachable, cheerful, welcoming" },
 ];
 
 const INDUSTRIES = [
@@ -88,7 +77,7 @@ type Step = "plan" | "template" | "info" | "checkout";
 export default function OrderPage() {
   const [step, setStep] = useState<Step>("plan");
   const [selectedPlan, setSelectedPlan] = useState<string>("pro");
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("skeleton-clean");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("plumbing");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
@@ -252,8 +241,15 @@ export default function OrderPage() {
                   className={`${styles.templateCard} ${selectedTemplate === t.id ? styles.templateSelected : ""}`}
                   onClick={() => setSelectedTemplate(t.id)}
                 >
-                  <div className={`${styles.templatePreview} ${styles[t.preview]}`}>
-                    <TemplatePreview id={t.id} accent={t.accent} />
+                  <div className={styles.templatePreview}>
+                    <iframe
+                      src={`/stitch-templates/${t.id}.html`}
+                      className={styles.templateIframe}
+                      title={t.name}
+                      scrolling="no"
+                      sandbox="allow-scripts"
+                    />
+                    <div className={styles.templateIframeOverlay} />
                   </div>
                   <div className={styles.templateInfo}>
                     <div className={styles.templateName}>{t.name}</div>
