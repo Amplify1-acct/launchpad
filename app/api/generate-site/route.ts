@@ -489,7 +489,53 @@ export async function POST(request: Request) {
       }
     }
 
-    // Replace any fake testimonial sections from Stitch templates with empty CTA
+    // ── Diversify images: replace repeated Supabase library URLs with variants ──
+  // Stitch only has 2 image tokens so cards often repeat the same photo.
+  // We cycle through library variants so each image tag gets a unique photo.
+  {
+    const libSlug = (business.industry || "other").toLowerCase()
+      .replace("auto", "automotive");
+    const SUPABASE_BASE = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+    const slots = ["hero", "card1", "card2", "card3", "card4"];
+    const isAutomotive = libSlug === "automotive";
+    const maxVariants = isAutomotive ? 1 : 2;
+
+    // Build a pool of all available library images for this industry
+    const imgPool: string[] = [];
+    for (const slot of slots) {
+      for (let v = 0; v < (slot === "hero" ? (isAutomotive ? 1 : 3) : maxVariants); v++) {
+        const fname = v === 0 ? `${slot}.png` : `${slot}_${v}.png`;
+        imgPool.push(`${SUPABASE_BASE}/storage/v1/object/public/industry-images/${libSlug}/${fname}`);
+      }
+    }
+
+    if (imgPool.length > 1) {
+      const seen = new Map<string, number>();
+      let poolIdx = 0;
+      primary.html = primary.html.replace(
+        /src="(https:\/\/[^"]+supabase\.co\/storage\/v1\/object\/public\/industry-images\/[^"]+)"/g,
+        (_m: string, url: string) => {
+          const count = seen.get(url) ?? 0;
+          seen.set(url, count + 1);
+          if (count > 0) {
+            // Find next unused image from pool
+            while (poolIdx < imgPool.length && seen.has(imgPool[poolIdx]) && (seen.get(imgPool[poolIdx]) ?? 0) > 0) {
+              poolIdx++;
+            }
+            if (poolIdx < imgPool.length) {
+              const next = imgPool[poolIdx];
+              seen.set(next, (seen.get(next) ?? 0) + 1);
+              poolIdx++;
+              return `src="${next}"`;
+            }
+          }
+          return `src="${url}"`;
+        }
+      );
+    }
+  }
+
+  // Replace any fake testimonial sections from Stitch templates with empty CTA
     // (Google Reviews for Premium are added separately via fetch-reviews API)
     const cleanedHtml = primary.html.replace(
       /<section[^>]*(?:id|class)=["'][^"']*(?:review|testimonial)[^"']*["'][^>]*>[\s\S]*?<\/section>/gi,
