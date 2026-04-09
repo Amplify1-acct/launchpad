@@ -12,7 +12,7 @@ import os, json, time, base64, urllib.request, urllib.error
 
 GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY", "")
 SUPABASE_URL    = os.environ.get("SUPABASE_URL", "")
-SUPABASE_KEY    = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+SUPABASE_KEY    = os.environ.get("SUPABASE_SERVICE_KEY", "")
 SITE_URL        = "https://www.exsisto.ai"
 INTERNAL_SECRET = "exsisto-internal-2026"
 ADMIN_SECRET    = "exsisto-admin-2026"
