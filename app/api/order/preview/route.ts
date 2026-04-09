@@ -658,6 +658,77 @@ Return JSON with these exact keys:
   const phoneRaw = (phone || "").replace(/\D/g, "");
   if (phoneRaw) html = html.replace(/href="tel:\d+"/g, `href="tel:${phoneRaw}"`);
 
+  // Replace expired Google CDN images with industry images from manifest
+  // Map customer industry to manifest key
+  const INDUSTRY_MAP: Record<string, string> = {
+    auto: "auto", automotive: "auto",
+    bakery: "bakery",
+    dental: "dental",
+    gym: "gym", fitness: "gym",
+    hvac: "hvac",
+    landscaping: "landscaping", landscape: "landscaping",
+    law: "law", legal: "law",
+    pet: "pet",
+    plumbing: "plumbing",
+    realestate: "realestate", "real estate": "realestate",
+    restaurant: "restaurant", food: "restaurant",
+    salon: "salon", hair: "salon",
+  };
+
+  const industryKey = INDUSTRY_MAP[(industry || "").toLowerCase()] || "other";
+
+  // Image manifest — permanent GitHub raw URLs per industry
+  const IMAGE_MANIFEST: Record<string, string[]> = {
+    auto:        ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_05.jpg"],
+    bakery:      ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/bakery/bakery_05.jpg"],
+    dental:      ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/dental/dental_05.jpg"],
+    gym:         ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/gym/gym_05.jpg"],
+    hvac:        ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/hvac/hvac_05.jpg"],
+    landscaping: ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/landscaping/landscaping_05.jpg"],
+    law:         ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/law/law_05.jpg"],
+    pet:         ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/pet/pet_05.jpg"],
+    plumbing:    ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/plumbing/plumbing_05.jpg"],
+    realestate:  ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/realestate/realestate_05.jpg"],
+    restaurant:  ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/restaurant/restaurant_05.jpg"],
+    salon:       ["https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_01.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_02.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_03.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_04.jpg","https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/salon/salon_05.jpg"],
+  };
+
+  const industryImages = IMAGE_MANIFEST[industryKey];
+
+  if (industryImages) {
+    // Replace all expired Google CDN images with industry images in order
+    let imgIndex = 0;
+    html = html.replace(/https:\/\/lh3\.googleusercontent\.com[^\s"']+/g, () => {
+      const img = industryImages[imgIndex % industryImages.length];
+      imgIndex++;
+      return img;
+    });
+  } else {
+    // "other" industry — trigger Nano Banana async (non-blocking) and use placeholder for now
+    // The real site will have custom Nano Banana images when Matt builds it in admin
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
+    fetch(`${appUrl}/api/generate-images`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-internal-secret": process.env.INTERNAL_API_SECRET || "exsisto-internal-2026",
+      },
+      body: JSON.stringify({
+        businessName: cleanBizName,
+        industry: industry || "other",
+        city: cleanCity,
+        services: svcList,
+        tier: "pro",
+        preview: true,
+      }),
+    }).catch(() => {});
+
+    // Use a neutral placeholder for now
+    html = html.replace(/https:\/\/lh3\.googleusercontent\.com[^\s"']+/g,
+      "https://raw.githubusercontent.com/Amplify1-acct/launchpad/main/public/images/auto/auto_01.jpg"
+    );
+  }
+
   // Fix copyright year
   html = html.replace(/© 20\d\d /g, `© ${new Date().getFullYear()} `);
 
