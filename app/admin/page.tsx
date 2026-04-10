@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import styles from "./admin.module.css";
-
 const ADMIN_SECRET = "exsisto-admin-2026";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
 
