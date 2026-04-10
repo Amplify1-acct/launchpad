@@ -73,12 +73,14 @@ export async function POST(request: Request) {
       await supabase.from("businesses").update({
         name: business_name, industry, city, state, phone,
         services, subdomain, tagline,
+        description: tagline || business_name,
       }).eq("id", businessId);
     } else {
       const { data: newBiz, error: bizErr } = await supabase.from("businesses")
         .insert({
           customer_id: customerId, name: business_name, industry,
           city, state, phone, services, subdomain, tagline,
+          description: tagline || business_name,
         })
         .select("id").single();
       if (bizErr || !newBiz) throw new Error("Business creation failed: " + bizErr?.message);
