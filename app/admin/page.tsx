@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 const ADMIN_SECRET = "exsisto-admin-2026";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
-
 type SiteStatus = "pending" | "building" | "admin_review" | "live" | "error" | string;
 
 interface BlogPost {
