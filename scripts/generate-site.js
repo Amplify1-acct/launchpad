@@ -553,7 +553,7 @@ function sharedCSS(theme) {
 function nav(servicePages, currentPath) {
   const { businessName, phone, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   return `
 <nav>
@@ -579,7 +579,7 @@ function nav(servicePages, currentPath) {
 
 function footer(servicePages) {
   const { businessName, city, state, subdomain } = config;
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
   const year = new Date().getFullYear();
 
   return `
@@ -647,7 +647,7 @@ ${footer(servicePages)}
 function buildHomePage(content, imageUrls, blogPosts, servicePages, theme) {
   const { businessName, phone, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const svcHTML = content.services.map(s => {
     const sl = slug(s.name);
@@ -769,13 +769,13 @@ function buildHomePage(content, imageUrls, blogPosts, servicePages, theme) {
     </div>
   </div>`;
 
-  return wrap(content.metaTitle, content.metaDescription, '/' + subdomain + '/', body, theme, servicePages);
+  return wrap(content.metaTitle, content.metaDescription, '/sites/' + subdomain + '/', body, theme, servicePages);
 }
 
 function buildServiceOverviewPage(content, servicePages, theme) {
   const { businessName, phone, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const svcHTML = content.services.map(s => {
     const sl = slug(s.name);
@@ -807,13 +807,13 @@ function buildServiceOverviewPage(content, servicePages, theme) {
 
   const metaTitle = businessName + ' Services | ' + city + ', ' + state;
   const metaDesc  = businessName + ' offers professional services in ' + city + ', ' + state + '. Call ' + phone + ' for a free estimate.';
-  return wrap(metaTitle, metaDesc, '/' + subdomain + '/services/', body, theme, servicePages);
+  return wrap(metaTitle, metaDesc, '/sites/' + subdomain + '/services/', body, theme, servicePages);
 }
 
 function buildServicePage(sp, allServicePages, content, theme) {
   const { businessName, phone, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const otherServices = allServicePages.filter(s => s.slug !== sp.slug).slice(0, 4);
 
@@ -891,13 +891,13 @@ function buildServicePage(sp, allServicePages, content, theme) {
     </div>
   </div>`;
 
-  return wrap(sp.metaTitle, sp.metaDescription, '/' + subdomain + '/services/' + sp.slug + '/', body, theme, allServicePages, faqSchema + '\n' + serviceSchema);
+  return wrap(sp.metaTitle, sp.metaDescription, '/sites/' + subdomain + '/services/' + sp.slug + '/', body, theme, allServicePages, faqSchema + '\n' + serviceSchema);
 }
 
 function buildAboutPage(content, imageUrls, servicePages, theme) {
   const { businessName, phone, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const body = `
   <div style="display:grid;grid-template-columns:1fr 1fr;min-height:560px;">
@@ -932,12 +932,12 @@ function buildAboutPage(content, imageUrls, servicePages, theme) {
 
   const metaTitle = 'About ' + businessName + ' | ' + city + ', ' + state;
   const metaDesc  = 'Learn about ' + businessName + ', serving ' + city + ', ' + state + '. ' + content.aboutBody.slice(0, 100) + '...';
-  return wrap(metaTitle, metaDesc, '/' + subdomain + '/about/', body, theme, servicePages);
+  return wrap(metaTitle, metaDesc, '/sites/' + subdomain + '/about/', body, theme, servicePages);
 }
 
 function buildBlogIndex(blogPosts, servicePages, theme) {
   const { businessName, city, state, subdomain } = config;
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const postsHTML = blogPosts.map(p => `
     <a href="${base}/blog/${p.slug}/" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:block;transition:transform 0.25s,box-shadow 0.25s;color:inherit;">
@@ -961,12 +961,12 @@ function buildBlogIndex(blogPosts, servicePages, theme) {
 
   const metaTitle = businessName + ' Blog | ' + city + ', ' + state;
   const metaDesc  = 'Tips, advice, and insights from ' + businessName + ' in ' + city + ', ' + state + '.';
-  return wrap(metaTitle, metaDesc, '/' + subdomain + '/blog/', body, theme, servicePages);
+  return wrap(metaTitle, metaDesc, '/sites/' + subdomain + '/blog/', body, theme, servicePages);
 }
 
 function buildBlogPost(post, allPosts, servicePages, theme) {
   const { businessName, city, state, subdomain } = config;
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   // Convert markdown ## headings to styled h2s
   const bodyHTML = post.body
@@ -1015,13 +1015,13 @@ function buildBlogPost(post, allPosts, servicePages, theme) {
     </div>
   </section>`;
 
-  return wrap(post.metaTitle || post.title, post.metaDescription || post.excerpt, '/' + subdomain + '/blog/' + post.slug + '/', body, theme, servicePages, articleSchema);
+  return wrap(post.metaTitle || post.title, post.metaDescription || post.excerpt, '/sites/' + subdomain + '/blog/' + post.slug + '/', body, theme, servicePages, articleSchema);
 }
 
 function buildContactPage(content, servicePages, theme) {
   const { businessName, phone, email, city, state, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
-  const base = '/' + subdomain;
+  const base = '/sites/' + subdomain;
 
   const body = `
   <div style="display:grid;grid-template-columns:1fr 1fr;min-height:560px;">
@@ -1054,7 +1054,7 @@ function buildContactPage(content, servicePages, theme) {
 
   const metaTitle = 'Contact ' + businessName + ' | ' + city + ', ' + state;
   const metaDesc  = 'Contact ' + businessName + ' in ' + city + ', ' + state + '. Call ' + phone + ' or send us a message for a free estimate.';
-  return wrap(metaTitle, metaDesc, '/' + subdomain + '/contact/', body, theme, servicePages);
+  return wrap(metaTitle, metaDesc, '/sites/' + subdomain + '/contact/', body, theme, servicePages);
 }
 
 // ── Sitemap + robots ──────────────────────────────────────────────────────────
@@ -1064,8 +1064,8 @@ function buildSitemap(servicePages, blogPosts) {
   const today = new Date().toISOString().split('T')[0];
 
   const urls = [
-    { loc: base + '/',           priority: '1.0', freq: 'weekly' },
-    { loc: base + '/about/',     priority: '0.7', freq: 'monthly' },
+    { loc: base + '/sites/' + config.subdomain + '/',           priority: '1.0', freq: 'weekly' },
+    { loc: base + '/sites/' + config.subdomain + '/about/',     priority: '0.7', freq: 'monthly' },
     { loc: base + '/services/',  priority: '0.9', freq: 'weekly' },
     { loc: base + '/blog/',      priority: '0.8', freq: 'weekly' },
     { loc: base + '/contact/',   priority: '0.7', freq: 'monthly' },
