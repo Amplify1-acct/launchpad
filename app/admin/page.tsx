@@ -149,11 +149,11 @@ export default function AdminPage() {
     }
   }
 
-  const filtered = filter === "all" ? orders : orders.filter(o => (o.websites?.status || "pending") === filter);
+  const filtered = filter === "all" ? orders : orders.filter(o => { const s = o.websites?.status || "pending"; if (filter === "admin_review") return s === "admin_review" || s === "ready_for_review"; return s === filter; });
   const counts = {
     all:          orders.length,
     pending:      orders.filter(o => (o.websites?.status || "pending") === "pending").length,
-    admin_review: orders.filter(o => o.websites?.status === "admin_review").length,
+    admin_review: orders.filter(o => o.websites?.status === "admin_review" || o.websites?.status === "ready_for_review").length,
     live:         orders.filter(o => o.websites?.status === "live").length,
   };
 
@@ -263,7 +263,7 @@ export default function AdminPage() {
                 {status === "building" && (
                   <div style={{ color: "#6366f1", fontSize: 14, fontWeight: 600, padding: "10px 0" }}>⏳ Building… check back in 10-15 min</div>
                 )}
-                {status === "admin_review" && (
+                {(status === "admin_review" || status === "ready_for_review") && (
                   <>
                     {siteUrl && <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#1d4ed8", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>🔍 Preview Site</a>}
                     <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => approveSite(order.id)} disabled={action==="approving"}>
@@ -282,7 +282,7 @@ export default function AdminPage() {
               </div>
 
               {/* Edit notes */}
-              {status === "admin_review" && (
+              {(status === "admin_review" || status === "ready_for_review") && (
                 <div style={{ padding: "0 24px 20px" }}>
                   <label style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9090a8", marginBottom: 6, display: "block" }}>
                     Edit Notes — describe changes, then click Request Edits
