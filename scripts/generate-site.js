@@ -1094,6 +1094,40 @@ Allow: /
 Sitemap: https://${subdomain}.exsisto.ai/sitemap.xml`;
 }
 
+// ── Backup existing site before overwriting ───────────────────────────────────
+async function backupExistingSite(subdomain) {
+  const root     = path.join(__dirname, '..');
+  const siteDir  = path.join(root, 'public', 'sites', subdomain);
+  const backupTs = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const backupDir = path.join(siteDir, '_backups', backupTs);
+
+  try {
+    await fs.access(siteDir);
+  } catch {
+    return; // Site doesn't exist yet, nothing to back up
+  }
+
+  await fs.mkdir(backupDir, { recursive: true });
+
+  async function copyDir(src, dst) {
+    const entries = await fs.readdir(src, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name === '_backups') continue; // Don't back up backups
+      const srcPath = path.join(src, entry.name);
+      const dstPath = path.join(dst, entry.name);
+      if (entry.isDirectory()) {
+        await fs.mkdir(dstPath, { recursive: true });
+        await copyDir(srcPath, dstPath);
+      } else {
+        await fs.copyFile(srcPath, dstPath);
+      }
+    }
+  }
+
+  await copyDir(siteDir, backupDir);
+  console.log('  ✅ Backed up to _backups/' + backupTs);
+}
+
 // ── Write files ───────────────────────────────────────────────────────────────
 async function writeFile(dir, filename, content) {
   await fs.mkdir(dir, { recursive: true });
@@ -1218,7 +1252,9 @@ async function main() {
     }
   }
 
-  // 5. Write all pages
+  // 5. Backup existing site then write all pages
+  console.log('\n📦 Backing up existing site...');
+  await backupExistingSite(config.subdomain);
   console.log('\n🔧 Writing static pages...');
 
   await writeFile(outBase,                                       'index.html',   buildHomePage(content, imageUrls, blogPosts, servicePages, theme));
