@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matty's Automotive - Auto Repair Springfield NJ | Fair Prices</title>
-  <meta name="description" content="Springfield NJ auto repair shop. Oil changes, brakes, diagnostics, NJ inspection. Family-owned 18+ years. Honest work, fair prices. Call (908) 555-0147">
-  <meta property="og:title" content="Matty's Automotive - Auto Repair Springfield NJ | Fair Prices">
-  <meta property="og:description" content="Springfield NJ auto repair shop. Oil changes, brakes, diagnostics, NJ inspection. Family-owned 18+ years. Honest work, fair prices. Call (908) 555-0147">
+  <title>Matty's Automotive Springfield NJ - Auto Repair & Service</title>
+  <meta name="description" content="Springfield NJ's trusted auto shop. Oil changes, brakes, diagnostics & NJ inspections. Honest work, fair prices. Call (908) 555-0147 today!">
+  <meta property="og:title" content="Matty's Automotive Springfield NJ - Auto Repair & Service">
+  <meta property="og:description" content="Springfield NJ's trusted auto shop. Oil changes, brakes, diagnostics & NJ inspections. Honest work, fair prices. Call (908) 555-0147 today!">
   <meta name="theme-color" content="#1a1a1a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,6 +45,25 @@
     .nav-cta { background: var(--accent) !important; color: #fff !important; padding: 10px 20px; border-radius: var(--r); font-weight: 700 !important; }
     #hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
     #hamburger span { display: block; width: 22px; height: 2px; background: #fff; }
+
+    /* Dropdown */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-menu {
+      display: none; position: absolute; top: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%);
+      background: var(--white); border-radius: var(--r);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      min-width: 220px; padding: 8px 0; z-index: 300;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block; padding: 10px 18px;
+      font-size: 14px; font-weight: 500; color: var(--dark) !important;
+      text-transform: none !important; letter-spacing: 0 !important;
+      transition: background 0.15s;
+    }
+    .nav-dropdown-menu a:hover { background: var(--bg); color: var(--primary) !important; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 10px; opacity: 0.7; }
 
     /* Pages */
     .page { display: none; }
@@ -226,7 +245,12 @@
   <div class="nav-logo">Matty's Automotive</div>
   <ul class="nav-links" id="nav-links">
     <li><a href="#" onclick="showPage('home')">Home</a></li>
-    <li><a href="#" onclick="showPage('services')">Services</a></li>
+    <li class="nav-dropdown">
+      <a href="#" onclick="showPage('services')">Services</a>
+      <div class="nav-dropdown-menu">
+        <a href="#" onclick="showPage('svc-oil-changes')">🛢️ Oil Changes</a><a href="#" onclick="showPage('svc-brake-service')">🚗 Brake Service</a><a href="#" onclick="showPage('svc-engine-diagnostics')">🔧 Engine Diagnostics</a><a href="#" onclick="showPage('svc-battery-electrical')">🔋 Battery & Electrical</a><a href="#" onclick="showPage('svc-ac-heat')">❄️ AC & Heat</a><a href="#" onclick="showPage('svc-nj-state-inspection')">✅ NJ State Inspection</a>
+      </div>
+    </li>
     <li><a href="#" onclick="showPage('about')">About</a></li>
     <li><a href="#" onclick="showPage('blog')">Blog</a></li>
     <li><a href="#" onclick="showPage('contact')">Contact</a></li>
@@ -244,7 +268,7 @@
     <div class="hero-content">
       <div class="hero-eyebrow">Springfield, NJ</div>
       <h1>Springfield's Trusted Auto Shop</h1>
-      <p class="hero-sub">Family-owned automotive service in Springfield, NJ since 2006. We keep your car running safely with honest work and fair prices you can count on.</p>
+      <p class="hero-sub">Your neighborhood mechanics delivering honest work and fair prices for over a decade. We keep Springfield drivers safe on the road.</p>
       <div class="hero-btns">
         <a href="tel:9085550147" class="btn btn-accent">📞 (908) 555-0147</a>
         <button class="btn btn-ghost" onclick="showPage('services')">Our Services</button>
@@ -252,50 +276,50 @@
     </div>
     <div class="trust-bar">
       <div class="trust-item"><div class="trust-icon">⭐</div><div><div class="trust-label">Google Rating</div><div class="trust-val">4.8★</div></div></div>
-      <div class="trust-item"><div class="trust-icon">🏆</div><div><div class="trust-label">Years Serving Springfield</div><div class="trust-val">18+</div></div></div>
-      <div class="trust-item"><div class="trust-icon">✅</div><div><div class="trust-label">Family Owned & Operated</div><div class="trust-val">95%</div></div></div>
+      <div class="trust-item"><div class="trust-icon">🏆</div><div><div class="trust-label">Years Experience</div><div class="trust-val">14+</div></div></div>
+      <div class="trust-item"><div class="trust-icon">✅</div><div><div class="trust-label">ASE Certified Technicians</div><div class="trust-val">96%</div></div></div>
     </div>
   </section>
 
   <div class="stats-bar">
-    <div class="stat-cell"><div class="stat-num">2000+</div><div class="stat-lbl">Satisfied Customers</div></div>
-    <div class="stat-cell"><div class="stat-num">18+</div><div class="stat-lbl">Years Serving Springfield</div></div>
-    <div class="stat-cell"><div class="stat-num">95%</div><div class="stat-lbl">Customer Return Rate</div></div>
+    <div class="stat-cell"><div class="stat-num">1000+</div><div class="stat-lbl">Happy Customers</div></div>
+    <div class="stat-cell"><div class="stat-num">14+</div><div class="stat-lbl">Years Experience</div></div>
+    <div class="stat-cell"><div class="stat-num">96%</div><div class="stat-lbl">Customer Retention</div></div>
     <div class="stat-cell"><div class="stat-num">4.8★</div><div class="stat-lbl">Google Rating</div></div>
   </div>
 
   <section class="sec sec-off">
     <div class="sec-hdr"><p class="sec-tag">What We Do</p><h2 class="sec-title sec-title-dark">Our Services</h2><p class="sec-body">Everything you need, done right.</p></div>
     <div class="svc-grid">
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-oil-changes')" style="cursor:pointer;">
       <div class="svc-icon">🛢️</div>
       <h3>Oil Changes</h3>
-      <p>Quick, professional oil changes using quality filters and the right oil for your vehicle.</p>
+      <p>Quick, professional oil changes using premium lubricants to keep your engine running smoothly.</p>
     </div>
-    <div class="svc-card">
-      <div class="svc-icon">🛑</div>
+    <div class="svc-card" onclick="showPage('svc-brake-service')" style="cursor:pointer;">
+      <div class="svc-icon">🚗</div>
       <h3>Brake Service</h3>
-      <p>Complete brake inspections, pad replacements, and rotor service to keep you stopping safely.</p>
+      <p>Complete brake inspections, pad replacements, and rotor service for your safety on the road.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-engine-diagnostics')" style="cursor:pointer;">
       <div class="svc-icon">🔧</div>
       <h3>Engine Diagnostics</h3>
-      <p>Advanced computer diagnostics to quickly identify and solve your engine problems.</p>
+      <p>Advanced computer diagnostics to quickly identify and resolve check engine light issues.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-battery-electrical')" style="cursor:pointer;">
       <div class="svc-icon">🔋</div>
       <h3>Battery & Electrical</h3>
-      <p>Battery testing, replacement, and electrical system repairs to keep your car starting reliably.</p>
+      <p>Battery testing, replacement, and electrical system repairs to keep you reliably on the road.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-ac-heat')" style="cursor:pointer;">
       <div class="svc-icon">❄️</div>
       <h3>AC & Heat</h3>
-      <p>Climate control system repair and maintenance for comfortable driving year-round.</p>
+      <p>Climate control system repairs and maintenance for year-round driving comfort.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-nj-state-inspection')" style="cursor:pointer;">
       <div class="svc-icon">✅</div>
       <h3>NJ State Inspection</h3>
-      <p>Official New Jersey state vehicle inspections performed quickly and conveniently.</p>
+      <p>Official New Jersey state safety and emissions inspections performed by certified technicians.</p>
     </div></div>
   </section>
 
@@ -303,10 +327,10 @@
     <div class="about-img"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/about.jpg" alt="About Matty's Automotive" style="height:100%;min-height:520px;"></div>
     <div class="about-text">
       <p class="sec-tag">Who We Are</p>
-      <h2 class="sec-title sec-title-light">Your Neighborhood Auto Experts</h2>
-      <p class="sec-body sec-body-light">Matty's Automotive has been serving Springfield and surrounding communities for over 18 years with reliable, honest auto repair services. Our mission is simple: provide quality workmanship at fair prices while treating every customer like family. What sets us apart is our commitment to transparency - we'll always explain what your car needs and why, with no surprises or unnecessary upsells.</p>
+      <h2 class="sec-title sec-title-light">Your Local Auto Experts</h2>
+      <p class="sec-body sec-body-light">Matty's Automotive has been proudly serving Springfield and surrounding communities since 2010, building our reputation one satisfied customer at a time. We believe in transparent pricing, quality workmanship, and treating every vehicle like it belongs to family. What sets us apart is our commitment to honest diagnostics and never recommending unnecessary repairs.</p>
       <div class="about-list">
-        <div class="about-item"><div class="about-dot"></div><span>Family Owned & Operated</span></div><div class="about-item"><div class="about-dot"></div><span>No Hidden Fees Ever</span></div><div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div>
+        <div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div><div class="about-item"><div class="about-dot"></div><span>Fair Price Guarantee</span></div><div class="about-item"><div class="about-dot"></div><span>Local Family Owned</span></div>
       </div>
       <button class="btn btn-accent" onclick="showPage('about')" style="margin-top:24px;width:fit-content;">Learn More</button>
     </div>
@@ -329,20 +353,20 @@
     <div class="process-grid">
     <div class="step">
       <div class="step-num">1</div>
-      <h3>Call Us</h3>
-      <p>Schedule your appointment by phone or simply drive in for most services.</p>
+      <h3>Schedule Appointment</h3>
+      <p>Call us or stop by to schedule your service at a time that works for you.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <h3>Expert Diagnosis</h3>
-      <p>Our certified technicians thoroughly inspect your vehicle and explain any issues found.</p>
+      <p>Our certified technicians thoroughly inspect your vehicle and explain what needs attention.</p>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <h3>Quality Repair</h3>
-      <p>We complete your service using quality parts with transparent pricing and no hidden fees.</p>
+      <p>We complete the work using quality parts and stand behind every repair with our warranty.</p>
     </div></div>
-    <div class="badges"><div class="badge">✓ Family Owned & Operated</div><div class="badge">✓ No Hidden Fees Ever</div><div class="badge">✓ ASE Certified Technicians</div></div>
+    <div class="badges"><div class="badge">✓ ASE Certified Technicians</div><div class="badge">✓ Fair Price Guarantee</div><div class="badge">✓ Local Family Owned</div></div>
   </section>
 
   <section class="sec sec-off" style="text-align:center;">
@@ -370,7 +394,7 @@
       <div class="blog-card-body">
         <div class="blog-date">April 10, 2026</div>
         <h3>5 Warning Signs Your Car Needs Immediate Attention - Springfield, NJ Auto Repair</h3>
-        <p>Don't ignore these critical warning signs that indicate your vehicle needs immediate professional attention. Recognizing these symptoms early can save you from costly repairs and keep you safe on Springfield roads.</p>
+        <p>Don't ignore these critical warning signs that your vehicle needs professional attention. Recognizing these symptoms early can save you from costly repairs and keep you safe on Springfield roads.</p>
         <div class="blog-read">Read More →</div>
       </div>
     </div>
@@ -378,14 +402,14 @@
       <div class="blog-card-body">
         <div class="blog-date">April 10, 2026</div>
         <h3>How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide</h3>
-        <p>Finding a reliable auto repair shop can feel overwhelming, but knowing what to look for makes all the difference. Learn the key factors that separate trustworthy mechanics from the rest in Springfield, NJ.</p>
+        <p>Finding a reliable auto repair shop can feel overwhelming, but knowing what to look for makes all the difference. Learn the key factors that separate trustworthy mechanics from the rest when choosing automotive service in Springfield, NJ.</p>
         <div class="blog-read">Read More →</div>
       </div>
     </div></div>
   </section>
 
   <div class="cta-band">
-    <div><h2>Schedule Your Service Today</h2><p>Don't wait for small problems to become expensive repairs - call now for honest diagnostics and fair pricing.</p></div>
+    <div><h2>Schedule Your Service Today</h2><p>Don't wait until small problems become expensive repairs - call now for honest diagnostics and fair pricing.</p></div>
     <div class="cta-btns">
       <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
       <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
@@ -400,35 +424,35 @@
   <section class="sec sec-off" style="padding-top:80px;">
     <div class="sec-hdr"><p class="sec-tag">What We Offer</p><h2 class="sec-title sec-title-dark">Our Services</h2><p class="sec-body">Professional service tailored to your needs in Springfield, NJ.</p></div>
     <div class="svc-grid">
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-oil-changes')" style="cursor:pointer;">
       <div class="svc-icon">🛢️</div>
       <h3>Oil Changes</h3>
-      <p>Quick, professional oil changes using quality filters and the right oil for your vehicle.</p>
+      <p>Quick, professional oil changes using premium lubricants to keep your engine running smoothly.</p>
     </div>
-    <div class="svc-card">
-      <div class="svc-icon">🛑</div>
+    <div class="svc-card" onclick="showPage('svc-brake-service')" style="cursor:pointer;">
+      <div class="svc-icon">🚗</div>
       <h3>Brake Service</h3>
-      <p>Complete brake inspections, pad replacements, and rotor service to keep you stopping safely.</p>
+      <p>Complete brake inspections, pad replacements, and rotor service for your safety on the road.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-engine-diagnostics')" style="cursor:pointer;">
       <div class="svc-icon">🔧</div>
       <h3>Engine Diagnostics</h3>
-      <p>Advanced computer diagnostics to quickly identify and solve your engine problems.</p>
+      <p>Advanced computer diagnostics to quickly identify and resolve check engine light issues.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-battery-electrical')" style="cursor:pointer;">
       <div class="svc-icon">🔋</div>
       <h3>Battery & Electrical</h3>
-      <p>Battery testing, replacement, and electrical system repairs to keep your car starting reliably.</p>
+      <p>Battery testing, replacement, and electrical system repairs to keep you reliably on the road.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-ac-heat')" style="cursor:pointer;">
       <div class="svc-icon">❄️</div>
       <h3>AC & Heat</h3>
-      <p>Climate control system repair and maintenance for comfortable driving year-round.</p>
+      <p>Climate control system repairs and maintenance for year-round driving comfort.</p>
     </div>
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-nj-state-inspection')" style="cursor:pointer;">
       <div class="svc-icon">✅</div>
       <h3>NJ State Inspection</h3>
-      <p>Official New Jersey state vehicle inspections performed quickly and conveniently.</p>
+      <p>Official New Jersey state safety and emissions inspections performed by certified technicians.</p>
     </div></div>
   </section>
   
@@ -455,10 +479,10 @@
     <div class="about-img"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/about.jpg" alt="About Matty's Automotive" style="height:100%;min-height:560px;"></div>
     <div class="about-text">
       <p class="sec-tag">Our Story</p>
-      <h2 class="sec-title sec-title-light">Your Neighborhood Auto Experts</h2>
-      <p class="sec-body sec-body-light">Matty's Automotive has been serving Springfield and surrounding communities for over 18 years with reliable, honest auto repair services. Our mission is simple: provide quality workmanship at fair prices while treating every customer like family. What sets us apart is our commitment to transparency - we'll always explain what your car needs and why, with no surprises or unnecessary upsells.</p>
+      <h2 class="sec-title sec-title-light">Your Local Auto Experts</h2>
+      <p class="sec-body sec-body-light">Matty's Automotive has been proudly serving Springfield and surrounding communities since 2010, building our reputation one satisfied customer at a time. We believe in transparent pricing, quality workmanship, and treating every vehicle like it belongs to family. What sets us apart is our commitment to honest diagnostics and never recommending unnecessary repairs.</p>
       <div class="about-list">
-        <div class="about-item"><div class="about-dot"></div><span>Family Owned & Operated</span></div><div class="about-item"><div class="about-dot"></div><span>No Hidden Fees Ever</span></div><div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div>
+        <div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div><div class="about-item"><div class="about-dot"></div><span>Fair Price Guarantee</span></div><div class="about-item"><div class="about-dot"></div><span>Local Family Owned</span></div>
       </div>
     </div>
   </div>
@@ -468,18 +492,18 @@
     <div class="process-grid">
     <div class="step">
       <div class="step-num">1</div>
-      <h3>Call Us</h3>
-      <p>Schedule your appointment by phone or simply drive in for most services.</p>
+      <h3>Schedule Appointment</h3>
+      <p>Call us or stop by to schedule your service at a time that works for you.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <h3>Expert Diagnosis</h3>
-      <p>Our certified technicians thoroughly inspect your vehicle and explain any issues found.</p>
+      <p>Our certified technicians thoroughly inspect your vehicle and explain what needs attention.</p>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <h3>Quality Repair</h3>
-      <p>We complete your service using quality parts with transparent pricing and no hidden fees.</p>
+      <p>We complete the work using quality parts and stand behind every repair with our warranty.</p>
     </div></div>
   </section>
 </div>
@@ -490,15 +514,15 @@
   <section class="sec" style="padding-top:80px;">
     <div class="sec-hdr"><p class="sec-tag">Our Blog</p><h2 class="sec-title sec-title-dark">Articles &amp; Tips</h2><p class="sec-body">Helpful advice from the team at Matty's Automotive.</p></div>
     
-    <article class="blog-article" id="post-5-warning-signs-your-car-needs-immediate-attention-springfield-nj">
+    <article class="blog-article" id="post-5-warning-signs-car-needs-immediate-attention-springfield-nj">
       <h2>5 Warning Signs Your Car Needs Immediate Attention - Springfield, NJ Auto Repair</h2>
       <div class="blog-meta">April 10, 2026 · Matty's Automotive</div>
-      <div class="blog-body"><p>As Springfield, NJ drivers know, our vehicles face unique challenges from seasonal weather changes, stop-and-go traffic, and daily commutes. At Matty's Automotive, we've seen countless situations where early warning signs were ignored, leading to expensive repairs and dangerous driving conditions. Here are five critical signs that your car needs immediate professional attention.</p><p>**1. Dashboard Warning Lights**</p><p>Your vehicle's computer system is constantly monitoring dozens of components, and when something goes wrong, it communicates through dashboard warning lights. The check engine light, oil pressure warning, brake system alert, or temperature gauge should never be ignored. These lights indicate potentially serious problems that could leave you stranded or worse, compromise your safety on Route 22 or the Garden State Parkway.</p><p>While some issues might seem minor, modern vehicles are complex machines where one problem can quickly cascade into multiple system failures. What starts as a simple sensor issue could indicate engine damage, transmission problems, or brake failure.</p><p>**2. Unusual Noises**</p><p>Your car shouldn't sound like it's auditioning for a horror movie soundtrack. Grinding, squealing, knocking, or clicking sounds are your vehicle's way of crying for help. Brake squealing often indicates worn brake pads that need immediate replacement before they damage rotors. Engine knocking could signal serious internal damage, while grinding noises when turning might indicate worn wheel bearings or CV joints.</p><p>These sounds typically worsen over time and ignoring them usually results in much more expensive repairs. Springfield drivers who address unusual noises promptly often save hundreds or even thousands of dollars in repair costs.</p><p>**3. Fluid Leaks**</p><p>Noticing colorful puddles under your parked car? Different colored fluids indicate different problems. Red or pink fluid typically means transmission or power steering fluid, dark brown or black suggests engine oil, while bright green, orange, or pink usually indicates coolant leaks.</p><p>Fluid leaks aren't just messy – they're dangerous. Low transmission fluid can destroy your transmission, oil leaks can lead to engine seizure, and coolant leaks can cause catastrophic overheating. These problems don't fix themselves and will only worsen with time.</p><p>**4. Changes in Performance**</p><p>If your car feels different when driving, trust your instincts. Difficulty starting, rough idling, stalling, reduced acceleration, or poor fuel economy all indicate underlying problems. Maybe your vehicle hesitates when accelerating onto I-78, or perhaps it takes longer to start on cold Springfield mornings.</p><p>Performance changes often indicate fuel system problems, ignition issues, or engine wear. These problems typically start small but can quickly develop into major mechanical failures if not addressed promptly.</p><p>**5. Steering and Brake Issues**</p><p>Nothing is more critical to your safety than your ability to steer and stop your vehicle. If your steering wheel vibrates, pulls to one side, or feels loose, you need immediate attention. Similarly, if your brakes feel spongy, require more pressure than usual, or if you hear grinding when braking, stop driving and seek professional help immediately.</p><p>These issues directly impact your ability to control your vehicle safely, especially during Springfield's winter weather conditions or heavy traffic situations.</p><p>**Don't Wait – Act Now**</p><p>At Matty's Automotive, we understand that car troubles never happen at convenient times. However, addressing these warning signs immediately almost always costs less than waiting until complete failure occurs. Our experienced technicians serve Springfield and surrounding communities with honest, professional automotive repair services.</p><p>If you've noticed any of these warning signs, don't risk your safety or your wallet by waiting. Contact Matty's Automotive today at (908) 555-0147 to schedule an inspection and keep your vehicle running safely and reliably.</p></div>
+      <div class="blog-body"><p>As a driver in Springfield, NJ, your vehicle is essential for daily commuting, weekend errands, and everything in between. While regular maintenance helps prevent major issues, sometimes problems arise unexpectedly. At Matty's Automotive, we've seen countless situations where early intervention could have saved drivers significant time, money, and stress.</p><p>Here are five critical warning signs that your car needs immediate professional attention:</p><p>**1. Strange Noises That Won't Go Away**</p><p>Your car shouldn't sound like a symphony of squeaks, grinding, or knocking. Squealing brakes often indicate worn brake pads, while grinding sounds suggest metal-on-metal contact that can damage rotors. A knocking engine noise could signal serious internal damage, and grinding during gear shifts may indicate transmission problems. Don't assume these sounds will resolve themselves – they typically worsen over time.</p><p>**2. Dashboard Warning Lights**</p><p>Modern vehicles are equipped with sophisticated warning systems designed to alert you to potential problems. Never ignore warning lights, especially the check engine light, oil pressure warning, or brake system alert. These lights indicate your car's computer has detected an issue that requires immediate attention. Even if your car seems to run fine, continuing to drive with warning lights active can lead to catastrophic engine or safety system failures.</p><p>**3. Fluid Leaks Under Your Vehicle**</p><p>Puddles or stains under your parked car are never a good sign. Dark brown or black spots typically indicate oil leaks, while red fluid suggests transmission problems. Green or orange puddles point to coolant leaks, which can cause engine overheating. Clear fluid might be harmless condensation from air conditioning, but colored fluids always warrant professional inspection. Springfield's varying temperatures can exacerbate leak problems, making prompt attention crucial.</p><p>**4. Changes in Driving Performance**</p><p>Pay attention to how your car feels while driving. Vibrations in the steering wheel, difficulty steering, or the vehicle pulling to one side could indicate alignment issues, tire problems, or suspension damage. If your car hesitates during acceleration, stalls frequently, or struggles to start, these symptoms suggest engine or fuel system problems that need immediate diagnosis.</p><p>**5. Unusual Smells**</p><p>Your nose can be an excellent diagnostic tool. Sweet smells often indicate coolant leaks, while burning odors could suggest brake problems or engine issues. Gasoline odors inside the cabin may indicate fuel system leaks, creating both performance and safety concerns. Musty smells might point to air conditioning or heating system problems. Any persistent unusual smell should prompt an immediate visit to a qualified mechanic.</p><p>**Why Immediate Attention Matters**</p><p>Ignoring these warning signs rarely saves money in the long run. Small problems often cascade into major repairs when left unaddressed. For example, continuing to drive with worn brake pads can damage expensive rotors, turning a relatively minor repair into a costly overhaul. Similarly, driving with low oil pressure or overheating issues can destroy your engine entirely.</p><p>More importantly, many of these symptoms affect your safety and that of other Springfield drivers. Brake problems, steering issues, or engine failures can lead to dangerous situations on busy roads like Route 22 or the Garden State Parkway.</p><p>**Trust Your Local Springfield Experts**</p><p>At Matty's Automotive, we understand that car problems are never convenient. However, addressing issues promptly protects both your investment and your safety. Our experienced technicians use state-of-the-art diagnostic equipment to quickly identify problems and provide honest, reliable solutions.</p><p>If you've noticed any of these warning signs, don't wait. Contact Matty's Automotive today at (908) 555-0147 to schedule an inspection. Early intervention today can save you from major headaches tomorrow.</p></div>
     </article><hr class="blog-divider">
     <article class="blog-article" id="post-choose-trustworthy-auto-shop-springfield-nj">
       <h2>How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide</h2>
       <div class="blog-meta">April 10, 2026 · Matty's Automotive</div>
-      <div class="blog-body"><p>When your car breaks down or needs routine maintenance, choosing the right auto repair shop can mean the difference between excellent service and a costly headache. With so many options in Springfield, NJ, how do you know which shop will treat you and your vehicle with the care you deserve?</p><p>At Matty's Automotive, we understand that trust is earned, not given. After years of serving the Springfield community, we've seen firsthand what makes drivers feel confident about their choice of auto shop. Here's what you should look for when selecting a trustworthy mechanic.</p><p>**Look for Proper Certifications and Licensing**</p><p>A reputable auto shop should have technicians with current ASE (Automotive Service Excellence) certifications. These certifications demonstrate that mechanics have passed rigorous testing and stay updated on the latest automotive technology. Don't hesitate to ask about your technician's qualifications – a trustworthy shop will be proud to share their credentials.</p><p>**Check Online Reviews and Ask for References**</p><p>In today's digital age, online reviews provide valuable insights into a shop's reputation. Look for consistent patterns in customer feedback, paying attention to how shops respond to both positive and negative reviews. Additionally, ask friends, family, and coworkers in Springfield for recommendations. Word-of-mouth referrals from people you trust are invaluable.</p><p>**Evaluate Their Communication Style**</p><p>Trustworthy mechanics take time to explain what's wrong with your vehicle in terms you can understand. They should provide detailed estimates before beginning work and keep you informed throughout the repair process. If a shop pressures you into immediate repairs or can't clearly explain the problem, consider looking elsewhere.</p><p>**Observe the Shop's Cleanliness and Organization**</p><p>While auto repair can be messy work, a well-organized shop with clean work areas often indicates attention to detail and professionalism. Take note of how equipment is maintained and whether the facility appears well-managed. These details often reflect the quality of work you can expect.</p><p>**Verify Insurance and Warranty Policies**</p><p>Reliable auto shops carry proper insurance and stand behind their work with warranties. Ask about their warranty policy on parts and labor before authorizing any repairs. A shop confident in their work will gladly guarantee their services.</p><p>**Get Multiple Estimates for Major Repairs**</p><p>For expensive repairs, it's wise to get quotes from multiple shops in the Springfield area. This helps ensure fair pricing and can reveal if one shop is significantly over or under-pricing the work. Be wary of estimates that seem too good to be true – they often are.</p><p>**Trust Your Instincts**</p><p>Pay attention to how you're treated from the moment you walk in. Are staff members courteous and professional? Do they listen to your concerns? Do you feel comfortable asking questions? Your gut feeling about a shop's atmosphere and customer service approach is often accurate.</p><p>**Look for Transparent Pricing**</p><p>Trustworthy shops provide clear, itemized estimates that break down parts and labor costs. They should explain why certain repairs are necessary and be upfront about pricing before starting work. Avoid shops that are vague about costs or add surprise charges.</p><p>**Choose Local, Established Businesses**</p><p>Shops with deep community roots, like those that have served Springfield, NJ for many years, often prioritize long-term customer relationships over quick profits. They understand that their reputation depends on satisfied customers who return and refer others.</p><p>Finding a trustworthy auto repair shop takes some research, but the peace of mind is worth the effort. When you find a shop that checks all these boxes, you've found a valuable partner in keeping your vehicle running safely and efficiently.</p><p>If you're looking for honest, reliable auto repair in Springfield, NJ, contact Matty's Automotive at (908) 555-0147 to experience the difference that trustworthy service makes.</p></div>
+      <div class="blog-body"><p>When your car needs repair, finding a trustworthy auto shop can mean the difference between quality service and costly headaches. As Springfield, NJ residents know, having a reliable mechanic you can count on is invaluable for keeping your vehicle running smoothly and your wallet protected.</p><p>Here are the essential factors to consider when choosing an automotive repair shop in your area:</p><p>**Check Certifications and Credentials**</p><p>Look for shops with certified technicians, particularly those with ASE (Automotive Service Excellence) certifications. These credentials demonstrate that mechanics have undergone rigorous testing and continue their education to stay current with evolving automotive technology. A reputable shop will proudly display their certifications and be transparent about their technicians' qualifications.</p><p>**Research Reviews and Ask for References**</p><p>Online reviews provide valuable insights into other customers' experiences. Check Google, Yelp, and Better Business Bureau ratings, paying attention to how shops respond to both positive and negative feedback. Don't hesitate to ask friends, family, and coworkers for recommendations – word-of-mouth referrals from trusted sources are often the most reliable indicators of quality service.</p><p>**Evaluate Communication and Transparency**</p><p>A trustworthy auto shop will clearly explain what's wrong with your vehicle, what repairs are needed, and provide detailed estimates before beginning work. They should be willing to show you damaged parts and answer your questions without making you feel rushed or uninformed. Avoid shops that pressure you into immediate decisions or seem evasive about pricing.</p><p>**Look for Fair and Transparent Pricing**</p><p>While the cheapest option isn't always the best, pricing should be competitive and clearly explained. Reliable shops provide written estimates that break down parts and labor costs. They should also discuss different repair options when available, helping you make informed decisions based on your budget and vehicle's needs.</p><p>**Assess the Facility and Equipment**</p><p>A clean, organized shop with modern diagnostic equipment indicates professionalism and investment in quality service. While a spotless facility doesn't guarantee excellent work, it often reflects the shop's attention to detail and pride in their business.</p><p>**Verify Insurance and Warranties**</p><p>Ensure the shop carries proper liability insurance and offers warranties on their work. A confident, reputable business will stand behind their repairs and provide guarantees on both parts and labor. This protection gives you recourse if issues arise after service.</p><p>**Consider Specialization and Experience**</p><p>Some shops specialize in certain makes, models, or types of repairs. If you drive a specific brand or have a unique issue, finding a shop with relevant expertise can be beneficial. However, established general automotive shops often have the experience and equipment to handle a wide variety of vehicles and problems.</p><p>**Trust Your Instincts**</p><p>Pay attention to how you're treated from the moment you walk in. Professional, courteous staff who listen to your concerns and treat you with respect are indicators of a business that values customer satisfaction. If something feels off, don't ignore that feeling.</p><p>**Building a Long-Term Relationship**</p><p>The goal isn't just finding a shop for immediate repairs, but establishing a relationship with professionals who will help maintain your vehicle over time. Regular maintenance from a trusted shop can prevent major issues and save money in the long run.</p><p>At Matty's Automotive, we understand that choosing an auto repair shop is about more than just fixing your car – it's about finding professionals you can trust with one of your most important investments. Our Springfield, NJ location has been serving the community with honest, reliable automotive service, and we're committed to earning your confidence through transparent communication and quality workmanship.</p><p>Ready to experience trustworthy auto care? Call Matty's Automotive today at (908) 555-0147 to schedule your appointment or discuss your vehicle's needs with our experienced team.</p></div>
     </article>
   </section>
 </div>
@@ -532,12 +556,321 @@
   </div>
 </div>
 
+
+<!-- ══ SERVICE: Oil Changes ══ -->
+<div id="page-svc-oil-changes" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">🛢️ Oil Changes</p>
+      <h2 class="sec-title sec-title-dark">Professional Oil Changes in Springfield, NJ</h2>
+      <p class="sec-body">Keep your engine running at peak performance with Matty's Automotive's expert oil change services in Springfield, NJ. Our experienced technicians use only premium lubricants and provide fast, reliable service you can trust.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Oil Changes Matter</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Regular oil changes are essential for protecting your engine from wear, reducing friction, and maintaining optimal performance. Fresh, high-quality oil keeps your engine components lubricated and helps prevent costly repairs down the road.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What's Included</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Every oil change at Matty's includes a complete drain and refill with premium oil, a new oil filter, and a comprehensive inspection of fluid levels. We'll have you back on Springfield's roads quickly with the confidence that your engine is properly maintained.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has been Springfield's trusted automotive partner for years, combining quick service with meticulous attention to detail. Our commitment to using only premium lubricants and providing honest, reliable service makes us the smart choice for your vehicle's maintenance needs.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Oil Change Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your Oil Change Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+<!-- ══ SERVICE: Brake Service ══ -->
+<div id="page-svc-brake-service" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">🚗 Brake Service</p>
+      <h2 class="sec-title sec-title-dark">Expert Brake Service in Springfield, NJ</h2>
+      <p class="sec-body">Your brakes are your vehicle's most critical safety system, and at Matty's Automotive in Springfield, NJ, we never compromise on your safety. Our certified technicians provide comprehensive brake services to keep you and your family safe on New Jersey roads.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Brake Inspections</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our thorough brake inspections examine every component of your braking system, from pads and rotors to brake fluid and lines. We identify potential issues before they become dangerous problems, ensuring your vehicle stops reliably every time.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What We Include</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Every brake service includes a detailed inspection, brake pad replacement when needed, rotor resurfacing or replacement, and brake fluid check. You'll receive a complete report of our findings and recommendations for optimal braking performance.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">With over 20 years serving Springfield and surrounding communities, Matty's Automotive has built a reputation for honest, reliable brake service you can trust. We use only premium parts and back all our brake work with comprehensive warranties for your peace of mind.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Brake Inspection Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your Brake Inspection Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+<!-- ══ SERVICE: Engine Diagnostics ══ -->
+<div id="page-svc-engine-diagnostics" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">🔧 Engine Diagnostics</p>
+      <h2 class="sec-title sec-title-dark">Expert Engine Diagnostics in Springfield, NJ</h2>
+      <p class="sec-body">When your check engine light comes on, don't panic – trust Matty's Automotive to get to the bottom of it quickly. Our Springfield team uses the latest diagnostic equipment to pinpoint exactly what's wrong with your engine, saving you time and money on unnecessary repairs.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Advanced Diagnostic Technology</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our state-of-the-art computer diagnostic systems can read error codes from your vehicle's onboard computer within minutes. This precise technology allows us to identify everything from minor sensor issues to major engine problems before they become costly breakdowns.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Diagnostic Process</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">We'll connect your vehicle to our diagnostic scanner, retrieve all error codes, and provide you with a detailed explanation of what each code means. You'll receive a written report with our findings and recommended repairs, so you can make informed decisions about your vehicle's care.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has been Springfield's trusted engine diagnostic specialist for over 15 years, with certified technicians who stay current on the latest automotive technology. We pride ourselves on honest, accurate diagnoses that save our neighbors money by fixing the right problem the first time.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Engine Diagnostic Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your Engine Diagnostic Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+<!-- ══ SERVICE: Battery & Electrical ══ -->
+<div id="page-svc-battery-electrical" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">🔋 Battery & Electrical</p>
+      <h2 class="sec-title sec-title-dark">Battery & Electrical Services in Springfield, NJ</h2>
+      <p class="sec-body">When your car won't start or electrical systems fail, Springfield drivers trust Matty's Automotive for fast, reliable solutions. Our experienced technicians diagnose and fix battery and electrical issues to get you back on the road safely.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Electrical Diagnostics</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">A failing battery or electrical system can leave you stranded without warning. Our comprehensive testing identifies weak batteries, faulty alternators, and wiring issues before they cause major problems.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Professional Service You Need</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">We provide battery testing, replacement installation, alternator repairs, and complete electrical system diagnostics. Every service includes a thorough inspection to ensure your vehicle's electrical components work together reliably.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has served Springfield for years with honest pricing and expert electrical repairs you can count on. Our local team uses quality parts and stands behind every battery and electrical service with reliable warranties.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Electrical Service Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your Electrical Service Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+<!-- ══ SERVICE: AC & Heat ══ -->
+<div id="page-svc-ac-heat" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">❄️ AC & Heat</p>
+      <h2 class="sec-title sec-title-dark">AC & Heat Repair Springfield NJ</h2>
+      <p class="sec-body">When your car's climate control fails, Springfield drivers trust Matty's Automotive for fast, reliable repairs. Our experienced technicians diagnose and fix heating and air conditioning issues to keep you comfortable year-round.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Climate Control</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Your vehicle's AC and heating system work hard through New Jersey's hot summers and cold winters. From refrigerant leaks to faulty compressors, we handle all climate control repairs to ensure optimal performance.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What We Include</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our comprehensive service covers system diagnostics, refrigerant replacement, compressor repairs, and heating component maintenance. We use quality parts and provide transparent pricing with detailed explanations of all work performed.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has served Springfield for years with honest service and fair prices on all climate control repairs. Our ASE-certified technicians use the latest diagnostic equipment to quickly identify issues and get you back on the road comfortably.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your AC Heat Service Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your AC Heat Service Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+<!-- ══ SERVICE: NJ State Inspection ══ -->
+<div id="page-svc-nj-state-inspection" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">✅ NJ State Inspection</p>
+      <h2 class="sec-title sec-title-dark">NJ State Inspections in Springfield, NJ</h2>
+      <p class="sec-body">Keep your vehicle legally compliant with official New Jersey state inspections at Matty's Automotive in Springfield. Our certified technicians ensure your car meets all safety and emissions requirements quickly and affordably.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">State-Required Safety Inspections</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">New Jersey requires annual safety and emissions inspections for all registered vehicles. Our comprehensive inspection covers brakes, lights, steering, suspension, emissions systems, and other critical safety components to ensure your vehicle meets state standards.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What to Expect</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our certified inspection process typically takes 30-45 minutes and includes a thorough examination of all required systems. You'll receive official documentation upon passing, and we'll explain any issues that need attention before re-inspection.</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">As a trusted Springfield auto shop with certified NJ inspection technicians, Matty's Automotive provides fast, thorough inspections with honest assessments. We've been serving the Springfield community for years, building relationships based on reliability and fair pricing.</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your NJ State Inspection Today</h3>
+          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          
+          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>Schedule Your NJ State Inspection Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="foot-logo">Matty's Automotive</div>
   <span class="foot-copy">© 2026 Matty's Automotive · Springfield, NJ · All rights reserved</span>
   <div class="foot-links">
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="#" onclick="showPage('services')">Services</a>
+    <a href="#" onclick="showPage('svc-oil-changes')">Oil Changes</a><a href="#" onclick="showPage('svc-brake-service')">Brake Service</a><a href="#" onclick="showPage('svc-engine-diagnostics')">Engine Diagnostics</a><a href="#" onclick="showPage('svc-battery-electrical')">Battery & Electrical</a><a href="#" onclick="showPage('svc-ac-heat')">AC & Heat</a><a href="#" onclick="showPage('svc-nj-state-inspection')">NJ State Inspection</a>
     <a href="#" onclick="showPage('blog')">Blog</a>
     <a href="#" onclick="showPage('contact')">Contact</a>
   </div>
