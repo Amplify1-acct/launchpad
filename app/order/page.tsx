@@ -56,25 +56,37 @@ const PLANS = [
 
 const TEMPLATES = [
   {
-    id: "skeleton-bold",
-    name: "Bold & Dark",
-    description: "High-impact, dramatic design",
-    preview: "bg-dark",
-    accent: "#f59e0b",
+    id: "skeleton-clean",
+    name: "Clean & Premium",
+    description: "Modern serif, light & airy. Great for dental, medical, and professional services.",
+    demoUrl: "/demos/dental.html",
+    demoLabel: "See live demo →",
+    gradient: "linear-gradient(135deg,#e8f0fe 0%,#b5d4f4 50%,#378add 100%)",
+    textColor: "#1352cc",
+    accent: "#1352cc",
+    bestFor: "Dental · Medical · Spa",
   },
   {
-    id: "skeleton-clean",
-    name: "Clean & Light",
-    description: "Modern, minimal, professional",
-    preview: "bg-light",
-    accent: "#4648d4",
+    id: "skeleton-bold",
+    name: "Dark & Bold",
+    description: "Industrial, high-contrast, commanding. Built for trades, auto, and HVAC.",
+    demoUrl: "/demos/auto.html",
+    demoLabel: "See live demo →",
+    gradient: "linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 50%,#e85d26 100%)",
+    textColor: "#e85d26",
+    accent: "#e85d26",
+    bestFor: "Auto · HVAC · Plumbing",
   },
   {
     id: "skeleton-warm",
-    name: "Warm & Classic",
-    description: "Approachable, timeless feel",
-    preview: "bg-warm",
-    accent: "#b45309",
+    name: "Authoritative & Refined",
+    description: "Classic serif, navy & gold. Conveys trust, experience, and prestige.",
+    demoUrl: "/demos/law.html",
+    demoLabel: "See live demo →",
+    gradient: "linear-gradient(135deg,#0d1f3c 0%,#152848 50%,#b8973a 100%)",
+    textColor: "#b8973a",
+    accent: "#b8973a",
+    bestFor: "Law · Finance · Real Estate",
   },
 ];
 
@@ -205,24 +217,67 @@ export default function OrderPage() {
           <div className={styles.section}>
             <div className={styles.sectionHead}>
               <h1>Pick your style</h1>
-              <p>We'll design your site in this style using your business info and AI-generated photos.</p>
+              <p>Each style is a fully built demo — click &quot;See live demo&quot; to explore it before you choose. Your site will be customized for your business, industry, and colors.</p>
             </div>
             <div className={styles.templateGrid}>
               {TEMPLATES.map(t => (
-                <button
+                <div
                   key={t.id}
                   className={`${styles.templateCard} ${selectedTemplate === t.id ? styles.templateSelected : ""}`}
                   onClick={() => setSelectedTemplate(t.id)}
+                  style={{ cursor: "pointer", position: "relative" }}
                 >
-                  <div className={`${styles.templatePreview} ${styles[t.preview]}`}>
-                    <TemplatePreview id={t.id} accent={t.accent} />
+                  {/* Color preview */}
+                  <div style={{
+                    height: "140px",
+                    background: t.gradient,
+                    borderRadius: "8px 8px 0 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                  }}>
+                    <div style={{
+                      background: "rgba(255,255,255,0.12)",
+                      border: `1px solid ${t.textColor}55`,
+                      borderRadius: "6px",
+                      padding: "6px 14px",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: t.textColor,
+                      backdropFilter: "blur(4px)",
+                    }}>
+                      {t.name}
+                    </div>
+                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                      {t.bestFor}
+                    </div>
                   </div>
                   <div className={styles.templateInfo}>
                     <div className={styles.templateName}>{t.name}</div>
                     <div className={styles.templateDesc}>{t.description}</div>
+                    <a
+                      href={t.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        marginTop: "10px",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: t.accent,
+                        textDecoration: "none",
+                      }}
+                    >
+                      {t.demoLabel}
+                    </a>
                   </div>
                   {selectedTemplate === t.id && <div className={styles.templateCheck}>✓</div>}
-                </button>
+                </div>
               ))}
             </div>
             <div className={styles.nextWrap}>
