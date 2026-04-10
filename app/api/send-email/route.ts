@@ -11,7 +11,6 @@ import {
   sendAdminBuildingEmail,
   sendAdminQAReadyEmail,
   sendRegistrarDnsEmail,
-  getDnsInstructions,
 } from "@/lib/email";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
