@@ -151,7 +151,7 @@ export default function AdminPage() {
     if (data.success) {
       setAction(businessId, "");
       setEditNotes(n => ({ ...n, [businessId]: "" }));
-      alert("✅ Edits applied! Vercel will redeploy in ~60 seconds. Refresh the preview link.");
+      alert("✅ Quick edit started! Takes 3-5 min. You'll get a QA ready email when done.");
     } else {
       setAction(businessId, "error");
       alert("Quick edit failed: " + data.error);
@@ -328,7 +328,7 @@ export default function AdminPage() {
                       disabled={action === "quick-editing" || action === "rebuilding"}
                       title="Fast: patches text in place, no rebuild. ~2 min."
                     >
-                      {action === "quick-editing" ? "⏳ Applying…" : "✏️ Quick Edit"}
+                      {action === "quick-editing" ? "⏳ Building…" : "✏️ Quick Edit"}
                     </button>
                     <select
                       style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #dde2ff", fontSize: 13, color: "#4648d4", background: "#f5f5ff", cursor: "pointer" }}
