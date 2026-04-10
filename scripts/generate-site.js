@@ -1064,8 +1064,8 @@ function buildSitemap(servicePages, blogPosts) {
   const today = new Date().toISOString().split('T')[0];
 
   const urls = [
-    { loc: base + '/sites/' + config.subdomain + '/',           priority: '1.0', freq: 'weekly' },
-    { loc: base + '/sites/' + config.subdomain + '/about/',     priority: '0.7', freq: 'monthly' },
+    { loc: base + '/',           priority: '1.0', freq: 'weekly' },
+    { loc: base + '/about/',     priority: '0.7', freq: 'monthly' },
     { loc: base + '/services/',  priority: '0.9', freq: 'weekly' },
     { loc: base + '/blog/',      priority: '0.8', freq: 'weekly' },
     { loc: base + '/contact/',   priority: '0.7', freq: 'monthly' },
