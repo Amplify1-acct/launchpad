@@ -49,14 +49,14 @@ export default function AdminPage() {
   const [authed, setAuthed]             = useState(false);
   const [password, setPassword]         = useState("");
   const [pwError, setPwError]           = useState("");
-  const [orders, setOrders]             = useState<Order[]>([]);
+  const [orders, setOrders]             = useState([] as Order[]);
   const [loading, setLoading]           = useState(false);
   const [filter, setFilter]             = useState("all");
-  const [preview, setPreview]           = useState<Order | null>(null);
-  const [blogPosts, setBlogPosts]       = useState<BlogPost[]>([]);
-  const [editNotes, setEditNotes]       = useState<Record<string, string>>({});
-  const [actionStates, setActionStates] = useState<Record<string, string>>({});
-  const [expandedPost, setExpandedPost] = useState<string | null>(null);
+  const [preview, setPreview]           = useState(null as Order | null);
+  const [blogPosts, setBlogPosts]       = useState([] as BlogPost[]);
+  const [editNotes, setEditNotes]       = useState({} as Record<string, string>);
+  const [actionStates, setActionStates] = useState({} as Record<string, string>);
+  const [expandedPost, setExpandedPost] = useState(null as string | null);
 
   function setAction(id: string, st: string) {
     setActionStates(prev => ({ ...prev, [id]: st }));
