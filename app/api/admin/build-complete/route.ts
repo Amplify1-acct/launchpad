@@ -10,28 +10,32 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { business_id, success, error } = await request.json();
+  const { business_id, success } = await request.json();
   if (!business_id) return NextResponse.json({ error: "business_id required" }, { status: 400 });
 
   const supabase = createAdminClient();
+  const newStatus = success ? "admin_review" : "error";
 
-  if (!success) {
-    await supabase.from("websites").update({ status: "error" }).eq("business_id", business_id);
-    return NextResponse.json({ ok: true });
+  const { data, error } = await supabase
+    .from("websites")
+    .update({ status: newStatus })
+    .eq("business_id", business_id)
+    .select("id, status");
+
+  if (error) {
+    console.error("build-complete update error:", error);
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  // Mark as admin_review
-  await supabase
-    .from("websites")
-    .update({ status: "admin_review" })
-    .eq("business_id", business_id);
+  console.log("build-complete:", business_id, "→", newStatus, "rows:", data?.length);
 
-  // Send QA ready email to Matt
-  fetch(`${APP_URL}/api/send-email`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ type: "admin_qa_ready", business_id }),
-  }).catch(() => {});
+  if (success) {
+    fetch(`${APP_URL}/api/send-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "admin_qa_ready", business_id }),
+    }).catch(() => {});
+  }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, status: newStatus, rows: data?.length });
 }
