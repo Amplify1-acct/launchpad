@@ -187,7 +187,7 @@ Business:
 - Years in business: ${business.years_in_business || "established"}
 - What makes them different: ${business.differentiator || "professional service and quality workmanship"}
 - Key stat: ${business.key_stat ? `${business.key_stat} ${business.key_stat_label}` : ""}
-- Services they offer: ${business.services?.length ? (business.services as string[]).join(", ") : "professional services"}
+- Services they offer: ${Array.isArray(business.services) ? (business.services as string[]).join(", ") : (business.services as string) || "professional services"}
 
 Return this JSON with EXACTLY these keys:
 {
