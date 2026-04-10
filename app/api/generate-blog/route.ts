@@ -146,9 +146,9 @@ export async function POST(request: Request) {
         .insert({
           business_id,
           title: post.title,
-          body: post.body,
+          content: post.body,
           word_count: post.word_count,
-          status: "pending",
+          status: "draft",
           scheduled_for: scheduledDate.toISOString(),
           featured_image_url: featuredImageUrl,
         })
