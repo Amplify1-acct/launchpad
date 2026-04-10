@@ -182,8 +182,8 @@ export default function AdminPage() {
     );
   }
 
-  const btnStyle = (bg: string) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: bg, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" });
-  const chipStyle = (bg: string, color: string) => ({ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: bg, color, marginLeft: 8 });
+  const btnStyle = (bg) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: bg, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" });
+  const chipStyle = (bg, color) => ({ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: bg, color, marginLeft: 8 });
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f7ff", fontFamily: "system-ui, sans-serif" }}>
@@ -207,7 +207,7 @@ export default function AdminPage() {
 
         {/* Filters */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
-          {([["all","All",counts.all],["pending","Pending",counts.pending],["admin_review","Needs QA",counts.admin_review],["live","Live",counts.live]] as [string,string,number][]).map(([val,label,count]) => (
+          {([["all","All",counts.all],["pending","Pending",counts.pending],["admin_review","Needs QA",counts.admin_review],["live","Live",counts.live]]).map(([val,label,count]) => (
             <button key={val}
               onClick={() => setFilter(val)}
               style={{ padding: "8px 16px", borderRadius: 100, border: "1px solid", borderColor: filter===val?"#4648d4":"#dde2ff", background: filter===val?"#4648d4":"#fff", color: filter===val?"#fff":"#4648d4", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
