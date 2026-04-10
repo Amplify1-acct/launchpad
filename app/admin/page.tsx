@@ -182,8 +182,8 @@ export default function AdminPage() {
     );
   }
 
-  const btnStyle = (bg: string) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: bg, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" } as const);
-  const chipStyle = (bg: string, color: string) => ({ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: bg, color, marginLeft: 8 } as const);
+  const btnStyle = (bg: string) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: bg, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" });
+  const chipStyle = (bg: string, color: string) => ({ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: bg, color, marginLeft: 8 });
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f7ff", fontFamily: "system-ui, sans-serif" }}>
