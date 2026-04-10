@@ -332,8 +332,38 @@ export default function AdminPage() {
                   </>
                 )}
                 {status === "live" && siteUrl && (
-                  <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>🌐 View Live Site</a>
+                  <>
+                    <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>🌐 View Live Site</a>
+                    <button
+                      style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#78716c", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => showRestore[order.id] ? setShowRestore(s => ({ ...s, [order.id]: false })) : fetchBackups(order.id, order.subdomain || "")}
+                      disabled={action === "restoring"}
+                    >
+                      {action === "restoring" ? "⏳ Restoring…" : "♻️ Restore Version"}
+                    </button>
+                  </>
                 )}
+                {status === "live" && showRestore[order.id] && (
+                  <div style={{ padding: "0 24px 20px", width: "100%" }}>
+                    <label style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9090a8", marginBottom: 8, display: "block" }}>
+                      Select a backup to restore
+                    </label>
+                    {(backups[order.id] || []).length === 0 ? (
+                      <p style={{ fontSize: 13, color: "#9090a8" }}>No backups yet — created automatically on each rebuild.</p>
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {(backups[order.id] || []).map(b => (
+                          <button key={b.name}
+                            onClick={() => restoreSite(order.id, order.subdomain || "", b.name)}
+                            style={{ padding: "10px 16px", borderRadius: 8, border: "1px solid #e5e5e5", background: "#fafafa", color: "#1b1b25", fontSize: 13, fontWeight: 500, cursor: "pointer", textAlign: "left" }}
+                          >
+                            📅 {b.label || b.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                }
                 {status === "error" && (
                   <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
                 )}
