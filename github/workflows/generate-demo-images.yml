@@ -1,0 +1,40 @@
+name: 🍌 Generate Demo Site Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      demos:
+        description: 'Which demos to regenerate (space-separated: dental auto law, or "all")'
+        required: false
+        default: 'all'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate demo images + patch HTML
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          DEMOS="${{ github.event.inputs.demos }}"
+          if [ "$DEMOS" = "all" ] || [ -z "$DEMOS" ]; then
+            python generate_demo_images.py
+          else
+            python generate_demo_images.py $DEMOS
+          fi
