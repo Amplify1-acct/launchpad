@@ -207,12 +207,12 @@ export default function AdminPage() {
     }
   }
 
-  const filtered = filter === "all" ? orders : orders.filter(o => { const s = o.websites?.status || "pending"; if (filter === "admin_review") return s === "admin_review" || s === "ready_for_review"; return s === filter; });
+  const filtered = filter === "all" ? orders : orders.filter((o: any) => { const s = o.websites?.status || "pending"; if (filter === "admin_review") return s === "admin_review" || s === "ready_for_review"; return s === filter; });
   const counts = {
     all:          orders.length,
-    pending:      orders.filter(o => (o.websites?.status || "pending") === "pending").length,
-    admin_review: orders.filter(o => o.websites?.status === "admin_review" || o.websites?.status === "ready_for_review").length,
-    live:         orders.filter(o => o.websites?.status === "live").length,
+    pending:      orders.filter((o: any) => (o.websites?.status || "pending") === "pending").length,
+    admin_review: orders.filter((o: any) => o.websites?.status === "admin_review" || o.websites?.status === "ready_for_review").length,
+    live:         orders.filter((o: any) => o.websites?.status === "live").length,
   };
 
   if (!authed) {
@@ -352,7 +352,7 @@ export default function AdminPage() {
                       <p style={{ fontSize: 13, color: "#9090a8" }}>No backups yet — created automatically on each rebuild.</p>
                     ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        {(backups[order.id] || []).map(b => (
+                        {(backups[order.id] || []).map((b: any) => (
                           <button key={b.name}
                             onClick={() => restoreSite(order.id, order.subdomain || "", b.name)}
                             style={{ padding: "10px 16px", borderRadius: 8, border: "1px solid #e5e5e5", background: "#fafafa", color: "#1b1b25", fontSize: 13, fontWeight: 500, cursor: "pointer", textAlign: "left" }}
