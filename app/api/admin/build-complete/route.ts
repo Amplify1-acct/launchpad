@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   // Mark as admin_review
   await supabase
     .from("websites")
-    .update({ status: "admin_review", built_at: new Date().toISOString() })
+    .update({ status: "admin_review" })
     .eq("business_id", business_id);
 
   // Send QA ready email to Matt
