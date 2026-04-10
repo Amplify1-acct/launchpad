@@ -1,0 +1,124 @@
+name: 🚀 Generate Client Site
+
+on:
+  workflow_dispatch:
+    inputs:
+      business_id:
+        description: 'Supabase business UUID'
+        required: true
+      business_name:
+        description: 'Business name'
+        required: true
+      industry:
+        description: 'Industry'
+        required: true
+      tagline:
+        description: 'Tagline'
+        required: false
+        default: ''
+      city:
+        description: 'City'
+        required: true
+      state:
+        description: 'State (2-letter)'
+        required: true
+      phone:
+        description: 'Phone number'
+        required: true
+      email:
+        description: 'Customer email'
+        required: false
+        default: ''
+      subdomain:
+        description: 'Subdomain slug (e.g. mattys-auto)'
+        required: true
+      plan:
+        description: 'Plan: starter | pro | premium'
+        required: true
+        default: 'starter'
+      template:
+        description: 'Template: skeleton-clean | skeleton-bold | skeleton-warm'
+        required: true
+        default: 'skeleton-clean'
+      primary_color:
+        description: 'Primary hex color'
+        required: false
+        default: '#4648d4'
+      accent_color:
+        description: 'Accent hex color'
+        required: false
+        default: '#6366f1'
+      services:
+        description: 'Comma-separated services list'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install
+
+      - name: Generate site
+        env:
+          GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BUSINESS_ID:          ${{ github.event.inputs.business_id }}
+          BUSINESS_NAME:        ${{ github.event.inputs.business_name }}
+          INDUSTRY:             ${{ github.event.inputs.industry }}
+          TAGLINE:              ${{ github.event.inputs.tagline }}
+          CITY:                 ${{ github.event.inputs.city }}
+          STATE:                ${{ github.event.inputs.state }}
+          PHONE:                ${{ github.event.inputs.phone }}
+          EMAIL:                ${{ github.event.inputs.email }}
+          SUBDOMAIN:            ${{ github.event.inputs.subdomain }}
+          PLAN:                 ${{ github.event.inputs.plan }}
+          TEMPLATE:             ${{ github.event.inputs.template }}
+          PRIMARY_COLOR:        ${{ github.event.inputs.primary_color }}
+          ACCENT_COLOR:         ${{ github.event.inputs.accent_color }}
+          SERVICES:             ${{ github.event.inputs.services }}
+        run: |
+          cd scripts
+          node generate-site.js
+
+      - name: Commit generated site
+        run: |
+          git config user.name "Exsisto Bot"
+          git config user.email "bot@exsisto.ai"
+          git add public/sites/
+          git diff --staged --quiet || git commit -m "🚀 Build site: ${{ github.event.inputs.subdomain }}"
+          git pull --rebase && git push
+
+      - name: Notify Exsisto (build complete)
+        if: success()
+        run: |
+          curl -s -X POST https://www.exsisto.ai/api/admin/build-complete \
+            -H "Content-Type: application/json" \
+            -H "x-internal-secret: ${{ secrets.INTERNAL_API_SECRET }}" \
+            -d '{"business_id":"${{ github.event.inputs.business_id }}","success":true}' || true
+
+      - name: Notify Exsisto (build failed)
+        if: failure()
+        run: |
+          curl -s -X POST https://www.exsisto.ai/api/admin/build-complete \
+            -H "Content-Type: application/json" \
+            -H "x-internal-secret: ${{ secrets.INTERNAL_API_SECRET }}" \
+            -d '{"business_id":"${{ github.event.inputs.business_id }}","success":false}' || true
