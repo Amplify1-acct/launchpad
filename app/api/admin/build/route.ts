@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { business_id } = await request.json();
+  const { business_id, revision_notes } = await request.json();
   if (!business_id) {
     return NextResponse.json({ error: "business_id required" }, { status: 400 });
   }
@@ -65,6 +65,7 @@ export async function POST(request: Request) {
       primary_color: business.primary_color || "#4648d4",
       accent_color:  business.accent_color  || "#6366f1",
       services,
+      revision_notes: revision_notes || "",
     },
   };
 
