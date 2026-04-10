@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
   const { data: posts, error } = await supabase
     .from("blog_posts")
-    .select("id, title, excerpt, body, status, created_at")
+    .select("id, title, excerpt, content, status, created_at")
     .eq("business_id", business_id)
     .order("created_at", { ascending: false });
 
