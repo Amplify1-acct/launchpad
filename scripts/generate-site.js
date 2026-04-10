@@ -43,7 +43,9 @@ const config = {
   accentColor:  process.env.ACCENT_COLOR  || '#6366f1',
   services:     process.env.SERVICES ? process.env.SERVICES.split(',').map(s => s.trim()) : [],
   isDemo:         process.env.IS_DEMO === 'true',
-  revisionNotes:  process.env.REVISION_NOTES || '',
+  revisionNotes:     process.env.REVISION_NOTES      || '',
+  skipImages:        process.env.SKIP_IMAGES === 'true',
+  replaceImageSlot:  process.env.REPLACE_IMAGE_SLOT || '',
   geminiKey:    process.env.GEMINI_API_KEY,
   supabaseUrl:  process.env.SUPABASE_URL,
   supabaseKey:  process.env.SUPABASE_SERVICE_KEY,
@@ -1150,20 +1152,35 @@ async function main() {
   const outBase = path.join(__dirname, '..', 'public', 'sites', config.subdomain);
   const theme   = getTheme();
 
-  // 1. Generate images
-  const imagePrompts = buildImagePrompts();
-  console.log('📸 Generating ' + imagePrompts.length + ' images via Nano Banana...\n');
+  // 1. Generate images (or reuse existing ones for quick edits)
   const imageUrls = {};
-  for (const { slot, prompt } of imagePrompts) {
-    try {
-      console.log('  [' + slot + '] Generating...');
-      const img = await generateImage(prompt);
-      imageUrls[slot] = await uploadImage(img.base64, img.mimeType, slot);
-      console.log('  ✅ ' + slot + ' → Supabase');
-      await sleep(1500);
-    } catch (e) {
-      console.warn('  ⚠️  ' + slot + ' failed: ' + e.message);
-      imageUrls[slot] = '';
+
+  if (config.skipImages) {
+    console.log('⚡ Skipping image generation — reusing existing Supabase images');
+    // Build the expected URLs for all slots using existing Supabase paths
+    const slots = ['hero','about','img3','img4','img5','img6','img7','img8','img9','img10','img11','img12'];
+    for (const slot of slots.slice(0, imageCount)) {
+      imageUrls[slot] = config.supabaseUrl + '/storage/v1/object/public/industry-images/client-sites/' + config.subdomain + '/' + slot + '.jpg';
+    }
+  } else {
+    const imagePrompts = buildImagePrompts();
+    console.log('📸 Generating ' + imagePrompts.length + ' images via Nano Banana...\n');
+    for (const { slot, prompt } of imagePrompts) {
+      // If replacing a specific slot, only regenerate that one
+      if (config.replaceImageSlot && slot !== config.replaceImageSlot) {
+        imageUrls[slot] = config.supabaseUrl + '/storage/v1/object/public/industry-images/client-sites/' + config.subdomain + '/' + slot + '.jpg';
+        continue;
+      }
+      try {
+        console.log('  [' + slot + '] Generating...');
+        const img = await generateImage(prompt);
+        imageUrls[slot] = await uploadImage(img.base64, img.mimeType, slot);
+        console.log('  ✅ ' + slot + ' → Supabase');
+        await sleep(1500);
+      } catch (e) {
+        console.warn('  ⚠️  ' + slot + ' failed: ' + e.message);
+        imageUrls[slot] = '';
+      }
     }
   }
 
