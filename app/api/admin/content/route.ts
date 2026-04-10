@@ -20,13 +20,18 @@ export async function GET(request: Request) {
 
   const { data: posts, error } = await supabase
     .from("blog_posts")
-    .select("id, title, excerpt, content, post_status, created_at")
+    .select("id, title, excerpt, body, status, created_at")
     .eq("business_id", business_id)
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ posts: posts || [] });
+  const mapped = (posts || []).map((p: any) => ({
+    ...p,
+    content: p.body,
+    post_status: p.status,
+  }));
+  return NextResponse.json({ posts: mapped });
 }
 
 export async function POST(request: Request) {
