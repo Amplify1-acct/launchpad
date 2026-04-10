@@ -35,11 +35,12 @@ interface Order {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending:      { label: "Pending build",  color: "#f59e0b" },
-  building:     { label: "Building…",      color: "#6366f1" },
-  admin_review: { label: "Ready for QA",   color: "#4648d4" },
-  live:         { label: "Live",           color: "#16a34a" },
-  error:        { label: "Error",          color: "#dc2626" },
+  pending:        { label: "Pending build",  color: "#f59e0b" },
+  building:       { label: "Building…",      color: "#6366f1" },
+  admin_review:   { label: "Ready for QA",   color: "#4648d4" },
+  ready_for_review: { label: "Ready for QA", color: "#4648d4" },
+  live:           { label: "Live",           color: "#16a34a" },
+  error:          { label: "Error",          color: "#dc2626" },
 };
 
 const PLAN_IMAGES: Record<string, string> = { starter: "5 images", pro: "8 images", premium: "12 images" };
