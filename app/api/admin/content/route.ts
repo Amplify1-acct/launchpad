@@ -28,7 +28,6 @@ export async function GET(request: Request) {
 
   const mapped = (posts || []).map((p: any) => ({
     ...p,
-    content: p.body,
     post_status: p.status,
   }));
   return NextResponse.json({ posts: mapped });
