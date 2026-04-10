@@ -363,7 +363,7 @@ export default function AdminPage() {
                       </div>
                     )}
                   </div>
-                }
+                )}
                 {status === "error" && (
                   <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
                 )}
