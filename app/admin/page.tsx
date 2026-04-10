@@ -205,7 +205,7 @@ export default function AdminPage() {
 
         {/* Filters */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
-          {([["all","All",counts.all],["pending","Pending",counts.pending],["admin_review","Needs QA",counts.admin_review],["live","Live",counts.live]]).map(([val,label,count]) => (
+          {([["all","All",counts.all],["pending","Pending",counts.pending],["admin_review","Needs QA",counts.admin_review],["live","Live",counts.live]] as [string,string,number][]).map(([val,label,count]) => (
             <button key={val}
               onClick={() => setFilter(val)}
               style={{ padding: "8px 16px", borderRadius: 100, border: "1px solid", borderColor: filter===val?"#4648d4":"#dde2ff", background: filter===val?"#4648d4":"#fff", color: filter===val?"#fff":"#4648d4", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
