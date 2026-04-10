@@ -402,8 +402,62 @@ Return:
   return JSON.parse(raw);
 }
 
+// ── Per-service page generation ──────────────────────────────────────────────
+async function generateServicePages(services) {
+  const anthropic = new Anthropic({ apiKey: config.anthropicKey });
+  const pages = [];
+
+  for (const svc of services) {
+    const msg = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1200,
+      messages: [{
+        role: 'user',
+        content: `Write detailed website copy for a single service page. Return ONLY valid JSON, no markdown.
+
+Business: ${config.businessName}
+Industry: ${config.industry}
+Location: ${config.city}, ${config.state}
+Phone: ${config.phone}
+Service: ${svc.name}
+Service description: ${svc.description}
+
+Return:
+{
+  "headline": "5-8 word headline featuring the service and location",
+  "intro": "2-3 sentences introducing this service, local feel, trust-building",
+  "body1Title": "3-4 word subheading",
+  "body1": "2-3 sentences about what this service involves and why it matters",
+  "body2Title": "3-4 word subheading",
+  "body2": "2-3 sentences about what's included and what to expect",
+  "whyUs": "2 sentences on why ${config.businessName} is the best choice for this service in ${config.city}",
+  "cta": "5-7 word call to action specific to this service",
+  "metaTitle": "SEO title under 60 chars including service + location",
+  "metaDescription": "SEO description under 155 chars"
+}`,
+      }],
+    });
+
+    const raw = msg.content[0].text.trim().replace(/^\`\`\`json\n?|^\`\`\`\n?|\`\`\`$/gm, '').trim();
+    try {
+      const parsed = JSON.parse(raw);
+      pages.push({
+        ...parsed,
+        name: svc.name,
+        icon: svc.icon,
+        slug: svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      });
+      console.log(\`  ✅ Service page: \${svc.name}\`);
+      await sleep(800);
+    } catch(e) {
+      console.warn(\`  ⚠️  Service page failed for \${svc.name}: \${e.message}\`);
+    }
+  }
+  return pages;
+}
+
 // ── HTML assembly ─────────────────────────────────────────────────────────────
-function buildHTML(content, imageUrls, blogPosts) {
+function buildHTML(content, imageUrls, blogPosts, servicePages) {
   const { businessName, phone, email, city, state, primaryColor, accentColor, template, isDemo, subdomain } = config;
   const phoneRaw = phone.replace(/\D/g, '');
   const year = new Date().getFullYear();
@@ -435,8 +489,9 @@ function buildHTML(content, imageUrls, blogPosts) {
 
   const img = (slot) => imageUrls[slot] || '';
 
+  const svcSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const servicesHTML = content.services.map(s => `
-    <div class="svc-card">
+    <div class="svc-card" onclick="showPage('svc-${svcSlug(s.name)}')" style="cursor:pointer;">
       <div class="svc-icon">${s.icon}</div>
       <h3>${s.name}</h3>
       <p>${s.description}</p>
@@ -521,6 +576,25 @@ function buildHTML(content, imageUrls, blogPosts) {
     .nav-cta { background: var(--accent) !important; color: #fff !important; padding: 10px 20px; border-radius: var(--r); font-weight: 700 !important; }
     #hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
     #hamburger span { display: block; width: 22px; height: 2px; background: #fff; }
+
+    /* Dropdown */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-menu {
+      display: none; position: absolute; top: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%);
+      background: var(--white); border-radius: var(--r);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      min-width: 220px; padding: 8px 0; z-index: 300;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block; padding: 10px 18px;
+      font-size: 14px; font-weight: 500; color: var(--dark) !important;
+      text-transform: none !important; letter-spacing: 0 !important;
+      transition: background 0.15s;
+    }
+    .nav-dropdown-menu a:hover { background: var(--bg); color: var(--primary) !important; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 10px; opacity: 0.7; }
 
     /* Pages */
     .page { display: none; }
@@ -702,7 +776,12 @@ ${demoBar}
   <div class="nav-logo">${businessName}</div>
   <ul class="nav-links" id="nav-links">
     <li><a href="#" onclick="showPage('home')">Home</a></li>
-    <li><a href="#" onclick="showPage('services')">Services</a></li>
+    <li class="nav-dropdown">
+      <a href="#" onclick="showPage('services')">Services</a>
+      <div class="nav-dropdown-menu">
+        ${(servicePages || []).map(sp => `<a href="#" onclick="showPage('svc-${sp.slug}')">${sp.icon} ${sp.name}</a>`).join('')}
+      </div>
+    </li>
     <li><a href="#" onclick="showPage('about')">About</a></li>
     <li><a href="#" onclick="showPage('blog')">Blog</a></li>
     <li><a href="#" onclick="showPage('contact')">Contact</a></li>
@@ -902,12 +981,57 @@ ${demoBar}
   </div>
 </div>
 
+${(servicePages || []).map(sp => `
+<!-- ══ SERVICE: ${sp.name} ══ -->
+<div id="page-svc-${sp.slug}" class="page">
+  <section class="sec sec-off" style="padding-top:80px;">
+    <div class="sec-hdr">
+      <p class="sec-tag">${sp.icon} ${sp.name}</p>
+      <h2 class="sec-title sec-title-dark">${sp.headline}</h2>
+      <p class="sec-body">${sp.intro}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">${sp.body1Title}</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">${sp.body1}</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">${sp.body2Title}</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">${sp.body2}</p>
+        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose ${businessName}?</h3>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">${sp.whyUs}</p>
+      </div>
+      <div style="position:sticky;top:88px;">
+        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
+          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">${sp.cta}</h3>
+          <a href="tel:${phoneRaw}" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 ${phone}</a>
+          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
+        </div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
+          ${content.services.filter(os => os.name !== sp.name).slice(0,4).map(os => `
+          <div onclick="showPage('svc-${svcSlug(os.name)}')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
+            <span>${os.icon}</span><span>${os.name}</span><span style="margin-left:auto;color:var(--light);">→</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-band">
+    <div><h2>${sp.cta}</h2><p>Call us today — same-day service available on most repairs in ${city}, ${state}.</p></div>
+    <div style="display:flex;gap:14px;flex-shrink:0;">
+      <a href="tel:${phoneRaw}" class="btn btn-white">📞 ${phone}</a>
+      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+    </div>
+  </div>
+</div>`).join('')}
+
 <footer>
   <div class="foot-logo">${businessName}</div>
   <span class="foot-copy">© ${year} ${businessName} · ${city}, ${state} · All rights reserved</span>
   <div class="foot-links">
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="#" onclick="showPage('services')">Services</a>
+    ${(servicePages || []).map(sp => `<a href="#" onclick="showPage('svc-${sp.slug}')">${sp.name}</a>`).join('')}
     <a href="#" onclick="showPage('blog')">Blog</a>
     <a href="#" onclick="showPage('contact')">Contact</a>
   </div>
@@ -1058,11 +1182,15 @@ async function main() {
     }
   }
 
-  // 4. Assemble HTML
-  console.log('\n🔧 Assembling HTML...');
-  const html = buildHTML(content, imageUrls, blogPosts);
+  // 4. Generate individual service pages
+  console.log('\n📄 Generating individual service pages...');
+  const servicePages = await generateServicePages(content.services);
 
-  // 5. Write file
+  // 5. Assemble HTML
+  console.log('\n🔧 Assembling HTML...');
+  const html = buildHTML(content, imageUrls, blogPosts, servicePages);
+
+  // 6. Write file
   const outDir = path.join(__dirname, '..', 'public', 'sites', config.subdomain);
   await fs.mkdir(outDir, { recursive: true });
   const outFile = path.join(outDir, 'index.html');
@@ -1070,14 +1198,14 @@ async function main() {
   const sizeKB = Math.round((await fs.stat(outFile)).size / 1024);
   console.log(`\n✅ Site written: public/sites/${config.subdomain}/index.html (${sizeKB}KB)`);
 
-  // 6. Save blog posts to Supabase
+  // 7. Save blog posts to Supabase
   await saveBlogPosts(blogPosts);
 
-  // 7. Git push
+  // 8. Git push
   console.log('\n📤 Pushing to GitHub...');
   gitPush(config.subdomain);
 
-  // 8. Notify Supabase
+  // 9. Notify Supabase
   const siteUrl = `https://${config.subdomain}.exsisto.ai`;
   await notifySupabase(siteUrl);
 
