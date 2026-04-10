@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://procomfort-hvac.exsisto.ai/sitemap.xml
