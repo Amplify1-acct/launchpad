@@ -111,10 +111,11 @@ export default function AdminPage() {
   async function requestEdits(businessId: string) {
     const notes = editNotes[businessId];
     if (!notes?.trim()) { alert("Enter edit notes first."); return; }
+    if (!confirm(`This will trigger a full rebuild with your notes:\n\n"${notes}"\n\nTakes ~15 minutes. Continue?`)) return;
     setAction(businessId, "rebuilding");
-    const res = await fetch("/api/generate-site", {
+    const res = await fetch("/api/admin/build", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-internal-secret": "exsisto-internal-2026" },
+      headers: { "Content-Type": "application/json", "x-admin-secret": ADMIN_SECRET },
       body: JSON.stringify({ business_id: businessId, revision_notes: notes }),
     });
     const data = await res.json();
@@ -122,11 +123,10 @@ export default function AdminPage() {
       setAction(businessId, "");
       setEditNotes(n => ({ ...n, [businessId]: "" }));
       fetchOrders();
-      if (preview?.id === businessId) fetchBlogPosts(businessId);
-      alert("Edits applied. Review the updated site.");
+      alert("Rebuild triggered! Takes ~15 min. You\'ll get an email when it\'s ready for QA.");
     } else {
       setAction(businessId, "error");
-      alert(`Edits failed: ${data.error}`);
+      alert(`Rebuild failed: ${data.error}`);
     }
   }
 
