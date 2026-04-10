@@ -60,8 +60,8 @@ const MODEL_IMAGE    = 'gemini-3.1-flash-image-preview';
 const slug  = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-// Base site URL
-const siteBaseUrl = () => `https://${config.subdomain}.exsisto.ai`;
+// Base site URL — use /sites/ path until custom domain is connected
+const siteBaseUrl = () => `https://www.exsisto.ai/sites/${config.subdomain}`;
 
 // ── Nano Banana image generation ──────────────────────────────────────────────
 function buildImagePrompts() {
@@ -607,14 +607,14 @@ function localBusinessSchema() {
     "name": businessName,
     "telephone": phone,
     "address": { "@type": "PostalAddress", "addressLocality": city, "addressRegion": state, "addressCountry": "US" },
-    "url": 'https://' + subdomain + '.exsisto.ai',
+    "url": 'https://www.exsisto.ai/sites/' + subdomain + '/',
     "priceRange": "$$",
   });
 }
 
 function wrap(title, metaDesc, canonicalPath, bodyContent, theme, servicePages, extraSchema = '') {
   const { subdomain } = config;
-  const canonical = 'https://' + subdomain + '.exsisto.ai' + canonicalPath;
+  const canonical = 'https://www.exsisto.ai' + canonicalPath;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -985,7 +985,7 @@ function buildBlogPost(post, allPosts, servicePages, theme) {
     "author": { "@type": "Organization", "name": businessName },
     "publisher": { "@type": "Organization", "name": businessName },
     "datePublished": new Date().toISOString().split('T')[0],
-    "mainEntityOfPage": { "@type": "WebPage", "@id": 'https://' + subdomain + '.exsisto.ai/blog/' + post.slug + '/' },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": 'https://www.exsisto.ai/sites/' + subdomain + '/blog/' + post.slug + '/' },
   });
 
   const relatedPosts = allPosts.filter(p => p.slug !== post.slug).slice(0, 2);
@@ -1060,7 +1060,7 @@ function buildContactPage(content, servicePages, theme) {
 // ── Sitemap + robots ──────────────────────────────────────────────────────────
 function buildSitemap(servicePages, blogPosts) {
   const { subdomain } = config;
-  const base = 'https://' + subdomain + '.exsisto.ai';
+  const base = 'https://www.exsisto.ai/sites/' + subdomain;
   const today = new Date().toISOString().split('T')[0];
 
   const urls = [
