@@ -447,10 +447,10 @@ Return:
         icon: svc.icon,
         slug: svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       });
-      console.log(\`  ✅ Service page: \${svc.name}\`);
+      console.log('  Service page: ' + svc.name);
       await sleep(800);
     } catch(e) {
-      console.warn(\`  ⚠️  Service page failed for \${svc.name}: \${e.message}\`);
+      console.warn('  Service page failed for ' + svc.name + ': ' + e.message);
     }
   }
   return pages;
