@@ -182,8 +182,6 @@ export default function AdminPage() {
     );
   }
 
-  const btnStyle = (bg) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: bg, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" });
-  const chipStyle = (bg, color) => ({ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: bg, color, marginLeft: 8 });
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f7ff", fontFamily: "system-ui, sans-serif" }}>
@@ -237,9 +235,9 @@ export default function AdminPage() {
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: "#1b1b25", marginBottom: 4 }}>
                     {order.name}
-                    <span style={chipStyle("#f0f0ff","#4648d4")}>{plan}</span>
-                    <span style={chipStyle("#f0fff4","#16a34a")}>{PLAN_IMAGES[plan] || "5 images"}</span>
-                    <span style={chipStyle("#fff7f0","#ea580c")}>{PLAN_BLOGS[plan] || "1 blog post"}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#f0f0ff", color: "#4648d4", marginLeft: 8 }}>{plan}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#f0fff4", color: "#16a34a", marginLeft: 8 }}>{PLAN_IMAGES[plan] || "5 images"}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#fff7f0", color: "#ea580c", marginLeft: 8 }}>{PLAN_BLOGS[plan] || "1 blog post"}</span>
                   </div>
                   <div style={{ fontSize: 13, color: "#9090a8" }}>
                     {order.industry} · {order.city}, {order.state} · {order.customers?.email}
@@ -257,7 +255,7 @@ export default function AdminPage() {
               {/* Action buttons */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: "0 24px 16px" }}>
                 {status === "pending" && (
-                  <button style={btnStyle("#4648d4")} onClick={() => buildSite(order.id)} disabled={action==="building"}>
+                  <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#4648d4", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => buildSite(order.id)} disabled={action==="building"}>
                     {action === "building" ? "⏳ Building…" : "🏗️ Build Site"}
                   </button>
                 )}
@@ -266,19 +264,19 @@ export default function AdminPage() {
                 )}
                 {status === "admin_review" && (
                   <>
-                    {siteUrl && <a href={siteUrl} target="_blank" style={btnStyle("#1d4ed8")}>🔍 Preview Site</a>}
-                    <button style={btnStyle("#16a34a")} onClick={() => approveSite(order.id)} disabled={action==="approving"}>
+                    {siteUrl && <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#1d4ed8", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>🔍 Preview Site</a>}
+                    <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => approveSite(order.id)} disabled={action==="approving"}>
                       {action === "approving" ? "⏳ Approving…" : "✅ Approve & Go Live"}
                     </button>
-                    <button style={btnStyle("#7c3aed")} onClick={() => setPreview(order)}>📋 Review Blog Posts</button>
-                    <button style={btnStyle("#dc2626")} onClick={() => buildSite(order.id)}>🔄 Rebuild</button>
+                    <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => setPreview(order)}>📋 Review Blog Posts</button>
+                    <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => buildSite(order.id)}>🔄 Rebuild</button>
                   </>
                 )}
                 {status === "live" && siteUrl && (
-                  <a href={siteUrl} target="_blank" style={btnStyle("#16a34a")}>🌐 View Live Site</a>
+                  <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>🌐 View Live Site</a>
                 )}
                 {status === "error" && (
-                  <button style={btnStyle("#dc2626")} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
+                  <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
                 )}
               </div>
 
@@ -295,7 +293,7 @@ export default function AdminPage() {
                     onChange={e => setEditNotes(n => ({ ...n, [order.id]: e.target.value }))}
                   />
                   <button
-                    style={{ ...btnStyle("#7c3aed"), marginTop: 8 }}
+                    style={{ ...{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }, marginTop: 8 }}
                     onClick={() => requestEdits(order.id)}
                     disabled={action === "rebuilding"}
                   >
@@ -325,7 +323,7 @@ export default function AdminPage() {
               <span style={{ fontSize: 13, color: "#9090a8", marginLeft: 12 }}>Blog Post Review</span>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button style={btnStyle("#16a34a")} onClick={() => { approveSite(preview.id); setPreview(null); }}>
+              <button style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }} onClick={() => { approveSite(preview.id); setPreview(null); }}>
                 ✅ Approve Everything & Go Live
               </button>
               <button onClick={() => setPreview(null)} style={{ padding: "10px 18px", borderRadius: 8, border: "1px solid #ddd", background: "#fff", color: "#666", fontSize: 14, cursor: "pointer" }}>
@@ -382,7 +380,7 @@ export default function AdminPage() {
                     onChange={e => setEditNotes(n => ({ ...n, [preview.id]: e.target.value }))}
                   />
                   <button
-                    style={{ ...btnStyle("#7c3aed"), marginTop: 8 }}
+                    style={{ ...{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }, marginTop: 8 }}
                     onClick={() => requestEdits(preview.id)}
                     disabled={actionStates[preview.id] === "rebuilding"}
                   >
