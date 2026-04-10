@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://greenscape-landscaping.exsisto.ai/sitemap.xml
