@@ -945,12 +945,15 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ── Git push ─────────────────────────────────────────────────────────────────
 function gitPush(subdomain) {
-  execSync('git config user.name "Exsisto Bot"');
-  execSync('git config user.email "bot@exsisto.ai"');
-  execSync(`git add public/sites/${subdomain}/`);
+  // Run all git commands from repo root (script runs from scripts/ subdir)
+  const root = path.join(__dirname, '..');
+  const opts = { cwd: root };
+  execSync('git config user.name "Exsisto Bot"', opts);
+  execSync('git config user.email "bot@exsisto.ai"', opts);
+  execSync(`git add public/sites/${subdomain}/`, opts);
   try {
-    execSync(`git commit -m "🚀 Build site: ${subdomain}"`);
-    execSync('git pull --rebase && git push');
+    execSync(`git commit -m "🚀 Build site: ${subdomain}"`, opts);
+    execSync('git pull --rebase && git push', opts);
     console.log('✅ Pushed to GitHub');
   } catch (e) {
     if (e.message.includes('nothing to commit')) {
