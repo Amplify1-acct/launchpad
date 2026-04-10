@@ -42,7 +42,8 @@ const config = {
   primaryColor: process.env.PRIMARY_COLOR || '#4648d4',
   accentColor:  process.env.ACCENT_COLOR  || '#6366f1',
   services:     process.env.SERVICES ? process.env.SERVICES.split(',').map(s => s.trim()) : [],
-  isDemo:       process.env.IS_DEMO === 'true',
+  isDemo:         process.env.IS_DEMO === 'true',
+  revisionNotes:  process.env.REVISION_NOTES || '',
   geminiKey:    process.env.GEMINI_API_KEY,
   supabaseUrl:  process.env.SUPABASE_URL,
   supabaseKey:  process.env.SUPABASE_SERVICE_KEY,
@@ -350,7 +351,7 @@ Services: ${servicesList}
   "metaDescription": "SEO description under 155 chars"
 }
 
-Use actual services if provided. Make content feel local to ${config.city}, ${config.state}.`,
+Use actual services if provided. Make content feel local to ${config.city}, ${config.state}.${config.revisionNotes ? '\n\nIMPORTANT REVISION NOTES FROM CLIENT: ' + config.revisionNotes + '\nApply these specific changes to the content.' : ''}`,
     }],
   });
 
