@@ -10,24 +10,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { business_id, success } = await request.json();
+  const body = await request.json();
+  const { business_id, success } = body;
   if (!business_id) return NextResponse.json({ error: "business_id required" }, { status: 400 });
 
   const supabase = createAdminClient();
-  const newStatus = success ? "admin_review" : "error";
+  const newStatus = success ? "ready_for_review" : "error";
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("websites")
     .update({ status: newStatus })
-    .eq("business_id", business_id)
-    .select("id, status");
+    .eq("business_id", business_id);
 
   if (error) {
-    console.error("build-complete update error:", error);
+    console.error("build-complete error:", error.message);
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
-
-  console.log("build-complete:", business_id, "→", newStatus, "rows:", data?.length);
 
   if (success) {
     fetch(`${APP_URL}/api/send-email`, {
@@ -37,5 +35,5 @@ export async function POST(request: Request) {
     }).catch(() => {});
   }
 
-  return NextResponse.json({ ok: true, status: newStatus, rows: data?.length });
+  return NextResponse.json({ ok: true, status: newStatus });
 }
