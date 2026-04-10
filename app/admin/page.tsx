@@ -59,6 +59,8 @@ export default function AdminPage() {
   const [actionStates, setActionStates] = useState({} as Record<string, string>);
   const [expandedPost, setExpandedPost] = useState(null as string | null);
   const [imageSlot, setImageSlot] = useState({} as Record<string, string>);
+  const [backups, setBackups] = useState({} as Record<string, Array<{name: string; label: string}>>);
+  const [showRestore, setShowRestore] = useState({} as Record<string, boolean>);
 
   function setAction(id: string, st: string) {
     setActionStates(prev => ({ ...prev, [id]: st }));
@@ -155,6 +157,34 @@ export default function AdminPage() {
     } else {
       setAction(businessId, "error");
       alert("Quick edit failed: " + data.error);
+    }
+  }
+
+  async function fetchBackups(businessId: string, subdomain: string) {
+    const res = await fetch(`/api/admin/restore?subdomain=${subdomain}`, {
+      headers: { "x-admin-secret": ADMIN_SECRET }
+    });
+    const data = await res.json();
+    setBackups(b => ({ ...b, [businessId]: data.backups || [] }));
+    setShowRestore(s => ({ ...s, [businessId]: true }));
+  }
+
+  async function restoreSite(businessId: string, subdomain: string, backupName: string) {
+    if (!confirm(`Restore to backup from ${backupName}? The current site will be saved first.`)) return;
+    setAction(businessId, "restoring");
+    const res = await fetch("/api/admin/restore", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-secret": ADMIN_SECRET },
+      body: JSON.stringify({ business_id: businessId, backup_name: backupName }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setAction(businessId, "");
+      setShowRestore(s => ({ ...s, [businessId]: false }));
+      alert("✅ Site restored! Vercel will redeploy in ~60 seconds.");
+    } else {
+      setAction(businessId, "error");
+      alert("Restore failed: " + data.error);
     }
   }
 
