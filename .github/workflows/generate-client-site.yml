@@ -52,6 +52,10 @@ on:
         description: 'Comma-separated services list'
         required: false
         default: ''
+      revision_notes:
+        description: 'Edit notes for revision builds'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -95,6 +99,7 @@ jobs:
           PRIMARY_COLOR:        ${{ github.event.inputs.primary_color }}
           ACCENT_COLOR:         ${{ github.event.inputs.accent_color }}
           SERVICES:             ${{ github.event.inputs.services }}
+          REVISION_NOTES:       ${{ github.event.inputs.revision_notes }}
         run: |
           cd scripts
           node generate-site.js
