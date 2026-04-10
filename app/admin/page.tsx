@@ -124,7 +124,7 @@ export default function AdminPage() {
     const data = await res.json();
     if (data.success) {
       setAction(businessId, "");
-      setEditNotes(n => ({ ...n, [businessId]: "" }));
+      setEditNotes((n: any) => ({ ...n, [businessId]: "" }));
       fetchOrders();
       alert("Rebuild triggered! Takes ~15 min. You\'ll get an email when it\'s ready for QA.");
     } else {
@@ -152,7 +152,7 @@ export default function AdminPage() {
     const data = await res.json();
     if (data.success) {
       setAction(businessId, "");
-      setEditNotes(n => ({ ...n, [businessId]: "" }));
+      setEditNotes((n: any) => ({ ...n, [businessId]: "" }));
       alert("✅ Quick edit started! Takes 3-5 min. You'll get a QA ready email when done.");
     } else {
       setAction(businessId, "error");
@@ -379,7 +379,7 @@ export default function AdminPage() {
                     style={{ width: "100%", padding: "12px 16px", border: "1px solid #dde2ff", borderRadius: 8, fontSize: 14, minHeight: 80, resize: "vertical", fontFamily: "system-ui, sans-serif" }}
                     placeholder='e.g. "Change 18 years to 20 years" or "Update hero headline to be more urgent" or "Replace the about section image"'
                     value={editNotes[order.id] || ""}
-                    onChange={e => setEditNotes(n => ({ ...n, [order.id]: e.target.value }))}
+                    onChange={e => setEditNotes((n: any) => ({ ...n, [order.id]: e.target.value }))}
                   />
                   <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
                     <button
@@ -393,7 +393,7 @@ export default function AdminPage() {
                     <select
                       style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #dde2ff", fontSize: 13, color: "#4648d4", background: "#f5f5ff", cursor: "pointer" }}
                       value={imageSlot[order.id] || ""}
-                      onChange={e => setImageSlot(s => ({ ...s, [order.id]: e.target.value }))}
+                      onChange={e => setImageSlot((s: any) => ({ ...s, [order.id]: e.target.value }))}
                       title="Select an image slot to replace along with the edit"
                     >
                       <option value="">🖼️ Replace image (optional)</option>
@@ -494,7 +494,7 @@ export default function AdminPage() {
                     style={{ width: "100%", padding: "12px 16px", border: "1px solid #dde2ff", borderRadius: 8, fontSize: 14, minHeight: 80, resize: "vertical", fontFamily: "system-ui, sans-serif" }}
                     placeholder="Describe any changes needed to the site or blog posts…"
                     value={editNotes[preview.id] || ""}
-                    onChange={e => setEditNotes(n => ({ ...n, [preview.id]: e.target.value }))}
+                    onChange={e => setEditNotes((n: any) => ({ ...n, [preview.id]: e.target.value }))}
                   />
                   <button
                     style={{ ...{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }, marginTop: 8 }}
