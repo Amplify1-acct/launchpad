@@ -377,7 +377,7 @@ async function generateBlogPost(topic, index) {
   const anthropic = new Anthropic({ apiKey: config.anthropicKey });
   const msg = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 1500,
+    max_tokens: 2000,
     messages: [{
       role: 'user',
       content: `Write a blog post for a local small business. Return ONLY valid JSON, no markdown.
@@ -392,7 +392,7 @@ Return:
   "title": "SEO blog title specific to this business and location",
   "slug": "url-friendly-slug",
   "excerpt": "2-3 sentence summary for previews",
-  "body": "Full blog post 500-700 words. Professional, helpful tone. Use paragraph breaks. Include business name and location naturally. End with a call to action mentioning ${config.phone}.",
+  "body": "Full blog post 750-900 words. Professional, helpful tone. Use paragraph breaks. Include business name and location naturally. End with a call to action mentioning ${config.phone}.",
   "metaDescription": "SEO meta description under 155 chars"
 }`,
     }],
@@ -410,7 +410,7 @@ async function generateServicePages(services) {
   for (const svc of services) {
     const msg = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 1200,
+      max_tokens: 2000,
       messages: [{
         role: 'user',
         content: `Write detailed website copy for a single service page. Return ONLY valid JSON, no markdown.
@@ -425,12 +425,12 @@ Service description: ${svc.description}
 Return:
 {
   "headline": "5-8 word headline featuring the service and location",
-  "intro": "2-3 sentences introducing this service, local feel, trust-building",
+  "intro": "3-4 sentences introducing this service, local feel, trust-building, why it matters",
   "body1Title": "3-4 word subheading",
-  "body1": "2-3 sentences about what this service involves and why it matters",
+  "body1": "4-5 sentences about what this service involves, the process, and why it matters for vehicle safety and longevity",
   "body2Title": "3-4 word subheading",
-  "body2": "2-3 sentences about what's included and what to expect",
-  "whyUs": "2 sentences on why ${config.businessName} is the best choice for this service in ${config.city}",
+  "body2": "4-5 sentences covering what's included, what the customer should expect during the service, and common signs they need this service",
+  "whyUs": "3-4 sentences on why ${config.businessName} is the best choice for this service in ${config.city}",
   "cta": "5-7 word call to action specific to this service",
   "metaTitle": "SEO title under 60 chars including service + location",
   "metaDescription": "SEO description under 155 chars"
