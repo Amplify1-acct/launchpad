@@ -283,6 +283,25 @@ async function uploadImage(base64, mimeType, slot) {
   return config.supabaseUrl + '/storage/v1/object/public/' + STORAGE_BUCKET + '/' + storagePath;
 }
 
+// ── Claude retry wrapper ─────────────────────────────────────────────────────
+async function claudeWithRetry(fn, label, retries = 4) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      const isOverloaded = e.status === 529 || e.message?.includes('overloaded');
+      const isRetryable  = e.status === 529 || e.status === 500 || e.status === 503;
+      if (isRetryable && attempt < retries - 1) {
+        const wait = (attempt + 1) * 20000;
+        console.log('  ⏳ ' + label + ' overloaded, retrying in ' + (wait/1000) + 's...');
+        await sleep(wait);
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
 // ── Claude: site copy ─────────────────────────────────────────────────────────
 async function generateContent() {
   const anthropic = new Anthropic({ apiKey: config.anthropicKey });
@@ -1149,7 +1168,7 @@ async function main() {
 
   // 2. Generate site copy
   console.log('\n✍️  Generating site copy...');
-  const content = await generateContent();
+  const content = await claudeWithRetry(() => generateContent(), 'Site copy');
   console.log('  ✅ Copy generated');
 
   // 3. Generate individual service pages
@@ -1157,7 +1176,7 @@ async function main() {
   const servicePages = [];
   for (const svc of content.services) {
     try {
-      const sp = await generateServicePage(svc);
+      const sp = await claudeWithRetry(() => generateServicePage(svc), svc.name);
       servicePages.push(sp);
       console.log('  ✅ ' + svc.name);
       await sleep(800);
@@ -1172,7 +1191,7 @@ async function main() {
   const blogPosts = [];
   for (let i = 0; i < blogCount; i++) {
     try {
-      const post = await generateBlogPost(topics[i % topics.length]);
+      const post = await claudeWithRetry(() => generateBlogPost(topics[i % topics.length]), 'Blog post ' + (i+1));
       blogPosts.push(post);
       console.log('  ✅ "' + post.title + '"');
       await sleep(1000);
