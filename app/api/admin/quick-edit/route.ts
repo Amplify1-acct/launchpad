@@ -66,8 +66,8 @@ async function generateEditedContent(
   const anthropic = new Anthropic({ apiKey: ANTHROPIC_KEY });
 
   // Extract current content tokens from the home page HTML for context
-  const heroMatch    = currentHtml.match(/<h1[^>]*>(.*?)<\/h1>/s);
-  const heroSub      = currentHtml.match(/class="hero-sub[^"]*"[^>]*>(.*?)<\/p>/s);
+  const heroMatch    = currentHtml.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+  const heroSub      = currentHtml.match(/class="hero-sub[^"]*"[^>]*>([\s\S]*?)<\/p>/);
 
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
