@@ -180,7 +180,7 @@ export default function AdminPage() {
     const data = await res.json();
     if (data.success) {
       setAction(businessId, "");
-      setShowRestore(s => ({ ...s, [businessId]: false }));
+      setShowRestore((s: any) => ({ ...s, [businessId]: false }));
       alert("✅ Site restored! Vercel will redeploy in ~60 seconds.");
     } else {
       setAction(businessId, "error");
