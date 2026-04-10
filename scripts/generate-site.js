@@ -1132,7 +1132,7 @@ async function saveBlogPosts(posts) {
     await fetch(config.supabaseUrl + '/rest/v1/blog_posts', {
       method: 'POST',
       headers: { 'apikey': config.supabaseKey, 'Authorization': 'Bearer ' + config.supabaseKey, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ business_id: config.businessId, title: p.title, slug: p.slug, excerpt: p.excerpt, body: p.body, status: 'pending', created_at: new Date().toISOString() }),
+      body: JSON.stringify({ business_id: config.businessId, title: p.title, slug: p.slug, excerpt: p.excerpt, content: p.body, status: 'draft', created_at: new Date().toISOString() }),
     });
   }
   console.log('✅ ' + posts.length + ' blog posts saved to Supabase');
