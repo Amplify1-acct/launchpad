@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [editNotes, setEditNotes]       = useState({} as Record<string, string>);
   const [actionStates, setActionStates] = useState({} as Record<string, string>);
   const [expandedPost, setExpandedPost] = useState(null as string | null);
+  const [imageSlot, setImageSlot] = useState({} as Record<string, string>);
 
   function setAction(id: string, st: string) {
     setActionStates(prev => ({ ...prev, [id]: st }));
@@ -127,6 +128,33 @@ export default function AdminPage() {
     } else {
       setAction(businessId, "error");
       alert(`Rebuild failed: ${data.error}`);
+    }
+  }
+
+  async function quickEdit(businessId: string) {
+    const notes = editNotes[businessId];
+    if (!notes?.trim()) { alert("Enter edit notes first."); return; }
+    setAction(businessId, "quick-editing");
+    const res = await fetch("/api/admin/quick-edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-secret": ADMIN_SECRET },
+      body: JSON.stringify({
+        business_id: businessId,
+        notes,
+        image_slot: imageSlot[businessId] || null,
+        image_prompt: imageSlot[businessId]
+          ? `Professional photograph for ${imageSlot[businessId]} image of a local small business, no text, no UI`
+          : null,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setAction(businessId, "");
+      setEditNotes(n => ({ ...n, [businessId]: "" }));
+      alert("✅ Edits applied! Vercel will redeploy in ~60 seconds. Refresh the preview link.");
+    } else {
+      setAction(businessId, "error");
+      alert("Quick edit failed: " + data.error);
     }
   }
 
@@ -285,21 +313,51 @@ export default function AdminPage() {
               {(status === "admin_review" || status === "ready_for_review") && (
                 <div style={{ padding: "0 24px 20px" }}>
                   <label style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9090a8", marginBottom: 6, display: "block" }}>
-                    Edit Notes — describe changes, then click Request Edits
+                    Edit Notes — describe changes
                   </label>
                   <textarea
                     style={{ width: "100%", padding: "12px 16px", border: "1px solid #dde2ff", borderRadius: 8, fontSize: 14, minHeight: 80, resize: "vertical", fontFamily: "system-ui, sans-serif" }}
-                    placeholder="e.g. Make the headline punchier. Change service 3 to Emergency Repairs."
+                    placeholder='e.g. "Change 18 years to 20 years" or "Update hero headline to be more urgent" or "Replace the about section image"'
                     value={editNotes[order.id] || ""}
                     onChange={e => setEditNotes(n => ({ ...n, [order.id]: e.target.value }))}
                   />
-                  <button
-                    style={{ ...{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }, marginTop: 8 }}
-                    onClick={() => requestEdits(order.id)}
-                    disabled={action === "rebuilding"}
-                  >
-                    {action === "rebuilding" ? "⏳ Applying edits…" : "✏️ Request Edits"}
-                  </button>
+                  <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
+                    <button
+                      style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#4648d4", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => quickEdit(order.id)}
+                      disabled={action === "quick-editing" || action === "rebuilding"}
+                      title="Fast: patches text in place, no rebuild. ~2 min."
+                    >
+                      {action === "quick-editing" ? "⏳ Applying…" : "✏️ Quick Edit"}
+                    </button>
+                    <select
+                      style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #dde2ff", fontSize: 13, color: "#4648d4", background: "#f5f5ff", cursor: "pointer" }}
+                      value={imageSlot[order.id] || ""}
+                      onChange={e => setImageSlot(s => ({ ...s, [order.id]: e.target.value }))}
+                      title="Select an image slot to replace along with the edit"
+                    >
+                      <option value="">🖼️ Replace image (optional)</option>
+                      <option value="hero">Hero image</option>
+                      <option value="about">About image</option>
+                      <option value="img3">Gallery 1</option>
+                      <option value="img4">Gallery 2</option>
+                      <option value="img5">Gallery 3</option>
+                      <option value="img6">Gallery 4</option>
+                      <option value="img7">Gallery 5</option>
+                      <option value="img8">Gallery 6</option>
+                    </select>
+                    <button
+                      style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => requestEdits(order.id)}
+                      disabled={action === "rebuilding"}
+                      title="Slow: full rebuild with new images and blog posts. ~15 min."
+                    >
+                      {action === "rebuilding" ? "⏳ Rebuilding…" : "🔄 Full Rebuild"}
+                    </button>
+                  </div>
+                  <p style={{ fontSize: 11, color: "#9090a8", marginTop: 6 }}>
+                    ✏️ Quick Edit — patches text only, ~2 min &nbsp;|&nbsp; 🔄 Full Rebuild — new images + blog posts, ~15 min
+                  </p>
                 </div>
               )}
 
