@@ -39,6 +39,38 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 const PLAN_IMAGES: Record<string, string> = { starter: "5 images", pro: "8 images", premium: "12 images" };
 const PLAN_BLOGS:  Record<string, string> = { starter: "1 blog post", pro: "2 blog posts", premium: "4 blog posts" };
 
+const S = {
+    page: { minHeight: "100vh", background: "#f8f7ff", fontFamily: "system-ui, sans-serif" },
+    header: { background: "#4648d4", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" },
+    headerLogo: { fontSize: 20, fontWeight: 800, color: "#fff" },
+    main: { maxWidth: 1200, margin: "0 auto", padding: "32px 24px" },
+    filters: { display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" },
+    filterBtn: (active: boolean) => ({ padding: "8px 16px", borderRadius: 100, border: "1px solid", borderColor: active ? "#4648d4" : "#dde2ff", background: active ? "#4648d4" : "#fff", color: active ? "#fff" : "#4648d4", fontSize: 13, fontWeight: 600, cursor: "pointer" }),
+    card: { background: "#fff", borderRadius: 14, border: "1px solid #ede9f8", marginBottom: 16, overflow: "hidden" },
+    cardHeader: { padding: "20px 24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 },
+    cardTitle: { fontSize: 18, fontWeight: 700, color: "#1b1b25", marginBottom: 4 },
+    cardMeta: { fontSize: 13, color: "#9090a8" },
+    statusBadge: (status: string) => ({
+      display: "inline-block", padding: "4px 12px", borderRadius: 100, fontSize: 12, fontWeight: 700,
+      background: (STATUS_LABELS[status]?.color || "#888") + "20",
+      color: STATUS_LABELS[status]?.color || "#888",
+    }),
+    actions: { display: "flex", gap: 8, flexWrap: "wrap", marginTop: 16 },
+    btn: (color: string) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: color, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }),
+    btnOutline: { padding: "10px 18px", borderRadius: 8, border: "1.5px solid #4648d4", background: "transparent", color: "#4648d4", fontSize: 14, fontWeight: 600, cursor: "pointer" },
+    editArea: { padding: "0 24px 20px" },
+    editLabel: { fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9090a8", marginBottom: 6, display: "block" },
+    editInput: { width: "100%", padding: "12px 16px", border: "1px solid #dde2ff", borderRadius: 8, fontSize: 14, minHeight: 80, resize: "vertical", fontFamily: "system-ui, sans-serif" },
+    planChip: { fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#f0f0ff", color: "#4648d4", marginLeft: 8 },
+    blogSection: { padding: "0 24px 24px", borderTop: "1px solid #ede9f8", marginTop: 4 },
+    blogPost: { border: "1px solid #ede9f8", borderRadius: 10, marginTop: 12, overflow: "hidden" },
+    blogPostHeader: { padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", background: "#fafaff" },
+    blogPostBody: { padding: "12px 16px", fontSize: 14, color: "#555", lineHeight: 1.7, borderTop: "1px solid #ede9f8" },
+    previewPanel: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", flexDirection: "column" },
+    previewHeader: { background: "#fff", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #ede9f8" },
+    previewFrame: { flex: 1, border: "none", background: "#fff" },
+};
+
 export default function AdminPage() {
   const [authed, setAuthed]       = useState(false);
   const [password, setPassword]   = useState("");
@@ -182,57 +214,27 @@ export default function AdminPage() {
     );
   }
 
-  const s: Record<string, any> = {
-    page: { minHeight: "100vh", background: "#f8f7ff", fontFamily: "system-ui, sans-serif" },
-    header: { background: "#4648d4", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" },
-    headerLogo: { fontSize: 20, fontWeight: 800, color: "#fff" },
-    main: { maxWidth: 1200, margin: "0 auto", padding: "32px 24px" },
-    filters: { display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" as const },
-    filterBtn: (active: boolean) => ({ padding: "8px 16px", borderRadius: 100, border: "1px solid", borderColor: active ? "#4648d4" : "#dde2ff", background: active ? "#4648d4" : "#fff", color: active ? "#fff" : "#4648d4", fontSize: 13, fontWeight: 600, cursor: "pointer" }),
-    card: { background: "#fff", borderRadius: 14, border: "1px solid #ede9f8", marginBottom: 16, overflow: "hidden" },
-    cardHeader: { padding: "20px 24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 },
-    cardTitle: { fontSize: 18, fontWeight: 700, color: "#1b1b25", marginBottom: 4 },
-    cardMeta: { fontSize: 13, color: "#9090a8" },
-    statusBadge: (status: string) => ({
-      display: "inline-block", padding: "4px 12px", borderRadius: 100, fontSize: 12, fontWeight: 700,
-      background: (STATUS_LABELS[status]?.color || "#888") + "20",
-      color: STATUS_LABELS[status]?.color || "#888",
-    }),
-    actions: { display: "flex", gap: 8, flexWrap: "wrap" as const, marginTop: 16 },
-    btn: (color: string) => ({ padding: "10px 18px", borderRadius: 8, border: "none", background: color, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }),
-    btnOutline: { padding: "10px 18px", borderRadius: 8, border: "1.5px solid #4648d4", background: "transparent", color: "#4648d4", fontSize: 14, fontWeight: 600, cursor: "pointer" },
-    editArea: { padding: "0 24px 20px" },
-    editLabel: { fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "#9090a8", marginBottom: 6, display: "block" },
-    editInput: { width: "100%", padding: "12px 16px", border: "1px solid #dde2ff", borderRadius: 8, fontSize: 14, minHeight: 80, resize: "vertical" as const, fontFamily: "system-ui, sans-serif" },
-    planChip: { fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#f0f0ff", color: "#4648d4", marginLeft: 8 },
-    blogSection: { padding: "0 24px 24px", borderTop: "1px solid #ede9f8", marginTop: 4 },
-    blogPost: { border: "1px solid #ede9f8", borderRadius: 10, marginTop: 12, overflow: "hidden" },
-    blogPostHeader: { padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", background: "#fafaff" },
-    blogPostBody: { padding: "12px 16px", fontSize: 14, color: "#555", lineHeight: 1.7, borderTop: "1px solid #ede9f8" },
-    previewPanel: { position: "fixed" as const, inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", flexDirection: "column" as const },
-    previewHeader: { background: "#fff", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #ede9f8" },
-    previewFrame: { flex: 1, border: "none", background: "#fff" },
-  };
+
 
   return (
-    <div style={s.page}>
-      <header style={s.header}>
-        <div style={s.headerLogo}>Ex<span style={{ color: "#a3a6ff" }}>sisto</span> Admin</div>
+    <div style={S.page}>
+      <header style={S.header}>
+        <div style={S.headerLogo}>Ex<span style={{ color: "#a3a6ff" }}>sisto</span> Admin</div>
         <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
           {counts.admin_review > 0 && <span style={{ background: "#ef4444", color: "#fff", borderRadius: 100, padding: "2px 10px", marginRight: 8, fontWeight: 700 }}>{counts.admin_review} needs QA</span>}
           {orders.length} total orders
         </div>
       </header>
 
-      <div style={s.main}>
+      <div style={S.main}>
         {/* Filters */}
-        <div style={s.filters}>
+        <div style={S.filters}>
           {[["all","All",counts.all],["pending","Pending",counts.pending],["admin_review","Needs QA",counts.admin_review],["live","Live",counts.live]].map(([val,label,count]) => (
-            <button key={val} style={s.filterBtn(filter === val)} onClick={() => setFilter(val as string)}>
+            <button key={val} style={S.filterBtn(filter === val)} onClick={() => setFilter(val as string)}>
               {label} {count > 0 && `(${count})`}
             </button>
           ))}
-          <button onClick={fetchOrders} style={{ ...s.filterBtn(false), marginLeft: "auto" }}>↻ Refresh</button>
+          <button onClick={fetchOrders} style={{ ...S.filterBtn(false), marginLeft: "auto" }}>↻ Refresh</button>
         </div>
 
         {loading && <p style={{ color: "#9090a8", textAlign: "center" }}>Loading orders…</p>}
@@ -244,28 +246,28 @@ export default function AdminPage() {
           const siteUrl = order.website_url || (order.subdomain ? `https://${order.subdomain}.exsisto.ai` : null);
 
           return (
-            <div key={order.id} style={s.card}>
-              <div style={s.cardHeader}>
+            <div key={order.id} style={S.card}>
+              <div style={S.cardHeader}>
                 <div>
-                  <div style={s.cardTitle}>
+                  <div style={S.cardTitle}>
                     {order.name}
-                    <span style={s.planChip}>{plan}</span>
-                    <span style={{ ...s.planChip, background: "#f0fff4", color: "#16a34a" }}>{PLAN_IMAGES[plan]}</span>
-                    <span style={{ ...s.planChip, background: "#fff7f0", color: "#ea580c" }}>{PLAN_BLOGS[plan]}</span>
+                    <span style={S.planChip}>{plan}</span>
+                    <span style={{ ...S.planChip, background: "#f0fff4", color: "#16a34a" }}>{PLAN_IMAGES[plan]}</span>
+                    <span style={{ ...S.planChip, background: "#fff7f0", color: "#ea580c" }}>{PLAN_BLOGS[plan]}</span>
                   </div>
-                  <div style={s.cardMeta}>
+                  <div style={S.cardMeta}>
                     {order.industry} · {order.city}, {order.state} · {order.customers?.email}
                     {order.custom_domain && <span> · 🌐 {order.custom_domain}</span>}
                   </div>
-                  <div style={s.cardMeta}>Template: {order.websites?.template_id || "skeleton-clean"} · Ordered: {new Date(order.created_at).toLocaleDateString()}</div>
+                  <div style={S.cardMeta}>Template: {order.websites?.template_id || "skeleton-clean"} · Ordered: {new Date(order.created_at).toLocaleDateString()}</div>
                 </div>
-                <span style={s.statusBadge(status)}>{STATUS_LABELS[status]?.label || status}</span>
+                <span style={S.statusBadge(status)}>{STATUS_LABELS[status]?.label || status}</span>
               </div>
 
               {/* Actions */}
-              <div style={{ ...s.actions, padding: "0 24px 16px" }}>
+              <div style={{ ...S.actions, padding: "0 24px 16px" }}>
                 {status === "pending" && (
-                  <button style={s.btn("#4648d4")} onClick={() => buildSite(order.id)} disabled={action === "building"}>
+                  <button style={S.btn("#4648d4")} onClick={() => buildSite(order.id)} disabled={action === "building"}>
                     {action === "building" ? "⏳ Building…" : "🏗️ Build Site"}
                   </button>
                 )}
@@ -275,39 +277,39 @@ export default function AdminPage() {
                 {status === "admin_review" && (
                   <>
                     {siteUrl && (
-                      <a href={siteUrl} target="_blank" style={s.btn("#1d4ed8")}>🔍 Preview Site</a>
+                      <a href={siteUrl} target="_blank" style={S.btn("#1d4ed8")}>🔍 Preview Site</a>
                     )}
-                    <button style={s.btn("#16a34a")} onClick={() => approveSite(order.id)} disabled={action === "approving"}>
+                    <button style={S.btn("#16a34a")} onClick={() => approveSite(order.id)} disabled={action === "approving"}>
                       {action === "approving" ? "⏳ Approving…" : "✅ Approve & Go Live"}
                     </button>
-                    <button style={s.btn("#7c3aed")} onClick={() => setPreview(order)}>
+                    <button style={S.btn("#7c3aed")} onClick={() => setPreview(order)}>
                       📋 Review Blog Posts
                     </button>
-                    <button style={s.btn("#dc2626")} onClick={() => buildSite(order.id)}>
+                    <button style={S.btn("#dc2626")} onClick={() => buildSite(order.id)}>
                       🔄 Rebuild
                     </button>
                   </>
                 )}
                 {status === "live" && siteUrl && (
-                  <a href={siteUrl} target="_blank" style={s.btn("#16a34a")}>🌐 View Live Site</a>
+                  <a href={siteUrl} target="_blank" style={S.btn("#16a34a")}>🌐 View Live Site</a>
                 )}
                 {status === "error" && (
-                  <button style={s.btn("#dc2626")} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
+                  <button style={S.btn("#dc2626")} onClick={() => buildSite(order.id)}>🔄 Retry Build</button>
                 )}
               </div>
 
               {/* Edit notes — only show for admin_review */}
               {status === "admin_review" && (
-                <div style={s.editArea}>
-                  <label style={s.editLabel}>Edit Notes — type changes, then click Request Edits</label>
+                <div style={S.editArea}>
+                  <label style={S.editLabel}>Edit Notes — type changes, then click Request Edits</label>
                   <textarea
-                    style={s.editInput}
+                    style={S.editInput}
                     placeholder="e.g. Make the headline punchier. Change service 3 to 'Emergency Repairs'. The about section is too generic — mention they've been in Springfield since 2006."
                     value={editNotes[order.id] || ""}
                     onChange={e => setEditNotes(n => ({ ...n, [order.id]: e.target.value }))}
                   />
                   <button
-                    style={{ ...s.btn("#7c3aed"), marginTop: 8 }}
+                    style={{ ...S.btn("#7c3aed"), marginTop: 8 }}
                     onClick={() => requestEdits(order.id)}
                     disabled={action === "rebuilding"}
                   >
@@ -329,17 +331,17 @@ export default function AdminPage() {
 
       {/* Blog Post Review Panel */}
       {preview && (
-        <div style={s.previewPanel}>
-          <div style={s.previewHeader}>
+        <div style={S.previewPanel}>
+          <div style={S.previewHeader}>
             <div>
               <strong style={{ fontSize: 16 }}>{preview.name}</strong>
               <span style={{ fontSize: 13, color: "#9090a8", marginLeft: 12 }}>Blog Post Review</span>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button style={s.btn("#16a34a")} onClick={() => { approveSite(preview.id); setPreview(null); }}>
+              <button style={S.btn("#16a34a")} onClick={() => { approveSite(preview.id); setPreview(null); }}>
                 ✅ Approve Everything & Go Live
               </button>
-              <button onClick={() => setPreview(null)} style={{ ...s.btnOutline, borderColor: "#ddd", color: "#666" }}>
+              <button onClick={() => setPreview(null)} style={{ ...S.btnOutline, borderColor: "#ddd", color: "#666" }}>
                 Close ✕
               </button>
             </div>
@@ -358,8 +360,8 @@ export default function AdminPage() {
               )}
 
               {blogPosts.map(post => (
-                <div key={post.id} style={s.blogPost}>
-                  <div style={s.blogPostHeader} onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}>
+                <div key={post.id} style={S.blogPost}>
+                  <div style={S.blogPostHeader} onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}>
                     <div>
                       <div style={{ fontWeight: 700, fontSize: 15, color: "#1b1b25" }}>{post.title}</div>
                       <div style={{ fontSize: 12, color: "#9090a8", marginTop: 3 }}>{post.excerpt?.slice(0, 100)}…</div>
@@ -367,7 +369,7 @@ export default function AdminPage() {
                     <span style={{ fontSize: 18, color: "#9090a8" }}>{expandedPost === post.id ? "▲" : "▼"}</span>
                   </div>
                   {expandedPost === post.id && (
-                    <div style={s.blogPostBody}>
+                    <div style={S.blogPostBody}>
                       {post.content?.split("
 
 ").map((para: string, i: number) => (
@@ -380,15 +382,15 @@ export default function AdminPage() {
 
               {preview.websites?.status === "admin_review" && (
                 <div style={{ marginTop: 24 }}>
-                  <label style={s.editLabel}>Edit Notes (applies to site + blog posts)</label>
+                  <label style={S.editLabel}>Edit Notes (applies to site + blog posts)</label>
                   <textarea
-                    style={s.editInput}
+                    style={S.editInput}
                     placeholder="e.g. Blog post 2 is too generic. Make it more specific to Springfield. Also update the hero headline."
                     value={editNotes[preview.id] || ""}
                     onChange={e => setEditNotes(n => ({ ...n, [preview.id]: e.target.value }))}
                   />
                   <button
-                    style={{ ...s.btn("#7c3aed"), marginTop: 8 }}
+                    style={{ ...S.btn("#7c3aed"), marginTop: 8 }}
                     onClick={() => requestEdits(preview.id)}
                     disabled={actionStates[preview.id] === "rebuilding"}
                   >
