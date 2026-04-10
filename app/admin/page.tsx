@@ -165,8 +165,8 @@ export default function AdminPage() {
       headers: { "x-admin-secret": ADMIN_SECRET }
     });
     const data = await res.json();
-    setBackups(b => ({ ...b, [businessId]: data.backups || [] }));
-    setShowRestore(s => ({ ...s, [businessId]: true }));
+    setBackups((b: any) => ({ ...b, [businessId]: data.backups || [] }));
+    setShowRestore((s: any) => ({ ...s, [businessId]: true }));
   }
 
   async function restoreSite(businessId: string, subdomain: string, backupName: string) {
@@ -336,7 +336,7 @@ export default function AdminPage() {
                     <a href={siteUrl} target="_blank" style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#16a34a", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>🌐 View Live Site</a>
                     <button
                       style={{ padding: "10px 18px", borderRadius: 8, border: "none", background: "#78716c", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
-                      onClick={() => showRestore[order.id] ? setShowRestore(s => ({ ...s, [order.id]: false })) : fetchBackups(order.id, order.subdomain || "")}
+                      onClick={() => showRestore[order.id] ? setShowRestore((s: any) => ({ ...s, [order.id]: false })) : fetchBackups(order.id, order.subdomain || "")}
                       disabled={action === "restoring"}
                     >
                       {action === "restoring" ? "⏳ Restoring…" : "♻️ Restore Version"}
