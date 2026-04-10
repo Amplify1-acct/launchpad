@@ -5,8 +5,6 @@ const ADMIN_SECRET    = process.env.ADMIN_DASHBOARD_SECRET || "exsisto-admin-202
 const GITHUB_TOKEN    = process.env.GITHUB_TOKEN_WORKFLOW  || process.env.GITHUB_TOKEN || "";
 const GITHUB_REPO     = "Amplify1-acct/launchpad";
 const WORKFLOW_ID     = "generate-client-site.yml";
-const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "exsisto-internal-2026";
-const ADMIN_EMAIL     = process.env.ADMIN_EMAIL || "matt@exsisto.ai";
 const APP_URL         = process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai";
 
 export const maxDuration = 30;
