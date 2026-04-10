@@ -56,6 +56,14 @@ on:
         description: 'Edit notes for revision builds'
         required: false
         default: ''
+      skip_images:
+        description: 'true = reuse existing images (quick edit mode)'
+        required: false
+        default: ''
+      replace_image_slot:
+        description: 'Slot to replace (hero, about, img3..img8)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -81,25 +89,27 @@ jobs:
 
       - name: Generate site
         env:
-          GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
-          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          BUSINESS_ID:          ${{ github.event.inputs.business_id }}
-          BUSINESS_NAME:        ${{ github.event.inputs.business_name }}
-          INDUSTRY:             ${{ github.event.inputs.industry }}
-          TAGLINE:              ${{ github.event.inputs.tagline }}
-          CITY:                 ${{ github.event.inputs.city }}
-          STATE:                ${{ github.event.inputs.state }}
-          PHONE:                ${{ github.event.inputs.phone }}
-          EMAIL:                ${{ github.event.inputs.email }}
-          SUBDOMAIN:            ${{ github.event.inputs.subdomain }}
-          PLAN:                 ${{ github.event.inputs.plan }}
-          TEMPLATE:             ${{ github.event.inputs.template }}
-          PRIMARY_COLOR:        ${{ github.event.inputs.primary_color }}
-          ACCENT_COLOR:         ${{ github.event.inputs.accent_color }}
-          SERVICES:             ${{ github.event.inputs.services }}
-          REVISION_NOTES:       ${{ github.event.inputs.revision_notes }}
+          GEMINI_API_KEY:        ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL:          ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:  ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BUSINESS_ID:           ${{ github.event.inputs.business_id }}
+          BUSINESS_NAME:         ${{ github.event.inputs.business_name }}
+          INDUSTRY:              ${{ github.event.inputs.industry }}
+          TAGLINE:               ${{ github.event.inputs.tagline }}
+          CITY:                  ${{ github.event.inputs.city }}
+          STATE:                 ${{ github.event.inputs.state }}
+          PHONE:                 ${{ github.event.inputs.phone }}
+          EMAIL:                 ${{ github.event.inputs.email }}
+          SUBDOMAIN:             ${{ github.event.inputs.subdomain }}
+          PLAN:                  ${{ github.event.inputs.plan }}
+          TEMPLATE:              ${{ github.event.inputs.template }}
+          PRIMARY_COLOR:         ${{ github.event.inputs.primary_color }}
+          ACCENT_COLOR:          ${{ github.event.inputs.accent_color }}
+          SERVICES:              ${{ github.event.inputs.services }}
+          REVISION_NOTES:        ${{ github.event.inputs.revision_notes }}
+          SKIP_IMAGES:           ${{ github.event.inputs.skip_images }}
+          REPLACE_IMAGE_SLOT:    ${{ github.event.inputs.replace_image_slot }}
         run: |
           cd scripts
           node generate-site.js
