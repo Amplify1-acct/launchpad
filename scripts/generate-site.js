@@ -580,13 +580,19 @@ function buildHTML(content, imageUrls, blogPosts, servicePages) {
     /* Dropdown */
     .nav-dropdown { position: relative; }
     .nav-dropdown-menu {
-      display: none; position: absolute; top: calc(100% + 8px); left: 50%;
+      display: none; position: absolute; top: 100%; left: 50%;
       transform: translateX(-50%);
       background: var(--white); border-radius: var(--r);
       box-shadow: 0 8px 32px rgba(0,0,0,0.18);
       min-width: 220px; padding: 8px 0; z-index: 300;
+      padding-top: 16px;
+      margin-top: -8px;
     }
     .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu::before {
+      content: ''; display: block; height: 8px;
+      position: absolute; top: 0; left: 0; right: 0;
+    }
     .nav-dropdown-menu a {
       display: block; padding: 10px 18px;
       font-size: 14px; font-weight: 500; color: var(--dark) !important;
