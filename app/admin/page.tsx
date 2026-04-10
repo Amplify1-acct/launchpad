@@ -59,8 +59,8 @@ export default function AdminPage() {
   const [actionStates, setActionStates] = useState({} as Record<string, string>);
   const [expandedPost, setExpandedPost] = useState(null as string | null);
   const [imageSlot, setImageSlot] = useState({} as Record<string, string>);
-  const [backups, setBackups] = useState({} as Record<string, Array<{name: string; label: string}>>);
-  const [showRestore, setShowRestore] = useState({} as Record<string, boolean>);
+  const [backups, setBackups] = useState({} as any);
+  const [showRestore, setShowRestore] = useState({} as any);
 
   function setAction(id: string, st: string) {
     setActionStates(prev => ({ ...prev, [id]: st }));
