@@ -358,9 +358,7 @@ export default function AdminPage() {
                   </div>
                   {expandedPost === post.id && (
                     <div style={{ padding: "12px 16px", fontSize: 14, color: "#555", lineHeight: 1.7, borderTop: "1px solid #ede9f8" }}>
-                      {post.content?.split("
-
-").map((para: string, i: number) => (
+                      {post.content?.split("\n\n").map((para, i) => (
                         <p key={i} style={{ marginBottom: 14 }}>{para}</p>
                       ))}
                     </div>
