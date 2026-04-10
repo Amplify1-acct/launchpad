@@ -6,6 +6,29 @@ const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "exsisto-internal-202
 
 export const maxDuration = 90;
 
+export async function GET(request: Request) {
+  const auth = request.headers.get("x-admin-secret");
+  if (auth !== ADMIN_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const business_id = searchParams.get("business_id");
+  if (!business_id) return NextResponse.json({ error: "business_id required" }, { status: 400 });
+
+  const supabase = createAdminClient();
+
+  const { data: posts, error } = await supabase
+    .from("blog_posts")
+    .select("id, title, excerpt, content, post_status, created_at")
+    .eq("business_id", business_id)
+    .order("created_at", { ascending: false });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ posts: posts || [] });
+}
+
 export async function POST(request: Request) {
   const auth = request.headers.get("x-admin-secret");
   if (auth !== ADMIN_SECRET) {
