@@ -3,110 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matty's Automotive Springfield NJ - Auto Repair & Service</title>
-  <meta name="description" content="Springfield NJ's trusted auto shop. Oil changes, brakes, diagnostics & NJ inspections. Honest work, fair prices. Call (908) 555-0147 today!">
-  <meta property="og:title" content="Matty's Automotive Springfield NJ - Auto Repair & Service">
-  <meta property="og:description" content="Springfield NJ's trusted auto shop. Oil changes, brakes, diagnostics & NJ inspections. Honest work, fair prices. Call (908) 555-0147 today!">
+  <title>Matty's Automotive Springfield NJ | Auto Repair & Inspection</title>
+  <meta name="description" content="Springfield's trusted auto repair shop since 2006. Oil changes, brakes, diagnostics, NJ inspection. Honest work, fair prices. Call (908) 555-0147.">
+  <meta property="og:title" content="Matty's Automotive Springfield NJ | Auto Repair & Inspection">
+  <meta property="og:description" content="Springfield's trusted auto repair shop since 2006. Oil changes, brakes, diagnostics, NJ inspection. Honest work, fair prices. Call (908) 555-0147.">
+  <meta property="og:url" content="https://mattys-automotive.exsisto.ai/mattys-automotive/">
+  <link rel="canonical" href="https://mattys-automotive.exsisto.ai/mattys-automotive/">
   <meta name="theme-color" content="#1a1a1a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Matty's Automotive","telephone":"(908) 555-0147","address":{"@type":"PostalAddress","addressLocality":"Springfield","addressRegion":"NJ","addressCountry":"US"},"url":"https://mattys-automotive.exsisto.ai","priceRange":"$$"}</script>
+  
   <style>
     :root {
-      --primary: #1a1a1a;
-      --accent:  #e85d26;
-      --bg:      #f5f5f5;
-      --dark:    #111;
-      --mid:     #555;
-      --light:   #888;
-      --border:  #e5e5e5;
-      --white:   #fff;
-      --r:       8px;
-      --r-lg:    16px;
-      --shadow:  0 4px 24px rgba(0,0,0,0.09);
-      --nav-h:   68px;
-      --head:    'Bebas Neue', Georgia, serif;
-      --body:    'Barlow', sans-serif;
+      --primary: #1a1a1a; --accent: #e85d26; --bg: #f5f5f5;
+      --dark: #111; --mid: #555; --light: #888; --border: #e5e5e5;
+      --white: #fff; --r: 8px; --r-lg: 16px; --shadow: 0 4px 24px rgba(0,0,0,0.09);
+      --nav-h: 68px; --head: 'Bebas Neue', Georgia, serif; --body: 'Barlow', sans-serif;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: var(--body); color: var(--dark); background: #fff; overflow-x: hidden; line-height: 1.6; }
     img { display: block; width: 100%; object-fit: cover; }
     a { color: inherit; text-decoration: none; }
-    #demo-bar { background: var(--accent); color: #fff; text-align: center; padding: 9px 16px; font-size: 13px; font-weight: 600; }
-    #demo-bar a { color: #fff; text-decoration: underline; opacity: 0.85; }
 
-    /* Nav */
     nav { position: sticky; top: 0; z-index: 200; height: var(--nav-h); background: var(--primary); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
     .nav-logo { font-family: var(--head); font-size: 22px; color: #fff; letter-spacing: 0.03em; }
     .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
-    .nav-links a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.06em; transition: color 0.2s; }
-    .nav-links a:hover { color: #fff; }
+    .nav-links > li > a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.06em; transition: color 0.2s; }
+    .nav-links > li > a:hover { color: #fff; }
     .nav-cta { background: var(--accent) !important; color: #fff !important; padding: 10px 20px; border-radius: var(--r); font-weight: 700 !important; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--white); border-radius: var(--r); box-shadow: 0 8px 32px rgba(0,0,0,0.18); min-width: 220px; z-index: 300; padding: 16px 0 8px; margin-top: -8px; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 10px 18px; font-size: 14px; font-weight: 500; color: var(--dark) !important; text-transform: none !important; letter-spacing: 0 !important; transition: background 0.15s; }
+    .nav-dropdown-menu a:hover { background: var(--bg); color: var(--primary) !important; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 10px; opacity: 0.7; }
     #hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
     #hamburger span { display: block; width: 22px; height: 2px; background: #fff; }
 
-    /* Dropdown */
-    .nav-dropdown { position: relative; }
-    .nav-dropdown-menu {
-      display: none; position: absolute; top: 100%; left: 50%;
-      transform: translateX(-50%);
-      background: var(--white); border-radius: var(--r);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      min-width: 220px; padding: 16px 0 8px; z-index: 300;
-      margin-top: -8px;
-    }
-    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
-    .nav-dropdown-menu a {
-      display: block; padding: 10px 18px;
-      font-size: 14px; font-weight: 500; color: var(--dark) !important;
-      text-transform: none !important; letter-spacing: 0 !important;
-      transition: background 0.15s;
-    }
-    .nav-dropdown-menu a:hover { background: var(--bg); color: var(--primary) !important; }
-    .nav-dropdown > a::after { content: ' ▾'; font-size: 10px; opacity: 0.7; }
-
-    /* Pages */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* Hero */
-    #hero { position: relative; min-height: calc(100vh - var(--nav-h)); display: flex; align-items: center; overflow: hidden; }
-    .hero-bg { position: absolute; inset: 0; }
-    .hero-bg img { height: 100%; filter: brightness(0.42); animation: hzoom 16s ease-in-out infinite alternate; }
-    @keyframes hzoom { from { transform: scale(1); } to { transform: scale(1.06); } }
-    .hero-content { position: relative; z-index: 2; padding: 80px 64px; max-width: 760px; animation: fadeUp 0.8s ease both; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
-    .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 2px; background: var(--accent); }
-    .hero-content h1 { font-family: var(--head); font-size: clamp(44px, 7vw, 88px); color: #fff; line-height: 1.05; letter-spacing: 0.01em; margin-bottom: 20px; }
-    .hero-sub { font-size: 18px; color: rgba(255,255,255,0.78); font-weight: 300; max-width: 520px; margin-bottom: 36px; line-height: 1.7; }
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--r); font-family: var(--body); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.18s, background 0.18s; }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-accent { background: var(--accent); color: #fff; }
-    .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.45); }
-    .btn-ghost:hover { border-color: #fff; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-white { background: #fff; color: var(--accent); }
-    .btn-wghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
-
-    /* Trust bar */
-    .trust-bar { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; display: grid; grid-template-columns: repeat(3, 1fr); }
-    .trust-item { padding: 18px 24px; display: flex; align-items: center; gap: 12px; border-right: 1px solid rgba(255,255,255,0.1); }
-    .trust-item:last-child { border-right: none; }
-    .trust-icon { font-size: 20px; }
-    .trust-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
-    .trust-val { font-family: var(--head); font-size: 17px; color: #fff; }
-
-    /* Stats */
-    .stats-bar { background: var(--primary); display: grid; grid-template-columns: repeat(4, 1fr); }
-    .stat-cell { padding: 32px 20px; text-align: center; border-right: 1px solid rgba(255,255,255,0.12); }
-    .stat-cell:last-child { border-right: none; }
-    .stat-num { font-family: var(--head); font-size: clamp(32px, 4vw, 50px); color: var(--accent); letter-spacing: 0.03em; }
-    .stat-lbl { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
-
-    /* Section base */
     .sec { padding: 88px 64px; }
     .sec-off { background: var(--bg); }
     .sec-dark { background: var(--dark); }
@@ -114,791 +50,253 @@
     .sec-title { font-family: var(--head); font-size: clamp(28px, 4.5vw, 54px); line-height: 1.08; letter-spacing: 0.01em; margin-bottom: 14px; }
     .sec-title-light { color: #fff; }
     .sec-title-dark { color: var(--dark); }
-    .sec-body { font-size: 17px; color: var(--mid); max-width: 560px; line-height: 1.75; font-weight: 300; }
+    .sec-body { font-size: 17px; color: var(--mid); max-width: 600px; line-height: 1.75; font-weight: 300; }
     .sec-body-light { color: rgba(255,255,255,0.65); }
     .sec-hdr { margin-bottom: 52px; }
 
-    /* Services */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--r); font-family: var(--body); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.18s, background 0.18s; text-decoration: none; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.45); }
+    .btn-white { background: #fff; color: var(--accent); }
+    .btn-wghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+
     .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .svc-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px 28px; transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s; position: relative; overflow: hidden; }
+    .svc-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px 28px; transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s; position: relative; overflow: hidden; display: block; color: inherit; }
     .svc-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
     .svc-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--accent); }
     .svc-card:hover::after { transform: scaleX(1); }
     .svc-icon { font-size: 30px; margin-bottom: 16px; }
     .svc-card h3 { font-family: var(--head); font-size: 20px; color: var(--dark); margin-bottom: 10px; letter-spacing: 0.02em; }
     .svc-card p { font-size: 14px; color: var(--mid); line-height: 1.65; font-weight: 300; }
+    .svc-card .svc-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--accent); }
 
-    /* About split */
-    .about-split { display: grid; grid-template-columns: 1fr 1fr; padding: 0; min-height: 520px; }
-    .about-img { overflow: hidden; }
-    .about-img img { height: 100%; }
-    .about-text { background: var(--dark); padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
-    .about-list { margin: 24px 0; display: flex; flex-direction: column; gap: 14px; }
-    .about-item { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: rgba(255,255,255,0.65); font-weight: 300; }
-    .about-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 8px; }
-    .about-item strong { color: #fff; font-weight: 600; }
-
-    /* Gallery */
-    .gallery-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 260px 220px; gap: 10px; }
-    .gal-item { overflow: hidden; border-radius: var(--r); position: relative; }
-    .gal-item.tall { grid-row: span 2; }
-    .gal-item img { height: 100%; transition: transform 0.45s; }
-    .gal-item:hover img { transform: scale(1.05); }
-
-    /* Process */
-    .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-    .step { text-align: center; padding: 32px 24px; }
-    .step-num { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--head); font-size: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-    .step h3 { font-family: var(--head); font-size: 22px; color: var(--dark); letter-spacing: 0.02em; margin-bottom: 8px; }
-    .step p { font-size: 14px; color: var(--mid); font-weight: 300; line-height: 1.65; }
-
-    /* Badges */
-    .badges { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
-    .badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 100px; }
-
-    /* Reviews */
-    .reviews-card { max-width: 520px; margin: 0 auto; background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg); padding: 40px 48px; box-shadow: var(--shadow); text-align: center; }
-    .g-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; font-size: 26px; font-weight: 700; }
-    .g-b { color: #4285F4; } .g-r { color: #EA4335; } .g-y { color: #FBBC05; } .g-g { color: #34A853; }
-    .reviews-num { font-family: var(--head); font-size: 72px; color: var(--dark); line-height: 1; }
-    .reviews-stars { color: #FBBC05; font-size: 26px; letter-spacing: 3px; margin: 8px 0; }
-    .reviews-count { font-size: 14px; color: var(--light); margin-bottom: 24px; }
-    .reviews-note { font-size: 12px; color: var(--light); margin-top: 14px; font-style: italic; }
-
-    /* Blog */
-    .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .blog-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; cursor: pointer; transition: transform 0.25s, box-shadow 0.25s; }
-    .blog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-    .blog-card-body { padding: 24px; }
-    .blog-date { font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
-    .blog-card h3 { font-family: var(--head); font-size: 20px; color: var(--dark); margin-bottom: 10px; line-height: 1.25; }
-    .blog-card p { font-size: 14px; color: var(--mid); line-height: 1.65; font-weight: 300; }
-    .blog-read { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 14px; }
-    .blog-article { margin-bottom: 48px; }
-    .blog-article h2 { font-family: var(--head); font-size: 36px; color: var(--dark); margin-bottom: 8px; }
-    .blog-meta { font-size: 12px; color: var(--light); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .blog-body p { font-size: 16px; color: var(--mid); line-height: 1.8; margin-bottom: 18px; font-weight: 300; }
-    .blog-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
-
-    /* CTA band */
     .cta-band { background: var(--accent); padding: 80px 64px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
     .cta-band h2 { font-family: var(--head); font-size: clamp(28px, 4vw, 52px); color: #fff; line-height: 1.05; }
     .cta-band p { font-size: 17px; color: rgba(255,255,255,0.8); margin-top: 8px; font-weight: 300; }
-    .cta-btns { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; min-width: 220px; }
+    .cta-btns { display: flex; gap: 14px; flex-shrink: 0; flex-wrap: wrap; }
 
-    /* Contact */
-    .contact-split { display: grid; grid-template-columns: 1fr 1fr; padding: 0; }
-    .con-info { background: var(--dark); padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; }
-    .con-rows { margin-top: 36px; display: flex; flex-direction: column; gap: 24px; }
-    .con-row { display: flex; gap: 16px; align-items: flex-start; }
-    .con-icon { width: 42px; height: 42px; border-radius: var(--r); background: rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; }
-    .con-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
-    .con-val { font-size: 16px; color: #fff; }
-    .con-form { padding: 80px 56px; background: var(--bg); }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-grp { margin-bottom: 16px; }
-    .form-grp label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--mid); margin-bottom: 5px; }
-    .form-grp input, .form-grp textarea, .form-grp select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--r); font-family: var(--body); font-size: 15px; color: var(--dark); background: #fff; transition: border-color 0.2s; }
-    .form-grp input:focus, .form-grp textarea:focus { outline: none; border-color: var(--primary); }
-    .form-grp textarea { min-height: 110px; resize: vertical; }
-
-    /* Footer */
-    footer { background: #111; padding: 36px 64px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    footer { background: #111; padding: 36px 64px; }
+    .foot-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .foot-logo { font-family: var(--head); font-size: 20px; color: #fff; letter-spacing: 0.03em; }
     .foot-copy { font-size: 13px; color: rgba(255,255,255,0.35); }
-    .foot-links { display: flex; gap: 20px; }
+    .foot-links { display: flex; gap: 20px; flex-wrap: wrap; }
     .foot-links a { font-size: 13px; color: rgba(255,255,255,0.45); transition: color 0.2s; }
     .foot-links a:hover { color: #fff; }
 
-    /* Mobile */
     @media (max-width: 900px) {
       nav { padding: 0 20px; }
       .nav-links { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: var(--primary); flex-direction: column; padding: 24px 20px; gap: 20px; z-index: 199; }
       .nav-links.open { display: flex; }
       #hamburger { display: flex; }
-      .hero-content { padding: 56px 24px 240px; }
-      .trust-bar { grid-template-columns: 1fr; }
-      .trust-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .stat-cell:nth-child(2) { border-right: none; }
-      .svc-grid { grid-template-columns: 1fr; }
+      .nav-dropdown-menu { position: static; transform: none; box-shadow: none; padding: 0 0 0 16px; margin-top: 8px; background: transparent; }
+      .nav-dropdown-menu a { color: rgba(255,255,255,0.75) !important; padding: 6px 0; }
       .sec { padding: 60px 24px; }
-      .about-split, .contact-split { grid-template-columns: 1fr; }
-      .about-img { min-height: 300px; }
-      .about-text, .con-info, .con-form { padding: 56px 24px; }
-      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .gal-item.tall { grid-row: auto; min-height: 220px; }
-      .gal-item { min-height: 180px; }
-      .process-grid { grid-template-columns: 1fr; }
-      .blog-grid { grid-template-columns: 1fr; }
+      .svc-grid { grid-template-columns: 1fr; }
       .cta-band { grid-template-columns: 1fr; padding: 56px 24px; gap: 24px; }
-      .cta-btns { min-width: unset; flex-direction: row; flex-wrap: wrap; }
-      footer { padding: 28px 24px; flex-direction: column; text-align: center; }
+      footer { padding: 28px 24px; }
+      .foot-inner { flex-direction: column; text-align: center; }
       .foot-links { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-
-
 <nav>
-  <div class="nav-logo">Matty's Automotive</div>
+  <a href="/mattys-automotive/" class="nav-logo">Matty's Automotive</a>
   <ul class="nav-links" id="nav-links">
-    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="/mattys-automotive/" >Home</a></li>
     <li class="nav-dropdown">
-      <a href="#" onclick="showPage('services')">Services</a>
+      <a href="/mattys-automotive/services/" >Services</a>
       <div class="nav-dropdown-menu">
-        <a href="#" onclick="showPage('svc-oil-changes')">🛢️ Oil Changes</a><a href="#" onclick="showPage('svc-brake-service')">🚗 Brake Service</a><a href="#" onclick="showPage('svc-engine-diagnostics')">🔧 Engine Diagnostics</a><a href="#" onclick="showPage('svc-battery-electrical')">🔋 Battery & Electrical</a><a href="#" onclick="showPage('svc-ac-heat')">❄️ AC & Heat</a><a href="#" onclick="showPage('svc-nj-state-inspection')">✅ NJ State Inspection</a>
+        <a href="/mattys-automotive/services/oil-changes/">🛢️ Oil Changes</a><a href="/mattys-automotive/services/brake-service/">🛑 Brake Service</a><a href="/mattys-automotive/services/engine-diagnostics/">🔧 Engine Diagnostics</a><a href="/mattys-automotive/services/battery-electrical/">🔋 Battery & Electrical</a><a href="/mattys-automotive/services/ac-heat/">❄️ AC & Heat</a><a href="/mattys-automotive/services/nj-state-inspection/">✅ NJ State Inspection</a>
       </div>
     </li>
-    <li><a href="#" onclick="showPage('about')">About</a></li>
-    <li><a href="#" onclick="showPage('blog')">Blog</a></li>
-    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+    <li><a href="/mattys-automotive/about/" >About</a></li>
+    <li><a href="/mattys-automotive/blog/" >Blog</a></li>
+    <li><a href="/mattys-automotive/contact/" >Contact</a></li>
     <li><a href="tel:9085550147" class="nav-cta">Call Now</a></li>
   </ul>
-  <button id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <button id="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-
-<!-- ══ HOME ══════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active">
-
-  <section id="hero">
-    <div class="hero-bg"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/hero.jpg" alt="Matty's Automotive"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">Springfield, NJ</div>
-      <h1>Springfield's Trusted Auto Shop</h1>
-      <p class="hero-sub">Your neighborhood mechanics delivering honest work and fair prices for over a decade. We keep Springfield drivers safe on the road.</p>
-      <div class="hero-btns">
+  <!-- Hero -->
+  <section style="position:relative;min-height:calc(100vh - var(--nav-h));display:flex;align-items:center;overflow:hidden;">
+    <div style="position:absolute;inset:0;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/hero.jpg" alt="Matty's Automotive" style="height:100%;filter:brightness(0.42);"></div>
+    <div style="position:relative;z-index:2;padding:80px 64px;max-width:760px;">
+      <div style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">
+        <span style="display:block;width:28px;height:2px;background:var(--accent);"></span>Springfield, NJ
+      </div>
+      <h1 style="font-family:var(--head);font-size:clamp(44px,7vw,88px);color:#fff;line-height:1.05;letter-spacing:0.01em;margin-bottom:20px;">Springfield's Trusted Auto Experts</h1>
+      <p style="font-size:18px;color:rgba(255,255,255,0.78);font-weight:300;max-width:520px;margin-bottom:36px;line-height:1.7;">For over 18 years, Matty's Automotive has been Springfield's go-to shop for honest, reliable car care. We treat your vehicle like our own, delivering quality service at prices that won't break the bank.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
         <a href="tel:9085550147" class="btn btn-accent">📞 (908) 555-0147</a>
-        <button class="btn btn-ghost" onclick="showPage('services')">Our Services</button>
+        <a href="/mattys-automotive/services/" class="btn btn-ghost">Our Services</a>
       </div>
     </div>
-    <div class="trust-bar">
-      <div class="trust-item"><div class="trust-icon">⭐</div><div><div class="trust-label">Google Rating</div><div class="trust-val">4.8★</div></div></div>
-      <div class="trust-item"><div class="trust-icon">🏆</div><div><div class="trust-label">Years Experience</div><div class="trust-val">14+</div></div></div>
-      <div class="trust-item"><div class="trust-icon">✅</div><div><div class="trust-label">ASE Certified Technicians</div><div class="trust-val">96%</div></div></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(3,1fr);">
+      <div style="padding:18px 24px;border-right:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:12px;"><span style="font-size:14px;font-weight:600;color:#fff;">✓ Honest Work Guaranteed</span></div><div style="padding:18px 24px;border-right:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:12px;"><span style="font-size:14px;font-weight:600;color:#fff;">✓ Fair Price Promise</span></div><div style="padding:18px 24px;border-right:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:12px;"><span style="font-size:14px;font-weight:600;color:#fff;">✓ Local Family Business</span></div>
     </div>
   </section>
 
-  <div class="stats-bar">
-    <div class="stat-cell"><div class="stat-num">1000+</div><div class="stat-lbl">Happy Customers</div></div>
-    <div class="stat-cell"><div class="stat-num">14+</div><div class="stat-lbl">Years Experience</div></div>
-    <div class="stat-cell"><div class="stat-num">96%</div><div class="stat-lbl">Customer Retention</div></div>
-    <div class="stat-cell"><div class="stat-num">4.8★</div><div class="stat-lbl">Google Rating</div></div>
+  <!-- Stats -->
+  <div style="background:var(--primary);display:grid;grid-template-columns:repeat(4,1fr);">
+    <div style="padding:32px 20px;text-align:center;border-right:1px solid rgba(255,255,255,0.12);"><div style="font-family:var(--head);font-size:clamp(32px,4vw,50px);color:var(--accent);letter-spacing:0.03em;">2000+</div><div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Happy Customers</div></div><div style="padding:32px 20px;text-align:center;border-right:1px solid rgba(255,255,255,0.12);"><div style="font-family:var(--head);font-size:clamp(32px,4vw,50px);color:var(--accent);letter-spacing:0.03em;">18+</div><div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Years Experience</div></div><div style="padding:32px 20px;text-align:center;border-right:1px solid rgba(255,255,255,0.12);"><div style="font-family:var(--head);font-size:clamp(32px,4vw,50px);color:var(--accent);letter-spacing:0.03em;">98%</div><div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Satisfaction Rate</div></div><div style="padding:32px 20px;text-align:center;border-right:1px solid rgba(255,255,255,0.12);"><div style="font-family:var(--head);font-size:clamp(32px,4vw,50px);color:var(--accent);letter-spacing:0.03em;">4.9★</div><div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Google Rating</div></div>
   </div>
 
+  <!-- Services -->
   <section class="sec sec-off">
     <div class="sec-hdr"><p class="sec-tag">What We Do</p><h2 class="sec-title sec-title-dark">Our Services</h2><p class="sec-body">Everything you need, done right.</p></div>
     <div class="svc-grid">
-    <div class="svc-card" onclick="showPage('svc-oil-changes')" style="cursor:pointer;">
+    <a href="/mattys-automotive/services/oil-changes/" class="svc-card">
       <div class="svc-icon">🛢️</div>
       <h3>Oil Changes</h3>
-      <p>Quick, professional oil changes using premium lubricants to keep your engine running smoothly.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-brake-service')" style="cursor:pointer;">
-      <div class="svc-icon">🚗</div>
+      <p>Quick, professional oil changes using premium lubricants to keep your engine running smoothly. We'll have you back on Route 22 in no time.</p>
+      <span class="svc-link">Learn more →</span>
+    </a>
+    <a href="/mattys-automotive/services/brake-service/" class="svc-card">
+      <div class="svc-icon">🛑</div>
       <h3>Brake Service</h3>
-      <p>Complete brake inspections, pad replacements, and rotor service for your safety on the road.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-engine-diagnostics')" style="cursor:pointer;">
+      <p>Complete brake system inspection, repair, and replacement services. Your safety is our priority on Springfield's busy streets.</p>
+      <span class="svc-link">Learn more →</span>
+    </a>
+    <a href="/mattys-automotive/services/engine-diagnostics/" class="svc-card">
       <div class="svc-icon">🔧</div>
       <h3>Engine Diagnostics</h3>
-      <p>Advanced computer diagnostics to quickly identify and resolve check engine light issues.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-battery-electrical')" style="cursor:pointer;">
+      <p>Advanced computer diagnostics to quickly identify and solve engine problems. We'll explain everything in plain English, no confusing technical jargon.</p>
+      <span class="svc-link">Learn more →</span>
+    </a>
+    <a href="/mattys-automotive/services/battery-electrical/" class="svc-card">
       <div class="svc-icon">🔋</div>
       <h3>Battery & Electrical</h3>
-      <p>Battery testing, replacement, and electrical system repairs to keep you reliably on the road.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-ac-heat')" style="cursor:pointer;">
+      <p>Full electrical system testing, battery replacement, and alternator service. Don't get stranded in a Springfield parking lot with a dead battery.</p>
+      <span class="svc-link">Learn more →</span>
+    </a>
+    <a href="/mattys-automotive/services/ac-heat/" class="svc-card">
       <div class="svc-icon">❄️</div>
       <h3>AC & Heat</h3>
-      <p>Climate control system repairs and maintenance for year-round driving comfort.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-nj-state-inspection')" style="cursor:pointer;">
+      <p>Climate control repair and maintenance to keep you comfortable year-round. Beat New Jersey's humid summers and cold winters.</p>
+      <span class="svc-link">Learn more →</span>
+    </a>
+    <a href="/mattys-automotive/services/nj-state-inspection/" class="svc-card">
       <div class="svc-icon">✅</div>
       <h3>NJ State Inspection</h3>
-      <p>Official New Jersey state safety and emissions inspections performed by certified technicians.</p>
-    </div></div>
+      <p>Official New Jersey state inspection services to keep your registration current. Fast, thorough inspections with same-day service available.</p>
+      <span class="svc-link">Learn more →</span>
+    </a></div>
   </section>
 
-  <div class="about-split">
-    <div class="about-img"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/about.jpg" alt="About Matty's Automotive" style="height:100%;min-height:520px;"></div>
-    <div class="about-text">
+  <!-- About split -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;min-height:520px;">
+    <div style="overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/about.jpg" alt="About Matty's Automotive" style="height:100%;min-height:520px;"></div>
+    <div style="background:var(--dark);padding:80px 60px;display:flex;flex-direction:column;justify-content:center;">
       <p class="sec-tag">Who We Are</p>
-      <h2 class="sec-title sec-title-light">Your Local Auto Experts</h2>
-      <p class="sec-body sec-body-light">Matty's Automotive has been proudly serving Springfield and surrounding communities since 2010, building our reputation one satisfied customer at a time. We believe in transparent pricing, quality workmanship, and treating every vehicle like it belongs to family. What sets us apart is our commitment to honest diagnostics and never recommending unnecessary repairs.</p>
-      <div class="about-list">
-        <div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div><div class="about-item"><div class="about-dot"></div><span>Fair Price Guarantee</span></div><div class="about-item"><div class="about-dot"></div><span>Local Family Owned</span></div>
+      <h2 class="sec-title sec-title-light">Family-Owned Since 2006</h2>
+      <p class="sec-body sec-body-light">Matty's Automotive has been proudly serving Springfield and surrounding New Jersey communities for nearly two decades. We built our reputation on straight talk, fair pricing, and getting the job done right the first time. Our experienced mechanics use the latest diagnostic equipment while maintaining that personal, neighborhood shop feel that keeps families coming back generation after generation.</p>
+      <div style="margin:24px 0;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:15px;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>Honest Work Guaranteed</div><div style="display:flex;align-items:center;gap:10px;font-size:15px;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>Fair Price Promise</div><div style="display:flex;align-items:center;gap:10px;font-size:15px;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>Local Family Business</div>
       </div>
-      <button class="btn btn-accent" onclick="showPage('about')" style="margin-top:24px;width:fit-content;">Learn More</button>
+      <a href="/mattys-automotive/about/" class="btn btn-accent" style="width:fit-content;margin-top:8px;">Learn More</a>
     </div>
   </div>
 
+  <!-- Gallery -->
   
-  <section class="sec" style="padding-top:0;padding-bottom:0;">
-    <div class="gallery-grid">
-      <div class="gal-item tall"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img3.jpg" alt="Gallery 1" style="height:100%;min-height:480px;"></div>
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img4.jpg" alt="Gallery 2" style="height:100%;min-height:260px;"></div>
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img5.jpg" alt="Gallery 3" style="height:100%;min-height:260px;"></div>
-      
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img6.jpg" alt="Gallery 4" style="height:100%;min-height:220px;"></div>
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img7.jpg" alt="Gallery 5" style="height:100%;min-height:220px;"></div>
-    </div>
-  </section>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:260px 220px;gap:10px;">
+    <div style="grid-row:span 2;overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img3.jpg" alt="Gallery 1" style="height:100%;"></div>
+    <div style="overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img4.jpg" alt="Gallery 2" style="height:100%;"></div>
+    <div style="overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img5.jpg" alt="Gallery 3" style="height:100%;"></div>
+    <div style="overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img6.jpg" alt="Gallery 4" style="height:100%;"></div>
+    <div style="overflow:hidden;"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img7.jpg" alt="Gallery 5" style="height:100%;"></div>
+  </div>
 
+  <!-- Process -->
   <section class="sec sec-dark">
     <div class="sec-hdr"><p class="sec-tag">How It Works</p><h2 class="sec-title sec-title-light">Simple Process</h2></div>
-    <div class="process-grid">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Schedule Appointment</h3>
-      <p>Call us or stop by to schedule your service at a time that works for you.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;">
+      
+      <div style="text-align:center;padding:24px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--head);font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">1</div>
+        <h3 style="font-family:var(--head);font-size:22px;color:#fff;letter-spacing:0.02em;margin-bottom:8px;">Call Us</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,0.6);font-weight:300;line-height:1.65;">Give us a call at (908) 555-0147 to describe your car's symptoms. We'll provide an honest assessment and schedule your appointment.</p>
+      </div>
+      <div style="text-align:center;padding:24px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--head);font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">2</div>
+        <h3 style="font-family:var(--head);font-size:22px;color:#fff;letter-spacing:0.02em;margin-bottom:8px;">Expert Diagnosis</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,0.6);font-weight:300;line-height:1.65;">Our certified mechanics will thoroughly inspect your vehicle using state-of-the-art equipment. You'll get a clear explanation of any issues we find.</p>
+      </div>
+      <div style="text-align:center;padding:24px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--head);font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">3</div>
+        <h3 style="font-family:var(--head);font-size:22px;color:#fff;letter-spacing:0.02em;margin-bottom:8px;">Quality Repair</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,0.6);font-weight:300;line-height:1.65;">We complete all work using quality parts and proven techniques. Your car will be road-ready and backed by our satisfaction guarantee.</p>
+      </div>
     </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>Expert Diagnosis</h3>
-      <p>Our certified technicians thoroughly inspect your vehicle and explain what needs attention.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>Quality Repair</h3>
-      <p>We complete the work using quality parts and stand behind every repair with our warranty.</p>
-    </div></div>
-    <div class="badges"><div class="badge">✓ ASE Certified Technicians</div><div class="badge">✓ Fair Price Guarantee</div><div class="badge">✓ Local Family Owned</div></div>
   </section>
 
+  <!-- Google Reviews -->
   <section class="sec sec-off" style="text-align:center;">
-    <div class="sec-hdr">
-      <p class="sec-tag">Reviews</p>
-      <h2 class="sec-title sec-title-dark">What Customers Say</h2>
-      <p class="sec-body" style="margin:0 auto 40px;">We let our Google reviews do the talking.</p>
-    </div>
-    <div class="reviews-card">
-      <div class="g-logo"><span class="g-b">G</span><span class="g-r">o</span><span class="g-y">o</span><span class="g-b">g</span><span class="g-g">l</span><span class="g-r">e</span> <span style="font-size:16px;color:#555;font-weight:500;">Reviews</span></div>
-      <div class="reviews-num">4.8</div>
-      <div class="reviews-stars">★★★★★</div>
-      <div class="reviews-count">Verified Google reviews</div>
-      <p style="font-size:15px;color:var(--mid);margin-bottom:24px;font-weight:300;">Read what your neighbors say about us directly on Google.</p>
+    <div class="sec-hdr"><p class="sec-tag">Reviews</p><h2 class="sec-title sec-title-dark">What Customers Say</h2><p class="sec-body" style="margin:0 auto 40px;">We let our Google reviews speak for us.</p></div>
+    <div style="max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:40px 48px;box-shadow:var(--shadow);">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;font-size:26px;font-weight:700;">
+        <span style="color:#4285F4;">G</span><span style="color:#EA4335;">o</span><span style="color:#FBBC05;">o</span><span style="color:#4285F4;">g</span><span style="color:#34A853;">l</span><span style="color:#EA4335;">e</span>
+        <span style="font-size:16px;color:#555;font-weight:500;">Reviews</span>
+      </div>
+      <div style="font-family:var(--head);font-size:72px;color:var(--dark);line-height:1;">4.9</div>
+      <div style="color:#FBBC05;font-size:26px;letter-spacing:3px;margin:8px 0;">★★★★★</div>
+      <div style="font-size:14px;color:var(--light);margin-bottom:24px;">Verified Google reviews</div>
       <a href="https://www.google.com/maps/search/Matty's%20Automotive%20Springfield%20NJ" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;">Read Our Google Reviews →</a>
-      <p class="reviews-note">We never post or solicit fake reviews.</p>
+      <p style="font-size:12px;color:var(--light);margin-top:14px;font-style:italic;">We never post or solicit fake reviews.</p>
     </div>
   </section>
 
   
   <section class="sec">
     <div class="sec-hdr"><p class="sec-tag">Our Blog</p><h2 class="sec-title sec-title-dark">Latest Articles</h2></div>
-    <div class="blog-grid">
-    <div class="blog-card" onclick="showPage('blog')">
-      <div class="blog-card-body">
-        <div class="blog-date">April 10, 2026</div>
-        <h3>5 Warning Signs Your Car Needs Immediate Attention - Springfield, NJ Auto Repair</h3>
-        <p>Don't ignore these critical warning signs that your vehicle needs professional attention. Recognizing these symptoms early can save you from costly repairs and keep you safe on Springfield roads.</p>
-        <div class="blog-read">Read More →</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+    <a href="/mattys-automotive/blog/5-critical-warning-signs-car-needs-immediate-attention-springfield-nj/" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:block;transition:transform 0.25s,box-shadow 0.25s;color:inherit;">
+      <div style="padding:24px;">
+        <div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">April 10, 2026</div>
+        <h3 style="font-family:var(--head);font-size:20px;color:var(--dark);margin-bottom:10px;line-height:1.25;">5 Critical Warning Signs Your Car Needs Immediate Attention in Springfield, NJ</h3>
+        <p style="font-size:14px;color:var(--mid);line-height:1.65;font-weight:300;">Don't ignore these five warning signs that indicate your vehicle needs urgent professional attention. Recognizing these symptoms early can save you from costly repairs and dangerous breakdowns on Springfield roads.</p>
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-top:14px;">Read More →</div>
       </div>
-    </div>
-    <div class="blog-card" onclick="showPage('blog')">
-      <div class="blog-card-body">
-        <div class="blog-date">April 10, 2026</div>
-        <h3>How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide</h3>
-        <p>Finding a reliable auto repair shop can feel overwhelming, but knowing what to look for makes all the difference. Learn the key factors that separate trustworthy mechanics from the rest when choosing automotive service in Springfield, NJ.</p>
-        <div class="blog-read">Read More →</div>
+    </a>
+    <a href="/mattys-automotive/blog/how-to-choose-trustworthy-auto-shop-springfield-nj/" style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:block;transition:transform 0.25s,box-shadow 0.25s;color:inherit;">
+      <div style="padding:24px;">
+        <div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">April 10, 2026</div>
+        <h3 style="font-family:var(--head);font-size:20px;color:var(--dark);margin-bottom:10px;line-height:1.25;">How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide</h3>
+        <p style="font-size:14px;color:var(--mid);line-height:1.65;font-weight:300;">Finding a reliable auto repair shop in Springfield, NJ doesn't have to be stressful. Learn the key factors to consider when selecting a trustworthy mechanic for your vehicle maintenance and repair needs.</p>
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-top:14px;">Read More →</div>
       </div>
-    </div></div>
+    </a></div>
+    <div style="text-align:center;margin-top:32px;"><a href="/mattys-automotive/blog/" class="btn btn-outline">View All Posts →</a></div>
   </section>
 
   <div class="cta-band">
-    <div><h2>Schedule Your Service Today</h2><p>Don't wait until small problems become expensive repairs - call now for honest diagnostics and fair pricing.</p></div>
+    <div><h2>Schedule Your Service Today</h2><p>Don't wait for small problems to become expensive repairs.</p></div>
     <div class="cta-btns">
       <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
+      <a href="/mattys-automotive/contact/" class="btn btn-wghost">Get a Quote</a>
     </div>
   </div>
-
-</div><!-- /home -->
-
-
-<!-- ══ SERVICES ══════════════════════════════════════════════════════════ -->
-<div id="page-services" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr"><p class="sec-tag">What We Offer</p><h2 class="sec-title sec-title-dark">Our Services</h2><p class="sec-body">Professional service tailored to your needs in Springfield, NJ.</p></div>
-    <div class="svc-grid">
-    <div class="svc-card" onclick="showPage('svc-oil-changes')" style="cursor:pointer;">
-      <div class="svc-icon">🛢️</div>
-      <h3>Oil Changes</h3>
-      <p>Quick, professional oil changes using premium lubricants to keep your engine running smoothly.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-brake-service')" style="cursor:pointer;">
-      <div class="svc-icon">🚗</div>
-      <h3>Brake Service</h3>
-      <p>Complete brake inspections, pad replacements, and rotor service for your safety on the road.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-engine-diagnostics')" style="cursor:pointer;">
-      <div class="svc-icon">🔧</div>
-      <h3>Engine Diagnostics</h3>
-      <p>Advanced computer diagnostics to quickly identify and resolve check engine light issues.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-battery-electrical')" style="cursor:pointer;">
-      <div class="svc-icon">🔋</div>
-      <h3>Battery & Electrical</h3>
-      <p>Battery testing, replacement, and electrical system repairs to keep you reliably on the road.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-ac-heat')" style="cursor:pointer;">
-      <div class="svc-icon">❄️</div>
-      <h3>AC & Heat</h3>
-      <p>Climate control system repairs and maintenance for year-round driving comfort.</p>
-    </div>
-    <div class="svc-card" onclick="showPage('svc-nj-state-inspection')" style="cursor:pointer;">
-      <div class="svc-icon">✅</div>
-      <h3>NJ State Inspection</h3>
-      <p>Official New Jersey state safety and emissions inspections performed by certified technicians.</p>
-    </div></div>
-  </section>
-  
-  <section class="sec" style="padding-top:0;padding-bottom:0;">
-    <div class="gallery-grid">
-      <div class="gal-item tall"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img6.jpg" alt="Service 1" style="height:100%;min-height:480px;"></div>
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img7.jpg" alt="Service 2" style="height:100%;min-height:260px;"></div>
-      <div class="gal-item"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/img8.jpg" alt="Service 3" style="height:100%;min-height:260px;"></div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Ready to Get Started?</h2><p>Call us today for a free estimate.</p></div>
-    <div class="cta-btns">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Contact Us</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══ ABOUT ══════════════════════════════════════════════════════════════ -->
-<div id="page-about" class="page">
-  <div class="about-split" style="min-height:560px;">
-    <div class="about-img"><img src="https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images/client-sites/mattys-automotive/about.jpg" alt="About Matty's Automotive" style="height:100%;min-height:560px;"></div>
-    <div class="about-text">
-      <p class="sec-tag">Our Story</p>
-      <h2 class="sec-title sec-title-light">Your Local Auto Experts</h2>
-      <p class="sec-body sec-body-light">Matty's Automotive has been proudly serving Springfield and surrounding communities since 2010, building our reputation one satisfied customer at a time. We believe in transparent pricing, quality workmanship, and treating every vehicle like it belongs to family. What sets us apart is our commitment to honest diagnostics and never recommending unnecessary repairs.</p>
-      <div class="about-list">
-        <div class="about-item"><div class="about-dot"></div><span>ASE Certified Technicians</span></div><div class="about-item"><div class="about-dot"></div><span>Fair Price Guarantee</span></div><div class="about-item"><div class="about-dot"></div><span>Local Family Owned</span></div>
-      </div>
-    </div>
-  </div>
-  
-  <section class="sec sec-dark">
-    <div class="sec-hdr"><p class="sec-tag">Our Process</p><h2 class="sec-title sec-title-light">How We Work</h2></div>
-    <div class="process-grid">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Schedule Appointment</h3>
-      <p>Call us or stop by to schedule your service at a time that works for you.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>Expert Diagnosis</h3>
-      <p>Our certified technicians thoroughly inspect your vehicle and explain what needs attention.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>Quality Repair</h3>
-      <p>We complete the work using quality parts and stand behind every repair with our warranty.</p>
-    </div></div>
-  </section>
-</div>
-
-
-<!-- ══ BLOG ══════════════════════════════════════════════════════════════ -->
-<div id="page-blog" class="page">
-  <section class="sec" style="padding-top:80px;">
-    <div class="sec-hdr"><p class="sec-tag">Our Blog</p><h2 class="sec-title sec-title-dark">Articles &amp; Tips</h2><p class="sec-body">Helpful advice from the team at Matty's Automotive.</p></div>
-    
-    <article class="blog-article" id="post-5-warning-signs-car-needs-immediate-attention-springfield-nj">
-      <h2>5 Warning Signs Your Car Needs Immediate Attention - Springfield, NJ Auto Repair</h2>
-      <div class="blog-meta">April 10, 2026 · Matty's Automotive</div>
-      <div class="blog-body"><p>As a driver in Springfield, NJ, your vehicle is essential for daily commuting, weekend errands, and everything in between. While regular maintenance helps prevent major issues, sometimes problems arise unexpectedly. At Matty's Automotive, we've seen countless situations where early intervention could have saved drivers significant time, money, and stress.</p><p>Here are five critical warning signs that your car needs immediate professional attention:</p><p>**1. Strange Noises That Won't Go Away**</p><p>Your car shouldn't sound like a symphony of squeaks, grinding, or knocking. Squealing brakes often indicate worn brake pads, while grinding sounds suggest metal-on-metal contact that can damage rotors. A knocking engine noise could signal serious internal damage, and grinding during gear shifts may indicate transmission problems. Don't assume these sounds will resolve themselves – they typically worsen over time.</p><p>**2. Dashboard Warning Lights**</p><p>Modern vehicles are equipped with sophisticated warning systems designed to alert you to potential problems. Never ignore warning lights, especially the check engine light, oil pressure warning, or brake system alert. These lights indicate your car's computer has detected an issue that requires immediate attention. Even if your car seems to run fine, continuing to drive with warning lights active can lead to catastrophic engine or safety system failures.</p><p>**3. Fluid Leaks Under Your Vehicle**</p><p>Puddles or stains under your parked car are never a good sign. Dark brown or black spots typically indicate oil leaks, while red fluid suggests transmission problems. Green or orange puddles point to coolant leaks, which can cause engine overheating. Clear fluid might be harmless condensation from air conditioning, but colored fluids always warrant professional inspection. Springfield's varying temperatures can exacerbate leak problems, making prompt attention crucial.</p><p>**4. Changes in Driving Performance**</p><p>Pay attention to how your car feels while driving. Vibrations in the steering wheel, difficulty steering, or the vehicle pulling to one side could indicate alignment issues, tire problems, or suspension damage. If your car hesitates during acceleration, stalls frequently, or struggles to start, these symptoms suggest engine or fuel system problems that need immediate diagnosis.</p><p>**5. Unusual Smells**</p><p>Your nose can be an excellent diagnostic tool. Sweet smells often indicate coolant leaks, while burning odors could suggest brake problems or engine issues. Gasoline odors inside the cabin may indicate fuel system leaks, creating both performance and safety concerns. Musty smells might point to air conditioning or heating system problems. Any persistent unusual smell should prompt an immediate visit to a qualified mechanic.</p><p>**Why Immediate Attention Matters**</p><p>Ignoring these warning signs rarely saves money in the long run. Small problems often cascade into major repairs when left unaddressed. For example, continuing to drive with worn brake pads can damage expensive rotors, turning a relatively minor repair into a costly overhaul. Similarly, driving with low oil pressure or overheating issues can destroy your engine entirely.</p><p>More importantly, many of these symptoms affect your safety and that of other Springfield drivers. Brake problems, steering issues, or engine failures can lead to dangerous situations on busy roads like Route 22 or the Garden State Parkway.</p><p>**Trust Your Local Springfield Experts**</p><p>At Matty's Automotive, we understand that car problems are never convenient. However, addressing issues promptly protects both your investment and your safety. Our experienced technicians use state-of-the-art diagnostic equipment to quickly identify problems and provide honest, reliable solutions.</p><p>If you've noticed any of these warning signs, don't wait. Contact Matty's Automotive today at (908) 555-0147 to schedule an inspection. Early intervention today can save you from major headaches tomorrow.</p></div>
-    </article><hr class="blog-divider">
-    <article class="blog-article" id="post-choose-trustworthy-auto-shop-springfield-nj">
-      <h2>How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide</h2>
-      <div class="blog-meta">April 10, 2026 · Matty's Automotive</div>
-      <div class="blog-body"><p>When your car needs repair, finding a trustworthy auto shop can mean the difference between quality service and costly headaches. As Springfield, NJ residents know, having a reliable mechanic you can count on is invaluable for keeping your vehicle running smoothly and your wallet protected.</p><p>Here are the essential factors to consider when choosing an automotive repair shop in your area:</p><p>**Check Certifications and Credentials**</p><p>Look for shops with certified technicians, particularly those with ASE (Automotive Service Excellence) certifications. These credentials demonstrate that mechanics have undergone rigorous testing and continue their education to stay current with evolving automotive technology. A reputable shop will proudly display their certifications and be transparent about their technicians' qualifications.</p><p>**Research Reviews and Ask for References**</p><p>Online reviews provide valuable insights into other customers' experiences. Check Google, Yelp, and Better Business Bureau ratings, paying attention to how shops respond to both positive and negative feedback. Don't hesitate to ask friends, family, and coworkers for recommendations – word-of-mouth referrals from trusted sources are often the most reliable indicators of quality service.</p><p>**Evaluate Communication and Transparency**</p><p>A trustworthy auto shop will clearly explain what's wrong with your vehicle, what repairs are needed, and provide detailed estimates before beginning work. They should be willing to show you damaged parts and answer your questions without making you feel rushed or uninformed. Avoid shops that pressure you into immediate decisions or seem evasive about pricing.</p><p>**Look for Fair and Transparent Pricing**</p><p>While the cheapest option isn't always the best, pricing should be competitive and clearly explained. Reliable shops provide written estimates that break down parts and labor costs. They should also discuss different repair options when available, helping you make informed decisions based on your budget and vehicle's needs.</p><p>**Assess the Facility and Equipment**</p><p>A clean, organized shop with modern diagnostic equipment indicates professionalism and investment in quality service. While a spotless facility doesn't guarantee excellent work, it often reflects the shop's attention to detail and pride in their business.</p><p>**Verify Insurance and Warranties**</p><p>Ensure the shop carries proper liability insurance and offers warranties on their work. A confident, reputable business will stand behind their repairs and provide guarantees on both parts and labor. This protection gives you recourse if issues arise after service.</p><p>**Consider Specialization and Experience**</p><p>Some shops specialize in certain makes, models, or types of repairs. If you drive a specific brand or have a unique issue, finding a shop with relevant expertise can be beneficial. However, established general automotive shops often have the experience and equipment to handle a wide variety of vehicles and problems.</p><p>**Trust Your Instincts**</p><p>Pay attention to how you're treated from the moment you walk in. Professional, courteous staff who listen to your concerns and treat you with respect are indicators of a business that values customer satisfaction. If something feels off, don't ignore that feeling.</p><p>**Building a Long-Term Relationship**</p><p>The goal isn't just finding a shop for immediate repairs, but establishing a relationship with professionals who will help maintain your vehicle over time. Regular maintenance from a trusted shop can prevent major issues and save money in the long run.</p><p>At Matty's Automotive, we understand that choosing an auto repair shop is about more than just fixing your car – it's about finding professionals you can trust with one of your most important investments. Our Springfield, NJ location has been serving the community with honest, reliable automotive service, and we're committed to earning your confidence through transparent communication and quality workmanship.</p><p>Ready to experience trustworthy auto care? Call Matty's Automotive today at (908) 555-0147 to schedule your appointment or discuss your vehicle's needs with our experienced team.</p></div>
-    </article>
-  </section>
-</div>
-
-
-<!-- ══ CONTACT ═══════════════════════════════════════════════════════════ -->
-<div id="page-contact" class="page">
-  <div class="contact-split">
-    <div class="con-info">
-      <p class="sec-tag">Reach Us</p>
-      <h2 class="sec-title sec-title-light">Schedule Your Service Today</h2>
-      <div class="con-rows">
-        <div class="con-row"><div class="con-icon">📞</div><div><div class="con-lbl">Phone</div><div class="con-val">(908) 555-0147</div></div></div>
-        <div class="con-row"><div class="con-icon">✉️</div><div><div class="con-lbl">Email</div><div class="con-val">matt@amplifyforlawyers.com</div></div></div>
-        <div class="con-row"><div class="con-icon">📍</div><div><div class="con-lbl">Location</div><div class="con-val">Springfield, NJ</div></div></div>
-        <div class="con-row"><div class="con-icon">🕐</div><div><div class="con-lbl">Hours</div><div class="con-val">Mon–Fri: 8am–6pm<br>Sat: 9am–3pm</div></div></div>
-      </div>
-    </div>
-    <div class="con-form">
-      <p class="sec-tag">Send a Message</p>
-      <h2 class="sec-title sec-title-dark" style="margin-bottom:28px;">Get In Touch</h2>
-      <div class="form-row-2">
-        <div class="form-grp"><label>First Name</label><input type="text" placeholder="John"></div>
-        <div class="form-grp"><label>Last Name</label><input type="text" placeholder="Smith"></div>
-      </div>
-      <div class="form-grp"><label>Email</label><input type="email" placeholder="john@email.com"></div>
-      <div class="form-grp"><label>Phone</label><input type="tel" placeholder="(908) 555-0147"></div>
-      <div class="form-grp"><label>How Can We Help?</label><textarea placeholder="Tell us about your project..."></textarea></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="handleSubmit(this)">Send Message</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══ SERVICE: Oil Changes ══ -->
-<div id="page-svc-oil-changes" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">🛢️ Oil Changes</p>
-      <h2 class="sec-title sec-title-dark">Professional Oil Changes in Springfield, NJ</h2>
-      <p class="sec-body">Keep your engine running at peak performance with Matty's Automotive's expert oil change services in Springfield, NJ. Our experienced technicians use only premium lubricants and provide fast, reliable service you can trust.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Oil Changes Matter</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Regular oil changes are essential for protecting your engine from wear, reducing friction, and maintaining optimal performance. Fresh, high-quality oil keeps your engine components lubricated and helps prevent costly repairs down the road.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What's Included</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Every oil change at Matty's includes a complete drain and refill with premium oil, a new oil filter, and a comprehensive inspection of fluid levels. We'll have you back on Springfield's roads quickly with the confidence that your engine is properly maintained.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has been Springfield's trusted automotive partner for years, combining quick service with meticulous attention to detail. Our commitment to using only premium lubricants and providing honest, reliable service makes us the smart choice for your vehicle's maintenance needs.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Oil Change Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your Oil Change Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
-<!-- ══ SERVICE: Brake Service ══ -->
-<div id="page-svc-brake-service" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">🚗 Brake Service</p>
-      <h2 class="sec-title sec-title-dark">Expert Brake Service in Springfield, NJ</h2>
-      <p class="sec-body">Your brakes are your vehicle's most critical safety system, and at Matty's Automotive in Springfield, NJ, we never compromise on your safety. Our certified technicians provide comprehensive brake services to keep you and your family safe on New Jersey roads.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Brake Inspections</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our thorough brake inspections examine every component of your braking system, from pads and rotors to brake fluid and lines. We identify potential issues before they become dangerous problems, ensuring your vehicle stops reliably every time.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What We Include</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Every brake service includes a detailed inspection, brake pad replacement when needed, rotor resurfacing or replacement, and brake fluid check. You'll receive a complete report of our findings and recommendations for optimal braking performance.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">With over 20 years serving Springfield and surrounding communities, Matty's Automotive has built a reputation for honest, reliable brake service you can trust. We use only premium parts and back all our brake work with comprehensive warranties for your peace of mind.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Brake Inspection Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your Brake Inspection Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
-<!-- ══ SERVICE: Engine Diagnostics ══ -->
-<div id="page-svc-engine-diagnostics" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">🔧 Engine Diagnostics</p>
-      <h2 class="sec-title sec-title-dark">Expert Engine Diagnostics in Springfield, NJ</h2>
-      <p class="sec-body">When your check engine light comes on, don't panic – trust Matty's Automotive to get to the bottom of it quickly. Our Springfield team uses the latest diagnostic equipment to pinpoint exactly what's wrong with your engine, saving you time and money on unnecessary repairs.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Advanced Diagnostic Technology</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our state-of-the-art computer diagnostic systems can read error codes from your vehicle's onboard computer within minutes. This precise technology allows us to identify everything from minor sensor issues to major engine problems before they become costly breakdowns.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Diagnostic Process</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">We'll connect your vehicle to our diagnostic scanner, retrieve all error codes, and provide you with a detailed explanation of what each code means. You'll receive a written report with our findings and recommended repairs, so you can make informed decisions about your vehicle's care.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has been Springfield's trusted engine diagnostic specialist for over 15 years, with certified technicians who stay current on the latest automotive technology. We pride ourselves on honest, accurate diagnoses that save our neighbors money by fixing the right problem the first time.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Engine Diagnostic Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your Engine Diagnostic Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
-<!-- ══ SERVICE: Battery & Electrical ══ -->
-<div id="page-svc-battery-electrical" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">🔋 Battery & Electrical</p>
-      <h2 class="sec-title sec-title-dark">Battery & Electrical Services in Springfield, NJ</h2>
-      <p class="sec-body">When your car won't start or electrical systems fail, Springfield drivers trust Matty's Automotive for fast, reliable solutions. Our experienced technicians diagnose and fix battery and electrical issues to get you back on the road safely.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Electrical Diagnostics</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">A failing battery or electrical system can leave you stranded without warning. Our comprehensive testing identifies weak batteries, faulty alternators, and wiring issues before they cause major problems.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Professional Service You Need</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">We provide battery testing, replacement installation, alternator repairs, and complete electrical system diagnostics. Every service includes a thorough inspection to ensure your vehicle's electrical components work together reliably.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has served Springfield for years with honest pricing and expert electrical repairs you can count on. Our local team uses quality parts and stands behind every battery and electrical service with reliable warranties.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your Electrical Service Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-ac-heat')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>❄️</span><span>AC & Heat</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your Electrical Service Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
-<!-- ══ SERVICE: AC & Heat ══ -->
-<div id="page-svc-ac-heat" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">❄️ AC & Heat</p>
-      <h2 class="sec-title sec-title-dark">AC & Heat Repair Springfield NJ</h2>
-      <p class="sec-body">When your car's climate control fails, Springfield drivers trust Matty's Automotive for fast, reliable repairs. Our experienced technicians diagnose and fix heating and air conditioning issues to keep you comfortable year-round.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Complete Climate Control</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Your vehicle's AC and heating system work hard through New Jersey's hot summers and cold winters. From refrigerant leaks to faulty compressors, we handle all climate control repairs to ensure optimal performance.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What We Include</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our comprehensive service covers system diagnostics, refrigerant replacement, compressor repairs, and heating component maintenance. We use quality parts and provide transparent pricing with detailed explanations of all work performed.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">Matty's Automotive has served Springfield for years with honest service and fair prices on all climate control repairs. Our ASE-certified technicians use the latest diagnostic equipment to quickly identify issues and get you back on the road comfortably.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your AC Heat Service Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your AC Heat Service Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
-<!-- ══ SERVICE: NJ State Inspection ══ -->
-<div id="page-svc-nj-state-inspection" class="page">
-  <section class="sec sec-off" style="padding-top:80px;">
-    <div class="sec-hdr">
-      <p class="sec-tag">✅ NJ State Inspection</p>
-      <h2 class="sec-title sec-title-dark">NJ State Inspections in Springfield, NJ</h2>
-      <p class="sec-body">Keep your vehicle legally compliant with official New Jersey state inspections at Matty's Automotive in Springfield. Our certified technicians ensure your car meets all safety and emissions requirements quickly and affordably.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
-      <div>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">State-Required Safety Inspections</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">New Jersey requires annual safety and emissions inspections for all registered vehicles. Our comprehensive inspection covers brakes, lights, steering, suspension, emissions systems, and other critical safety components to ensure your vehicle meets state standards.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">What to Expect</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;margin-bottom:28px;">Our certified inspection process typically takes 30-45 minutes and includes a thorough examination of all required systems. You'll receive official documentation upon passing, and we'll explain any issues that need attention before re-inspection.</p>
-        <h3 style="font-family:var(--head);font-size:24px;color:var(--dark);margin-bottom:12px;letter-spacing:0.02em;">Why Choose Matty's Automotive?</h3>
-        <p style="font-size:16px;color:var(--mid);line-height:1.75;font-weight:300;">As a trusted Springfield auto shop with certified NJ inspection technicians, Matty's Automotive provides fast, thorough inspections with honest assessments. We've been serving the Springfield community for years, building relationships based on reliability and fair pricing.</p>
-      </div>
-      <div style="position:sticky;top:88px;">
-        <div style="background:var(--dark);border-radius:var(--r-lg);padding:32px 28px;">
-          <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Get Started Today</p>
-          <h3 style="font-family:var(--head);font-size:26px;color:#fff;margin-bottom:14px;line-height:1.1;">Schedule Your NJ State Inspection Today</h3>
-          <a href="tel:9085550147" style="display:block;background:var(--accent);color:#fff;text-align:center;padding:14px;border-radius:var(--r);font-weight:700;font-size:15px;margin-bottom:12px;text-decoration:none;">📞 (908) 555-0147</a>
-          <button onclick="showPage('contact')" style="display:block;width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:12px;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;">Get a Free Quote</button>
-        </div>
-        <div style="margin-top:20px;background:var(--bg);border-radius:var(--r-lg);padding:24px;">
-          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:14px;">Other Services</p>
-          
-          <div onclick="showPage('svc-oil-changes')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🛢️</span><span>Oil Changes</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-brake-service')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🚗</span><span>Brake Service</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-engine-diagnostics')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔧</span><span>Engine Diagnostics</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-          <div onclick="showPage('svc-battery-electrical')" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;color:var(--dark);font-weight:500;">
-            <span>🔋</span><span>Battery & Electrical</span><span style="margin-left:auto;color:var(--light);">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="cta-band">
-    <div><h2>Schedule Your NJ State Inspection Today</h2><p>Call us today — same-day service available on most repairs in Springfield, NJ.</p></div>
-    <div style="display:flex;gap:14px;flex-shrink:0;">
-      <a href="tel:9085550147" class="btn btn-white">📞 (908) 555-0147</a>
-      <button class="btn btn-wghost" onclick="showPage('contact')">Get a Quote</button>
-    </div>
-  </div>
-</div>
 
 <footer>
-  <div class="foot-logo">Matty's Automotive</div>
-  <span class="foot-copy">© 2026 Matty's Automotive · Springfield, NJ · All rights reserved</span>
-  <div class="foot-links">
-    <a href="#" onclick="showPage('home')">Home</a>
-    <a href="#" onclick="showPage('services')">Services</a>
-    <a href="#" onclick="showPage('svc-oil-changes')">Oil Changes</a><a href="#" onclick="showPage('svc-brake-service')">Brake Service</a><a href="#" onclick="showPage('svc-engine-diagnostics')">Engine Diagnostics</a><a href="#" onclick="showPage('svc-battery-electrical')">Battery & Electrical</a><a href="#" onclick="showPage('svc-ac-heat')">AC & Heat</a><a href="#" onclick="showPage('svc-nj-state-inspection')">NJ State Inspection</a>
-    <a href="#" onclick="showPage('blog')">Blog</a>
-    <a href="#" onclick="showPage('contact')">Contact</a>
+  <div class="foot-inner">
+    <div class="foot-logo">Matty's Automotive</div>
+    <span class="foot-copy">© 2026 Matty's Automotive · Springfield, NJ</span>
+    <div class="foot-links">
+      <a href="/mattys-automotive/">Home</a>
+      <a href="/mattys-automotive/services/">Services</a>
+      <a href="/mattys-automotive/services/oil-changes/">Oil Changes</a><a href="/mattys-automotive/services/brake-service/">Brake Service</a><a href="/mattys-automotive/services/engine-diagnostics/">Engine Diagnostics</a><a href="/mattys-automotive/services/battery-electrical/">Battery & Electrical</a><a href="/mattys-automotive/services/ac-heat/">AC & Heat</a><a href="/mattys-automotive/services/nj-state-inspection/">NJ State Inspection</a>
+      <a href="/mattys-automotive/about/">About</a>
+      <a href="/mattys-automotive/blog/">Blog</a>
+      <a href="/mattys-automotive/contact/">Contact</a>
+    </div>
   </div>
 </footer>
-
-<script>
-  function showPage(n) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const p = document.getElementById('page-' + n);
-    if (p) { p.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    document.getElementById('nav-links').classList.remove('open');
-  }
-  function toggleMenu() { document.getElementById('nav-links').classList.toggle('open'); }
-  function handleSubmit(btn) {
-    btn.textContent = '✅ Message Sent!';
-    btn.style.background = '#16a34a';
-    btn.disabled = true;
-    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; btn.disabled = false; }, 4000);
-  }
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.svc-card, .blog-card, .step').forEach(el => {
-    el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
-    io.observe(el);
-  });
-</script>
 </body>
 </html>
