@@ -362,7 +362,7 @@ function renderBlogPost(bizName: string, post: any, services: string[] = [], rel
       <div style="display:flex;flex-direction:column;gap:16px;">
         ${relatedPosts.map((p: any) => `
           <a href="/blog/${p.slug}" style="display:flex;gap:16px;text-decoration:none;color:inherit;align-items:center;">
-            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title}"/>` : `<div style="width:80px;height:60px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
+            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title}${city ? ` in ${city}` : ''}"/>` : `<div style="width:80px;height:60px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
             <div style="font-size:15px;font-weight:700;color:#111;line-height:1.4;">${p.title}</div>
           </a>`).join("")}
       </div>
