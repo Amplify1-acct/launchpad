@@ -21,10 +21,10 @@ export async function GET(
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
   // Look up business by subdomain using direct REST fetch
-  let business: { id: string; name: string } | null = null;
+  let business: { id: string; name: string; custom_domain?: string; city?: string; state?: string } | null = null;
   try {
     const bizRes = await fetch(
-      `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name,custom_domain&limit=1`,
+      `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name,custom_domain,city,state&limit=1`,
       { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "Cache-Control": "no-cache" }, cache: "no-store" }
     );
     const bizData = await bizRes.json();
@@ -122,7 +122,7 @@ export async function GET(
     );
     const relatedPosts = await relatedRes.json() || [];
 
-    return new NextResponse(renderBlogPost(business.name, post, services, relatedPosts), {
+    return new NextResponse(renderBlogPost(business.name, post, services, relatedPosts, business.city, business.state), {
       headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" },
     });
   }
@@ -135,7 +135,7 @@ export async function GET(
     );
     const posts = await postsRes.json();
 
-    return new NextResponse(renderBlogIndex(business.name, posts || []), {
+    return new NextResponse(renderBlogIndex(business.name, posts || [], business.city, business.state), {
       headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=60" },
     });
   }
@@ -207,10 +207,10 @@ export async function GET(
   });
 }
 
-function renderBlogIndex(bizName: string, posts: any[]): string {
+function renderBlogIndex(bizName: string, posts: any[], city?: string, state?: string): string {
   const postCards = posts.map(p => `
     <a class="post-card" href="/blog/${p.slug}">
-      ${p.featured_image_url ? `<img src="${p.featured_image_url}" alt="${p.title}" class="post-img"/>` : `<div class="post-img-placeholder"></div>`}
+      ${p.featured_image_url ? `<img src="${p.featured_image_url}" alt="${p.title}${city ? \` in ${city}\` : ''}" class="post-img"/>` : `<div class="post-img-placeholder"></div>`}
       <div class="post-info">
         <div class="post-date">${p.approved_at ? new Date(p.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
         <div class="post-title">${p.title}</div>
@@ -351,7 +351,7 @@ function renderBlogPost(bizName: string, post: any, services: string[] = [], rel
     <a class="logo" href="/">${bizName}</a>
     <a class="back" href="/blog">← All Posts</a>
   </nav>
-  ${post.featured_image_url ? `<img class="hero-img" src="${post.featured_image_url}" alt="${post.title}"/>` : ""}
+  ${post.featured_image_url ? `<img class="hero-img" src="${post.featured_image_url}" alt="${post.title}${city ? \` | ${city}, ${state}\` : ''}" />` : ""}
   <article>
     <div class="date">${post.approved_at ? new Date(post.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
     <h1>${post.title}</h1>
