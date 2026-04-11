@@ -483,8 +483,8 @@ ${nav(b, 'index.html', d.team, w.services)}
   <div class="container">
     <div class="about-grid">
       <div class="about-images">
-        <div class="about-img-main"><img src="${w.about_image_url || heroImg}" alt="${b.name} team" loading="lazy"/></div>
-        <div class="about-img-accent"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&auto=format" alt="${b.name} work quality" loading="lazy"/></div>
+        <div class="about-img-main"><img src="${w.about_image_url || heroImg}" alt="${b.name} team serving ${b.city}, ${b.state}" loading="lazy"/></div>
+        <div class="about-img-accent"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&auto=format" alt="${b.name} work quality in ${b.city}" loading="lazy"/></div>
       </div>
       <div class="about-text fade-up">
         <span class="label">About Us</span>
@@ -574,7 +574,7 @@ ${nav(b, 'index.html', d.team, w.services)}
         </div>
       </div>
       <div class="process-img fade-up">
-        <img src="${w.process_image_url || heroImg}" alt="${b.name} team at work" loading="lazy"/>
+        <img src="${w.process_image_url || heroImg}" alt="${b.name} team at work in ${b.city}, ${b.state}" loading="lazy"/>
       </div>
     </div>
   </div>
@@ -735,7 +735,7 @@ ${nav(b, 'services.html', d.team, w.services)}
         <a href="contact.html" class="btn btn-accent" style="margin-top:2rem">Request Service →</a>
       </div>
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3" class="fade-up">
-        <img src="${heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+        <img src="${heroImg}" alt="${b.name} in ${b.city}, ${b.state}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
       </div>
     </div>
   </div>
@@ -788,7 +788,7 @@ ${nav(b, 'about.html', d.team, w.services)}
   <div class="container">
     <div class="about-grid">
       <div class="about-images">
-        <div class="about-img-main"><img src="${heroImg}" alt="${b.name}" loading="lazy"/></div>
+        <div class="about-img-main"><img src="${heroImg}" alt="${b.name} in ${b.city}, ${b.state}" loading="lazy"/></div>
       </div>
       <div class="fade-up">
         <span class="label">Our Story</span>
@@ -843,7 +843,7 @@ ${nav(b, 'about.html', d.team, w.services)}
         </div>`).join('')}
       </div>
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4" class="fade-up">
-        <img src="${w.process_image_url || heroImg}" alt="${b.name} team at work" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+        <img src="${w.process_image_url || heroImg}" alt="${b.name} team at work in ${b.city}, ${b.state}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
       </div>
     </div>
   </div>
