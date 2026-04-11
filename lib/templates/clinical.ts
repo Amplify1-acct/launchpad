@@ -161,7 +161,7 @@ export function generateClinicalTemplate(data: SiteData): string {
     </div>
     <div class="lg:w-1/2">
       <div class="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&h=525&fit=crop&auto=format" alt="Patient experience" class="w-full h-full object-cover"/>
+        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&h=525&fit=crop&auto=format" alt="${businessName} patient care" class="w-full h-full object-cover"/>
       </div>
     </div>
   </div>
