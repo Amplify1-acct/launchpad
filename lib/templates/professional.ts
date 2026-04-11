@@ -468,7 +468,7 @@ ${w.testimonials?.[0] ? `
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">
-      <img src="${teamImg}" alt="Professional team" loading="lazy"/>
+      <img src="${teamImg}" alt="${b.name} professional team" loading="lazy"/>
     </div>
   </div>
 </div>` : ""}
@@ -672,7 +672,7 @@ ${nav(b, 'about.html', d.team, w.services)}
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">
-      <img src="${teamImg}" alt="Our team" loading="lazy"/>
+      <img src="${teamImg}" alt="${b.name} team" loading="lazy"/>
     </div>
   </div>
 </div>
