@@ -111,7 +111,7 @@ export function generateClinicalTemplate(data: SiteData): string {
       </div>
     </div>
     <div class="lg:col-span-6 relative h-[500px] lg:h-[600px] w-full rounded-2xl overflow-hidden shadow-2xl">
-      <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&h=600&fit=crop&auto=format" alt="${businessName}" class="w-full h-full object-cover"/>
+      <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&h=600&fit=crop&auto=format" alt="${businessName} in ${city}, ${state}" class="w-full h-full object-cover"/>
     </div>
   </div>
   <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-3xl opacity-20" style="background:${accentColor}"></div>
@@ -161,7 +161,7 @@ export function generateClinicalTemplate(data: SiteData): string {
     </div>
     <div class="lg:w-1/2">
       <div class="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&h=525&fit=crop&auto=format" alt="${businessName} patient care" class="w-full h-full object-cover"/>
+        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&h=525&fit=crop&auto=format" alt="${businessName} patient care in ${city}, ${state}" class="w-full h-full object-cover"/>
       </div>
     </div>
   </div>
