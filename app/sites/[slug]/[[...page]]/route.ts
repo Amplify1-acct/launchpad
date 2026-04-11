@@ -24,7 +24,7 @@ export async function GET(
   let business: { id: string; name: string } | null = null;
   try {
     const bizRes = await fetch(
-      `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name&limit=1`,
+      `${supabaseUrl}/rest/v1/businesses?subdomain=eq.${encodeURIComponent(slug)}&select=id,name,custom_domain&limit=1`,
       { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey, "Cache-Control": "no-cache" }, cache: "no-store" }
     );
     const bizData = await bizRes.json();
@@ -54,7 +54,7 @@ export async function GET(
     const tokens = rawSitemapTokens ? (typeof rawSitemapTokens === 'string' ? JSON.parse(rawSitemapTokens) : rawSitemapTokens) : {};
     const plan = site?.plan || "starter";
     const toSlug2 = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const domain = slug + ".exsisto.ai";
+    const domain = (business as any).custom_domain || (slug + ".exsisto.ai");
     const base = `https://${domain}`;
     const now = new Date().toISOString();
     const urls: string[] = [
@@ -78,6 +78,13 @@ export async function GET(
     }
     const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}</urlset>`;
     return new NextResponse(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+  }
+
+  // Robots.txt
+  if (pagePath === "robots.txt") {
+    const domain = (business as any).custom_domain || (slug + ".exsisto.ai");
+    const txt = `User-agent: *\nAllow: /\nSitemap: https://${domain}/sitemap.xml\n`;
+    return new NextResponse(txt, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" } });
   }
 
   // Blog post: /blog/[post-slug]
@@ -461,3 +468,4 @@ function buildingHTML(name: string): string {
 </script>
 </body></html>`;
 }
+
