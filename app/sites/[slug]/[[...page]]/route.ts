@@ -317,7 +317,7 @@ function injectServiceLinks(text: string, services: string[]): string {
   return result;
 }
 
-function renderBlogPost(bizName: string, post: any, services: string[] = [], relatedPosts: any[] = []): string {
+function renderBlogPost(bizName: string, post: any, services: string[] = [], relatedPosts: any[] = [], city?: string, state?: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
