@@ -210,7 +210,7 @@ export async function GET(
 function renderBlogIndex(bizName: string, posts: any[], city?: string, state?: string): string {
   const postCards = posts.map(p => `
     <a class="post-card" href="/blog/${p.slug}">
-      ${p.featured_image_url ? `<img src="${p.featured_image_url}" alt="${p.title}${city ? \` in ${city}\` : ''}" class="post-img"/>` : `<div class="post-img-placeholder"></div>`}
+      ${p.featured_image_url ? `<img src="${p.featured_image_url}" alt="${p.title + (city ? ' in ' + city : '')}" class="post-img"/>` : `<div class="post-img-placeholder"></div>`}
       <div class="post-info">
         <div class="post-date">${p.approved_at ? new Date(p.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
         <div class="post-title">${p.title}</div>
@@ -351,7 +351,7 @@ function renderBlogPost(bizName: string, post: any, services: string[] = [], rel
     <a class="logo" href="/">${bizName}</a>
     <a class="back" href="/blog">← All Posts</a>
   </nav>
-  ${post.featured_image_url ? `<img class="hero-img" src="${post.featured_image_url}" alt="${post.title}${city ? \` | ${city}, ${state}\` : ''}" />` : ""}
+  ${post.featured_image_url ? `<img class="hero-img" src="${post.featured_image_url}" alt="${post.title + (city ? ' | ' + city + ', ' + state : '')}" />` : ""}
   <article>
     <div class="date">${post.approved_at ? new Date(post.approved_at).toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"}) : ""}</div>
     <h1>${post.title}</h1>
@@ -362,7 +362,7 @@ function renderBlogPost(bizName: string, post: any, services: string[] = [], rel
       <div style="display:flex;flex-direction:column;gap:16px;">
         ${relatedPosts.map((p: any) => `
           <a href="/blog/${p.slug}" style="display:flex;gap:16px;text-decoration:none;color:inherit;align-items:center;">
-            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title}${city ? ` in ${city}` : ''}"/>` : `<div style="width:80px;height:60px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
+            ${p.featured_image_url ? `<img src="${p.featured_image_url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${p.title + (city ? ' in ' + city : '')}"/>` : `<div style="width:80px;height:60px;background:#f5f3ff;border-radius:8px;flex-shrink:0;"></div>`}
             <div style="font-size:15px;font-weight:700;color:#111;line-height:1.4;">${p.title}</div>
           </a>`).join("")}
       </div>
