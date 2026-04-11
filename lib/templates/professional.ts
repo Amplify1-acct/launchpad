@@ -399,7 +399,7 @@ ${nav(b, 'index.html', d.team, w.services)}
       </div>
     </div>
     <div class="hero-right">
-      <img src="${heroImg}" alt="${b.name} team" loading="eager"/>
+      <img src="${heroImg}" alt="${b.name} team serving ${b.city}, ${b.state}" loading="eager"/>
       ${w.testimonials?.[0] ? `
       <div class="hero-right-caption">
         <div class="hero-caption-quote">"${w.testimonials[0].text.slice(0, 100)}"</div>
@@ -468,7 +468,7 @@ ${w.testimonials?.[0] ? `
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">
-      <img src="${teamImg}" alt="${b.name} professional team" loading="lazy"/>
+      <img src="${teamImg}" alt="${b.name} professional team in ${b.city}, ${b.state}" loading="lazy"/>
     </div>
   </div>
 </div>` : ""}
@@ -487,7 +487,7 @@ ${w.testimonials?.[0] ? `
       ${w.services.slice(0, 3).map((s, i) => `
       <div class="case-card fade-up">
         <div class="case-img">
-          <img src="${[w.about_image_url, w.process_image_url, w.interior_image_url][i % 3] || heroImg}" alt="${s.name}" loading="lazy"/>
+          <img src="${[w.about_image_url, w.process_image_url, w.interior_image_url][i % 3] || heroImg}" alt="${s.name} services in ${b.city}, ${b.state}" loading="lazy"/>
         </div>
         <div class="case-body">
           <div class="case-tag">${s.name}</div>
@@ -617,7 +617,7 @@ ${nav(b, 'services.html', d.team, w.services)}
         <a href="contact.html" class="btn btn-dark" style="margin-top:2rem">Book a Consultation →</a>
       </div>
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3" class="fade-up">
-        <img src="${w.about_image_url || heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+        <img src="${w.about_image_url || heroImg}" alt="${b.name} in ${b.city}, ${b.state}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
       </div>
     </div>
   </div>
@@ -648,7 +648,7 @@ ${nav(b, 'about.html', d.team, w.services)}
   <div class="container">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center">
       <div style="border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3" class="fade-up">
-        <img src="${w.about_image_url || heroImg}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover"/>
+        <img src="${w.about_image_url || heroImg}" alt="${b.name} in ${b.city}, ${b.state}" style="width:100%;height:100%;object-fit:cover"/>
       </div>
       <div class="fade-up">
         <span class="label">Our Story</span>
@@ -672,7 +672,7 @@ ${nav(b, 'about.html', d.team, w.services)}
       <div class="quote-signature">${b.name}</div>
     </div>
     <div class="quote-photo fade-up">
-      <img src="${teamImg}" alt="${b.name} team" loading="lazy"/>
+      <img src="${teamImg}" alt="${b.name} team serving ${b.city}, ${b.state}" loading="lazy"/>
     </div>
   </div>
 </div>
