@@ -43,7 +43,7 @@ export async function GET(
   // Sitemap
   if (pagePath === "sitemap.xml") {
     const [siteRes, postsRes] = await Promise.all([
-      fetch(`${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=generated_tokens,plan,service_detail_1_html,service_detail_2_html,service_detail_3_html,service_detail_4_html,service_detail_5_html,service_detail_6_html&limit=1`,
+      fetch(`${supabaseUrl}/rest/v1/websites?business_id=eq.${business.id}&select=generated_tokens,plan,location_page_slugs,service_detail_1_html,service_detail_2_html,service_detail_3_html,service_detail_4_html,service_detail_5_html,service_detail_6_html&limit=1`,
         { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }),
       fetch(`${supabaseUrl}/rest/v1/blog_posts?business_id=eq.${business.id}&status=eq.published&select=slug,approved_at&order=approved_at.desc&limit=50`,
         { headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey }, cache: "no-store" }),
@@ -75,6 +75,28 @@ export async function GET(
     }
     for (const post of (posts || [])) {
       urls.push(`<url><loc>${base}/blog/${post.slug}</loc><lastmod>${(post.approved_at || now).split("T")[0]}</lastmod><priority>0.7</priority><changefreq>never</changefreq></url>`);
+    }
+    // Location pages (Premium only) — derived from stored slugs or generated on the fly
+    if (plan === "premium") {
+      const rawLocSlugs = site?.location_page_slugs;
+      const locSlugs: string[] = rawLocSlugs
+        ? (typeof rawLocSlugs === "string" ? JSON.parse(rawLocSlugs) : rawLocSlugs)
+        : [];
+      if (locSlugs.length > 0) {
+        for (const locSlug of locSlugs.slice(0, 5)) {
+          urls.push(`<url><loc>${base}/local/${locSlug}</loc><priority>0.75</priority><changefreq>monthly</changefreq></url>`);
+        }
+      } else {
+        // Fall back: derive slugs from tokens + city/state
+        const citySlug = toSlug2(business.city || "");
+        const stateSlug = toSlug2(business.state || "");
+        for (let i = 1; i <= 5; i++) {
+          const svcName = tokens[`service_${i}_name`];
+          if (svcName) {
+            urls.push(`<url><loc>${base}/local/${toSlug2(svcName)}-${citySlug}-${stateSlug}</loc><priority>0.75</priority><changefreq>monthly</changefreq></url>`);
+          }
+        }
+      }
     }
     const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}</urlset>`;
     return new NextResponse(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
