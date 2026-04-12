@@ -598,7 +598,7 @@ export async function POST(request: Request) {
       supabase.from("websites")
         .update({ location_page_slugs: locationPageSlugs })
         .eq("business_id", business_id)
-        .then(({ error }) => {
+        .then(({ error }: { error: { message: string } | null }) => {
           if (error) console.warn("location_page_slugs update skipped (column may not exist yet):", error.message);
           else console.log("✓ location_page_slugs stored");
         });
