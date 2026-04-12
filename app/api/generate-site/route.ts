@@ -469,9 +469,15 @@ export async function POST(request: Request) {
     const serviceCount = plan === "premium" ? 6 : plan === "pro" ? 3 : 0;
     if (serviceCount > 0) {
       const { generateServiceDetailPage } = await import("@/lib/pageGenerator");
-      const allServices = (business.services?.length ? business.services :
-        [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
-         tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
+      const normalizeServices = (s: any): string[] => {
+        if (Array.isArray(s) && s.length > 0) return s;
+        if (typeof s === "string" && s) return s.split(",").map((x: string) => x.trim()).filter(Boolean);
+        return [];
+      };
+      const allServices = (normalizeServices(business.services).length > 0
+        ? normalizeServices(business.services)
+        : [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+           tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
       ).filter(Boolean).slice(0, serviceCount);
 
       // Fetch recent published blog posts for internal linking
@@ -564,9 +570,15 @@ export async function POST(request: Request) {
       const toLocSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
       const citySlug = toLocSlug(business.city || "");
       const stateSlug = toLocSlug(business.state || "");
-      const allSvcNames: string[] = (business.services?.length ? business.services :
-        [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
-         tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
+      const normSvcs = (s: any): string[] => {
+        if (Array.isArray(s) && s.length > 0) return s;
+        if (typeof s === "string" && s) return s.split(",").map((x: string) => x.trim()).filter(Boolean);
+        return [];
+      };
+      const allSvcNames: string[] = (normSvcs(business.services).length > 0
+        ? normSvcs(business.services)
+        : [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+           tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
       ).filter(Boolean);
       locationPageSlugs = allSvcNames.slice(0, 5).map(
         (svc: string) => `${toLocSlug(svc)}-${citySlug}-${stateSlug}`
