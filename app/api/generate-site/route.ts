@@ -556,6 +556,24 @@ export async function POST(request: Request) {
 </section>`
     );
 
+    // ── Location page slugs (Premium only) ──────────────────────────────
+    // Pre-compute the 5 location page slugs so sitemap can reference them
+    // without needing to re-derive at sitemap request time.
+    let locationPageSlugs: string[] = [];
+    if (plan === "premium") {
+      const toLocSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const citySlug = toLocSlug(business.city || "");
+      const stateSlug = toLocSlug(business.state || "");
+      const allSvcNames: string[] = (business.services?.length ? business.services :
+        [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+         tokens.service_4_name, tokens.service_5_name, tokens.service_6_name]
+      ).filter(Boolean);
+      locationPageSlugs = allSvcNames.slice(0, 5).map(
+        (svc: string) => `${toLocSlug(svc)}-${citySlug}-${stateSlug}`
+      );
+      console.log(`✓ Location slugs: ${locationPageSlugs.join(", ")}`);
+    }
+
     await supabase.from("websites").upsert({
       business_id,
       status: "live", // auto-publish — customer can request changes from dashboard
@@ -572,6 +590,7 @@ export async function POST(request: Request) {
       revision_requested_at: revision_notes ? new Date().toISOString() : null,
       plan,
       image_source: imageSource,
+      ...(plan === "premium" && locationPageSlugs.length > 0 ? { location_page_slugs: locationPageSlugs } : {}),
     }, { onConflict: "business_id" });
 
     // If business has Google reviews already, apply them to the new HTML
