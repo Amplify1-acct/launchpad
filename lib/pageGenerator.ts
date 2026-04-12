@@ -96,9 +96,15 @@ function baseHTML(title: string, description: string, nav: string, content: stri
 
 // ── Services Page ─────────────────────────────────────────────────────────────
 export async function generateServicesPage(business: Business, tokens: Record<string, string>, plan: string = "starter"): Promise<string> {
-  const services = business.services?.length ? business.services : 
-    [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name, 
-     tokens.service_4_name, tokens.service_5_name, tokens.service_6_name].filter(Boolean);
+  const normalizeServices = (s: any): string[] => {
+    if (Array.isArray(s) && s.length > 0) return s;
+    if (typeof s === "string" && s) return s.split(",").map((x: string) => x.trim()).filter(Boolean);
+    return [];
+  };
+  const services = normalizeServices(business.services).length > 0
+    ? normalizeServices(business.services)
+    : [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name, tokens.service_6_name].filter(Boolean);
 
   const serviceDescriptions: Record<string, string> = {
     [tokens.service_1_name]: tokens.service_1_description,
