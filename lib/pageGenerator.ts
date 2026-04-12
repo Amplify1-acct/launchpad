@@ -26,23 +26,49 @@ interface Business {
   key_stat_label?: string;
 }
 
-function sharedNav(bizName: string, phone: string): string {
+function sharedNav(bizName: string, phone: string, locationSlugs: string[] = [], plan: string = "starter"): string {
+  const isPremium = plan === "premium";
+  const locDropdown = isPremium && locationSlugs.length > 0 ? `
+    <div style="position:relative;display:inline-block;" onmouseenter="this.querySelector('.loc-menu').style.display='block'" onmouseleave="this.querySelector('.loc-menu').style.display='none'">
+      <span style="font-size:14px;color:#555;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;">
+        Locations <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="opacity:.5"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+      <div class="loc-menu" style="display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#fff;border:1.5px solid #f0f0f0;border-radius:10px;padding:8px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.08);z-index:200;margin-top:8px;">
+        ${locationSlugs.map(s => {
+          const label = s.split("-").slice(0, -2).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+          return `<a href="/local/${s}" style="display:block;padding:8px 12px;font-size:13px;font-weight:500;color:#333;text-decoration:none;border-radius:6px;white-space:nowrap;" onmouseenter="this.style.background='#f5f3ff'" onmouseleave="this.style.background=''">${label}</a>`;
+        }).join("")}
+      </div>
+    </div>` : "";
   return `
   <nav style="position:fixed;top:0;width:100%;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #f0f0f0;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
     <a href="/" style="font-size:16px;font-weight:900;text-decoration:none;color:#111;">${bizName}</a>
     <div style="display:flex;align-items:center;gap:24px;">
       <a href="/services" style="font-size:14px;color:#555;text-decoration:none;font-weight:500;">Services</a>
       <a href="/about" style="font-size:14px;color:#555;text-decoration:none;font-weight:500;">About</a>
+      ${locDropdown}
       <a href="/blog" style="font-size:14px;color:#555;text-decoration:none;font-weight:500;">Blog</a>
       <a href="/contact" style="background:#111;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">Contact Us</a>
     </div>
   </nav>`;
 }
 
-function sharedFooter(bizName: string, city: string, phone: string): string {
+function sharedFooter(bizName: string, city: string, phone: string, locationSlugs: string[] = [], plan: string = "starter"): string {
+  const isPremium = plan === "premium";
+  const locCol = isPremium && locationSlugs.length > 0 ? `
+      <div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Locations</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${locationSlugs.map(s => {
+            const label = s.split("-").slice(0, -2).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") + " in " + city;
+            return `<a href="/local/${s}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;">${label}</a>`;
+          }).join("")}
+        </div>
+      </div>` : "";
+  const cols = isPremium && locationSlugs.length > 0 ? "1fr 1fr 1fr 1fr" : "1fr 1fr 1fr";
   return `
   <footer style="background:#111;color:rgba(255,255,255,0.6);padding:48px 24px;margin-top:80px;">
-    <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;">
+    <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:${cols};gap:32px;">
       <div>
         <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:12px;">${bizName}</div>
         <div style="font-size:13px;line-height:1.8;">${city}<br/>${phone}</div>
@@ -57,6 +83,7 @@ function sharedFooter(bizName: string, city: string, phone: string): string {
           <a href="/contact" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;">Contact</a>
         </div>
       </div>
+      ${locCol}
       <div>
         <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Contact</div>
         <div style="font-size:14px;line-height:1.8;">${phone}<br/>Serving ${city}</div>
@@ -115,8 +142,14 @@ export async function generateServicesPage(business: Business, tokens: Record<st
     [tokens.service_6_name]: tokens.service_6_description,
   };
 
-  const nav = sharedNav(business.name, business.phone || "");
-  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+    const toLocSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const locSlugs: string[] = tokens.plan === "premium"
+    ? [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name].filter(Boolean).map(
+        (s: string) => `${toLocSlug(s)}-${toLocSlug(business.city || "")}-${toLocSlug(business.state || "")}`)
+    : [];
+  const nav = sharedNav(business.name, business.phone || "", locSlugs, tokens.plan || "starter");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "", locSlugs, tokens.plan || "starter");
 
   const content = `
   <section style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e);color:#fff;padding:80px 24px 96px;text-align:center;">
@@ -151,6 +184,7 @@ export async function generateServicesPage(business: Business, tokens: Record<st
       <h2 style="font-size:clamp(24px,4vw,36px);font-weight:900;margin-bottom:16px;">Ready to get started?</h2>
       <p style="font-size:16px;color:#666;margin-bottom:32px;">Contact us today for a free estimate. We serve ${business.city || "your area"} and surrounding communities.</p>
       <a href="/contact" style="background:#111;color:#fff;padding:16px 32px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;">Get Free Estimate →</a>
+      ${tokens.plan === "premium" ? `<a href="/local/${toLocSlugD(serviceName)}-${toLocSlugD(business.city || "")}-${toLocSlugD(business.state || "")}" style="display:inline-block;margin-left:12px;background:transparent;color:#4648d4;border:1.5px solid #e0e0f0;padding:15px 24px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;">📍 Serving ${business.city || "your area"}</a>` : ""}
       ${business.phone ? `<div style="margin-top:16px;font-size:14px;color:#999;">or call <a href="tel:${business.phone.replace(/\D/g,'')}" style="color:#4648d4;font-weight:700;">${business.phone}</a></div>` : ""}
     </div>
   </section>`;
@@ -174,8 +208,14 @@ export async function generateServicesPage(business: Business, tokens: Record<st
 
 // ── About Page ────────────────────────────────────────────────────────────────
 export async function generateAboutPage(business: Business, tokens: Record<string, string>): Promise<string> {
-  const nav = sharedNav(business.name, business.phone || "");
-  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+  const toLocSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const locSlugs: string[] = tokens.plan === "premium"
+    ? [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name].filter(Boolean).map(
+        (s: string) => `${toLocSlug(s)}-${toLocSlug(business.city || "")}-${toLocSlug(business.state || "")}`)
+    : [];
+  const nav = sharedNav(business.name, business.phone || "", locSlugs, tokens.plan || "starter");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "", locSlugs, tokens.plan || "starter");
 
   const content = `
   <section style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e);color:#fff;padding:80px 24px 96px;text-align:center;">
@@ -243,8 +283,14 @@ export async function generateAboutPage(business: Business, tokens: Record<strin
 
 // ── Contact Page ──────────────────────────────────────────────────────────────
 export async function generateContactPage(business: Business, tokens: Record<string, string>): Promise<string> {
-  const nav = sharedNav(business.name, business.phone || "");
-  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+  const toLocSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const locSlugs: string[] = tokens.plan === "premium"
+    ? [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name].filter(Boolean).map(
+        (s: string) => `${toLocSlug(s)}-${toLocSlug(business.city || "")}-${toLocSlug(business.state || "")}`)
+    : [];
+  const nav = sharedNav(business.name, business.phone || "", locSlugs, tokens.plan || "starter");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "", locSlugs, tokens.plan || "starter");
 
   const content = `
   <section style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e);color:#fff;padding:80px 24px 96px;text-align:center;">
@@ -356,10 +402,17 @@ export async function generateContactPage(business: Business, tokens: Record<str
 // ── Blog Index Page ───────────────────────────────────────────────────────────
 export async function generateBlogIndexPage(
   business: Business,
-  posts: Array<{ title: string; slug: string; excerpt: string; featured_image_url: string; published_at: string }>
+  posts: Array<{ title: string; slug: string; excerpt: string; featured_image_url: string; published_at: string }>,
+  tokens: Record<string, string> = {}
 ): Promise<string> {
-  const nav = sharedNav(business.name, business.phone || "");
-  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+  const toLocSlug2 = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const locSlugs: string[] = tokens.plan === "premium"
+    ? [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name].filter(Boolean).map(
+        (s: string) => `${toLocSlug2(s)}-${toLocSlug2(business.city || "")}-${toLocSlug2(business.state || "")}`)
+    : [];
+  const nav = sharedNav(business.name, business.phone || "", locSlugs, tokens.plan || "starter");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "", locSlugs, tokens.plan || "starter");
 
   const content = `
   <section style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e);color:#fff;padding:80px 24px 96px;text-align:center;">
@@ -416,8 +469,14 @@ export async function generateServiceDetailPage(
   tokens: Record<string, string> = {},
   relatedPosts: Array<{ title: string; slug: string; featured_image_url?: string }> = []
 ): Promise<string> {
-  const nav = sharedNav(business.name, business.phone || "");
-  const footer = sharedFooter(business.name, business.city || "", business.phone || "");
+  const toLocSlugD = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const locSlugs: string[] = tokens.plan === "premium"
+    ? [tokens.service_1_name, tokens.service_2_name, tokens.service_3_name,
+       tokens.service_4_name, tokens.service_5_name].filter(Boolean).map(
+        (s: string) => `${toLocSlugD(s)}-${toLocSlugD(business.city || "")}-${toLocSlugD(business.state || "")}`)
+    : [];
+  const nav = sharedNav(business.name, business.phone || "", locSlugs, tokens.plan || "starter");
+  const footer = sharedFooter(business.name, business.city || "", business.phone || "", locSlugs, tokens.plan || "starter");
   const slug = serviceName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   // Generate 3 benefit bullets from the service description
