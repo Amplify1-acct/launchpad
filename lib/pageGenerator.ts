@@ -184,7 +184,7 @@ export async function generateServicesPage(business: Business, tokens: Record<st
       <h2 style="font-size:clamp(24px,4vw,36px);font-weight:900;margin-bottom:16px;">Ready to get started?</h2>
       <p style="font-size:16px;color:#666;margin-bottom:32px;">Contact us today for a free estimate. We serve ${business.city || "your area"} and surrounding communities.</p>
       <a href="/contact" style="background:#111;color:#fff;padding:16px 32px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;">Get Free Estimate →</a>
-      ${tokens.plan === "premium" ? `<a href="/local/${toLocSlugD(serviceName)}-${toLocSlugD(business.city || "")}-${toLocSlugD(business.state || "")}" style="display:inline-block;margin-left:12px;background:transparent;color:#4648d4;border:1.5px solid #e0e0f0;padding:15px 24px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;">📍 Serving ${business.city || "your area"}</a>` : ""}
+
       ${business.phone ? `<div style="margin-top:16px;font-size:14px;color:#999;">or call <a href="tel:${business.phone.replace(/\D/g,'')}" style="color:#4648d4;font-weight:700;">${business.phone}</a></div>` : ""}
     </div>
   </section>`;
