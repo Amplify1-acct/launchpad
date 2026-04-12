@@ -590,8 +590,19 @@ export async function POST(request: Request) {
       revision_requested_at: revision_notes ? new Date().toISOString() : null,
       plan,
       image_source: imageSource,
-      ...(plan === "premium" && locationPageSlugs.length > 0 ? { location_page_slugs: locationPageSlugs } : {}),
     }, { onConflict: "business_id" });
+
+    // Store location page slugs in a separate update (non-blocking)
+    // so a missing column doesn't break site generation
+    if (plan === "premium" && locationPageSlugs.length > 0) {
+      supabase.from("websites")
+        .update({ location_page_slugs: locationPageSlugs })
+        .eq("business_id", business_id)
+        .then(({ error }) => {
+          if (error) console.warn("location_page_slugs update skipped (column may not exist yet):", error.message);
+          else console.log("✓ location_page_slugs stored");
+        });
+    }
 
     // If business has Google reviews already, apply them to the new HTML
     const { data: bizWithReviews } = await supabase
