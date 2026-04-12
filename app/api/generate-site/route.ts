@@ -461,7 +461,7 @@ export async function POST(request: Request) {
       generateServicesPage(business, tokens, plan),
       generateAboutPage(business, tokens),
       generateContactPage(business, tokens),
-      generateBlogIndexPage(business, []),
+      generateBlogIndexPage(business, [], tokens),
     ]);
 
     // Generate service detail pages — 3 for Pro, 6 for Premium, 0 for Starter
