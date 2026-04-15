@@ -32,17 +32,18 @@ const INDUSTRY_LIB: Record<string, string> = {
 };
 
 const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
-  [/plumb|pipe|drain|sewer|water heater/i,          "plumbing"],
-  [/hvac|heat|air.?cond|furnace|cool|boiler/i,      "hvac"],
-  [/landscap|lawn|garden|tree|turf|mow/i,           "landscaping"],
-  [/dent|teeth|orthodon|oral/i,                      "dental"],
-  [/roof|gutter|shingle/i,                           "roofing"],
-  [/electr|wir|panel|outlet/i,                       "electrical"],
-  [/clean|maid|janitorial|pressure.?wash/i,          "cleaning"],
-  [/paint|stain|coating/i,                           "painting"],
-  [/restaurant|food|cafe|pizza|burger|diner|sushi/i, "restaurant"],
-  [/moving|mover|storage|haul/i,                     "moving"],
-  [/auto|car|truck|vehicle|mechanic|tire|brake/i,    "automotive"],
+  [/plumb|pipe|drain|sewer|water heater/i,                          "plumbing"],
+  [/hvac|heat|air.?cond|furnace|cool|boiler|duct/i,                 "hvac"],
+  [/landscap|lawn|garden|tree|turf|mow|sprinkler|irrigation/i,      "landscaping"],
+  [/dent|teeth|orthodon|oral|hygien/i,                               "dental"],
+  [/roof|gutter|shingle/i,                                           "roofing"],
+  [/electr|wir|panel|outlet|generator/i,                             "electrical"],
+  [/clean|maid|janitorial|pressure.?wash|carpet|window wash/i,       "cleaning"],
+  [/paint|stain|coating|drywall|plaster/i,                           "painting"],
+  [/remodel|bathroom|kitchen|basement|renovation|contractor|tile|flooring|cabinet/i, "painting"],
+  [/restaurant|food|cafe|pizza|burger|diner|sushi|catering/i,        "restaurant"],
+  [/moving|mover|storage|haul|junk/i,                                "moving"],
+  [/auto|car|truck|vehicle|mechanic|tire|brake|oil.?change|transmission/i, "automotive"],
 ];
 
 function detectIndustry(bizType: string, bizName: string): string | null {
