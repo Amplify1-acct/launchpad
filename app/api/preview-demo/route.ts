@@ -29,6 +29,9 @@ const INDUSTRY_LIB: Record<string, string> = {
   painting:    `${SUPABASE_IMG}/painting`,
   restaurant:  `${SUPABASE_IMG}/restaurant`,
   moving:      `${SUPABASE_IMG}/moving`,
+  gym:         `${SUPABASE_IMG}/gym`,
+  pet:         `${SUPABASE_IMG}/pet`,
+  remodeling:  `${SUPABASE_IMG}/remodeling`,
 };
 
 const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
@@ -40,8 +43,10 @@ const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
   [/electr|wir|panel|outlet|generator/i,                             "electrical"],
   [/clean|maid|janitorial|pressure.?wash|carpet|window wash/i,       "cleaning"],
   [/paint|stain|coating|drywall|plaster/i,                           "painting"],
-  [/remodel|bathroom|kitchen|basement|renovation|contractor|tile|flooring|cabinet/i, "painting"],
-  [/restaurant|food|cafe|pizza|burger|diner|sushi|catering/i,        "restaurant"],
+  [/remodel|bathroom|kitchen|basement|renovation|tile|flooring|cabinet|handyman/i, "remodeling"],
+  [/gym|fitness|crossfit|personal.?train|yoga|pilates|workout/i,      "gym"],
+  [/pet|dog|cat|veterinar|grooming|animal|kennel|boarding/i,          "pet"],
+  [/restaurant|food|cafe|pizza|burger|diner|sushi|catering/i,         "restaurant"],
   [/moving|mover|storage|haul|junk/i,                                "moving"],
   [/auto|car|truck|vehicle|mechanic|tire|brake|oil.?change|transmission/i, "automotive"],
 ];
