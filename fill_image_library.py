@@ -11,7 +11,7 @@ GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 SUPABASE_URL   = os.environ["SUPABASE_URL"]
 SUPABASE_KEY   = os.environ["SUPABASE_SERVICE_KEY"]
 BUCKET         = "industry-images"
-MODEL          = "gemini-2.0-flash-preview-image-generation"
+MODEL          = "gemini-3.1-flash-image-preview"
 
 # Slots to fill (hero already exists for all industries)
 SLOTS = ["about", "img3", "img4", "img5", "img6", "img7"]
@@ -120,17 +120,26 @@ def generate_image(prompt: str) -> tuple[bytes, str]:
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={GEMINI_API_KEY}"
     body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"responseModalities": ["IMAGE", "TEXT"]},
+        "generationConfig": {"responseModalities": ["image", "text"]},
     }).encode()
-    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        data = json.loads(r.read())
-    for part in data["candidates"][0]["content"]["parts"]:
-        if "inlineData" in part:
-            mime = part["inlineData"]["mimeType"]
-            b64  = part["inlineData"]["data"]
-            return base64.b64decode(b64), mime
-    raise Exception("No image in response")
+    req = urllib.request.Request(url, data=body, method="POST",
+          headers={"Content-Type": "application/json"})
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                data = json.loads(r.read())
+            for part in data["candidates"][0]["content"]["parts"]:
+                if "inlineData" in part:
+                    mime = part["inlineData"]["mimeType"]
+                    b64  = part["inlineData"]["data"]
+                    return base64.b64decode(b64), mime
+            raise Exception("No image in response")
+        except Exception as e:
+            if attempt == 2:
+                raise
+            print(f"    Retry {attempt+1}/3 after error: {e}")
+            time.sleep(8)
+    raise Exception("All retries failed")
 
 def upload(img_bytes: bytes, mime: str, industry: str, slot: str) -> str:
     path = f"{industry}/{slot}.png"
