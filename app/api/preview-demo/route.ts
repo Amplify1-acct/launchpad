@@ -54,7 +54,7 @@ function detectIndustry(bizType: string, bizName: string): string | null {
   return null;
 }
 
-const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string[] }> = {
+const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: Array<{name:string;desc:string}> }> = {
   bold: {
     h1: "Springfield's Trusted Auto Experts",
     heroBody: "For over 18 years, Matty's Automotive has been Springfield's go-to shop for honest, reliable car care. We treat your vehicle like our own, delivering ",
