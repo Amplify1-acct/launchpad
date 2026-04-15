@@ -114,6 +114,23 @@ export async function GET(request: Request) {
   const newCity  = parts[0] || demo.city;
   const newState = parts[1] || demo.state;
 
+  // ── JSON mode for mobile card preview ──────────────────────────────────────
+  const format = searchParams.get("format");
+  if (format === "json") {
+    const copy = bizName ? await getAICopy(bizName, newCity, newState, style, bizType) : null;
+    const industry = detectIndustry(bizType, bizName);
+    const heroImage = industry && INDUSTRY_LIB[industry]
+      ? `${INDUSTRY_LIB[industry]}/hero.png`
+      : `${DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold}/hero.jpg`;
+    return NextResponse.json({
+      h1:        copy?.h1        || `${newCity}'s Trusted Experts`,
+      heroBody:  copy?.heroBody  || `${bizName} is proud to serve ${newCity}, ${newState}.`,
+      services:  copy?.services  || [],
+      heroImage,
+      city: `${newCity}, ${newState}`,
+    });
+  }
+
   try {
     const htmlPath = join(process.cwd(), "public", "sites", demo.folder, "index.html");
     let html = readFileSync(htmlPath, "utf-8");
