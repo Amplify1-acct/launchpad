@@ -58,17 +58,38 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string
   bold: {
     h1: "Springfield's Trusted Auto Experts",
     heroBody: "For over 18 years, Matty's Automotive has been Springfield's go-to shop for honest, reliable car care. We treat your vehicle like our own, delivering ",
-    services: ["Oil Changes", "Brake Service", "Engine Diagnostics", "Tire Rotation", "AC Repair", "Transmission Service"],
+    services: [
+      {name:"Oil Changes",          desc:"Quick professional oil changes using premium lubricants to keep your engine running smoothly."},
+      {name:"Brake Service",        desc:"Complete brake inspection, repair, and replacement to keep you safe on Springfield roads."},
+      {name:"Engine Diagnostics",   desc:"Advanced computer diagnostics to quickly identify and solve engine problems fast."},
+      {name:"Battery & Electrical", desc:"Full electrical testing, battery replacement, and alternator service you can count on."},
+      {name:"AC & Heat",            desc:"Climate control repair and maintenance to keep you comfortable in any weather."},
+      {name:"NJ State Inspection",  desc:"Official New Jersey state inspection services to keep your registration current."},
+    ],
   },
   warm: {
     h1: "Westfield's Premier Landscaping Experts",
     heroBody: "GreenScape Landscaping has been transforming Westfield yards for over a decade. From lawn care to full landscape design, we make your outdoor space something to be proud of.",
-    services: ["Lawn Mowing", "Landscape Design", "Mulching", "Tree Trimming", "Irrigation", "Snow Removal"],
+    services: [
+      {name:"Lawn Care & Maintenance", desc:"Keep your Westfield lawn lush and healthy with our comprehensive mowing and treatment programs."},
+      {name:"Landscape Design",        desc:"Transform your outdoor space with custom designs tailored to your lifestyle and property."},
+      {name:"Tree & Shrub Trimming",   desc:"Expert pruning services to maintain the health and beauty of your trees and shrubs."},
+      {name:"Mulching & Garden Beds",  desc:"Professional mulching and garden bed maintenance to protect plants and boost curb appeal."},
+      {name:"Irrigation Systems",      desc:"Efficient irrigation installation and maintenance to keep your landscape perfectly hydrated."},
+      {name:"Snow Removal",            desc:"Reliable snow removal to keep your Westfield property safe and accessible all winter."},
+    ],
   },
   clean: {
     h1: "Scotch Plains HVAC Experts",
     heroBody: "ProComfort HVAC keeps Scotch Plains homes and businesses comfortable year-round. Fast response, honest pricing, and work that's guaranteed.",
-    services: ["AC Installation", "Furnace Repair", "Heat Pump Service", "Duct Cleaning", "Thermostat Install", "Emergency HVAC"],
+    services: [
+      {name:"AC Installation & Repair", desc:"Expert air conditioning installation and repairs for all major brands, done right the first time."},
+      {name:"Furnace & Heating",        desc:"Comprehensive heating services including furnace repair, installation, and seasonal tune-ups."},
+      {name:"Air Quality & Filtration", desc:"Advanced indoor air quality solutions to remove allergens and pollutants from your home."},
+      {name:"Duct Cleaning",            desc:"Professional ductwork cleaning to improve airflow and reduce allergens throughout your home."},
+      {name:"Maintenance Plans",        desc:"Preventive maintenance programs to keep your HVAC system running efficiently year-round."},
+      {name:"Emergency Service",        desc:"24/7 emergency HVAC repairs when you need us most — no matter the hour we respond fast."},
+    ],
   },
 };
 
@@ -93,7 +114,14 @@ Return ONLY valid JSON, no markdown, no explanation:
 {
   "h1": "${city}'s [vivid superlative] [exactly what they do] — punchy, max 7 words after city name",
   "heroBody": "2 sentences, warm and confident, specific to their actual business, mentions the business name and city, 30-40 words",
-  "services": ["Specific Service 1", "Specific Service 2", "Specific Service 3", "Specific Service 4", "Specific Service 5", "Specific Service 6"]
+  "services": [
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
+    {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"}
+  ]
 }`,
       }],
     });
@@ -192,8 +220,15 @@ export async function GET(request: Request) {
       }
 
       if (Array.isArray(copy.services) && copy.services.length >= 6) {
-        orig.services.forEach((svc: string, i: number) => {
-          if (copy.services[i]) html = html.split(svc).join(copy.services[i]);
+        orig.services.forEach((origSvc: any, i: number) => {
+          const newSvc  = copy.services[i];
+          if (!newSvc) return;
+          const origName = typeof origSvc === "string" ? origSvc : origSvc.name;
+          const origDesc = typeof origSvc === "string" ? null    : origSvc.desc;
+          const newName  = typeof newSvc  === "string" ? newSvc  : newSvc.name;
+          const newDesc  = typeof newSvc  === "string" ? null    : newSvc.desc;
+          if (origName && newName) html = html.split(origName).join(newName);
+          if (origDesc && newDesc) html = html.split(origDesc).join(newDesc);
         });
       }
     }
