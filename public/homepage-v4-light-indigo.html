@@ -669,6 +669,20 @@ function renderCard(data, biz, city, style, orderHref, mobile) {
     return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + svcName + '</div>';
   }).join('');
 
+  // Gallery strip — 3 photos in a row
+  var galleryStrip = '';
+  if (data.galleryImages && data.galleryImages.length >= 3) {
+    galleryStrip =
+      '<div style="margin-bottom:16px;">' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;">From Your Site</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;border-radius:10px;overflow:hidden;">' +
+          data.galleryImages.slice(0,3).map(function(imgUrl) {
+            return '<div style="height:80px;background:#f1f5f9;background-image:url(' + imgUrl + ');background-size:cover;background-position:center;"></div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+  }
+
   var heroImg = (data.matched && data.heroImage)
     ? '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;">'
     : '';
@@ -697,6 +711,7 @@ function renderCard(data, biz, city, style, orderHref, mobile) {
         '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Our Services</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
         '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy &middot; Built for you</div>' +
+        galleryStrip +
         '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
         '<button onclick="closeCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
       '</div>' +
