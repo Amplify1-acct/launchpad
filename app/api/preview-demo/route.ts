@@ -158,9 +158,10 @@ export async function GET(request: Request) {
       ? `${INDUSTRY_LIB[industry]}/hero.png`
       : null;
     // Gallery images — use industry library if slots exist, else demo site fallback
+    const _demoBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
     const galleryBase = (industry && INDUSTRY_LIB[industry] && matched)
       ? INDUSTRY_LIB[industry]
-      : demoBase;
+      : _demoBase;
     const galExt = (industry && INDUSTRY_LIB[industry] && matched) ? "png" : "jpg";
     const galleryImages = [
       `${galleryBase}/img3.${galExt}`,
