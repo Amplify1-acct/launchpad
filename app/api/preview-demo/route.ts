@@ -69,7 +69,7 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string
   },
   warm: {
     h1: "Westfield's Premier Landscaping Experts",
-    heroBody: "GreenScape Landscaping has been transforming Westfield yards for over a decade. From lawn care to full landscape design, we make your outdoor space something to be proud of.",
+    heroBody: "For over 18 years, GreenScape has been transforming Westfield properties into stunning outdoor retreats. From custom landscape designs to year-round maintenance, we bring your vision to life with expert craftsmanship and local expertise.",
     services: [
       {name:"Lawn Care & Maintenance", desc:"Keep your Westfield lawn lush and healthy with our comprehensive mowing and treatment programs."},
       {name:"Landscape Design",        desc:"Transform your outdoor space with custom designs tailored to your lifestyle and property."},
@@ -81,7 +81,7 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string
   },
   clean: {
     h1: "Scotch Plains HVAC Experts",
-    heroBody: "ProComfort HVAC keeps Scotch Plains homes and businesses comfortable year-round. Fast response, honest pricing, and work that's guaranteed.",
+    heroBody: "ProComfort HVAC delivers reliable heating and cooling solutions to Scotch Plains families and businesses. Our local technicians provide expert service with a personal touch, ensuring your comfort year-round.",
     services: [
       {name:"AC Installation & Repair", desc:"Expert air conditioning installation and repairs for all major brands, done right the first time."},
       {name:"Furnace & Heating",        desc:"Comprehensive heating services including furnace repair, installation, and seasonal tune-ups."},
@@ -213,17 +213,28 @@ export async function GET(request: Request) {
         html = html.replace(/<h1([^>]*)>([\s\S]*?)<\/h1>/, `<h1$1>${copy.h1}</h1>`);
       }
 
-      const heroBodySwapped = orig.heroBody
+            const heroBodySwapped = orig.heroBody
         .split(demo.bizName).join(bizName || demo.bizName)
         .split(demo.city).join(newCity);
-      const searchStart = heroBodySwapped.substring(0, 50).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const bodyMatch = html.search(new RegExp(searchStart));
-      if (bodyMatch !== -1) {
-        const pEnd = html.indexOf("</p>", bodyMatch);
+      // First try direct match, then fallback to replacing first <p> after <h1>
+      const bodyIdx40 = html.indexOf(heroBodySwapped.substring(0, 40));
+      if (bodyIdx40 !== -1) {
+        const pEnd = html.indexOf("</p>", bodyIdx40);
         if (pEnd !== -1) {
-          html = html.substring(0, bodyMatch) + copy.heroBody + html.substring(pEnd);
+          html = html.substring(0, bodyIdx40) + copy.heroBody + html.substring(pEnd);
+        }
+      } else {
+        const h1End = html.indexOf("</h1>");
+        if (h1End !== -1) {
+          const pOpen  = html.indexOf("<p ", h1End);
+          const pContent = html.indexOf(">", pOpen) + 1;
+          const pClose = html.indexOf("</p>", pOpen);
+          if (pOpen !== -1 && pClose !== -1) {
+            html = html.substring(0, pContent) + copy.heroBody + html.substring(pClose);
+          }
         }
       }
+      
 
       if (Array.isArray(copy.services) && copy.services.length >= 6) {
         orig.services.forEach((origSvc: any, i: number) => {
