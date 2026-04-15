@@ -471,10 +471,14 @@
     <p class="section-sub" style="margin-bottom:40px;">Type your business name, pick a style, and we'll show you exactly what your site could look like. No sign-up, no credit card.</p>
 
     <!-- Form row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;" id="preview-form-row">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;" id="preview-form-row">
       <div>
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Business Name</label>
         <input id="prev-biz" type="text" placeholder="e.g. Johnson's Plumbing" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Type of Business</label>
+        <input id="prev-type" type="text" placeholder="e.g. Plumber, Dentist, HVAC" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
       </div>
       <div>
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">City, State</label>
@@ -619,8 +623,10 @@ function launchPreview() {
   document.getElementById('panel-biz-label').textContent = biz + ' — ' + styleLabel;
   document.getElementById('panel-order-btn').href = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + _selectedStyle;
 
+  var bizType = (document.getElementById('prev-type') || {value:''}).value.trim();
   var url = '/api/preview-demo?style=' + encodeURIComponent(_selectedStyle) +
             '&biz=' + encodeURIComponent(biz) +
+            '&type=' + encodeURIComponent(bizType) +
             '&city=' + encodeURIComponent(city);
 
   var frame = document.getElementById('preview-frame');
