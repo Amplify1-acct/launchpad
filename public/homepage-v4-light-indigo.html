@@ -583,18 +583,23 @@ function isMobile() { return window.innerWidth <= 640; }
 
 function selectStyle(s) {
   _selectedStyle = s;
+  var colors = { bold: '#4648d4', warm: '#16a34a', clean: '#1d4ed8' };
   document.querySelectorAll('.style-card').forEach(function(c) {
     var isSel = c.getAttribute('data-style') === s;
-    c.style.borderColor = isSel ? '#4648d4' : '#e2e8f0';
-    c.style.boxShadow = isSel ? '0 0 0 4px rgba(70,72,212,0.12)' : '';
+    var style = c.getAttribute('data-style');
+    c.style.borderColor = isSel ? (colors[style] || '#4648d4') : '#e2e8f0';
+    c.style.boxShadow   = isSel ? '0 0 0 4px rgba(70,72,212,0.12)' : 'none';
     var chk = c.querySelector('.style-check');
     if (chk) chk.style.display = isSel ? 'block' : 'none';
   });
 }
 
 function launchPreview() {
-  var biz  = document.getElementById('prev-biz').value.trim();
-  var city = document.getElementById('prev-city').value.trim();
+  var biz     = document.getElementById('prev-biz').value.trim();
+  var city    = document.getElementById('prev-city').value.trim();
+  var typeEl  = document.getElementById('prev-type');
+  var bizType = typeEl ? typeEl.value.trim() : '';
+
   if (!biz)  { document.getElementById('prev-biz').focus();  document.getElementById('prev-biz').style.borderColor='#e85d26'; return; }
   if (!city) { document.getElementById('prev-city').focus(); document.getElementById('prev-city').style.borderColor='#e85d26'; return; }
 
@@ -602,11 +607,10 @@ function launchPreview() {
   var loading = document.getElementById('prev-loading');
   var panel   = document.getElementById('preview-panel');
   var card    = document.getElementById('mobile-card');
-  var bizType = (document.getElementById('prev-type') || {value:''}).value.trim();
 
-  btn.style.display = 'none';
+  btn.style.display   = 'none';
   panel.style.display = 'none';
-  card.style.display = 'none';
+  card.style.display  = 'none';
   loading.style.display = 'block';
 
   var msgs = ['Writing copy for your business…', 'Guessing your services…', 'Personalizing the layout…', 'Almost ready…'];
@@ -617,82 +621,75 @@ function launchPreview() {
     if (el) el.textContent = msgs[mi];
   }, 1600);
 
-  var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + _selectedStyle;
+  var style     = _selectedStyle;
+  var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + style;
+  var apiBase   = '/api/preview-demo?style=' + encodeURIComponent(style) +
+                  '&biz='  + encodeURIComponent(biz) +
+                  '&type=' + encodeURIComponent(bizType) +
+                  '&city=' + encodeURIComponent(city);
+
+  function onError() {
+    clearInterval(ticker);
+    loading.style.display = 'none';
+    btn.style.display = 'inline-block';
+  }
 
   if (isMobile()) {
-    // Mobile: fetch JSON from API, render card
-    var url = '/api/preview-demo?format=json&style=' + encodeURIComponent(_selectedStyle) +
-              '&biz=' + encodeURIComponent(biz) +
-              '&type=' + encodeURIComponent(bizType) +
-              '&city=' + encodeURIComponent(city);
-
-    fetch(url)
+    window.fetch(apiBase + '&format=json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
         clearInterval(ticker);
         loading.style.display = 'none';
         btn.style.display = 'inline-block';
 
-        var styleColors = {
-          bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26', text: '#fff' },
-          warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342', text: '#fff' },
-          clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff', text: '#fff' },
+        var palette = {
+          bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26' },
+          warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342' },
+          clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff' },
         };
-        var sc = styleColors[_selectedStyle] || styleColors.bold;
-        var styleLabel = _selectedStyle === 'bold' ? 'Dark & Bold' : _selectedStyle === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
+        var p = palette[style] || palette.bold;
+        var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
 
-        var servicesHtml = (data.services || []).slice(0, 6).map(function(s) {
-          return '<div style="padding:8px 12px;background:rgba(255,255,255,0.08);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.9);">✓ ' + s + '</div>';
+        var svcs = (data.services || []).slice(0, 6).map(function(s) {
+          return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
         }).join('');
+
+        var imgTag = data.heroImage
+          ? '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;" onerror="this.style.display=\'none\'">'
+          : '';
 
         card.innerHTML =
           '<div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-top:8px;">' +
-            // Hero image + overlay
-            '<div style="position:relative;height:220px;background:' + sc.bg + ';overflow:hidden;">' +
-              (data.heroImage ? '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;" onerror="this.style.display='none'">' : '') +
-              '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.2) 100%);"></div>' +
-              '<div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">' +
-                '<div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:' + sc.accent + ';margin-bottom:6px;">' + (data.city || city) + '</div>' +
-                '<div style="font-size:22px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
-              '</div>' +
-              // Nav bar simulation
+            '<div style="position:relative;height:220px;background:' + p.bg + ';overflow:hidden;">' +
+              imgTag +
+              '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 100%);"></div>' +
               '<div style="position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">' +
-                '<div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:0.05em;">' + biz.toUpperCase() + '</div>' +
-                '<div style="background:' + sc.accent + ';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;">Book Now</div>' +
+                '<div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:0.04em;">' + biz.toUpperCase() + '</div>' +
+                '<div style="background:' + p.accent + ';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;">Book Now</div>' +
+              '</div>' +
+              '<div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">' +
+                '<div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:' + p.accent + ';margin-bottom:6px;">' + (data.city || city) + '</div>' +
+                '<div style="font-size:21px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
               '</div>' +
             '</div>' +
-            // Body
             '<div style="background:#fff;padding:20px;">' +
               '<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;">' + (data.heroBody || '') + '</p>' +
               '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Our Services</div>' +
-              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + sc.bg + ';padding:12px;border-radius:12px;">' +
-                servicesHtml +
-              '</div>' +
-              '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">✨ ' + styleLabel + ' style · AI-written copy · Your branding</div>' +
-              '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site →</a>' +
-              '<button onclick="closeMobileCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">↑ Try a different style</button>' +
+              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
+              '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy</div>' +
+              '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
+              '<button onclick="closeMobileCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
             '</div>' +
           '</div>';
 
         card.style.display = 'block';
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       })
-      .catch(function() {
-        clearInterval(ticker);
-        loading.style.display = 'none';
-        btn.style.display = 'inline-block';
-      });
+      .catch(onError);
 
   } else {
-    // Desktop: iframe panel
-    var styleLabel = _selectedStyle === 'bold' ? 'Dark & Bold' : _selectedStyle === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
-    document.getElementById('panel-biz-label').textContent = biz + ' — ' + styleLabel;
+    document.getElementById('panel-biz-label').textContent = biz + ' — ' + (style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern');
     document.getElementById('panel-order-btn').href = orderHref;
-
-    var url = '/api/preview-demo?style=' + encodeURIComponent(_selectedStyle) +
-              '&biz=' + encodeURIComponent(biz) +
-              '&type=' + encodeURIComponent(bizType) +
-              '&city=' + encodeURIComponent(city);
 
     var frame = document.getElementById('preview-frame');
     frame.onload = function() {
@@ -702,7 +699,7 @@ function launchPreview() {
       panel.style.display = 'block';
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-    frame.src = url;
+    frame.src = apiBase;
   }
 }
 
