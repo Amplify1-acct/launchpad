@@ -29,7 +29,7 @@ const PLANS = [
       "AI-designed website",
       "5 custom AI photos",
       "2 blog posts/week",
-      "Social media posts",
+      "On-site SEO & Schema",
       "Custom domain support",
     ],
     color: "#4648d4",
