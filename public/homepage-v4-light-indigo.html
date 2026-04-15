@@ -470,7 +470,7 @@
     <h2 class="section-title" style="margin-bottom:12px;">See your business on a real site — in seconds</h2>
     <p class="section-sub" style="margin-bottom:40px;">Type your business name, pick a style, and we'll show you exactly what your site could look like. No sign-up, no credit card.</p>
 
-    <!-- Form -->
+    <!-- Form row -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;" id="preview-form-row">
       <div>
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Business Name</label>
@@ -487,83 +487,87 @@
       <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px;">Pick a Style</label>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="style-picker">
 
-        <!-- Bold -->
         <div class="style-card" data-style="bold" onclick="selectStyle('bold')" style="cursor:pointer;border:2px solid #4648d4;border-radius:12px;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 0 0 4px rgba(70,72,212,0.12);">
-          <div style="height:72px;background:linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%);display:flex;align-items:center;justify-content:center;">
-            <span style="font-size:11px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Dark &amp; Bold</span>
+          <div style="height:60px;background:linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Dark &amp; Bold</span>
           </div>
-          <div style="padding:10px 12px;background:#fff;">
-            <div style="font-size:12px;font-weight:700;color:#0d0d14;margin-bottom:2px;">Dark &amp; Bold</div>
-            <div style="font-size:11px;color:#6b6b80;">Charcoal + orange, high impact</div>
+          <div style="padding:8px 12px;background:#fff;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#0d0d14;">Dark &amp; Bold</div>
+              <div style="font-size:11px;color:#6b6b80;">Charcoal + orange</div>
+            </div>
+            <div class="style-check" style="font-size:11px;font-weight:700;color:#4648d4;">✓</div>
           </div>
-          <div class="style-check" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#eef0ff;font-size:11px;font-weight:700;color:#4648d4;">✓ Selected</div>
         </div>
 
-        <!-- Warm -->
         <div class="style-card" data-style="warm" onclick="selectStyle('warm')" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;">
-          <div style="height:72px;background:linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%);display:flex;align-items:center;justify-content:center;">
-            <span style="font-size:11px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Warm &amp; Natural</span>
+          <div style="height:60px;background:linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Warm &amp; Natural</span>
           </div>
-          <div style="padding:10px 12px;background:#fff;">
-            <div style="font-size:12px;font-weight:700;color:#0d0d14;margin-bottom:2px;">Warm &amp; Natural</div>
-            <div style="font-size:11px;color:#6b6b80;">Forest green, earthy, welcoming</div>
+          <div style="padding:8px 12px;background:#fff;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#0d0d14;">Warm &amp; Natural</div>
+              <div style="font-size:11px;color:#6b6b80;">Forest green, earthy</div>
+            </div>
+            <div class="style-check" style="font-size:11px;font-weight:700;color:#16a34a;display:none;">✓</div>
           </div>
-          <div class="style-check" style="display:none;align-items:center;gap:5px;padding:6px 12px;background:#f0fdf4;font-size:11px;font-weight:700;color:#16a34a;">✓ Selected</div>
         </div>
 
-        <!-- Clean -->
         <div class="style-card" data-style="clean" onclick="selectStyle('clean')" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;">
-          <div style="height:72px;background:linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%);display:flex;align-items:center;justify-content:center;">
-            <span style="font-size:11px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Clean &amp; Modern</span>
+          <div style="height:60px;background:linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">Clean &amp; Modern</span>
           </div>
-          <div style="padding:10px 12px;background:#fff;">
-            <div style="font-size:12px;font-weight:700;color:#0d0d14;margin-bottom:2px;">Clean &amp; Modern</div>
-            <div style="font-size:11px;color:#6b6b80;">Blue &amp; white, professional</div>
+          <div style="padding:8px 12px;background:#fff;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#0d0d14;">Clean &amp; Modern</div>
+              <div style="font-size:11px;color:#6b6b80;">Blue &amp; white, pro</div>
+            </div>
+            <div class="style-check" style="font-size:11px;font-weight:700;color:#1d4ed8;display:none;">✓</div>
           </div>
-          <div class="style-check" style="display:none;align-items:center;gap:5px;padding:6px 12px;background:#eff6ff;font-size:11px;font-weight:700;color:#1d4ed8;">✓ Selected</div>
         </div>
 
       </div>
     </div>
 
-    <!-- CTA Button -->
-    <div style="text-align:center;">
+    <!-- CTA button -->
+    <div style="text-align:center;margin-bottom:32px;">
       <button id="prev-btn" onclick="launchPreview()" style="background:#4648d4;color:#fff;font-size:16px;font-weight:700;padding:16px 40px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;transition:background 0.2s,transform 0.15s;box-shadow:0 4px 20px rgba(70,72,212,0.3);" onmouseover="this.style.background='#6366f1';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#4648d4';this.style.transform=''">
         ✨ Show Me My Site
       </button>
-      <div style="margin-top:10px;font-size:12px;color:#9090a8;">Takes about 5 seconds · No credit card needed</div>
+      <div style="margin-top:10px;font-size:12px;color:#9090a8;">Takes about 5 seconds · No sign-up needed</div>
     </div>
 
     <!-- Loading state -->
-    <div id="prev-loading" style="display:none;text-align:center;padding:32px 0;">
-      <div style="width:40px;height:40px;border:3px solid #eef0ff;border-top-color:#4648d4;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+    <div id="prev-loading" style="display:none;text-align:center;padding:24px 0 32px;">
+      <div style="width:36px;height:36px;border:3px solid #eef0ff;border-top-color:#4648d4;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>
       <div style="font-size:15px;font-weight:600;color:#4648d4;" id="prev-loading-msg">Writing copy for your business…</div>
       <div style="font-size:13px;color:#9090a8;margin-top:4px;">Claude is personalizing your preview</div>
     </div>
 
   </div>
-</div>
 
-<!-- PREVIEW MODAL -->
-<div id="preview-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(10,10,20,0.85);flex-direction:column;">
-  <!-- Modal top bar -->
-  <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;gap:16px;flex-shrink:0;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span id="modal-biz-label" style="font-size:14px;font-weight:700;color:#fff;"></span>
-      <div style="display:flex;background:#2a2a3e;border-radius:8px;overflow:hidden;">
-        <button onclick="setViewport('desktop')" id="btn-desktop" style="padding:6px 16px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#4648d4;color:#fff;font-family:inherit;">Desktop</button>
-        <button onclick="setViewport('mobile')" id="btn-mobile" style="padding:6px 16px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:transparent;color:#9090a8;font-family:inherit;">Mobile</button>
+  <!-- Inline preview panel — full width, expands below the form -->
+  <div id="preview-panel" style="display:none;margin-top:40px;border-top:1px solid #e8eaff;">
+    <!-- Panel toolbar -->
+    <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="panel-biz-label" style="font-size:14px;font-weight:700;color:#fff;"></span>
+        <div style="display:flex;background:#2a2a3e;border-radius:8px;overflow:hidden;">
+          <button onclick="setViewport('desktop')" id="btn-desktop" style="padding:5px 14px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#4648d4;color:#fff;font-family:inherit;">Desktop</button>
+          <button onclick="setViewport('mobile')" id="btn-mobile" style="padding:5px 14px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:transparent;color:#9090a8;font-family:inherit;">Mobile</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <a href="/order" id="panel-order-btn" style="background:#4648d4;color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:7px 18px;text-decoration:none;">Get This Site →</a>
+        <button onclick="closePreview()" style="background:rgba(255,255,255,0.1);border:none;color:#9090a8;font-size:13px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;">✕ Close</button>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <a href="/order" id="modal-order-btn" style="background:#4648d4;color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:8px 20px;text-decoration:none;">Get This Site →</a>
-      <button onclick="closePreview()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:20px;width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    <!-- iframe container -->
+    <div style="background:#0d0d1a;display:flex;justify-content:center;padding:0;" id="iframe-wrap">
+      <iframe id="preview-frame" src="" style="width:100%;height:680px;border:none;background:#fff;display:block;" allowfullscreen></iframe>
     </div>
   </div>
-  <!-- iframe wrapper -->
-  <div style="flex:1;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:#0d0d1a;" id="iframe-wrap">
-    <iframe id="preview-frame" src="" style="width:100%;height:100%;border:none;border-radius:8px;background:#fff;transition:width 0.3s;" allowfullscreen></iframe>
-  </div>
+
 </div>
 
 <style>
@@ -581,11 +585,11 @@ var _selectedStyle = 'bold';
 function selectStyle(s) {
   _selectedStyle = s;
   document.querySelectorAll('.style-card').forEach(function(c) {
-    var isSelected = c.getAttribute('data-style') === s;
-    c.style.borderColor = isSelected ? '#4648d4' : '#e2e8f0';
-    c.style.boxShadow = isSelected ? '0 0 0 4px rgba(70,72,212,0.12)' : '';
-    var check = c.querySelector('.style-check');
-    if (check) check.style.display = isSelected ? 'flex' : 'none';
+    var isSel = c.getAttribute('data-style') === s;
+    c.style.borderColor = isSel ? '#4648d4' : '#e2e8f0';
+    c.style.boxShadow = isSel ? '0 0 0 4px rgba(70,72,212,0.12)' : '';
+    var chk = c.querySelector('.style-check');
+    if (chk) chk.style.display = isSel ? 'block' : 'none';
   });
 }
 
@@ -597,7 +601,10 @@ function launchPreview() {
 
   var btn = document.getElementById('prev-btn');
   var loading = document.getElementById('prev-loading');
+  var panel = document.getElementById('preview-panel');
+
   btn.style.display = 'none';
+  panel.style.display = 'none';
   loading.style.display = 'block';
 
   var msgs = ['Writing copy for your business…', 'Guessing your services…', 'Personalizing the layout…', 'Almost ready…'];
@@ -606,51 +613,51 @@ function launchPreview() {
     mi = (mi + 1) % msgs.length;
     var el = document.getElementById('prev-loading-msg');
     if (el) el.textContent = msgs[mi];
-  }, 1800);
+  }, 1600);
+
+  var styleLabel = _selectedStyle === 'bold' ? 'Dark & Bold' : _selectedStyle === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
+  document.getElementById('panel-biz-label').textContent = biz + ' — ' + styleLabel;
+  document.getElementById('panel-order-btn').href = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + _selectedStyle;
 
   var url = '/api/preview-demo?style=' + encodeURIComponent(_selectedStyle) +
             '&biz=' + encodeURIComponent(biz) +
             '&city=' + encodeURIComponent(city);
-
-  var styleLabel = _selectedStyle === 'bold' ? 'Dark & Bold' : _selectedStyle === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
-  document.getElementById('modal-biz-label').textContent = biz + ' — ' + styleLabel;
-  document.getElementById('modal-order-btn').href = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + _selectedStyle;
 
   var frame = document.getElementById('preview-frame');
   frame.onload = function() {
     clearInterval(ticker);
     loading.style.display = 'none';
     btn.style.display = 'inline-block';
-    document.getElementById('preview-modal').style.display = 'flex';
+    panel.style.display = 'block';
+    // Scroll the toolbar into view smoothly
+    document.getElementById('preview-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   frame.src = url;
 }
 
 function closePreview() {
-  document.getElementById('preview-modal').style.display = 'none';
+  document.getElementById('preview-panel').style.display = 'none';
   document.getElementById('preview-frame').src = '';
+  document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function setViewport(v) {
   var frame = document.getElementById('preview-frame');
+  var wrap = document.getElementById('iframe-wrap');
   var btnD = document.getElementById('btn-desktop');
   var btnM = document.getElementById('btn-mobile');
   if (v === 'mobile') {
     frame.style.width = '390px';
-    frame.style.maxWidth = '390px';
+    wrap.style.padding = '24px';
     btnD.style.background = 'transparent'; btnD.style.color = '#9090a8';
     btnM.style.background = '#4648d4'; btnM.style.color = '#fff';
   } else {
     frame.style.width = '100%';
-    frame.style.maxWidth = '';
+    wrap.style.padding = '0';
     btnD.style.background = '#4648d4'; btnD.style.color = '#fff';
     btnM.style.background = 'transparent'; btnM.style.color = '#9090a8';
   }
 }
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closePreview();
-});
 </script>
 
 <!-- DEMOS -->
@@ -724,94 +731,6 @@ document.addEventListener('keydown', function(e) {
   </div>
 </div>
 
-<!-- PREVIEW MODAL -->
-<div id="preview-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.85);flex-direction:column;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#1e1e2e;border-bottom:1px solid #333;">
-    <div style="display:flex;align-items:center;gap:16px;">
-      <span style="color:#fff;font-size:14px;font-weight:600;" id="modal-title">Preview</span>
-      <div style="display:flex;gap:4px;background:#2a2a3a;border-radius:8px;padding:4px;">
-        <button onclick="setDevice('desktop')" id="btn-desktop" style="padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:#4648d4;color:#fff;transition:all 0.15s;">Desktop</button>
-        <button onclick="setDevice('mobile')" id="btn-mobile" style="padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#888;transition:all 0.15s;">Mobile</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <a href="/order" style="background:#4648d4;color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:9px 20px;text-decoration:none;white-space:nowrap;">Get Started →</a>
-      <button onclick="closePreview()" style="background:#2a2a3a;color:#aaa;border:none;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:18px;line-height:1;">✕</button>
-    </div>
-  </div>
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;" id="modal-frame-wrap">
-    <iframe id="preview-iframe" style="border:none;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.4);transition:all 0.3s;width:100%;height:100%;" src="about:blank"></iframe>
-  </div>
-</div>
-
-<script>
-function liveUpdate() {
-  var biz  = (document.getElementById('prev-biz')  || {value:''}).value.trim();
-  var city = (document.getElementById('prev-city') || {value:''}).value.trim();
-  document.querySelectorAll('.card-biz-name').forEach(function(el) {
-    var style = el.getAttribute('data-style');
-    var defaults = {clean:'ProComfort HVAC', bold:"Matty's Automotive", warm:'GreenScape Landscaping'};
-    el.textContent = biz || defaults[style] || defaults.bold;
-  });
-  document.querySelectorAll('.card-city-name').forEach(function(el) {
-    var style = el.getAttribute('data-style');
-    var defaults = {clean:'Scotch Plains, NJ', bold:'Springfield, NJ', warm:'Westfield, NJ'};
-    el.textContent = city || defaults[style] || defaults.bold;
-  });
-}
-
-document.getElementById('prev-biz').addEventListener('input', liveUpdate);
-document.getElementById('prev-city').addEventListener('input', liveUpdate);
-
-function openPreview(style) {
-  var biz  = (document.getElementById('prev-biz')  || {value:''}).value.trim();
-  var city = (document.getElementById('prev-city') || {value:''}).value.trim();
-  var url  = '/api/preview-demo?style=' + style;
-  if (biz)  url += '&biz='  + encodeURIComponent(biz);
-  if (city) url += '&city=' + encodeURIComponent(city);
-  var names = {clean:'Clean & Light', bold:'Dark & Bold', warm:'Warm & Natural'};
-  document.getElementById('modal-title').textContent = (biz || 'Your Business') + ' — ' + names[style];
-  document.getElementById('preview-iframe').src = url;
-  var modal = document.getElementById('preview-modal');
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  setDevice('desktop');
-}
-
-function closePreview() {
-  document.getElementById('preview-modal').style.display = 'none';
-  document.getElementById('preview-iframe').src = 'about:blank';
-  document.body.style.overflow = '';
-}
-
-function setDevice(d) {
-  var iframe = document.getElementById('preview-iframe');
-  var wrap   = document.getElementById('modal-frame-wrap');
-  var btnD   = document.getElementById('btn-desktop');
-  var btnM   = document.getElementById('btn-mobile');
-  if (d === 'mobile') {
-    iframe.style.width  = '390px';
-    iframe.style.height = '844px';
-    iframe.style.maxHeight = 'calc(100vh - 100px)';
-    wrap.style.alignItems = 'flex-start';
-    wrap.style.overflowY = 'auto';
-    btnM.style.background = '#4648d4'; btnM.style.color = '#fff';
-    btnD.style.background = 'transparent'; btnD.style.color = '#888';
-  } else {
-    iframe.style.width  = '100%';
-    iframe.style.height = '100%';
-    iframe.style.maxHeight = '';
-    wrap.style.alignItems = 'center';
-    wrap.style.overflowY = '';
-    btnD.style.background = '#4648d4'; btnD.style.color = '#fff';
-    btnM.style.background = 'transparent'; btnM.style.color = '#888';
-  }
-}
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closePreview();
-});
-</script>
 
 <!-- PRICING -->
 <div id="pricing" class="pricing-bg">
