@@ -3,11 +3,55 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 
+const SUPABASE_IMG = "https://njfulajlqjhukfxmfexv.supabase.co/storage/v1/object/public/industry-images";
+
 const DEMO_MAP: Record<string, { folder: string; bizName: string; city: string; state: string }> = {
   bold:  { folder: "mattys-automotive",      bizName: "Matty's Automotive",    city: "Springfield",   state: "NJ" },
   warm:  { folder: "greenscape-landscaping",  bizName: "GreenScape Landscaping", city: "Westfield",    state: "NJ" },
   clean: { folder: "procomfort-hvac",         bizName: "ProComfort HVAC",       city: "Scotch Plains", state: "NJ" },
 };
+
+const DEMO_IMG_BASE: Record<string, string> = {
+  bold:  `${SUPABASE_IMG}/client-sites/mattys-automotive`,
+  warm:  `${SUPABASE_IMG}/client-sites/greenscape-landscaping`,
+  clean: `${SUPABASE_IMG}/client-sites/procomfort-hvac`,
+};
+
+const INDUSTRY_LIB: Record<string, string> = {
+  automotive:  `${SUPABASE_IMG}/automotive`,
+  plumbing:    `${SUPABASE_IMG}/plumbing`,
+  hvac:        `${SUPABASE_IMG}/hvac`,
+  landscaping: `${SUPABASE_IMG}/landscaping`,
+  dental:      `${SUPABASE_IMG}/dental`,
+  roofing:     `${SUPABASE_IMG}/roofing`,
+  electrical:  `${SUPABASE_IMG}/electrical`,
+  cleaning:    `${SUPABASE_IMG}/cleaning`,
+  painting:    `${SUPABASE_IMG}/painting`,
+  restaurant:  `${SUPABASE_IMG}/restaurant`,
+  moving:      `${SUPABASE_IMG}/moving`,
+};
+
+const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
+  [/plumb|pipe|drain|sewer|water heater/i,          "plumbing"],
+  [/hvac|heat|air.?cond|furnace|cool|boiler/i,      "hvac"],
+  [/landscap|lawn|garden|tree|turf|mow/i,           "landscaping"],
+  [/dent|teeth|orthodon|oral/i,                      "dental"],
+  [/roof|gutter|shingle/i,                           "roofing"],
+  [/electr|wir|panel|outlet/i,                       "electrical"],
+  [/clean|maid|janitorial|pressure.?wash/i,          "cleaning"],
+  [/paint|stain|coating/i,                           "painting"],
+  [/restaurant|food|cafe|pizza|burger|diner|sushi/i, "restaurant"],
+  [/moving|mover|storage|haul/i,                     "moving"],
+  [/auto|car|truck|vehicle|mechanic|tire|brake/i,    "automotive"],
+];
+
+function detectIndustry(bizType: string, bizName: string): string | null {
+  const text = `${bizType} ${bizName}`;
+  for (const [pattern, industry] of TYPE_TO_INDUSTRY) {
+    if (pattern.test(text)) return industry;
+  }
+  return null;
+}
 
 const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string[] }> = {
   bold: {
@@ -64,7 +108,7 @@ export async function GET(request: Request) {
   const bizType = (searchParams.get("type") || "").trim();
   const cityRaw = (searchParams.get("city") || "").trim();
 
-  const demo   = DEMO_MAP[style] || DEMO_MAP.bold;
+  const demo     = DEMO_MAP[style] || DEMO_MAP.bold;
   const parts    = cityRaw.split(",").map((s: string) => s.trim());
   const newCity  = parts[0] || demo.city;
   const newState = parts[1] || demo.state;
@@ -73,29 +117,42 @@ export async function GET(request: Request) {
     const htmlPath = join(process.cwd(), "public", "sites", demo.folder, "index.html");
     let html = readFileSync(htmlPath, "utf-8");
 
-    // Step 1: string swap
+    // Step 1: Name + city swap
     if (bizName) html = html.split(demo.bizName).join(bizName);
     html = html.split(demo.city).join(newCity);
     html = html.split(` ${demo.state}`).join(` ${newState}`);
     html = html.split(`,${demo.state}`).join(`,${newState}`);
 
-    // Step 2: AI copy rewrite
+    // Step 2: Industry image swap
+    const industry = detectIndustry(bizType, bizName);
+    const industryBase = industry ? INDUSTRY_LIB[industry] : null;
+    const demoBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
+
+    if (industryBase) {
+      // Swap hero — all industries have hero.png
+      html = html.split(`${demoBase}/hero.jpg`).join(`${industryBase}/hero.png`);
+      html = html.split(`${demoBase}/hero.png`).join(`${industryBase}/hero.png`);
+      // Swap remaining slots if library has them (future-proof when we fill them in)
+      for (const slot of ["about", "img3", "img4", "img5", "img6", "img7"]) {
+        html = html.split(`${demoBase}/${slot}.jpg`).join(`${industryBase}/${slot}.png`);
+        html = html.split(`${demoBase}/${slot}.png`).join(`${industryBase}/${slot}.png`);
+      }
+    }
+
+    // Step 3: AI copy rewrite
     if (bizName) {
       const copy = await getAICopy(bizName, newCity, newState, style, bizType);
       const orig = DEMO_COPY[style] || DEMO_COPY.bold;
 
-      // Replace H1
       const oldH1Swapped = orig.h1
         .replace(demo.city, newCity)
         .replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
       if (html.includes(oldH1Swapped)) {
         html = html.split(oldH1Swapped).join(copy.h1);
       } else {
-        // Try the already-swapped version
         html = html.replace(/<h1([^>]*)>([\s\S]*?)<\/h1>/, `<h1$1>${copy.h1}</h1>`);
       }
 
-      // Replace hero body — find first long <p> after hero
       const heroBodySwapped = orig.heroBody
         .split(demo.bizName).join(bizName || demo.bizName)
         .split(demo.city).join(newCity);
@@ -108,15 +165,14 @@ export async function GET(request: Request) {
         }
       }
 
-      // Replace services
       if (Array.isArray(copy.services) && copy.services.length >= 6) {
-        orig.services.forEach((svc, i) => {
+        orig.services.forEach((svc: string, i: number) => {
           if (copy.services[i]) html = html.split(svc).join(copy.services[i]);
         });
       }
     }
 
-    // Step 3: Preview banner
+    // Step 4: Preview banner
     const displayBiz = bizName || demo.bizName;
     const displayLoc = cityRaw || `${demo.city}, ${demo.state}`;
     const styleLabel = style === "bold" ? "Dark & Bold" : style === "warm" ? "Warm & Natural" : "Clean & Modern";
