@@ -27,7 +27,7 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: string
   },
 };
 
-async function getAICopy(bizName: string, city: string, state: string, style: string) {
+async function getAICopy(bizName: string, city: string, state: string, style: string, bizType?: string) {
   const original = DEMO_COPY[style] || DEMO_COPY.bold;
   try {
     const client = new Anthropic();
@@ -36,7 +36,7 @@ async function getAICopy(bizName: string, city: string, state: string, style: st
       max_tokens: 400,
       messages: [{
         role: "user",
-        content: `Rewrite website copy for a small business preview. Business: "${bizName}" in ${city}, ${state}. Guess the industry and services from the name.
+        content: `Rewrite website copy for a small business preview. Business: "${bizName}" in ${city}, ${state}.${bizType ? ` They are a: ${bizType}.` : " Guess the industry from the business name."}
 
 Return ONLY valid JSON, no markdown:
 {
@@ -61,6 +61,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const style   = searchParams.get("style") || "bold";
   const bizName = (searchParams.get("biz") || "").trim();
+  const bizType = (searchParams.get("type") || "").trim();
   const cityRaw = (searchParams.get("city") || "").trim();
 
   const demo   = DEMO_MAP[style] || DEMO_MAP.bold;
@@ -80,7 +81,7 @@ export async function GET(request: Request) {
 
     // Step 2: AI copy rewrite
     if (bizName) {
-      const copy = await getAICopy(bizName, newCity, newState, style);
+      const copy = await getAICopy(bizName, newCity, newState, style, bizType);
       const orig = DEMO_COPY[style] || DEMO_COPY.bold;
 
       // Replace H1
