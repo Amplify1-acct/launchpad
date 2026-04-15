@@ -211,21 +211,10 @@ export async function GET(request: Request) {
     const demoBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
 
     if (industryBase) {
-      // Always swap hero — all 11 industries have hero.png
-      html = html.split(`${demoBase}/hero.jpg`).join(`${industryBase}/hero.png`);
-      html = html.split(`${demoBase}/hero.png`).join(`${industryBase}/hero.png`);
-      // Use industry hero as about image too until library fills in about.png
-      html = html.split(`${demoBase}/about.jpg`).join(`${industryBase}/hero.png`);
-      html = html.split(`${demoBase}/about.png`).join(`${industryBase}/hero.png`);
-
-      // For remaining slots: use industry library if available, otherwise
-      // keep the demo site's own images (they already exist and look fine)
-      // The demo site images stay in place — no broken images.
-      // When the library fills out, swaps will happen automatically.
-      for (const slot of ["about", "img3", "img4", "img5", "img6", "img7"]) {
-        // Only swap if industry library slot exists (we only have hero.png right now)
-        // So we intentionally do NOT swap these — demo site images remain as fallback
-        // html = html.split(`${demoBase}/${slot}.jpg`).join(`${industryBase}/${slot}.png`);
+      // Library is complete — swap ALL 7 slots for all 11 industries
+      for (const slot of ["hero", "about", "img3", "img4", "img5", "img6", "img7"]) {
+        html = html.split(`${demoBase}/${slot}.jpg`).join(`${industryBase}/${slot}.png`);
+        html = html.split(`${demoBase}/${slot}.png`).join(`${industryBase}/${slot}.png`);
       }
     }
     // No swap needed for non-matched industries — demo site images stay as-is
