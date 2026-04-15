@@ -54,10 +54,13 @@ function detectIndustry(bizType: string, bizName: string): string | null {
   return null;
 }
 
-const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: Array<{name:string;desc:string}> }> = {
+const DEMO_COPY: Record<string, { h1: string; heroBody: string; aboutH2: string; aboutBody: string; ctaH2: string; services: Array<{name:string;desc:string}> }> = {
   bold: {
     h1: "Springfield's Trusted Auto Experts",
     heroBody: "For over 18 years, Matty's Automotive has been Springfield's go-to shop for honest, reliable car care. We treat your vehicle like our own, delivering ",
+    aboutH2:  "Family-Owned Since 2006",
+    aboutBody: "Matty's Automotive has been proudly serving Springfield and surrounding New Jersey communities for nearly two decades. We built our reputation on straight talk, fair pricing, and getting the job done right the first time.",
+    ctaH2:    "Schedule Your Service Today",
     services: [
       {name:"Oil Changes",          desc:"Quick professional oil changes using premium lubricants to keep your engine running smoothly."},
       {name:"Brake Service",        desc:"Complete brake inspection, repair, and replacement to keep you safe on Springfield roads."},
@@ -70,6 +73,9 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: Array<
   warm: {
     h1: "Westfield's Premier Landscaping Experts",
     heroBody: "For over 18 years, GreenScape has been transforming Westfield properties into stunning outdoor retreats. From custom landscape designs to year-round maintenance, we bring your vision to life with expert craftsmanship and local expertise.",
+    aboutH2:  "Rooted in Westfield",
+    aboutBody: "Since 2005, GreenScape Landscaping has been proudly serving Westfield and surrounding communities with exceptional outdoor solutions. Our team understands the unique climate and soil conditions of central New Jersey, ensuring every project thrives season after season.",
+    ctaH2:    "Ready to Transform Your Outdoor Space?",
     services: [
       {name:"Lawn Care & Maintenance", desc:"Keep your Westfield lawn lush and healthy with our comprehensive mowing and treatment programs."},
       {name:"Landscape Design",        desc:"Transform your outdoor space with custom designs tailored to your lifestyle and property."},
@@ -82,6 +88,9 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; services: Array<
   clean: {
     h1: "Scotch Plains HVAC Experts",
     heroBody: "ProComfort HVAC delivers reliable heating and cooling solutions to Scotch Plains families and businesses. Our local technicians provide expert service with a personal touch, ensuring your comfort year-round.",
+    aboutH2:  "Your Neighborhood HVAC Team",
+    aboutBody: "For over two decades, ProComfort HVAC has been Scotch Plains' trusted heating and cooling partner. We're a local family business that understands New Jersey's challenging weather and your home's unique comfort needs.",
+    ctaH2:    "Ready for Year-Round Comfort?",
     services: [
       {name:"AC Installation & Repair", desc:"Expert air conditioning installation and repairs for all major brands, done right the first time."},
       {name:"Furnace & Heating",        desc:"Comprehensive heating services including furnace repair, installation, and seasonal tune-ups."},
@@ -121,7 +130,10 @@ Return ONLY valid JSON, no markdown, no explanation:
     {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
     {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"},
     {"name": "Service Name", "desc": "One sentence, 15-20 words, specific to this business"}
-  ]
+  ],
+  "aboutH2": "Short punchy about section headline, 4-6 words, no generic phrases like 'Your Neighborhood X Team'",
+  "aboutBody": "3 sentences about the business, warm and specific, mentions business name and city, 50-60 words",
+  "ctaH2": "Action-oriented CTA headline specific to what this business does, 5-7 words"
 }`,
       }],
     });
@@ -131,6 +143,9 @@ Return ONLY valid JSON, no markdown, no explanation:
     return {
       h1: `${city}'s Trusted ${bizName.split(" ").slice(-1)[0]} Experts`,
       heroBody: `${bizName} has been serving ${city}, ${state} with pride. We're committed to quality work and honest service every time.`,
+      aboutH2: `Proudly Serving ${city}`,
+      aboutBody: `${bizName} has been a trusted part of the ${city} community for years. We take pride in delivering quality work and standing behind everything we do.`,
+      ctaH2: `Ready to Get Started?`,
       services: original.services,
     };
   }
@@ -199,6 +214,9 @@ export async function GET(request: Request) {
       // Always swap hero — all 11 industries have hero.png
       html = html.split(`${demoBase}/hero.jpg`).join(`${industryBase}/hero.png`);
       html = html.split(`${demoBase}/hero.png`).join(`${industryBase}/hero.png`);
+      // Use industry hero as about image too until library fills in about.png
+      html = html.split(`${demoBase}/about.jpg`).join(`${industryBase}/hero.png`);
+      html = html.split(`${demoBase}/about.png`).join(`${industryBase}/hero.png`);
 
       // For remaining slots: use industry library if available, otherwise
       // keep the demo site's own images (they already exist and look fine)
@@ -260,6 +278,34 @@ export async function GET(request: Request) {
           if (origName && newName) html = html.split(origName).join(newName);
           if (origDesc && newDesc) html = html.split(origDesc).join(newDesc);
         });
+      }
+
+      // Swap about section h2, body, and CTA h2
+      if (copy.aboutH2 && orig.aboutH2) {
+        html = html.split(orig.aboutH2).join(copy.aboutH2);
+        // Also try city-swapped version
+        const aboutH2City = orig.aboutH2.replace(demo.city, newCity);
+        html = html.split(aboutH2City).join(copy.aboutH2);
+      }
+      if (copy.aboutBody && orig.aboutBody) {
+        const aboutBodySwapped = orig.aboutBody
+          .split(demo.bizName).join(bizName || demo.bizName)
+          .split(demo.city).join(newCity);
+        const abIdx = html.indexOf(aboutBodySwapped.substring(0, 40));
+        if (abIdx !== -1) {
+          const abEnd = html.indexOf("</p>", abIdx);
+          if (abEnd !== -1) html = html.substring(0, abIdx) + copy.aboutBody + html.substring(abEnd);
+        } else {
+          // fallback: find original text
+          const origIdx = html.indexOf(orig.aboutBody.substring(0, 40));
+          if (origIdx !== -1) {
+            const origEnd = html.indexOf("</p>", origIdx);
+            if (origEnd !== -1) html = html.substring(0, origIdx) + copy.aboutBody + html.substring(origEnd);
+          }
+        }
+      }
+      if (copy.ctaH2 && orig.ctaH2) {
+        html = html.split(orig.ctaH2).join(copy.ctaH2);
       }
     }
 
