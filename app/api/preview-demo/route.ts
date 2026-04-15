@@ -320,6 +320,13 @@ export async function GET(request: Request) {
 
     html = html.replace(/<body([^>]*)>/, `<body$1>${banner}`);
 
+    // Disable ALL internal links — preview is homepage only
+    // Replace every internal href with # and add a subtle "preview only" cursor
+    html = html.replace(/<a\s+([^>]*?)href=["'](?!https?:\/\/|mailto:|tel:)([^"']*?)["']/gi,
+      '<a $1href="#" onclick="return false;" style="cursor:default;"');
+    // Also kill any form submissions
+    html = html.replace(/<form/gi, '<form onsubmit="return false;"');
+
     return new NextResponse(html, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
