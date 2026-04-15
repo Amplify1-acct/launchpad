@@ -544,25 +544,6 @@
 
   </div>
 
-  <!-- DESKTOP: Inline iframe panel — full viewport width -->
-  <div id="preview-panel" style="display:none;margin-top:40px;margin-left:calc(-50vw + 50%);margin-right:calc(-50vw + 50%);width:100vw;border-top:2px solid #4648d4;">
-    <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:space-between;padding:10px 24px;gap:16px;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span id="panel-biz-label" style="font-size:14px;font-weight:700;color:#fff;"></span>
-        <div style="display:flex;background:#2a2a3e;border-radius:8px;overflow:hidden;">
-          <button onclick="setViewport('desktop')" id="btn-desktop" style="padding:5px 14px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#4648d4;color:#fff;font-family:inherit;">Desktop</button>
-          <button onclick="setViewport('mobile')" id="btn-mobile" style="padding:5px 14px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:transparent;color:#9090a8;font-family:inherit;">Mobile</button>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <a href="/order" id="panel-order-btn" style="background:#4648d4;color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:7px 18px;text-decoration:none;">Get This Site →</a>
-        <button onclick="closePreview()" style="background:rgba(255,255,255,0.1);border:none;color:#9090a8;font-size:13px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;">✕ Close</button>
-      </div>
-    </div>
-    <div style="background:#0d0d1a;display:flex;justify-content:center;padding:0;" id="iframe-wrap">
-      <iframe id="preview-frame" src="" style="width:100%;height:78vh;min-height:600px;border:none;background:#fff;display:block;" allowfullscreen></iframe>
-    </div>
-  </div>
 
 </div>
 
@@ -579,15 +560,15 @@
 <script>
 var _selectedStyle = 'bold';
 
-function isMobile() { return window.innerWidth <= 640; }
+function isMobile() { return window.innerWidth <= 768; }
 
 function selectStyle(s) {
   _selectedStyle = s;
   var colors = { bold: '#4648d4', warm: '#16a34a', clean: '#1d4ed8' };
   document.querySelectorAll('.style-card').forEach(function(c) {
     var isSel = c.getAttribute('data-style') === s;
-    var style = c.getAttribute('data-style');
-    c.style.borderColor = isSel ? (colors[style] || '#4648d4') : '#e2e8f0';
+    var cs = c.getAttribute('data-style');
+    c.style.borderColor = isSel ? (colors[cs] || '#4648d4') : '#e2e8f0';
     c.style.boxShadow   = isSel ? '0 0 0 4px rgba(70,72,212,0.12)' : 'none';
     var chk = c.querySelector('.style-check');
     if (chk) chk.style.display = isSel ? 'block' : 'none';
@@ -605,21 +586,19 @@ function launchPreview() {
 
   var btn     = document.getElementById('prev-btn');
   var loading = document.getElementById('prev-loading');
-  var panel   = document.getElementById('preview-panel');
   var card    = document.getElementById('mobile-card');
 
   btn.style.display   = 'none';
-  panel.style.display = 'none';
   card.style.display  = 'none';
   loading.style.display = 'block';
 
-  var msgs = ['Writing copy for your business…', 'Guessing your services…', 'Personalizing the layout…', 'Almost ready…'];
+  var msgs = ['Writing copy for your business\u2026', 'Personalizing your preview\u2026', 'Almost ready\u2026'];
   var mi = 0;
   var ticker = setInterval(function() {
     mi = (mi + 1) % msgs.length;
     var el = document.getElementById('prev-loading-msg');
     if (el) el.textContent = msgs[mi];
-  }, 1600);
+  }, 1800);
 
   var style     = _selectedStyle;
   var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + style;
@@ -628,106 +607,88 @@ function launchPreview() {
                   '&type=' + encodeURIComponent(bizType) +
                   '&city=' + encodeURIComponent(city);
 
-  function onError() {
+  function done() {
     clearInterval(ticker);
     loading.style.display = 'none';
     btn.style.display = 'inline-block';
   }
 
-  if (isMobile()) {
-    window.fetch(apiBase + '&format=json')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        clearInterval(ticker);
-        loading.style.display = 'none';
-        btn.style.display = 'inline-block';
+  // Always fetch JSON first to check if industry matched
+  window.fetch(apiBase + '&format=json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      done();
 
-        var palette = {
-          bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26' },
-          warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342' },
-          clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff' },
-        };
-        var p = palette[style] || palette.bold;
-        var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
+      if (!isMobile() && data.matched) {
+        // Desktop + matched industry → open full preview in new tab
+        window.open(apiBase, '_blank');
+        return;
+      }
 
-        var svcs = (data.services || []).slice(0, 6).map(function(s) {
-          return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
-        }).join('');
+      // Mobile OR unmatched → render card
+      var palette = {
+        bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26' },
+        warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342' },
+        clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff' },
+      };
+      var p = palette[style] || palette.bold;
+      var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
 
-        var imgTag = data.heroImage
-          ? '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;">'
-          : ''
+      var svcs = (data.services || []).slice(0, 6).map(function(s) {
+        return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
+      }).join('');
 
-        card.innerHTML =
-          '<div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-top:8px;">' +
-            '<div style="position:relative;height:220px;background:' + p.bg + ';overflow:hidden;">' +
-              imgTag +
-              '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 100%);"></div>' +
-              '<div style="position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">' +
-                '<div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:0.04em;">' + biz.toUpperCase() + '</div>' +
-                '<div style="background:' + p.accent + ';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;">Book Now</div>' +
-              '</div>' +
-              '<div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">' +
-                '<div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:' + p.accent + ';margin-bottom:6px;">' + (data.city || city) + '</div>' +
-                '<div style="font-size:21px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:#fff;padding:20px;">' +
-              '<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;">' + (data.heroBody || '') + '</p>' +
-              '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Our Services</div>' +
-              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
-              '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy</div>' +
-              '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
-              '<button onclick="closeMobileCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
-            '</div>' +
-          '</div>';
+      // Matched: show hero image. Unmatched: pure gradient, teaser message
+      var heroInner = '';
+      if (data.matched && data.heroImage) {
+        heroInner += '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;">';
+      }
+      heroInner +=
+        '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 100%);"></div>' +
+        '<div style="position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="font-size:12px;font-weight:800;color:#fff;letter-spacing:0.04em;">' + biz.toUpperCase() + '</div>' +
+          '<div style="background:' + p.accent + ';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;">Book Now</div>' +
+        '</div>' +
+        '<div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">' +
+          '<div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:' + p.accent + ';margin-bottom:6px;">' + (data.city || city) + '</div>' +
+          '<div style="font-size:' + (!isMobile() ? '26' : '21') + 'px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
+        '</div>';
 
-        card.style.display = 'block';
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      })
-      .catch(onError);
+      var teaserNote = !data.matched
+        ? '<div style="background:#f8f9ff;border:1px solid #e8eaff;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#6b6b80;line-height:1.5;">' +
+          '&#10024; <strong>Your site will be fully designed around your specific business</strong> — custom images, copy, and layout built for you.' +
+          '</div>'
+        : '';
 
-  } else {
-    document.getElementById('panel-biz-label').textContent = biz + ' — ' + (style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern');
-    document.getElementById('panel-order-btn').href = orderHref;
+      var desktopBtn = (!isMobile() && !data.matched)
+        ? ''
+        : '';  // desktop matched already opened new tab above
 
-    var frame = document.getElementById('preview-frame');
-    frame.onload = function() {
-      clearInterval(ticker);
-      loading.style.display = 'none';
-      btn.style.display = 'inline-block';
-      panel.style.display = 'block';
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-    frame.src = apiBase;
-  }
+      card.innerHTML =
+        '<div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto;">' +
+          '<div style="position:relative;height:' + (!isMobile() ? '260' : '220') + 'px;background:' + p.bg + ';overflow:hidden;">' +
+            heroInner +
+          '</div>' +
+          '<div style="background:#fff;padding:20px;">' +
+            teaserNote +
+            '<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;">' + (data.heroBody || '') + '</p>' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Services We'll Feature</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
+            '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy &middot; Built for you</div>' +
+            '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
+            '<button onclick="closeMobileCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
+          '</div>' +
+        '</div>';
+
+      card.style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    })
+    .catch(function() { done(); });
 }
 
 function closeMobileCard() {
   document.getElementById('mobile-card').style.display = 'none';
   document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function closePreview() {
-  document.getElementById('preview-panel').style.display = 'none';
-  document.getElementById('preview-frame').src = '';
-  document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function setViewport(v) {
-  var frame = document.getElementById('preview-frame');
-  var wrap  = document.getElementById('iframe-wrap');
-  var btnD  = document.getElementById('btn-desktop');
-  var btnM  = document.getElementById('btn-mobile');
-  if (v === 'mobile') {
-    frame.style.width = '390px'; wrap.style.padding = '24px';
-    btnD.style.background = 'transparent'; btnD.style.color = '#9090a8';
-    btnM.style.background = '#4648d4';     btnM.style.color = '#fff';
-  } else {
-    frame.style.width = '100%'; wrap.style.padding = '0';
-    btnD.style.background = '#4648d4'; btnD.style.color = '#fff';
-    btnM.style.background = 'transparent'; btnM.style.color = '#9090a8';
-  }
 }
 </script>
 
