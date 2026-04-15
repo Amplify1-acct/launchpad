@@ -587,12 +587,26 @@ function launchPreview() {
   var btn     = document.getElementById('prev-btn');
   var loading = document.getElementById('prev-loading');
   var card    = document.getElementById('mobile-card');
+  var style   = _selectedStyle;
 
-  btn.style.display   = 'none';
-  card.style.display  = 'none';
+  var apiBase = '/api/preview-demo?style=' + encodeURIComponent(style) +
+                '&biz='  + encodeURIComponent(biz) +
+                '&type=' + encodeURIComponent(bizType) +
+                '&city=' + encodeURIComponent(city);
+  var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + style;
+
+  // On desktop: open window IMMEDIATELY (must be synchronous from click handler)
+  // to avoid popup blocker, then check matched status
+  var previewWin = null;
+  if (!isMobile()) {
+    previewWin = window.open('about:blank', '_blank');
+  }
+
+  btn.style.display  = 'none';
+  card.style.display = 'none';
   loading.style.display = 'block';
 
-  var msgs = ['Writing copy for your business\u2026', 'Personalizing your preview\u2026', 'Almost ready\u2026'];
+  var msgs = ['Writing copy for your business…', 'Personalizing your preview…', 'Almost ready…'];
   var mi = 0;
   var ticker = setInterval(function() {
     mi = (mi + 1) % msgs.length;
@@ -600,50 +614,65 @@ function launchPreview() {
     if (el) el.textContent = msgs[mi];
   }, 1800);
 
-  var style     = _selectedStyle;
-  var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + style;
-  var apiBase   = '/api/preview-demo?style=' + encodeURIComponent(style) +
-                  '&biz='  + encodeURIComponent(biz) +
-                  '&type=' + encodeURIComponent(bizType) +
-                  '&city=' + encodeURIComponent(city);
-
   function done() {
     clearInterval(ticker);
     loading.style.display = 'none';
     btn.style.display = 'inline-block';
   }
 
-  // Always fetch JSON first to check if industry matched
   window.fetch(apiBase + '&format=json')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       done();
 
-      if (!isMobile() && data.matched) {
-        // Desktop + matched industry → open full preview in new tab
-        window.open(apiBase, '_blank');
+      if (!isMobile()) {
+        if (data.matched) {
+          // Redirect the already-open window to the full preview
+          if (previewWin) previewWin.location.href = apiBase;
+        } else {
+          // Close the blank window, show teaser card instead
+          if (previewWin) previewWin.close();
+          renderCard(data, biz, city, style, orderHref, false);
+        }
         return;
       }
 
-      // Mobile OR unmatched → render card
-      var palette = {
-        bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26' },
-        warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342' },
-        clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff' },
-      };
-      var p = palette[style] || palette.bold;
-      var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
+      // Mobile: always render card
+      if (previewWin) previewWin.close();
+      renderCard(data, biz, city, style, orderHref, true);
+    })
+    .catch(function() {
+      done();
+      if (previewWin) previewWin.close();
+    });
+}
 
-      var svcs = (data.services || []).slice(0, 6).map(function(s) {
-        return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
-      }).join('');
+function renderCard(data, biz, city, style, orderHref, mobile) {
+  var card = document.getElementById('mobile-card');
+  var palette = {
+    bold:  { bg: 'linear-gradient(135deg,#1a1a1a 0%,#2e2e2e 60%,#e85d26 100%)', accent: '#e85d26' },
+    warm:  { bg: 'linear-gradient(135deg,#2d5016 0%,#4a7c2f 60%,#7cb342 100%)', accent: '#7cb342' },
+    clean: { bg: 'linear-gradient(135deg,#0d1b3e 0%,#1352cc 60%,#0066ff 100%)', accent: '#0066ff' },
+  };
+  var p = palette[style] || palette.bold;
+  var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
 
-      // Matched: show hero image. Unmatched: pure gradient, teaser message
-      var heroInner = '';
-      if (data.matched && data.heroImage) {
-        heroInner += '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;">';
-      }
-      heroInner +=
+  var svcs = (data.services || []).slice(0, 6).map(function(s) {
+    return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
+  }).join('');
+
+  var heroImg = (data.matched && data.heroImage)
+    ? '<img src="' + data.heroImage + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;">'
+    : '';
+
+  var teaserNote = !data.matched
+    ? '<div style="background:#f8f9ff;border:1px solid #e8eaff;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#6b6b80;line-height:1.5;">&#10024; <strong>Your site will be fully designed around your specific business</strong> — custom images, copy, and layout built just for you.</div>'
+    : '';
+
+  card.innerHTML =
+    '<div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto;">' +
+      '<div style="position:relative;height:220px;background:' + p.bg + ';overflow:hidden;">' +
+        heroImg +
         '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 100%);"></div>' +
         '<div style="position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">' +
           '<div style="font-size:12px;font-weight:800;color:#fff;letter-spacing:0.04em;">' + biz.toUpperCase() + '</div>' +
@@ -651,42 +680,25 @@ function launchPreview() {
         '</div>' +
         '<div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">' +
           '<div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:' + p.accent + ';margin-bottom:6px;">' + (data.city || city) + '</div>' +
-          '<div style="font-size:' + (!isMobile() ? '26' : '21') + 'px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
-        '</div>';
+          '<div style="font-size:22px;font-weight:800;color:#fff;line-height:1.2;">' + (data.h1 || biz) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:#fff;padding:20px;">' +
+        teaserNote +
+        '<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;">' + (data.heroBody || '') + '</p>' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Our Services</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
+        '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy &middot; Built for you</div>' +
+        '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
+        '<button onclick="closeCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
+      '</div>' +
+    '</div>';
 
-      var teaserNote = !data.matched
-        ? '<div style="background:#f8f9ff;border:1px solid #e8eaff;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#6b6b80;line-height:1.5;">' +
-          '&#10024; <strong>Your site will be fully designed around your specific business</strong> — custom images, copy, and layout built for you.' +
-          '</div>'
-        : '';
-
-      var desktopBtn = (!isMobile() && !data.matched)
-        ? ''
-        : '';  // desktop matched already opened new tab above
-
-      card.innerHTML =
-        '<div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto;">' +
-          '<div style="position:relative;height:' + (!isMobile() ? '260' : '220') + 'px;background:' + p.bg + ';overflow:hidden;">' +
-            heroInner +
-          '</div>' +
-          '<div style="background:#fff;padding:20px;">' +
-            teaserNote +
-            '<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:16px;">' + (data.heroBody || '') + '</p>' +
-            '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">Services We'll Feature</div>' +
-            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;background:' + p.bg + ';padding:12px;border-radius:12px;">' + svcs + '</div>' +
-            '<div style="font-size:11px;color:#94a3b8;text-align:center;margin-bottom:16px;">&#10024; ' + styleLabel + ' style &middot; AI-written copy &middot; Built for you</div>' +
-            '<a href="' + orderHref + '" style="display:block;text-align:center;background:#4648d4;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(70,72,212,0.35);">Get This Site &rarr;</a>' +
-            '<button onclick="closeMobileCard()" style="display:block;width:100%;text-align:center;background:none;border:none;color:#94a3b8;font-size:13px;padding:12px;cursor:pointer;font-family:inherit;margin-top:4px;">&uarr; Try a different style</button>' +
-          '</div>' +
-        '</div>';
-
-      card.style.display = 'block';
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    })
-    .catch(function() { done(); });
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function closeMobileCard() {
+function closeCard() {
   document.getElementById('mobile-card').style.display = 'none';
   document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
