@@ -81,13 +81,19 @@ async function getAICopy(bizName: string, city: string, state: string, style: st
       max_tokens: 400,
       messages: [{
         role: "user",
-        content: `Rewrite website copy for a small business preview. Business: "${bizName}" in ${city}, ${state}.${bizType ? ` They are a: ${bizType}.` : " Guess the industry from the business name."}
+        content: `You are writing homepage copy for a small business website preview. 
 
-Return ONLY valid JSON, no markdown:
+Business name: "${bizName}"
+Business type: ${bizType || "unknown — guess from the name"}
+Location: ${city}, ${state}
+
+IMPORTANT: Write copy specific to THIS business and what they actually do. Ignore any template or default industry. If it is a hot dog stand, write about hot dogs. If it is a florist, write about flowers.
+
+Return ONLY valid JSON, no markdown, no explanation:
 {
-  "h1": "${city}'s [superlative] [what they do] — max 6 words after the city",
-  "heroBody": "2 warm confident sentences mentioning the business name and city, 30-40 words total",
-  "services": ["Service 1", "Service 2", "Service 3", "Service 4", "Service 5", "Service 6"]
+  "h1": "${city}'s [vivid superlative] [exactly what they do] — punchy, max 7 words after city name",
+  "heroBody": "2 sentences, warm and confident, specific to their actual business, mentions the business name and city, 30-40 words",
+  "services": ["Specific Service 1", "Specific Service 2", "Specific Service 3", "Specific Service 4", "Specific Service 5", "Specific Service 6"]
 }`,
       }],
     });
