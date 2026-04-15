@@ -85,7 +85,7 @@ export async function GET(request: Request) {
 
       // Replace H1
       const oldH1Swapped = orig.h1
-        .replace(orig.city || demo.city, newCity)
+        .replace(demo.city, newCity)
         .replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
       if (html.includes(oldH1Swapped)) {
         html = html.split(oldH1Swapped).join(copy.h1);
