@@ -157,11 +157,23 @@ export async function GET(request: Request) {
     const heroImage = industry && INDUSTRY_LIB[industry]
       ? `${INDUSTRY_LIB[industry]}/hero.png`
       : null;
+    // Gallery images — use industry library if slots exist, else demo site fallback
+    const galleryBase = (industry && INDUSTRY_LIB[industry] && matched)
+      ? INDUSTRY_LIB[industry]
+      : demoBase;
+    const galExt = (industry && INDUSTRY_LIB[industry] && matched) ? "png" : "jpg";
+    const galleryImages = [
+      `${galleryBase}/img3.${galExt}`,
+      `${galleryBase}/img4.${galExt}`,
+      `${galleryBase}/img5.${galExt}`,
+    ];
+
     return NextResponse.json({
       h1:        copy?.h1        || `${newCity}'s Trusted Experts`,
       heroBody:  copy?.heroBody  || `${bizName} is proud to serve ${newCity}, ${newState}.`,
       services:  copy?.services  || [],
       heroImage,
+      galleryImages,
       matched,
       city: `${newCity}, ${newState}`,
     });
