@@ -665,7 +665,8 @@ function renderCard(data, biz, city, style, orderHref, mobile) {
   var styleLabel = style === 'bold' ? 'Dark & Bold' : style === 'warm' ? 'Warm & Natural' : 'Clean & Modern';
 
   var svcs = (data.services || []).slice(0, 6).map(function(s) {
-    return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + s + '</div>';
+    var svcName = (s && typeof s === 'object') ? s.name : s;
+    return '<div style="padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.92);">&#10003; ' + svcName + '</div>';
   }).join('');
 
   var heroImg = (data.matched && data.heroImage)
