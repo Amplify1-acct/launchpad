@@ -194,15 +194,9 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
       html = html.split(`${demoBase}/${slot}.jpg`).join(customUrl);
       html = html.split(`${demoBase}/${slot}.png`).join(customUrl);
     } else if (["img5", "img6", "img7"].includes(slot)) {
-      // No image generated for this slot — remove the wrapping div entirely
-      const imgPath = `${demoBase}/${slot}.jpg`;
-      const imgPathPng = `${demoBase}/${slot}.png`;
-      // Find and remove the <div ...><img src="...imgN.jpg"...></div>
+      // Remove divs containing this ungenerated slot image
       html = html.replace(
-        new RegExp(`<div[^>]*>\s*<img[^>]*${slot}\.jpg[^>]*>\s*<\/div>`, "g"), ""
-      );
-      html = html.replace(
-        new RegExp(`<div[^>]*>\s*<img[^>]*${slot}\.png[^>]*>\s*<\/div>`, "g"), ""
+        new RegExp(`<div[^>]*>[^<]*<img[^>]*${slot}\.(jpg|png)[^>]*>[^<]*<\/div>`, "g"), ""
       );
     }
   }
@@ -281,6 +275,35 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
         return match;
       });
       html = html.substring(0, blogIdx) + replaced;
+    }
+  }
+
+  // Fix gallery grid layout based on how many images we have
+  // The template uses a complex 2fr 1fr 1fr grid — rebuild it cleanly with what we have
+  const hasImg4 = images?.img4;
+  const hasImg5 = images?.img5;
+  if (!hasImg5) {
+    // Only have img3 + img4 (or just img3) — replace gallery grid with clean layout
+    if (hasImg4) {
+      // Two images: side by side, equal width, good height
+      html = html.replace(
+        /(<div style="display:grid;grid-template-columns:2fr 1fr 1fr[^"]*"[^>]*>)/,
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+      );
+      // Remove grid-row:span 2 from img3 wrapper since we're now single row
+      html = html.replace(/grid-row:span 2;/, '');
+      // Fix heights to be consistent
+      html = html.replace(
+        /grid-template-rows:[^;]+;/,
+        'grid-template-rows:360px;'
+      );
+    } else {
+      // Only one image: full width
+      html = html.replace(
+        /(<div style="display:grid;grid-template-columns:2fr 1fr 1fr[^"]*"[^>]*>)/,
+        '<div style="display:grid;grid-template-columns:1fr;gap:10px;">'
+      );
+      html = html.replace(/grid-row:span 2;/, '');
     }
   }
 
