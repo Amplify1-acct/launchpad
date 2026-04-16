@@ -210,24 +210,43 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   const bIdx = html.indexOf(heroSwapped.substring(0, 40));
   if (bIdx !== -1) { const pe = html.indexOf("</p>", bIdx); if (pe !== -1) html = html.substring(0, bIdx) + copy.heroBody + html.substring(pe); }
 
-  // Services — swap every slot we have, always replace both name AND desc
+  // Services — swap names first, then replace ALL remaining template desc text
   if (Array.isArray(copy.services) && copy.services.length > 0) {
+    // Pass 1: swap names
     orig.services.forEach((s: any, i: number) => {
       const n = copy.services[i];
       if (!n) return;
-      // Always swap name
       if (s.name && n.name) html = html.split(s.name).join(n.name);
-      // Always swap desc — use city-swapped version as search target too
-      if (s.desc && n.desc) {
-        const descCitySwapped = s.desc
-          .replace(demo.city, newCity)
-          .replace("Springfield", newCity)
-          .replace("Westfield", newCity)
-          .replace("Scotch Plains", newCity);
-        html = html.split(descCitySwapped).join(n.desc);
-        html = html.split(s.desc).join(n.desc);
+    });
+    // Pass 2: swap descs with all city variants
+    orig.services.forEach((s: any, i: number) => {
+      const n = copy.services[i];
+      if (!n?.desc || !s.desc) return;
+      const variants = [
+        s.desc,
+        s.desc.replace(demo.city, newCity),
+        s.desc.replace("Springfield", newCity),
+        s.desc.replace("Westfield", newCity),
+        s.desc.replace("Scotch Plains", newCity),
+        s.desc.replace("Springfield", newCity).replace("Matty", bizName.split(" ")[0]),
+      ];
+      for (const v of variants) {
+        if (html.includes(v)) { html = html.split(v).join(n.desc); break; }
       }
     });
+    // Pass 3: nuclear fallback — replace any remaining original descs by scanning
+    // service card <p> tags after the service name was already swapped
+    if (Array.isArray(copy.services)) {
+      copy.services.forEach((n: any) => {
+        if (!n?.name || !n?.desc) return;
+        // Find the service card containing this name and replace its <p> desc
+        const nameEsc = n.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        html = html.replace(
+          new RegExp(`(${nameEsc}[\\s\\S]{0,400}?<p[^>]*>)([^<]{20,300})(</p>)`),
+          (_: string, pre: string, _old: string, post: string) => `${pre}${n.desc}${post}`
+        );
+      });
+    }
   }
 
   // About
@@ -333,6 +352,20 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
 }
 </style>`;
   html = html.replace('</head>', mobileCss + '</head>');
+
+  // Stats — replace hardcoded template numbers with generic credible ones
+  const statsReplacements: Array<[string, string]> = [
+    ["2000+", "500+"], ["2,000+", "500+"], ["1500+", "500+"],
+    ["Happy Customers", "Happy Customers"],
+    ["18+", "10+"], ["15+", "10+"],
+    ["Years Experience", "Years Experience"],
+  ];
+  // Only replace the numeric stats, keep labels
+  html = html
+    .replace(/>\s*2[,.]?000\+\s*</g, ">500+<")
+    .replace(/>\s*1[,.]?500\+\s*</g, ">500+<")
+    .replace(/>\s*18\+\s*</g, ">10+<")
+    .replace(/>\s*15\+\s*</g, ">10+<");
 
   // Nav dropdown
   html = html.replace(/<div class="nav-dropdown-menu">([\s\S]*?)<\/div>/, () => {
