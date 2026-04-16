@@ -39,14 +39,18 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { slug, status, images } = body;
+  const { slug, status, images, category_slug, category_label } = body;
   if (!slug || !status) {
     return NextResponse.json({ error: "Missing slug or status" }, { status: 400 });
   }
 
+  const updateData: any = { status, images, updated_at: new Date().toISOString() };
+  if (category_slug) updateData.category_slug = category_slug;
+  if (category_label) updateData.category_label = category_label;
+
   const { error } = await supabase
     .from("demo_builds")
-    .update({ status, images, updated_at: new Date().toISOString() })
+    .update(updateData)
     .eq("slug", slug);
 
   if (error) {
