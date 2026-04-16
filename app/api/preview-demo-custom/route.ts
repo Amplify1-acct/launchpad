@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { waitUntil } from "@vercel/functions";
 import { readFileSync } from "fs";
 import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
@@ -431,17 +430,13 @@ export async function GET(request: Request) {
     updated_at: new Date().toISOString(),
   });
 
-  // Dispatch workflow + generate copy using waitUntil so response is instant
-  // waitUntil keeps the task alive after response is sent — no Vercel timeout issue
-  waitUntil((async () => {
-    try {
-      const realCopy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
-      await supabase.from("demo_builds").update({ copy: realCopy }).eq("slug", slug);
-    } catch (err) {
-      console.error("Copy generation failed:", err);
-    }
-    await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
-  })());
+  // Trigger background build via separate endpoint (fire and forget)
+  // The pending page JS also calls this after load as a safety net
+  fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://www.exsisto.ai"}/api/demo-build`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-internal-secret": "exsisto-internal-2026" },
+    body: JSON.stringify({ slug, bizName, city: `${newCity}, ${newState}`, desc, servicesList, customers }),
+  }).catch(() => {});
 
   // JSON mode (mobile) — return copy + slug immediately, images will be placeholders
   if (format === "json") {
