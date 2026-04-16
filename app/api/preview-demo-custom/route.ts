@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { readFileSync } from "fs";
 import { join } from "path";
 import Anthropic from "@anthropic-ai/sdk";
@@ -430,17 +431,17 @@ export async function GET(request: Request) {
     updated_at: new Date().toISOString(),
   });
 
-  // Generate real copy + dispatch workflow — both must complete before response
-  // (Vercel kills anything that runs after response is sent)
-  try {
-    const realCopy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
-    await supabase.from("demo_builds").update({ copy: realCopy }).eq("slug", slug);
-  } catch (err) {
-    console.error("Copy generation failed, using placeholder:", err);
-  }
-
-  // Dispatch image generation workflow
-  await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+  // Dispatch workflow + generate copy using waitUntil so response is instant
+  // waitUntil keeps the task alive after response is sent — no Vercel timeout issue
+  waitUntil((async () => {
+    try {
+      const realCopy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
+      await supabase.from("demo_builds").update({ copy: realCopy }).eq("slug", slug);
+    } catch (err) {
+      console.error("Copy generation failed:", err);
+    }
+    await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+  })());
 
   // JSON mode (mobile) — return copy + slug immediately, images will be placeholders
   if (format === "json") {
