@@ -637,14 +637,8 @@ function launchPreview() {
       done();
 
       if (!isMobile()) {
-        if (data.matched) {
-          // Redirect the already-open window to the full preview
-          if (previewWin) previewWin.location.href = apiBase;
-        } else {
-          // Close the blank window, show teaser card instead
-          if (previewWin) previewWin.close();
-          renderCard(data, biz, city, style, orderHref, false);
-        }
+        // Desktop: always redirect the already-open window to the full preview page
+        if (previewWin) previewWin.location.href = apiBase;
         return;
       }
 
