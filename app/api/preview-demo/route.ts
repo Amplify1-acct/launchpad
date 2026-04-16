@@ -32,6 +32,7 @@ const INDUSTRY_LIB: Record<string, string> = {
   gym:         `${SUPABASE_IMG}/gym`,
   pet:         `${SUPABASE_IMG}/pet`,
   remodeling:  `${SUPABASE_IMG}/remodeling`,
+  salon:       `${SUPABASE_IMG}/salon`,
 };
 
 const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
@@ -49,6 +50,7 @@ const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
   [/restaurant|food|cafe|pizza|burger|diner|sushi|catering|baker|bakery|pastry|donut|coffee.?shop|sandwich/i, "restaurant"],
   [/moving|mover|storage|haul|junk/i,                                "moving"],
   [/auto|car|truck|vehicle|mechanic|tire|brake|oil.?change|transmission/i, "automotive"],
+  [/salon|barber|spa|hair|stylist|beauty|nail|waxing|massage/i,             "salon"],
 ];
 
 function detectIndustry(bizType: string, bizName: string): string | null {
@@ -202,17 +204,45 @@ Return ONLY valid JSON, no markdown, no explanation:
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const style   = searchParams.get("style") || "bold";
-  const bizName = (searchParams.get("biz") || "").trim();
+  const bizNameRaw = (searchParams.get("biz") || "").trim();
   const bizType = (searchParams.get("type") || "").trim();
   const cityRaw = (searchParams.get("city") || "").trim();
 
+  // ── Input normalization — fix user casing/typing ──────────────────────────
+  // Title case helper: respects small words and existing acronyms
+  const SMALL_WORDS = new Set(["of","the","and","an","a","or","for","in","on","at","to","by"]);
+  function titleCase(s: string): string {
+    return s.split(/(\s+|-)/).map((part, i) => {
+      if (/^\s+$/.test(part) || part === "-") return part;
+      const lower = part.toLowerCase();
+      // Keep all-caps 2-3 letter tokens (likely acronyms: LLC, DMV, etc.)
+      if (/^[A-Z]{2,3}$/.test(part)) return part;
+      // Apostrophe words: Tony's, O'Brien — capitalize multi-char segments only
+      if (lower.includes("'")) {
+        return lower.split("'").map((seg, idx) => {
+          if (idx === 0) return seg.charAt(0).toUpperCase() + seg.slice(1);
+          // Possessive 's stays lowercase; O'Brien capitalizes Brien
+          if (seg.length <= 1) return seg;
+          return seg.charAt(0).toUpperCase() + seg.slice(1);
+        }).join("'");
+      }
+      // Small words stay lowercase unless first word
+      if (i > 0 && SMALL_WORDS.has(lower)) return lower;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }).join("");
+  }
+
+  const bizName = bizNameRaw ? titleCase(bizNameRaw) : "";
+
   const demo     = DEMO_MAP[style] || DEMO_MAP.bold;
   const parts    = cityRaw.split(",").map((s: string) => s.trim());
-  // If city already contains the state abbreviation (e.g. "Westfield NJ"), extract it
+  // Accept state abbreviation in any case: "nj", "Nj", "NJ" — also at end of cityPart
   const cityPart = parts[0] || demo.city;
-  const stateFromCity = cityPart.match(/\b([A-Z]{2})$/)?.[1];
-  const newCity  = stateFromCity ? cityPart.replace(/\s+[A-Z]{2}$/, "").trim() : cityPart;
-  const newState = parts[1] || stateFromCity || demo.state;
+  const stateFromCity = cityPart.match(/\b([A-Za-z]{2})$/)?.[1];
+  const cityNoState = stateFromCity ? cityPart.replace(/\s+[A-Za-z]{2}$/, "").trim() : cityPart;
+  const newCity  = titleCase(cityNoState);
+  const stateRaw = parts[1] || stateFromCity || demo.state;
+  const newState = stateRaw.toUpperCase();
 
   // ── JSON mode for mobile card preview ──────────────────────────────────────
   const format = searchParams.get("format");
@@ -225,11 +255,11 @@ export async function GET(request: Request) {
       ? `${INDUSTRY_LIB[industry]}/hero.png`
       : `${_demoImgBase}/hero.jpg`;
     // Gallery images — use industry library if slots exist, else demo site fallback
+    // NOTE: salon library has hero.png only; use demo gallery for salon
     const _demoBase = _demoImgBase;
-    const galleryBase = (industry && INDUSTRY_LIB[industry] && matched)
-      ? INDUSTRY_LIB[industry]
-      : _demoBase;
-    const galExt = (industry && INDUSTRY_LIB[industry] && matched) ? "png" : "jpg";
+    const hasIndustryGallery = industry && INDUSTRY_LIB[industry] && matched && industry !== "salon";
+    const galleryBase = hasIndustryGallery ? INDUSTRY_LIB[industry] : _demoBase;
+    const galExt = hasIndustryGallery ? "png" : "jpg";
     const galleryImages = [
       `${galleryBase}/img3.${galExt}`,
       `${galleryBase}/img4.${galExt}`,
@@ -263,8 +293,11 @@ export async function GET(request: Request) {
     const demoBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
 
     if (industryBase) {
-      // Library is complete — swap ALL 7 slots for all 11 industries
-      for (const slot of ["hero", "about", "img3", "img4", "img5", "img6", "img7"]) {
+      // Salon library has hero only — swap hero only, leave gallery as demo
+      const slots = industry === "salon"
+        ? ["hero"]
+        : ["hero", "about", "img3", "img4", "img5", "img6", "img7"];
+      for (const slot of slots) {
         html = html.split(`${demoBase}/${slot}.jpg`).join(`${industryBase}/${slot}.png`);
         html = html.split(`${demoBase}/${slot}.png`).join(`${industryBase}/${slot}.png`);
       }
