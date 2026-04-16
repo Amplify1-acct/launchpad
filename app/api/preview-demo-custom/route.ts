@@ -310,10 +310,8 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   // Inject comprehensive mobile CSS
   const mobileCss = `<style>
 @media (max-width: 680px) {
-  /* Remove top gap from banner offset */
-  body > *:not(#xpb) { margin-top: 0 !important; }
-  /* Hero padding to clear fixed banner */
-  .hero, section:first-of-type { padding-top: 120px !important; }
+  /* Banner is single-line at 44px — keep margin-top as-is */
+  /* Hero: the template's existing padding + 44px margin-top is enough */
   /* Force ALL multi-column grids to single column */
   [style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
