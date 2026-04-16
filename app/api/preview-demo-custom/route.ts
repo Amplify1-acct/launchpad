@@ -312,36 +312,30 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing biz or desc" }, { status: 400 });
   }
 
-  // Generate copy immediately (fast, ~3 sec)
-  let copy: any;
-  try {
-    copy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
-  } catch (err) {
-    console.error("Copy generation failed:", err);
-    copy = {
-      h1: `${newCity}'s Trusted ${bizName} Experts`,
-      heroBody: `${bizName} has been proudly serving ${newCity}, ${newState} with dedication and care. We're committed to quality work and honest service every time.`,
-      services: servicesList.split("\n").filter(Boolean).slice(0, 6).map((s: string) => ({
-        name: s.trim(),
-        desc: `Professional ${s.trim().toLowerCase()} services tailored to your needs in ${newCity}.`
-      })),
-      aboutH2: `Proudly Serving ${newCity}`,
-      aboutBody: `${bizName} is a trusted local business in ${newCity}. We take pride in delivering quality work and standing behind everything we do.`,
-      ctaH2: "Ready to Get Started?",
-      process: [
-        {title:"Reach Out",     desc:"Contact us to discuss your needs. We'll listen carefully and provide honest guidance with no pressure."},
-        {title:"We Get to Work",desc:"Our team delivers quality work efficiently, treating your space with care and respect."},
-        {title:"You're Happy",  desc:"We stand behind everything we do. Your satisfaction is guaranteed, every single time."},
-      ],
-      blogTitles: [
-        `Everything You Need to Know About ${bizName} in ${newCity}, ${newState}`,
-        `Why ${newCity} Residents Choose ${bizName} for Quality Service`,
-      ],
-    };
-  }
-
-  // Create slug + Supabase row
+  // Create slug + Supabase row IMMEDIATELY with placeholder copy
+  // so we can return the pending page to the user right away
   const slug = generateSlug(bizName);
+  const placeholderCopy = {
+    h1: `${newCity} ${bizName}`,
+    heroBody: `${bizName} proudly serves ${newCity}, ${newState}.`,
+    services: servicesList.split("\n").filter(Boolean).slice(0, 6).map((s: string) => ({
+      name: s.trim(),
+      desc: `Professional ${s.trim().toLowerCase()} services in ${newCity}.`
+    })),
+    aboutH2: `About ${bizName}`,
+    aboutBody: `${bizName} is a trusted local business in ${newCity}.`,
+    ctaH2: "Get Started Today",
+    process: [
+      {title:"Reach Out",      desc:"Contact us to discuss your needs and get an honest assessment."},
+      {title:"We Get to Work", desc:"Our team delivers quality work efficiently and with care."},
+      {title:"You Are Happy",  desc:"We stand behind everything we do, guaranteed."},
+    ],
+    blogTitles: [
+      `Top Tips from ${bizName} in ${newCity}, ${newState}`,
+      `Why ${newCity} Residents Trust ${bizName}`,
+    ],
+  };
+
   await supabase.from("demo_builds").insert({
     slug,
     status: "pending",
@@ -349,14 +343,23 @@ export async function GET(request: Request) {
     city: newCity,
     state: newState,
     style,
-    copy,
+    copy: placeholderCopy,
     images: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
 
-  // Dispatch GitHub Actions workflow for image generation
-  await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+  // Fire copy generation + workflow dispatch without awaiting
+  // This runs in background after we return the pending page
+  (async () => {
+    try {
+      const copy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
+      await supabase.from("demo_builds").update({ copy }).eq("slug", slug);
+    } catch (err) {
+      console.error("Background copy generation failed:", err);
+    }
+    await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+  })();
 
   // JSON mode (mobile) — return copy + slug immediately, images will be placeholders
   if (format === "json") {
