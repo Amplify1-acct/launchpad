@@ -1,4 +1,4 @@
-name: 🍌 Generate Custom Demo Images
+name: AI Generate Custom Demo Images
 
 on:
   workflow_dispatch:
@@ -39,13 +39,14 @@ jobs:
 
       - name: Generate images + notify webhook
         env:
-          GEMINI_API_KEY:      ${{ secrets.GEMINI_API_KEY }}
-          SUPABASE_URL:        ${{ secrets.SUPABASE_URL }}
+          GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          INTERNAL_SECRET:     exsisto-internal-2026
-          WEBHOOK_URL:         https://www.exsisto.ai/api/demo-status
-          DEMO_SLUG:           ${{ github.event.inputs.demo_slug }}
-          BIZ_NAME:            ${{ github.event.inputs.biz_name }}
-          CITY:                ${{ github.event.inputs.city }}
-          BASE_PROMPT:         ${{ github.event.inputs.base_prompt }}
+          INTERNAL_SECRET:      exsisto-internal-2026
+          WEBHOOK_URL:          https://www.exsisto.ai/api/demo-status
+          DEMO_SLUG:            ${{ github.event.inputs.demo_slug }}
+          BIZ_NAME:             ${{ github.event.inputs.biz_name }}
+          CITY:                 ${{ github.event.inputs.city }}
+          BASE_PROMPT:          ${{ github.event.inputs.base_prompt }}
         run: python generate_custom_demo.py
