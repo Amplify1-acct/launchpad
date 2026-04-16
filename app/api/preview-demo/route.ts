@@ -225,8 +225,9 @@ export async function GET(request: Request) {
     // No swap needed for non-matched industries — demo site images stay as-is
 
     // Step 3: AI copy rewrite
+    let copy: any = null;
     if (bizName) {
-      const copy = await getAICopy(bizName, newCity, newState, style, bizType);
+      copy = await getAICopy(bizName, newCity, newState, style, bizType);
       const orig = DEMO_COPY[style] || DEMO_COPY.bold;
 
       const oldH1Swapped = orig.h1
@@ -321,11 +322,22 @@ export async function GET(request: Request) {
     html = html.replace(/<body([^>]*)>/, `<body$1>${banner}`);
 
     // Disable ALL internal links — preview is homepage only
-    // Replace every internal href with # and add a subtle "preview only" cursor
     html = html.replace(/<a\s+([^>]*?)href=["'](?!https?:\/\/|mailto:|tel:)([^"']*?)["']/gi,
       '<a $1href="#" onclick="return false;" style="cursor:default;"');
-    // Also kill any form submissions
+    // Kill form submissions
     html = html.replace(/<form/gi, '<form onsubmit="return false;"');
+
+    // Replace nav dropdown service links with AI-generated service names (no links, display only)
+    html = html.replace(/<div class="nav-dropdown-menu">([\s\S]*?)<\/div>/, (_match: string, _inner: string) => {
+      // Use whatever services ended up in the copy (already swapped above)
+      // Just show them as non-clickable spans
+      const svcList = Array.isArray(copy?.services) ? copy.services : (DEMO_COPY[style] || DEMO_COPY.bold).services;
+      const items = svcList.slice(0, 6).map((s: any) => {
+        const name = typeof s === "string" ? s : s.name;
+        return `<span style="display:block;padding:8px 16px;font-size:13px;cursor:default;">${name}</span>`;
+      }).join("");
+      return `<div class="nav-dropdown-menu">${items}</div>`;
+    });
 
     return new NextResponse(html, {
       headers: {
