@@ -234,7 +234,7 @@ export async function GET(request: Request) {
       heroImage,
       galleryImages,
       matched,
-      city: `${newCity}, ${newState}`,
+      city: `${newCity}, ${newState.toUpperCase()}`,
     });
   }
 
