@@ -281,6 +281,22 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
     }
   }
 
+  // Inject mobile CSS fixes
+  const mobileCss = `<style>
+@media (max-width: 640px) {
+  body > *:not(#xpb) { margin-top: 0 !important; }
+  .hero { padding-top: 100px !important; }
+  .gallery-grid, [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  .blog-grid, .posts-grid { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+</style>`;
+  html = html.replace('</head>', mobileCss + '</head>');
+
   // Nav dropdown
   html = html.replace(/<div class="nav-dropdown-menu">([\s\S]*?)<\/div>/, () => {
     const items = (copy.services || []).slice(0, 6).map((s: any) => {
