@@ -505,10 +505,6 @@
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">City, State</label>
         <input id="prev-city" type="text" placeholder="e.g. Westfield, NJ" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
       </div>
-      <div>
-        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Your Email</label>
-        <input id="prev-email" type="email" placeholder="e.g. you@yourbusiness.com" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
-      </div>
     </div>
 
     <!-- OTHER: Custom demo expanded form — shown inline when Other is selected -->
@@ -570,15 +566,6 @@
         </div>
 
       </div>
-    </div>
-
-    <!-- Mobile email confirmation -->
-    <div id="mobile-email-confirm" style="display:none;text-align:center;padding:32px 20px 40px;">
-      <div style="font-size:48px;margin-bottom:16px;">📧</div>
-      <div style="font-size:22px;font-weight:800;color:#0d0d14;margin-bottom:10px;">Check your email in 5 minutes!</div>
-      <div style="font-size:15px;color:#6b6b80;line-height:1.6;margin-bottom:24px;">We are building your custom demo site right now. We will send you a link to view the full site on any device.</div>
-      <div style="background:#f0f1ff;border-radius:12px;padding:16px 20px;font-size:13px;color:#4648d4;font-weight:600;">Your demo for <strong id="confirm-biz-name"></strong> is being built</div>
-      <button onclick="resetDemo()" style="margin-top:20px;background:none;border:none;color:#9090a8;font-size:13px;cursor:pointer;font-family:inherit;">Try a different business</button>
     </div>
 
     <!-- CTA -->
@@ -682,8 +669,6 @@ function launchPreview() {
   var city    = document.getElementById('prev-city').value.trim();
   var typeEl  = document.getElementById('prev-type');
   var bizType = typeEl ? typeEl.value.trim() : '';
-  var email   = (document.getElementById('prev-email') || {value:''}).value.trim();
-
   if (!biz)  { document.getElementById('prev-biz').focus();  document.getElementById('prev-biz').style.borderColor='#e85d26'; return; }
   if (!bizType || bizType === '') { typeEl.focus(); typeEl.style.borderColor='#e85d26'; return; }
   if (!city) { document.getElementById('prev-city').focus(); document.getElementById('prev-city').style.borderColor='#e85d26'; return; }
@@ -766,20 +751,10 @@ function launchPreview() {
         if (previewWin) previewWin.close();
       });
   } else {
-    // Mobile: show spinner while server generates, then navigate
-    // Keep the loading state visible the whole time
+    // Mobile: pre-fetch full site (keeps spinner visible), then navigate when ready
     window.fetch(apiBase)
-      .then(function(r) { return r.text(); })
-      .then(function() {
-        // Once server has finished generating, navigate (page is now cached)
-        done();
-        window.location.href = apiBase;
-      })
-      .catch(function() {
-        done();
-        // Navigate anyway — let the server handle it
-        window.location.href = apiBase;
-      });
+      .then(function() { done(); window.location.href = apiBase; })
+      .catch(function() { done(); window.location.href = apiBase; });
   }
 }
 
@@ -855,11 +830,6 @@ function closeCard() {
   document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function resetDemo() {
-  document.getElementById('mobile-email-confirm').style.display = 'none';
-  document.getElementById('prev-btn').style.display = 'inline-block';
-  document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
 
 function launchCustomPreview(biz, city) {
   var desc      = (document.getElementById('custom-desc')     || {value:''}).value.trim();
