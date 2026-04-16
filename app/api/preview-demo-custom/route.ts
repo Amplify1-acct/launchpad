@@ -352,17 +352,13 @@ export async function GET(request: Request) {
     updated_at: new Date().toISOString(),
   });
 
-  // Fire copy generation + workflow dispatch without awaiting
-  // This runs in background after we return the pending page
-  (async () => {
-    try {
-      const copy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
-      await supabase.from("demo_builds").update({ copy }).eq("slug", slug);
-    } catch (err) {
-      console.error("Background copy generation failed:", err);
-    }
-    await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
-  })();
+  // Dispatch workflow NOW (must be awaited before response — Vercel kills background tasks)
+  await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+
+  // Copy generation can update DB in background (nice to have, not blocking)
+  generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers)
+    .then((copy: any) => supabase.from("demo_builds").update({ copy }).eq("slug", slug))
+    .catch((err: any) => console.error("Background copy failed:", err));
 
   // JSON mode (mobile) — return copy + slug immediately, images will be placeholders
   if (format === "json") {
