@@ -912,14 +912,17 @@ function launchCustomPreview(biz, city) {
 
   window.fetch(params + '&format=json')
     .then(function(r) { return r.json(); })
-    .then(function(data) {
+    .then(function() {
       done();
       if (!isMobile()) {
+        // Desktop: redirect pre-opened tab to full site
         if (previewWin) previewWin.location.href = params;
         return;
       }
+      // Mobile: show "check your email" confirmation — never show broken demo
       if (previewWin) previewWin.close();
-      renderCard(data, biz, city, style, orderHref, true);
+      document.getElementById('prev-loading').style.display = 'none';
+      document.getElementById('custom-mobile-confirm').style.display = 'block';
     })
     .catch(function() {
       done();
@@ -927,6 +930,17 @@ function launchCustomPreview(biz, city) {
     });
 }
 </script>
+
+<!-- CUSTOM MOBILE CONFIRMATION -->
+<div id="custom-mobile-confirm" style="display:none;text-align:center;padding:32px 20px 48px;">
+  <div style="font-size:52px;margin-bottom:16px;">📧</div>
+  <div style="font-size:22px;font-weight:800;color:#0d0d14;margin-bottom:10px;line-height:1.3;">Your demo is being built!</div>
+  <div style="font-size:15px;color:#6b6b80;line-height:1.6;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto;">We are generating custom AI images and writing copy for your business. Check your email in about 5 minutes for a link to your full demo site.</div>
+  <div style="background:#f0f1ff;border:1.5px solid #dde2ff;border-radius:12px;padding:16px 20px;font-size:13px;color:#4648d4;font-weight:600;max-width:320px;margin:0 auto 20px;">
+    We will email you when it is ready ✓
+  </div>
+  <button onclick="document.getElementById('custom-mobile-confirm').style.display='none';document.getElementById('prev-btn').style.display='inline-block';document.getElementById('custom-demo-form').style.display='block';" style="background:none;border:none;color:#9090a8;font-size:13px;cursor:pointer;font-family:inherit;">Try a different business</button>
+</div>
 
 <!-- DEMOS -->
 <!-- PRICING -->
