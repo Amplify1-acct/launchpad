@@ -1,0 +1,51 @@
+name: 🍌 Generate Custom Demo Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      demo_slug:
+        description: 'Unique slug for this custom demo'
+        required: true
+        type: string
+      biz_name:
+        description: 'Business name'
+        required: true
+        type: string
+      city:
+        description: 'City, State'
+        required: true
+        type: string
+      base_prompt:
+        description: 'Business description snippet for image context'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate images + notify webhook
+        env:
+          GEMINI_API_KEY:      ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL:        ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          INTERNAL_SECRET:     exsisto-internal-2026
+          WEBHOOK_URL:         https://www.exsisto.ai/api/demo-status
+          DEMO_SLUG:           ${{ github.event.inputs.demo_slug }}
+          BIZ_NAME:            ${{ github.event.inputs.biz_name }}
+          CITY:                ${{ github.event.inputs.city }}
+          BASE_PROMPT:         ${{ github.event.inputs.base_prompt }}
+        run: python generate_custom_demo.py
