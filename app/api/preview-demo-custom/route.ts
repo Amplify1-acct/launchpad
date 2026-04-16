@@ -430,7 +430,7 @@ export async function GET(request: Request) {
   </div>
   <a href="/order" style="background:#fff;color:#4648d4;font-weight:700;font-size:12px;border-radius:8px;padding:6px 14px;text-decoration:none;flex-shrink:0;white-space:nowrap;">Get Started</a>
 </div>
-<style>body>*:not(#xpb){margin-top:44px!important;}</style>`;
+<style>body>*:not(#xpb){margin-top:0!important;}nav{position:sticky;top:44px!important;}body{padding-top:44px;}</style>`;
     html = html.replace(/<body([^>]*)>/, `<body$1>${banner}`);
     html = html.replace(/<a\s+([^>]*?)href=['"](?!https?:\/\/|mailto:|tel:)([^'"]*?)['"]/gi, '<a $1href="#" onclick="return false;" style="cursor:default;"');
     html = html.replace(/<form/gi, '<form onsubmit="return false;"');
