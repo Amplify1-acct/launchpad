@@ -405,13 +405,13 @@ export async function GET(request: Request) {
 <body>
   <div class="emoji" id="em">✨</div>
   <div class="msg" id="mg">Building your custom demo</div>
-  <div class="sub" id="sb">We're generating AI images specific to your business and writing custom copy — takes 3–5 minutes</div>
+  <div class="sub" id="sb">AI is generating custom images for your business and writing custom copy — takes 3–5 minutes</div>
   <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   <div class="progress"><div class="progress-bar" id="pb"></div></div>
   <script>
     var steps = [
-      {e:"✨", m:"Building your custom demo", s:"We're generating AI images specific to your business"},
-      {e:"🎨", m:"Generating images with Nano Banana", s:"Creating photos that look like your actual business"},
+      {e:"✨", m:"Building your custom demo", s:"AI is generating custom images for your business"},
+      {e:"🎨", m:"Generating images with Nano Banana", s:"Building photos specific to what you do"},
       {e:"✍️", m:"Writing your custom copy", s:"Every word crafted around your description"},
       {e:"🔧", m:"Assembling your site", s:"Putting it all together just for you"},
       {e:"🚀", m:"Almost ready...", s:"Final touches on your custom demo"}
