@@ -218,30 +218,17 @@ def main():
     print(f"  Slug:     {SLUG}")
     print(f"  Business: {BIZ_NAME} in {CITY}\n")
 
-    # 1. Detect category
+    # 1. Detect category (used for library archiving + copy context, not reuse)
     category_slug, category_label = detect_category(BIZ_NAME, BASE_PROMPT)
 
-    # 2. Check if we already have images for this category
-    existing = get_library_images(category_slug)
-    slots_needed = ["hero", "about", "img3", "img4"]
-
-    if all(s in existing for s in slots_needed):
-        print(f"  Category '{category_label}' already has all images — reusing library.")
-        # Copy library URLs to demo slot paths (point at same images)
-        image_urls = {s: existing[s] for s in slots_needed}
-        mark_ready(SLUG, image_urls, category_slug, category_label)
-        print(f"\nDone! Reused existing '{category_label}' library images.\n")
-        return
-
-    # 3. Generate new images for missing slots
+    # 2. Always generate fresh images per demo — do NOT reuse library images
+    #    because every "Other" business deserves photos specific to their description.
+    #    The library archive under custom-categories/ still gets written for future
+    #    analysis / training, but we never short-circuit on it.
     prompts = make_prompts(category_label, BIZ_NAME, CITY, BASE_PROMPT)
-    image_urls = {**existing}  # start with any already-existing slots
+    image_urls = {}
 
     for slot, prompt in prompts.items():
-        if slot in existing:
-            print(f"  [{slot}] Already in library — skipping generation")
-            continue
-
         print(f"\n  [{slot}]")
         print(f"  Prompt: {prompt[:100]}...")
         try:
@@ -250,27 +237,30 @@ def main():
             print(f"  Generated: {len(img_bytes)//1024}KB ({mime})")
             ext = "png" if "png" in mime else "jpg"
 
-            # Upload to demo-specific path
+            # Upload to demo-specific path — this is the URL the user's demo uses
             demo_url = upload(img_bytes, mime, f"custom-demos/{SLUG}/{slot}.{ext}")
             image_urls[slot] = demo_url
             print(f"  Demo: {demo_url}")
 
-            # Save to category library
-            lib_url = upload(img_bytes, mime, f"custom-categories/{category_slug}/{slot}.{ext}")
-            print(f"  Library [{category_label}/{slot}]: {lib_url}")
+            # Also archive to category library (for reference; NOT reused at render time)
+            try:
+                lib_url = upload(img_bytes, mime, f"custom-categories/{category_slug}/{slot}.{ext}")
+                print(f"  Library [{category_label}/{slot}]: {lib_url}")
+            except Exception as e:
+                print(f"  Library archive skipped ({slot}): {e}")
 
             time.sleep(3)
 
         except Exception as e:
             print(f"  Failed {slot}: {e}")
-            image_urls[slot] = None  # skip — don't add failed images to library
+            image_urls[slot] = None  # skip — don't include failed slots
 
-    # 4. Mark ready
+    # 3. Mark ready
     print(f"\n  Calling webhook...")
     mark_ready(SLUG, image_urls, category_slug, category_label)
 
     generated = len([v for v in image_urls.values() if v])
-    print(f"\nDone! {generated}/4 images. Category: '{category_label}' ({category_slug})\n")
+    print(f"\nDone! {generated}/4 images generated for this demo. Category: '{category_label}' ({category_slug})\n")
 
 if __name__ == "__main__":
     main()
