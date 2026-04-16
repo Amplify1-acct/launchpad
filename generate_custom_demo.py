@@ -17,7 +17,7 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
 WEBHOOK_URL  = os.environ.get("WEBHOOK_URL", "https://www.exsisto.ai/api/demo-status")
 INTERNAL_SECRET = os.environ.get("INTERNAL_SECRET", "exsisto-internal-2026")
-MODEL        = "gemini-2.0-flash-preview-image-generation"
+MODEL        = "gemini-3.1-flash-image-preview"
 BUCKET       = "industry-images"
 
 SLUG           = os.environ["DEMO_SLUG"]
