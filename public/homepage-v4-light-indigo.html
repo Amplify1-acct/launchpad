@@ -728,9 +728,9 @@ function launchPreview() {
         return;
       }
 
-      // Mobile: always render card
+      // Mobile: navigate to full preview site (same tab)
       if (previewWin) previewWin.close();
-      renderCard(data, biz, city, style, orderHref, true);
+      window.location.href = apiBase;
     })
     .catch(function() {
       done();
