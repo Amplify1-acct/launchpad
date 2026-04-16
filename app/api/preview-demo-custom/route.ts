@@ -327,13 +327,20 @@ export async function GET(request: Request) {
   // Create slug + Supabase row IMMEDIATELY with placeholder copy
   // so we can return the pending page to the user right away
   const slug = generateSlug(bizName);
+  // Parse services from input — pad to 6 if fewer provided
+  const parsedServices = servicesList.split("\n").filter(Boolean).slice(0, 6).map((s: string) => ({
+    name: s.trim(),
+    desc: `Professional ${s.trim().toLowerCase()} services in ${newCity}.`
+  }));
+  // Pad to 6 with generic entries so template slots don't repeat
+  while (parsedServices.length < 6) {
+    parsedServices.push({ name: `Our Services`, desc: `Quality service delivered with care in ${newCity}, ${newState}.` });
+  }
+
   const placeholderCopy = {
     h1: `${newCity} ${bizName}`,
     heroBody: `${bizName} proudly serves ${newCity}, ${newState}.`,
-    services: servicesList.split("\n").filter(Boolean).slice(0, 6).map((s: string) => ({
-      name: s.trim(),
-      desc: `Professional ${s.trim().toLowerCase()} services in ${newCity}.`
-    })),
+    services: parsedServices,
     aboutH2: `About ${bizName}`,
     aboutBody: `${bizName} is a trusted local business in ${newCity}.`,
     ctaH2: "Get Started Today",
