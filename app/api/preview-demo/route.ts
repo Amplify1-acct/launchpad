@@ -163,29 +163,38 @@ Return ONLY valid JSON, no markdown, no explanation:
     const text = (msg.content[0] as { type: string; text: string }).text.trim().replace(/```json|```/g, "").trim();
     return JSON.parse(text);
   } catch {
+    const typeWord = bizType || bizName.split(" ").slice(-1)[0];
+    const svcMap: Record<string, Array<{name:string;desc:string}>> = {
+      "restaurant": [{name:"Dine-In",desc:`Fresh meals served daily in a warm atmosphere in ${city}.`},{name:"Takeout & Delivery",desc:`Hot food ready for pickup or delivery across ${city}.`},{name:"Catering",desc:`Full-service catering for events and parties in ${city}.`},{name:"Private Events",desc:`Host your next event with our full catering services.`},{name:"Daily Specials",desc:`Rotating fresh menu items made from locally sourced ingredients.`},{name:"Gift Cards",desc:`Give the gift of great food for any occasion.`}],
+      "bakery": [{name:"Custom Cakes",desc:`Handcrafted cakes for weddings, birthdays, and special events.`},{name:"Fresh Baked Goods",desc:`Daily breads, pastries, and treats made from scratch.`},{name:"Custom Orders",desc:`Tell us what you want and we will create something uniquely yours.`},{name:"Wholesale",desc:`Bulk orders available for restaurants and corporate clients.`},{name:"Seasonal Specials",desc:`Limited seasonal items baked fresh for holidays.`},{name:"Local Delivery",desc:`Fresh goods delivered to your door across ${city}.`}],
+      "candle": [{name:"Custom Candles",desc:`Handcrafted candles made to order with your choice of scent and style.`},{name:"Wedding Collections",desc:`Beautiful candle collections designed for weddings and special events.`},{name:"Gift Sets",desc:`Curated candle gift sets perfect for any occasion.`},{name:"Corporate Gifts",desc:`Branded candle gifts for businesses and corporate events.`},{name:"Seasonal Collections",desc:`Limited edition seasonal scents released throughout the year.`},{name:"Wholesale Orders",desc:`Bulk candle orders available for retailers and event planners.`}],
+    };
+    const bizLower = (bizType + " " + bizName).toLowerCase();
+    const svcKey = Object.keys(svcMap).find(k => bizLower.includes(k));
+    const services = svcKey ? svcMap[svcKey] : [
+      {name:`${typeWord} Services`, desc:`Professional ${typeWord.toLowerCase()} services in ${city}.`},
+      {name:"Free Consultation",    desc:`Honest assessment and quote with no hidden fees.`},
+      {name:"Quality Work",         desc:`Every job done right the first time, guaranteed.`},
+      {name:"Licensed & Insured",   desc:`Fully licensed and insured for your peace of mind.`},
+      {name:"Local Experts",        desc:`Proudly serving ${city} and surrounding communities.`},
+      {name:"Fast Response",        desc:`We respond quickly and get the job done on your schedule.`},
+    ];
     return {
-      h1: `${city}'s Trusted ${bizName.split(" ").slice(-1)[0]} Experts`,
-      heroBody: `${bizName} has been serving ${city}, ${state} with pride. We're committed to quality work and honest service every time.`,
+      h1: `${city}'s Trusted ${typeWord} Experts`,
+      heroBody: `${bizName} has been proudly serving ${city}, ${state}. Quality work and honest service, every time.`,
       aboutH2: `Proudly Serving ${city}`,
-      aboutBody: `${bizName} has been a trusted part of the ${city} community for years. We take pride in delivering quality work and standing behind everything we do.`,
-      ctaH2: `Ready to Get Started?`,
+      aboutBody: `${bizName} is a trusted local business in ${city}. We take pride in delivering quality work.`,
+      ctaH2: "Ready to Get Started?",
       process: [
-        {title:"Call Us",        desc:`Give us a call to tell us what you need. We'll assess your situation and schedule a convenient time.`},
-        {title:"We Get to Work", desc:`Our team gets started quickly and works efficiently to deliver results you'll be proud of.`},
-        {title:"You're Happy",   desc:`We stand behind our work. If you're not satisfied, we'll make it right — guaranteed.`},
+        {title:"Call Us",        desc:"Give us a call to discuss your needs. Honest assessment, no pressure."},
+        {title:"We Get to Work", desc:"Our team delivers quality work efficiently and with care."},
+        {title:"You Are Happy",  desc:"We stand behind our work 100%. Satisfaction guaranteed."},
       ],
       blogTitles: [
-        `Top ${bizType || bizName} Tips Every ${city} Resident Should Know`,
-        `How to Choose the Best ${bizType || bizName} in ${city}, ${state}`,
+        `Top ${typeWord} Tips Every ${city} Resident Should Know`,
+        `How to Choose the Best ${typeWord} in ${city}, ${state}`,
       ],
-      services: [
-        {name:`${bizType || bizName} Services`,  desc:`Professional services tailored to your specific needs in ${city}.`},
-        {name:`Free Consultation`,               desc:`We'll assess your needs and provide an honest, no-pressure quote with no hidden fees.`},
-        {name:`Same-Day Availability`,           desc:`We understand urgency. Call us and we'll do our best to get there the same day.`},
-        {name:`Licensed & Insured`,              desc:`Fully licensed and insured for your protection. You can trust us in your home or business.`},
-        {name:`Quality Guaranteed`,              desc:`We stand behind every job we do. If it's not right, we'll come back and fix it.`},
-        {name:`Local & Family-Owned`,            desc:`Proudly serving ${city} and surrounding communities as a local family business.`},
-      ],
+      services,
     };
   }
 }
