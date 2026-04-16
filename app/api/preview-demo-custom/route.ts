@@ -243,13 +243,32 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
     });
   }
 
-  // Blog titles
-  if (Array.isArray(copy.blogTitles) && Array.isArray(orig.blogTitles)) {
-    orig.blogTitles.forEach((t: string, i: number) => {
-      const sw = t.replace(demo.city, newCity).replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
-      const nt = copy.blogTitles[i];
-      if (nt) { html = html.split(sw).join(nt); html = html.split(t).join(nt); }
-    });
+  // Blog titles — replace ALL h3 tags in the blog section that contain city/demo text
+  if (Array.isArray(copy.blogTitles) && copy.blogTitles.length >= 2) {
+    // First try targeted swap of known template titles
+    if (Array.isArray(orig.blogTitles)) {
+      orig.blogTitles.forEach((t: string, i: number) => {
+        const sw = t.replace(demo.city, newCity).replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
+        const nt = copy.blogTitles[i];
+        if (nt) { html = html.split(sw).join(nt); html = html.split(t).join(nt); }
+      });
+    }
+    // Fallback: find any h3 inside the blog section and replace sequentially
+    let blogIdx = html.indexOf("OUR BLOG");
+    if (blogIdx === -1) blogIdx = html.indexOf("LATEST ARTICLES");
+    if (blogIdx === -1) blogIdx = html.indexOf("Latest Articles");
+    if (blogIdx !== -1) {
+      let titleNum = 0;
+      const blogSection = html.substring(blogIdx);
+      const replaced = blogSection.replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/g, (match: string, attrs: string, inner: string) => {
+        if (titleNum < copy.blogTitles.length && inner.length > 20 && !inner.includes("Read More")) {
+          const newTitle = copy.blogTitles[titleNum++];
+          return `<h3${attrs}>${newTitle}</h3>`;
+        }
+        return match;
+      });
+      html = html.substring(0, blogIdx) + replaced;
+    }
   }
 
   // Nav dropdown
