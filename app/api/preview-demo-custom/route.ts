@@ -267,6 +267,7 @@ export async function GET(request: Request) {
   const desc      = (searchParams.get("desc")     || "").trim();
   const servicesList = (searchParams.get("services") || "").trim();
   const customers = (searchParams.get("customers")|| "").trim();
+  const email     = (searchParams.get("email")     || "").trim();
   const format    = searchParams.get("format");
   const slugParam = searchParams.get("slug");       // set when polling redirect fires
 
@@ -348,6 +349,7 @@ export async function GET(request: Request) {
     style,
     copy: placeholderCopy,
     images: {},
+    email: email || null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
