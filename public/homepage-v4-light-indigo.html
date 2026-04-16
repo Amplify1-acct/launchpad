@@ -523,6 +523,11 @@
         <label style="display:block;font-size:11px;font-weight:700;color:#6b6b80;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Who are your customers?</label>
         <input id="custom-customers" type="text" placeholder="e.g. Local families, Brides, Homeowners, Small businesses" style="width:100%;padding:12px 14px;border:1.5px solid #c7c9f7;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#c7c9f7'"/>
       </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e4f7;">
+        <label style="display:block;font-size:11px;font-weight:700;color:#4648d4;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Email me when my demo is ready <span style="color:#e85d26;">*</span></label>
+        <input id="custom-email" type="email" placeholder="you@yourbusiness.com" style="width:100%;padding:12px 14px;border:1.5px solid #c7c9f7;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#c7c9f7'"/>
+        <div style="font-size:11px;color:#9090a8;margin-top:5px;">Takes 3-5 minutes. We will send you a link when its ready.</div>
+      </div>
     </div>
 
     <!-- Style picker -->
@@ -809,6 +814,7 @@ function launchCustomPreview(biz, city) {
   var desc      = (document.getElementById('custom-desc')     || {value:''}).value.trim();
   var services  = (document.getElementById('custom-services') || {value:''}).value.trim();
   var customers = (document.getElementById('custom-customers')|| {value:''}).value.trim();
+  var email     = (document.getElementById('custom-email')    || {value:''}).value.trim();
 
   // Validate
   if (!desc || countWords(desc) < 80) {
@@ -820,6 +826,11 @@ function launchCustomPreview(biz, city) {
   if (!services) {
     document.getElementById('custom-services').focus();
     document.getElementById('custom-services').style.borderColor = '#e85d26';
+    return;
+  }
+  if (!email || !email.includes('@')) {
+    document.getElementById('custom-email').focus();
+    document.getElementById('custom-email').style.borderColor = '#e85d26';
     return;
   }
 
@@ -875,7 +886,8 @@ function launchCustomPreview(biz, city) {
     '&city='      + encodeURIComponent(city) +
     '&desc='      + encodeURIComponent(desc) +
     '&services='  + encodeURIComponent(services) +
-    '&customers=' + encodeURIComponent(customers);
+    '&customers=' + encodeURIComponent(customers) +
+    '&email='     + encodeURIComponent(email);
 
   window.fetch(params + '&format=json')
     .then(function(r) { return r.json(); })
