@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     style,
     source: "mobile_demo",
     created_at: new Date().toISOString(),
-  }).then(() => {}).catch(() => {});
+  }).catch(() => {});
 
   // Send "your demo is being built" email via Resend
   const demoUrl = `https://www.exsisto.ai/api/preview-demo?style=${encodeURIComponent(style)}&biz=${encodeURIComponent(biz)}&type=${encodeURIComponent(bizType)}&city=${encodeURIComponent(city)}`;
