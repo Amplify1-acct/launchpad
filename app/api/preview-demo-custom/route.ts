@@ -370,9 +370,9 @@ export async function GET(request: Request) {
     return NextResponse.json({
       slug,
       status: "pending",
-      h1: copy.h1,
-      heroBody: copy.heroBody,
-      services: copy.services || [],
+      h1: placeholderCopy.h1,
+      heroBody: placeholderCopy.heroBody,
+      services: placeholderCopy.services || [],
       heroImage: `${demoBase}/hero.jpg`,
       galleryImages: [`${demoBase}/img3.jpg`, `${demoBase}/img4.jpg`, `${demoBase}/img5.jpg`],
       matched: true,
