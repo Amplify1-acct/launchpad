@@ -507,6 +507,24 @@
       </div>
     </div>
 
+    <!-- OTHER: Custom demo expanded form — shown inline when Other is selected -->
+    <div id="custom-demo-form" style="display:none;margin-bottom:24px;background:#f0f1ff;border:2px solid #c7c9f7;border-radius:14px;padding:20px 20px 16px;">
+      <div style="font-size:13px;font-weight:700;color:#4648d4;margin-bottom:3px;">✨ Custom Demo — built just for your business</div>
+      <div style="font-size:12px;color:#6b6b80;margin-bottom:16px;">Takes 3–5 minutes. More detail = better demo.</div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:#6b6b80;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Describe your business <span style="color:#e85d26;">*</span> <span id="word-count-msg" style="font-weight:400;color:#9090a8;text-transform:none;letter-spacing:0;">(0 / 80 words min)</span></label>
+        <textarea id="custom-desc" placeholder="Tell us everything — what you do, who your customers are, what makes you different, how long you've been open, your location. The more detail the better." style="width:100%;padding:12px 14px;border:1.5px solid #c7c9f7;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;resize:vertical;min-height:110px;box-sizing:border-box;background:#fff;" oninput="checkWordCount()" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#c7c9f7'"></textarea>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:#6b6b80;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Your services (one per line) <span style="color:#e85d26;">*</span></label>
+        <textarea id="custom-services" placeholder="Custom Cakes&#10;Wedding Arrangements&#10;Same-Day Delivery" style="width:100%;padding:12px 14px;border:1.5px solid #c7c9f7;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;resize:vertical;min-height:80px;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#c7c9f7'"></textarea>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#6b6b80;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Who are your customers?</label>
+        <input id="custom-customers" type="text" placeholder="e.g. Local families, Brides, Homeowners, Small businesses" style="width:100%;padding:12px 14px;border:1.5px solid #c7c9f7;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#c7c9f7'"/>
+      </div>
+    </div>
+
     <!-- Style picker -->
     <div style="margin-bottom:24px;">
       <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px;">Pick a Style</label>
@@ -542,28 +560,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- OTHER: Custom demo expanded form -->
-    <div id="custom-demo-form" style="display:none;margin-bottom:28px;background:#f8f9ff;border:1.5px solid #dde2ff;border-radius:14px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:#4648d4;margin-bottom:4px;">✨ Custom Demo — We'll build it just for you</div>
-      <div style="font-size:12px;color:#6b6b80;margin-bottom:16px;">Takes about 3–5 minutes. The more detail you give us, the better your demo will look.</div>
-
-      <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">What does your business do? <span style="color:#e85d26;">*</span></label>
-        <textarea id="custom-desc" placeholder="Tell us everything — what services you offer, who your customers are, what makes you different, your story, your location, anything. The more detail the better. Minimum 80 words." style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;resize:vertical;min-height:120px;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff';checkWordCount()"></textarea>
-        <div id="word-count-msg" style="font-size:11px;margin-top:4px;color:#9090a8;">0 / 80 words minimum</div>
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Your main services (one per line) <span style="color:#e85d26;">*</span></label>
-        <textarea id="custom-services" placeholder="Custom Cakes&#10;Wedding Catering&#10;Cookie Boxes&#10;Corporate Orders" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;resize:vertical;min-height:90px;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"></textarea>
-      </div>
-
-      <div>
-        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Who are your customers?</label>
-        <input id="custom-customers" type="text" placeholder="e.g. Homeowners, Local families, Small businesses, Brides-to-be" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
       </div>
     </div>
 
