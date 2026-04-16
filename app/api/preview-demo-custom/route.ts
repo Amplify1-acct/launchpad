@@ -206,12 +206,20 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   const bIdx = html.indexOf(heroSwapped.substring(0, 40));
   if (bIdx !== -1) { const pe = html.indexOf("</p>", bIdx); if (pe !== -1) html = html.substring(0, bIdx) + copy.heroBody + html.substring(pe); }
 
-  // Services
-  if (Array.isArray(copy.services)) {
+  // Services — only swap slots where we have a distinct AI-generated service
+  if (Array.isArray(copy.services) && copy.services.length > 0) {
     orig.services.forEach((s: any, i: number) => {
-      const n = copy.services[i] || copy.services[copy.services.length - 1];
-      if (s.name && n?.name) html = html.split(s.name).join(n.name);
-      if (s.desc && n?.desc) html = html.split(s.desc).join(n.desc);
+      const n = copy.services[i]; // no fallback — only swap if we have this exact slot
+      if (!n) return;
+      if (s.name && n.name && n.name !== copy.services[0]?.name) {
+        // Only swap if different from first (catches repeated fallback bug)
+        html = html.split(s.name).join(n.name);
+        if (s.desc && n.desc) html = html.split(s.desc).join(n.desc);
+      } else if (i === 0) {
+        // Always swap the first one
+        if (s.name && n.name) html = html.split(s.name).join(n.name);
+        if (s.desc && n.desc) html = html.split(s.desc).join(n.desc);
+      }
     });
   }
 
