@@ -389,11 +389,15 @@ export async function GET(request: Request) {
     html = applySwaps(html, copy, orig, demoMeta, build.biz_name, build.city, build.state, images);
 
     const styleLabel = build.style === "bold" ? "Dark & Bold" : build.style === "warm" ? "Warm & Natural" : "Clean & Modern";
-    const banner = `<div id="xpb" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#4648d4;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-family:system-ui,sans-serif;font-size:13px;box-shadow:0 2px 16px rgba(0,0,0,0.3);gap:12px;">
-  <div style="display:flex;align-items:center;gap:10px;"><span>✨</span><span>Custom demo: <strong>${build.biz_name}</strong> in ${build.city}, ${build.state}</span><span style="background:rgba(255,255,255,0.18);border-radius:4px;padding:2px 8px;font-size:11px;">${styleLabel}</span></div>
-  <a href="/order" style="background:#fff;color:#4648d4;font-weight:700;font-size:13px;border-radius:8px;padding:7px 18px;text-decoration:none;">Get Started →</a>
+    const banner = `<div id="xpb" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#4648d4;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-family:system-ui,sans-serif;font-size:13px;box-shadow:0 2px 16px rgba(0,0,0,0.3);gap:8px;min-height:44px;">
+  <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+    <span style="flex-shrink:0;">&#10024;</span>
+    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;">Custom demo: <strong>${build.biz_name}</strong> in ${build.city}, ${build.state}</span>
+    <span style="background:rgba(255,255,255,0.18);border-radius:4px;padding:2px 6px;font-size:10px;flex-shrink:0;white-space:nowrap;">${styleLabel}</span>
+  </div>
+  <a href="/order" style="background:#fff;color:#4648d4;font-weight:700;font-size:12px;border-radius:8px;padding:6px 14px;text-decoration:none;flex-shrink:0;white-space:nowrap;">Get Started</a>
 </div>
-<style>body>*:not(#xpb){margin-top:48px!important;}</style>`;
+<style>body>*:not(#xpb){margin-top:44px!important;}</style>`;
     html = html.replace(/<body([^>]*)>/, `<body$1>${banner}`);
     html = html.replace(/<a\s+([^>]*?)href=['"](?!https?:\/\/|mailto:|tel:)([^'"]*?)['"]/gi, '<a $1href="#" onclick="return false;" style="cursor:default;"');
     html = html.replace(/<form/gi, '<form onsubmit="return false;"');
