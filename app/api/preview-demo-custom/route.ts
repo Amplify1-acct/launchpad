@@ -183,18 +183,28 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   html = html.split(` ${demo.state}`).join(` ${newState}`);
   html = html.split(`,${demo.state}`).join(`,${newState}`);
 
-  // Images — use Nano Banana custom images, fall back to demo base URLs (already in template)
+  // Images — swap custom images in; hide any gallery slots we didn't generate
   const styleKey = demo.folder.includes("auto") ? "bold" : demo.folder.includes("green") ? "warm" : "clean";
   const demoBase = DEMO_IMG_BASE[styleKey];
   const slots = ["hero", "about", "img3", "img4", "img5", "img6", "img7"];
   for (const slot of slots) {
     const customUrl = images?.[slot];
     if (customUrl) {
-      // Swap demo URL with custom Nano Banana image
+      // Swap with our generated image
       html = html.split(`${demoBase}/${slot}.jpg`).join(customUrl);
       html = html.split(`${demoBase}/${slot}.png`).join(customUrl);
+    } else if (["img5", "img6", "img7"].includes(slot)) {
+      // No image generated for this slot — remove the wrapping div entirely
+      const imgPath = `${demoBase}/${slot}.jpg`;
+      const imgPathPng = `${demoBase}/${slot}.png`;
+      // Find and remove the <div ...><img src="...imgN.jpg"...></div>
+      html = html.replace(
+        new RegExp(`<div[^>]*>\s*<img[^>]*${slot}\.jpg[^>]*>\s*<\/div>`, "g"), ""
+      );
+      html = html.replace(
+        new RegExp(`<div[^>]*>\s*<img[^>]*${slot}\.png[^>]*>\s*<\/div>`, "g"), ""
+      );
     }
-    // If no custom image, template keeps its original demo image (already there)
   }
 
   // H1
