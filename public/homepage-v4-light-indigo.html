@@ -717,25 +717,24 @@ function launchPreview() {
     btn.style.display = 'inline-block';
   }
 
-  window.fetch(apiBase + '&format=json')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      done();
-
-      if (!isMobile()) {
-        // Desktop: always redirect the already-open window to the full preview page
+  if (!isMobile()) {
+    // Desktop: fetch JSON first (fast), then redirect pre-opened window to full site
+    window.fetch(apiBase + '&format=json')
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        done();
         if (previewWin) previewWin.location.href = apiBase;
-        return;
-      }
-
-      // Mobile: navigate to full preview site (same tab)
-      if (previewWin) previewWin.close();
-      window.location.href = apiBase;
-    })
-    .catch(function() {
-      done();
-      if (previewWin) previewWin.close();
-    });
+      })
+      .catch(function() {
+        done();
+        if (previewWin) previewWin.close();
+      });
+  } else {
+    // Mobile: skip JSON fetch — navigate directly to full site
+    // Server generates AI copy server-side, spinner shows while it loads (~5-8 sec)
+    if (previewWin) previewWin.close();
+    window.location.href = apiBase;
+  }
 }
 
 function renderCard(data, biz, city, style, orderHref, mobile) {
