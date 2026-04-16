@@ -183,15 +183,18 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   html = html.split(` ${demo.state}`).join(` ${newState}`);
   html = html.split(`,${demo.state}`).join(`,${newState}`);
 
-  // Images — swap demo base URLs with custom Nano Banana images
-  const demoBase = DEMO_IMG_BASE[demo.folder.includes("auto") ? "bold" : demo.folder.includes("green") ? "warm" : "clean"];
-  const imgMap: Record<string, string> = { hero: "hero", about: "about", img3: "img3", img4: "img4" };
-  for (const [slot, imgKey] of Object.entries(imgMap)) {
-    const url = images?.[imgKey];
-    if (url) {
-      html = html.split(`${demoBase}/${slot}.jpg`).join(url);
-      html = html.split(`${demoBase}/${slot}.png`).join(url);
+  // Images — use Nano Banana custom images, fall back to demo base URLs (already in template)
+  const styleKey = demo.folder.includes("auto") ? "bold" : demo.folder.includes("green") ? "warm" : "clean";
+  const demoBase = DEMO_IMG_BASE[styleKey];
+  const slots = ["hero", "about", "img3", "img4", "img5", "img6", "img7"];
+  for (const slot of slots) {
+    const customUrl = images?.[slot];
+    if (customUrl) {
+      // Swap demo URL with custom Nano Banana image
+      html = html.split(`${demoBase}/${slot}.jpg`).join(customUrl);
+      html = html.split(`${demoBase}/${slot}.png`).join(customUrl);
     }
+    // If no custom image, template keeps its original demo image (already there)
   }
 
   // H1
