@@ -46,7 +46,7 @@ const TYPE_TO_INDUSTRY: Array<[RegExp, string]> = [
   [/remodel|bathroom|kitchen|basement|renovation|tile|flooring|cabinet|handyman/i, "remodeling"],
   [/gym|fitness|crossfit|personal.?train|yoga|pilates|workout/i,      "gym"],
   [/pet|dog|cat|veterinar|grooming|animal|kennel|boarding/i,          "pet"],
-  [/restaurant|food|cafe|pizza|burger|diner|sushi|catering/i,         "restaurant"],
+  [/restaurant|food|cafe|pizza|burger|diner|sushi|catering|baker|bakery|pastry|donut|coffee.?shop|sandwich/i, "restaurant"],
   [/moving|mover|storage|haul|junk/i,                                "moving"],
   [/auto|car|truck|vehicle|mechanic|tire|brake|oil.?change|transmission/i, "automotive"],
 ];
@@ -169,7 +169,23 @@ Return ONLY valid JSON, no markdown, no explanation:
       aboutH2: `Proudly Serving ${city}`,
       aboutBody: `${bizName} has been a trusted part of the ${city} community for years. We take pride in delivering quality work and standing behind everything we do.`,
       ctaH2: `Ready to Get Started?`,
-      services: original.services,
+      process: [
+        {title:"Call Us",        desc:`Give us a call to tell us what you need. We'll assess your situation and schedule a convenient time.`},
+        {title:"We Get to Work", desc:`Our team gets started quickly and works efficiently to deliver results you'll be proud of.`},
+        {title:"You're Happy",   desc:`We stand behind our work. If you're not satisfied, we'll make it right — guaranteed.`},
+      ],
+      blogTitles: [
+        `Top ${bizType || bizName} Tips Every ${city} Resident Should Know`,
+        `How to Choose the Best ${bizType || bizName} in ${city}, ${state}`,
+      ],
+      services: [
+        {name:`${bizType || bizName} Services`,  desc:`Professional services tailored to your specific needs in ${city}.`},
+        {name:`Free Consultation`,               desc:`We'll assess your needs and provide an honest, no-pressure quote with no hidden fees.`},
+        {name:`Same-Day Availability`,           desc:`We understand urgency. Call us and we'll do our best to get there the same day.`},
+        {name:`Licensed & Insured`,              desc:`Fully licensed and insured for your protection. You can trust us in your home or business.`},
+        {name:`Quality Guaranteed`,              desc:`We stand behind every job we do. If it's not right, we'll come back and fix it.`},
+        {name:`Local & Family-Owned`,            desc:`Proudly serving ${city} and surrounding communities as a local family business.`},
+      ],
     };
   }
 }
@@ -195,11 +211,12 @@ export async function GET(request: Request) {
     const copy = bizName ? await getAICopy(bizName, newCity, newState, style, bizType) : null;
     const industry = detectIndustry(bizType, bizName);
     const matched = !!industry;
+    const _demoImgBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
     const heroImage = industry && INDUSTRY_LIB[industry]
       ? `${INDUSTRY_LIB[industry]}/hero.png`
-      : null;
+      : `${_demoImgBase}/hero.jpg`;
     // Gallery images — use industry library if slots exist, else demo site fallback
-    const _demoBase = DEMO_IMG_BASE[style] || DEMO_IMG_BASE.bold;
+    const _demoBase = _demoImgBase;
     const galleryBase = (industry && INDUSTRY_LIB[industry] && matched)
       ? INDUSTRY_LIB[industry]
       : _demoBase;
