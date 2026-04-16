@@ -386,7 +386,7 @@ export async function GET(request: Request) {
   </div>
   <a href="/order" style="background:#fff;color:#4648d4;font-weight:700;font-size:13px;border-radius:8px;padding:7px 18px;text-decoration:none;white-space:nowrap;">Get Started</a>
 </div>
-<style>body>*:not(#xpb){margin-top:44px!important;}</style>`;
+<style>body>*:not(#xpb){margin-top:0!important;}nav{position:sticky;top:44px!important;}body{padding-top:44px;}</style>`;
 
     html = html.replace(/<body([^>]*)>/, `<body$1>${banner}`);
 
