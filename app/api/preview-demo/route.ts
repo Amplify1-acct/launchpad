@@ -66,6 +66,15 @@ const DEMO_COPY: Record<string, { h1: string; heroBody: string; aboutH2: string;
     aboutH2:  "Family-Owned Since 2006",
     aboutBody: "Matty's Automotive has been proudly serving Springfield and surrounding New Jersey communities for nearly two decades. We built our reputation on straight talk, fair pricing, and getting the job done right the first time.",
     ctaH2:    "Schedule Your Service Today",
+    process: [
+      {title:"Call Us",          desc:"Give us a call at (908) 555-0147 to describe your car's symptoms. We'll provide an honest assessment and schedule your appointment."},
+      {title:"Expert Diagnosis", desc:"Our certified mechanics will thoroughly inspect your vehicle using state-of-the-art equipment. You'll get a clear explanation of any issues we find."},
+      {title:"Quality Repair",   desc:"We use only quality parts and proven techniques. Your car will be ready when promised and backed by our satisfaction guarantee."},
+    ],
+    blogTitles: [
+      "5 Critical Warning Signs Your Car Needs Immediate Attention in Springfield, NJ",
+      "How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide",
+    ],
     services: [
       {name:"Oil Changes",          desc:"Quick professional oil changes using premium lubricants to keep your engine running smoothly."},
       {name:"Brake Service",        desc:"Complete brake inspection, repair, and replacement to keep you safe on Springfield roads."},
@@ -138,7 +147,16 @@ Return ONLY valid JSON, no markdown, no explanation:
   ],
   "aboutH2": "Short punchy about section headline, 4-6 words, no generic phrases like 'Your Neighborhood X Team'",
   "aboutBody": "3 sentences about the business, warm and specific, mentions business name and city, 50-60 words",
-  "ctaH2": "Action-oriented CTA headline specific to what this business does, 5-7 words"
+  "ctaH2": "Action-oriented CTA headline specific to what this business does, 5-7 words",
+  "process": [
+    {"title": "Step 1 title, 2-3 words", "desc": "One sentence, how a customer starts working with this specific business, 15-20 words"},
+    {"title": "Step 2 title, 2-3 words", "desc": "One sentence, what happens next in the process, 15-20 words"},
+    {"title": "Step 3 title, 2-3 words", "desc": "One sentence, the outcome/result for the customer, 15-20 words"}
+  ],
+  "blogTitles": [
+    "SEO-optimized blog title specific to this business type and city, 8-12 words",
+    "Second SEO-optimized blog title, different angle, 8-12 words"
+  ]
 }`,
       }],
     });
@@ -165,8 +183,11 @@ export async function GET(request: Request) {
 
   const demo     = DEMO_MAP[style] || DEMO_MAP.bold;
   const parts    = cityRaw.split(",").map((s: string) => s.trim());
-  const newCity  = parts[0] || demo.city;
-  const newState = parts[1] || demo.state;
+  // If city already contains the state abbreviation (e.g. "Westfield NJ"), extract it
+  const cityPart = parts[0] || demo.city;
+  const stateFromCity = cityPart.match(/\b([A-Z]{2})$/)?.[1];
+  const newCity  = stateFromCity ? cityPart.replace(/\s+[A-Z]{2}$/, "").trim() : cityPart;
+  const newState = parts[1] || stateFromCity || demo.state;
 
   // ── JSON mode for mobile card preview ──────────────────────────────────────
   const format = searchParams.get("format");
@@ -301,6 +322,28 @@ export async function GET(request: Request) {
       }
       if (copy.ctaH2 && orig.ctaH2) {
         html = html.split(orig.ctaH2).join(copy.ctaH2);
+      }
+
+      // Swap process steps
+      if (Array.isArray(copy.process) && Array.isArray(orig.process)) {
+        orig.process.forEach((origStep: any, i: number) => {
+          const newStep = copy.process[i];
+          if (!newStep) return;
+          if (origStep.title && newStep.title) html = html.split(origStep.title).join(newStep.title);
+          if (origStep.desc  && newStep.desc)  html = html.split(origStep.desc).join(newStep.desc);
+        });
+      }
+
+      // Swap blog post titles (city-swapped version)
+      if (Array.isArray(copy.blogTitles) && Array.isArray(orig.blogTitles)) {
+        orig.blogTitles.forEach((origTitle: string, i: number) => {
+          const swapped = origTitle.replace(demo.city, newCity).replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
+          const newTitle = copy.blogTitles[i];
+          if (newTitle) {
+            html = html.split(swapped).join(newTitle);
+            html = html.split(origTitle).join(newTitle);
+          }
+        });
       }
     }
 
