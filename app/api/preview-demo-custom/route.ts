@@ -216,19 +216,22 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
   const bIdx = html.indexOf(heroSwapped.substring(0, 40));
   if (bIdx !== -1) { const pe = html.indexOf("</p>", bIdx); if (pe !== -1) html = html.substring(0, bIdx) + copy.heroBody + html.substring(pe); }
 
-  // Services — only swap slots where we have a distinct AI-generated service
+  // Services — swap every slot we have, always replace both name AND desc
   if (Array.isArray(copy.services) && copy.services.length > 0) {
     orig.services.forEach((s: any, i: number) => {
-      const n = copy.services[i]; // no fallback — only swap if we have this exact slot
+      const n = copy.services[i];
       if (!n) return;
-      if (s.name && n.name && n.name !== copy.services[0]?.name) {
-        // Only swap if different from first (catches repeated fallback bug)
-        html = html.split(s.name).join(n.name);
-        if (s.desc && n.desc) html = html.split(s.desc).join(n.desc);
-      } else if (i === 0) {
-        // Always swap the first one
-        if (s.name && n.name) html = html.split(s.name).join(n.name);
-        if (s.desc && n.desc) html = html.split(s.desc).join(n.desc);
+      // Always swap name
+      if (s.name && n.name) html = html.split(s.name).join(n.name);
+      // Always swap desc — use city-swapped version as search target too
+      if (s.desc && n.desc) {
+        const descCitySwapped = s.desc
+          .replace(demo.city, newCity)
+          .replace("Springfield", newCity)
+          .replace("Westfield", newCity)
+          .replace("Scotch Plains", newCity);
+        html = html.split(descCitySwapped).join(n.desc);
+        html = html.split(s.desc).join(n.desc);
       }
     });
   }
@@ -281,18 +284,31 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
     }
   }
 
-  // Inject mobile CSS fixes
+  // Inject comprehensive mobile CSS
   const mobileCss = `<style>
-@media (max-width: 640px) {
+@media (max-width: 680px) {
+  /* Remove top gap from banner offset */
   body > *:not(#xpb) { margin-top: 0 !important; }
-  .hero { padding-top: 100px !important; }
-  .gallery-grid, [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
-  .blog-grid, .posts-grid { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns:repeat(2"] { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  /* Hero padding to clear fixed banner */
+  .hero, section:first-of-type { padding-top: 120px !important; }
+  /* Force ALL multi-column grids to single column */
+  [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Blog posts side by side — force single col */
+  .blog-grid, .posts-grid, .articles-grid { grid-template-columns: 1fr !important; }
+  /* Gallery strip — stack vertically */
+  .gallery, .gallery-grid { grid-template-columns: 1fr !important; }
+  /* Stats row — wrap nicely */
+  .stats-row, .stats { flex-wrap: wrap !important; gap: 16px !important; }
+  /* Sections full width padding */
+  .sec, section { padding-left: 20px !important; padding-right: 20px !important; }
+  /* Nav logo text size */
+  .nav-logo { font-size: 16px !important; }
+  /* CTA band stack */
+  .cta-band { flex-direction: column !important; }
+  /* About split — stack */
+  .about-grid, .split-grid { grid-template-columns: 1fr !important; }
 }
 </style>`;
   html = html.replace('</head>', mobileCss + '</head>');
