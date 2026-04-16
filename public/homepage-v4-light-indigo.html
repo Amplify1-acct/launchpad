@@ -645,6 +645,9 @@ function checkWordCount() {
 document.addEventListener('DOMContentLoaded', function() {
   var desc = document.getElementById('custom-desc');
   if (desc) desc.addEventListener('input', checkWordCount);
+  // Sync form state in case browser autofilled the select
+  var sel = document.getElementById('prev-type');
+  if (sel && sel.value) onTypeChange(sel.value);
 });
 
 function selectStyle(s) {
