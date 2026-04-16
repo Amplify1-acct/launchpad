@@ -676,28 +676,6 @@ function launchPreview() {
   // Route to custom flow if "Other"
   if (_isCustom) { launchCustomPreview(biz, city); return; }
 
-  // Mobile: send email and show confirmation instead of demo
-  if (isMobile()) {
-    if (email) {
-      // Fire and forget — send lead to backend
-      window.fetch('/api/demo-lead', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({biz: biz, city: city, bizType: bizType, email: email, style: _selectedStyle})
-      }).catch(function(){});
-    }
-    // Show the email confirmation message
-    var btn = document.getElementById('prev-btn');
-    var loading = document.getElementById('prev-loading');
-    btn.style.display = 'none';
-    loading.style.display = 'none';
-    document.getElementById('mobile-email-confirm').style.display = 'block';
-    var confirmBizEl = document.getElementById('confirm-biz-name');
-    if (confirmBizEl) confirmBizEl.textContent = biz;
-    document.getElementById('mobile-card').style.display = 'none';
-    return;
-  }
-
   var btn     = document.getElementById('prev-btn');
   var loading = document.getElementById('prev-loading');
   var card    = document.getElementById('mobile-card');
