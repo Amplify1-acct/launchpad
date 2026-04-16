@@ -369,13 +369,17 @@ export async function GET(request: Request) {
     updated_at: new Date().toISOString(),
   });
 
-  // Dispatch workflow NOW (must be awaited before response — Vercel kills background tasks)
-  await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
+  // Generate real copy + dispatch workflow — both must complete before response
+  // (Vercel kills anything that runs after response is sent)
+  try {
+    const realCopy = await generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers);
+    await supabase.from("demo_builds").update({ copy: realCopy }).eq("slug", slug);
+  } catch (err) {
+    console.error("Copy generation failed, using placeholder:", err);
+  }
 
-  // Copy generation can update DB in background (nice to have, not blocking)
-  generateCustomCopy(bizName, newCity, newState, desc, servicesList, customers)
-    .then((copy: any) => supabase.from("demo_builds").update({ copy }).eq("slug", slug))
-    .catch((err: any) => console.error("Background copy failed:", err));
+  // Dispatch image generation workflow
+  await dispatchWorkflow(slug, bizName, `${newCity}, ${newState}`, desc);
 
   // JSON mode (mobile) — return copy + slug immediately, images will be placeholders
   if (format === "json") {
