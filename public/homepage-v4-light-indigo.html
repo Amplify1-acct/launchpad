@@ -730,10 +730,20 @@ function launchPreview() {
         if (previewWin) previewWin.close();
       });
   } else {
-    // Mobile: skip JSON fetch — navigate directly to full site
-    // Server generates AI copy server-side, spinner shows while it loads (~5-8 sec)
-    if (previewWin) previewWin.close();
-    window.location.href = apiBase;
+    // Mobile: show spinner while server generates, then navigate
+    // Keep the loading state visible the whole time
+    window.fetch(apiBase)
+      .then(function(r) { return r.text(); })
+      .then(function() {
+        // Once server has finished generating, navigate (page is now cached)
+        done();
+        window.location.href = apiBase;
+      })
+      .catch(function() {
+        done();
+        // Navigate anyway — let the server handle it
+        window.location.href = apiBase;
+      });
   }
 }
 
