@@ -478,7 +478,28 @@
       </div>
       <div>
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Type of Business</label>
-        <input id="prev-type" type="text" placeholder="e.g. Plumber, Dentist, HVAC" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
+        <select id="prev-type" onchange="onTypeChange(this.value)" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:15px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;background:#fff;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path fill=%22%236b6b80%22 d=%22M1 1l5 5 5-5%22 stroke=%22%236b6b80%22 stroke-width=%221.5%22 fill=%22none%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;">
+          <option value="">— Select a type —</option>
+          <option value="Plumber">🔧 Plumber</option>
+          <option value="HVAC">❄️ HVAC / Heating &amp; Cooling</option>
+          <option value="Electrician">⚡ Electrician</option>
+          <option value="Landscaper">🌿 Landscaper / Lawn Care</option>
+          <option value="Roofer">🏠 Roofer</option>
+          <option value="Painter">🖌️ Painter</option>
+          <option value="Cleaning Service">🧹 Cleaning Service</option>
+          <option value="Auto Shop">🚗 Auto Shop / Mechanic</option>
+          <option value="Dentist">🦷 Dentist</option>
+          <option value="Chiropractor">🩺 Chiropractor / Physical Therapy</option>
+          <option value="Restaurant / Cafe">🍽️ Restaurant / Cafe / Bakery</option>
+          <option value="Gym / Fitness">💪 Gym / Personal Trainer</option>
+          <option value="Pet Services">🐾 Pet Services / Groomer / Vet</option>
+          <option value="Remodeling / Contractor">🔨 Remodeling / General Contractor</option>
+          <option value="Moving Company">📦 Moving Company</option>
+          <option value="Law Firm">⚖️ Law Firm</option>
+          <option value="Real Estate">🏡 Real Estate Agent</option>
+          <option value="Salon / Spa">💅 Salon / Spa / Barbershop</option>
+          <option value="other">✨ Other — Build Me a Custom Demo</option>
+        </select>
       </div>
       <div>
         <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">City, State</label>
@@ -524,6 +545,28 @@
       </div>
     </div>
 
+    <!-- OTHER: Custom demo expanded form -->
+    <div id="custom-demo-form" style="display:none;margin-bottom:28px;background:#f8f9ff;border:1.5px solid #dde2ff;border-radius:14px;padding:20px;">
+      <div style="font-size:13px;font-weight:700;color:#4648d4;margin-bottom:4px;">✨ Custom Demo — We'll build it just for you</div>
+      <div style="font-size:12px;color:#6b6b80;margin-bottom:16px;">Takes about 3–5 minutes. The more detail you give us, the better your demo will look.</div>
+
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">What does your business do? <span style="color:#e85d26;">*</span></label>
+        <textarea id="custom-desc" placeholder="Tell us everything — what services you offer, who your customers are, what makes you different, your story, your location, anything. The more detail the better. Minimum 80 words." style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;resize:vertical;min-height:120px;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff';checkWordCount()"></textarea>
+        <div id="word-count-msg" style="font-size:11px;margin-top:4px;color:#9090a8;">0 / 80 words minimum</div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Your main services (one per line) <span style="color:#e85d26;">*</span></label>
+        <textarea id="custom-services" placeholder="Custom Cakes&#10;Wedding Catering&#10;Cookie Boxes&#10;Corporate Orders" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;resize:vertical;min-height:90px;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"></textarea>
+      </div>
+
+      <div>
+        <label style="display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">Who are your customers?</label>
+        <input id="custom-customers" type="text" placeholder="e.g. Homeowners, Local families, Small businesses, Brides-to-be" style="width:100%;padding:13px 16px;border:1.5px solid #dde2ff;border-radius:10px;font-size:14px;font-family:inherit;color:#0d0d14;outline:none;transition:border 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='#4648d4'" onblur="this.style.borderColor='#dde2ff'"/>
+      </div>
+    </div>
+
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:32px;">
       <button id="prev-btn" onclick="launchPreview()" style="background:#4648d4;color:#fff;font-size:16px;font-weight:700;padding:16px 40px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;transition:background 0.2s,transform 0.15s;box-shadow:0 4px 20px rgba(70,72,212,0.3);" onmouseover="this.style.background='#6366f1';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#4648d4';this.style.transform=''">
@@ -566,8 +609,43 @@
 
 <script>
 var _selectedStyle = 'bold';
+var _isCustom = false;
 
 function isMobile() { return window.innerWidth <= 768; }
+
+function onTypeChange(val) {
+  _isCustom = (val === 'other');
+  var form = document.getElementById('custom-demo-form');
+  var btn  = document.getElementById('prev-btn');
+  form.style.display = _isCustom ? 'block' : 'none';
+  btn.textContent = _isCustom ? '🍳 Build My Custom Demo' : '✨ Try the Free Demo for Your Business →';
+  if (_isCustom) form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function countWords(str) {
+  return str.trim().split(/\s+/).filter(function(w){ return w.length > 0; }).length;
+}
+
+function checkWordCount() {
+  var desc = document.getElementById('custom-desc');
+  if (!desc) return true;
+  var n = countWords(desc.value);
+  var msg = document.getElementById('word-count-msg');
+  if (n < 80) {
+    msg.textContent = n + ' / 80 words minimum — add more detail for a better demo';
+    msg.style.color = n < 40 ? '#e85d26' : '#f59e0b';
+    return false;
+  } else {
+    msg.textContent = n + ' words ✓';
+    msg.style.color = '#16a34a';
+    return true;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var desc = document.getElementById('custom-desc');
+  if (desc) desc.addEventListener('input', checkWordCount);
+});
 
 function selectStyle(s) {
   _selectedStyle = s;
@@ -589,7 +667,11 @@ function launchPreview() {
   var bizType = typeEl ? typeEl.value.trim() : '';
 
   if (!biz)  { document.getElementById('prev-biz').focus();  document.getElementById('prev-biz').style.borderColor='#e85d26'; return; }
+  if (!bizType || bizType === '') { typeEl.focus(); typeEl.style.borderColor='#e85d26'; return; }
   if (!city) { document.getElementById('prev-city').focus(); document.getElementById('prev-city').style.borderColor='#e85d26'; return; }
+
+  // Route to custom flow if "Other"
+  if (_isCustom) { launchCustomPreview(biz, city); return; }
 
   var btn     = document.getElementById('prev-btn');
   var loading = document.getElementById('prev-loading');
@@ -722,6 +804,99 @@ function renderCard(data, biz, city, style, orderHref, mobile) {
 function closeCard() {
   document.getElementById('mobile-card').style.display = 'none';
   document.getElementById('try-it').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function launchCustomPreview(biz, city) {
+  var desc      = (document.getElementById('custom-desc')     || {value:''}).value.trim();
+  var services  = (document.getElementById('custom-services') || {value:''}).value.trim();
+  var customers = (document.getElementById('custom-customers')|| {value:''}).value.trim();
+
+  // Validate
+  if (!desc || countWords(desc) < 80) {
+    checkWordCount();
+    document.getElementById('custom-desc').focus();
+    document.getElementById('custom-desc').style.borderColor = '#e85d26';
+    return;
+  }
+  if (!services) {
+    document.getElementById('custom-services').focus();
+    document.getElementById('custom-services').style.borderColor = '#e85d26';
+    return;
+  }
+
+  var style    = _selectedStyle;
+  var btn      = document.getElementById('prev-btn');
+  var loading  = document.getElementById('prev-loading');
+  var card     = document.getElementById('mobile-card');
+  var orderHref = '/order?biz=' + encodeURIComponent(biz) + '&city=' + encodeURIComponent(city) + '&style=' + style;
+
+  // Show loading
+  btn.style.display  = 'none';
+  card.style.display = 'none';
+  document.getElementById('custom-demo-form').style.display = 'none';
+  loading.style.display = 'block';
+
+  // Custom loading messages
+  var msgs = [
+    'Reading your business description…',
+    'Generating custom images with AI…',
+    'Writing copy tailored to your business…',
+    'Building your service pages…',
+    'Almost there — adding final touches…'
+  ];
+  var mi = 0;
+  var subMsgs = [
+    'This takes a few minutes — worth the wait',
+    'Creating images unique to your business',
+    'Every word written for you specifically',
+    'Your site is taking shape',
+    'Just a few more seconds'
+  ];
+  document.getElementById('prev-loading-msg').textContent = msgs[0];
+  document.getElementById('prev-loading-sub').textContent = subMsgs[0];
+  var ticker = setInterval(function() {
+    mi = (mi + 1) % msgs.length;
+    var el = document.getElementById('prev-loading-msg');
+    var sub = document.getElementById('prev-loading-sub');
+    if (el) el.textContent = msgs[mi];
+    if (sub) sub.textContent = subMsgs[mi];
+  }, 3500);
+
+  function done() { clearInterval(ticker); loading.style.display = 'none'; btn.style.display = 'inline-block'; }
+
+  // Open desktop window immediately
+  var previewWin = null;
+  if (!isMobile()) {
+    previewWin = window.open('about:blank', '_blank');
+    if (previewWin) {
+      previewWin.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Building your custom demo...</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:system-ui,sans-serif;background:#0d0d14;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:24px;}@keyframes bounce{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-16px) rotate(8deg);}}@keyframes dot{0%,80%,100%{opacity:.3;transform:scale(.7);}40%{opacity:1;transform:scale(1);}}.emoji{font-size:64px;animation:bounce 1s ease-in-out infinite;}.msg{font-size:20px;font-weight:700;color:#fff;max-width:480px;text-align:center;}.sub{font-size:14px;color:#9090a8;max-width:400px;text-align:center;}.dots{display:flex;gap:8px;}.dot{width:10px;height:10px;border-radius:50%;background:#4648d4;animation:dot 1.2s ease-in-out infinite;}.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}</style></head><body><div class="emoji">✨</div><div class="msg">Building your custom demo</div><div class="sub">We're generating images and writing copy specific to your business — takes 3–5 minutes</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><scr'+'ipt>var steps=[{e:"✨",m:"Building your custom demo",s:"We're generating images and writing copy specific to your business"},{e:"🎨",m:"Generating AI images for your business",s:"Creating photos that match what you do"},{e:"✍️",m:"Writing your custom copy",s:"Every word crafted around your description"},{e:"🔧",m:"Assembling your site",s:"Putting it all together just for you"},{e:"🚀",m:"Almost ready...",s:"Final touches on your custom demo"}];var i=0;setInterval(function(){i=(i+1)%steps.length;document.querySelector(".emoji").textContent=steps[i].e;document.querySelector(".msg").textContent=steps[i].m;document.querySelector(".sub").textContent=steps[i].s;},3500);</scr'+'ipt></body></html>');
+      previewWin.document.close();
+    }
+  }
+
+  // Build query params
+  var params = '/api/preview-demo-custom?style=' + encodeURIComponent(style) +
+    '&biz='       + encodeURIComponent(biz) +
+    '&city='      + encodeURIComponent(city) +
+    '&desc='      + encodeURIComponent(desc) +
+    '&services='  + encodeURIComponent(services) +
+    '&customers=' + encodeURIComponent(customers);
+
+  window.fetch(params + '&format=json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      done();
+      if (!isMobile()) {
+        if (previewWin) previewWin.location.href = params;
+        return;
+      }
+      if (previewWin) previewWin.close();
+      renderCard(data, biz, city, style, orderHref, true);
+    })
+    .catch(function() {
+      done();
+      if (previewWin) previewWin.close();
+    });
 }
 </script>
 
