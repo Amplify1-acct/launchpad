@@ -27,7 +27,7 @@ const DEMO_COPY: Record<string, {
   h1: string; heroBody: string; aboutH2: string; aboutBody: string; ctaH2: string;
   services: Array<{name:string;desc:string}>;
   process: Array<{title:string;desc:string}>;
-  blogTitles: string[];
+  blogPosts: Array<{title:string;excerpt:string}>;
 }> = {
   bold: {
     h1: "Springfield's Trusted Auto Experts",
@@ -40,9 +40,15 @@ const DEMO_COPY: Record<string, {
       {title:"Expert Diagnosis", desc:"Our certified mechanics will thoroughly inspect your vehicle using state-of-the-art equipment. You'll get a clear explanation of any issues we find."},
       {title:"Quality Repair",   desc:"We use only quality parts and proven techniques. Your car will be ready when promised and backed by our satisfaction guarantee."},
     ],
-    blogTitles: [
-      "5 Critical Warning Signs Your Car Needs Immediate Attention in Springfield, NJ",
-      "How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide",
+    blogPosts: [
+      {
+        title: "5 Critical Warning Signs Your Car Needs Immediate Attention in Springfield, NJ",
+        excerpt: "Don't ignore these five warning signs that indicate your vehicle needs urgent professional attention. Recognizing these symptoms early can save you from costly repairs and dangerous breakdowns on Springfield roads.",
+      },
+      {
+        title: "How to Choose a Trustworthy Auto Shop in Springfield, NJ: Your Complete Guide",
+        excerpt: "Finding a reliable auto repair shop in Springfield, NJ doesn't have to be stressful. Learn the key factors to consider when selecting a trustworthy mechanic for your vehicle maintenance and repair needs.",
+      },
     ],
     services: [
       {name:"Oil Changes",          desc:"Quick professional oil changes using premium lubricants to keep your engine running smoothly."},
@@ -64,9 +70,15 @@ const DEMO_COPY: Record<string, {
       {title:"We Get to Work",  desc:"Our crew arrives on time, works efficiently, and treats your property with care and respect."},
       {title:"You Love It",     desc:"We don't leave until you're completely satisfied. Your property, transformed exactly as promised."},
     ],
-    blogTitles: [
-      "5 Signs Your Westfield Lawn Needs Professional Attention This Season",
-      "How to Choose the Best Landscaping Company in Westfield, NJ",
+    blogPosts: [
+      {
+        title: "Spring Lawn Care Checklist for Westfield, NJ Homeowners: Your Guide to a Healthy Yard",
+        excerpt: "Get your Westfield lawn ready for spring with this comprehensive care checklist. From cleanup to fertilization, learn the essential steps to ensure a lush, healthy yard all season long.",
+      },
+      {
+        title: "How to Choose the Right Plants for Your Westfield, NJ Yard: A Complete Climate Guide",
+        excerpt: "Selecting the perfect plants for your Westfield, NJ landscape requires understanding our unique climate conditions and soil types. Learn how to create a thriving garden that flourishes year-round in our Northeast climate zone.",
+      },
     ],
     services: [
       {name:"Lawn Care & Maintenance", desc:"Keep your Westfield lawn lush and healthy with our comprehensive mowing and treatment programs."},
@@ -88,9 +100,15 @@ const DEMO_COPY: Record<string, {
       {title:"Expert Diagnosis",      desc:"Our certified tech inspects your system thoroughly and explains all issues clearly. No surprises."},
       {title:"Professional Solution", desc:"We complete all work using quality parts and best practices. Your satisfaction is guaranteed."},
     ],
-    blogTitles: [
-      "Beat the Heat: 7 Expert Tips to Lower Your Energy Bill This Summer in Scotch Plains, NJ",
-      "4 Warning Signs Your Scotch Plains AC Needs Emergency Repair This Summer",
+    blogPosts: [
+      {
+        title: "Beat the Heat: 7 Expert Tips to Lower Your Energy Bill This Summer in Scotch Plains, NJ",
+        excerpt: "Summer energy bills in Scotch Plains can skyrocket with rising temperatures. Our HVAC experts share proven strategies to keep your home cool while saving money on electricity costs.",
+      },
+      {
+        title: "5 Warning Signs Your Scotch Plains AC Needs Emergency Repair This Summer",
+        excerpt: "Don't wait for a complete breakdown! Learn the critical warning signs that indicate your air conditioning system needs immediate professional attention. ProComfort HVAC shares expert insights to help Scotch Plains homeowners avoid costly emergency repairs.",
+      },
     ],
     services: [
       {name:"AC Installation & Repair", desc:"Expert air conditioning installation and repairs for all major brands, done right the first time."},
@@ -143,9 +161,9 @@ Return ONLY valid JSON, no markdown:
     {"title":"2-3 word step","desc":"what happens next, 15-20 words"},
     {"title":"2-3 word step","desc":"the outcome, 15-20 words"}
   ],
-  "blogTitles": [
-    "SEO blog title specific to business and city, 8-12 words",
-    "Second SEO blog title different angle, 8-12 words"
+  "blogPosts": [
+    {"title":"SEO blog title specific to business and city, 8-12 words","excerpt":"2 sentences 30-40 words previewing the article, specific to this business and city, no HVAC/plumbing/lawn/auto terms unless relevant to this business"},
+    {"title":"Second SEO blog title different angle, 8-12 words","excerpt":"2 sentences 30-40 words previewing the second article, specific to this business and city"}
   ]
 }`,
     }],
@@ -269,31 +287,54 @@ function applySwaps(html: string, copy: any, orig: any, demo: any, bizName: stri
     });
   }
 
-  // Blog titles — replace ALL h3 tags in the blog section that contain city/demo text
-  if (Array.isArray(copy.blogTitles) && copy.blogTitles.length >= 2) {
-    // First try targeted swap of known template titles
-    if (Array.isArray(orig.blogTitles)) {
-      orig.blogTitles.forEach((t: string, i: number) => {
-        const sw = t.replace(demo.city, newCity).replace("Springfield", newCity).replace("Westfield", newCity).replace("Scotch Plains", newCity);
-        const nt = copy.blogTitles[i];
-        if (nt) { html = html.split(sw).join(nt); html = html.split(t).join(nt); }
-      });
-    }
-    // Fallback: find any h3 inside the blog section and replace sequentially
+  // Blog titles + excerpts — swap BOTH the h3 title and the p excerpt in each blog card
+  const posts: Array<{title:string;excerpt:string}> = Array.isArray(copy.blogPosts)
+    ? copy.blogPosts
+    : Array.isArray(copy.blogTitles) // backwards-compat if Claude returns old shape
+      ? copy.blogTitles.map((t: string) => ({ title: t, excerpt: "" }))
+      : [];
+
+  if (posts.length >= 1) {
     let blogIdx = html.indexOf("OUR BLOG");
+    if (blogIdx === -1) blogIdx = html.indexOf("Our Blog");
     if (blogIdx === -1) blogIdx = html.indexOf("LATEST ARTICLES");
     if (blogIdx === -1) blogIdx = html.indexOf("Latest Articles");
+
     if (blogIdx !== -1) {
-      let titleNum = 0;
+      let postNum = 0;
       const blogSection = html.substring(blogIdx);
-      const replaced = blogSection.replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/g, (match: string, attrs: string, inner: string) => {
-        if (titleNum < copy.blogTitles.length && inner.length > 20 && !inner.includes("Read More")) {
-          const newTitle = copy.blogTitles[titleNum++];
-          return `<h3${attrs}>${newTitle}</h3>`;
-        }
-        return match;
+      // Match each blog card's <h3>…</h3> + immediately following <p>…</p>
+      // (allowing whitespace/attrs between them since they sit inside the card wrapper)
+      const cardRe = /<h3([^>]*)>([\s\S]*?)<\/h3>([\s\S]{0,200}?)<p([^>]*)>([\s\S]*?)<\/p>/g;
+      const replaced = blogSection.replace(cardRe, (match: string, h3Attrs: string, h3Inner: string, between: string, pAttrs: string, pInner: string) => {
+        // Skip if this h3 is a "Read More" link or too short to be a title
+        if (postNum >= posts.length) return match;
+        if (h3Inner.length < 20 || h3Inner.includes("Read More")) return match;
+        const post = posts[postNum++];
+        const newTitle = post.title || h3Inner;
+        const newExcerpt = post.excerpt && post.excerpt.length > 0 ? post.excerpt : pInner;
+        return `<h3${h3Attrs}>${newTitle}</h3>${between}<p${pAttrs}>${newExcerpt}</p>`;
       });
       html = html.substring(0, blogIdx) + replaced;
+    }
+  }
+
+  // ── Cross-industry leak detector ────────────────────────────────────────
+  // Warn if any other template's industry vocab remains in the final HTML.
+  // This only fires in logs — it doesn't modify output.
+  const INDUSTRY_VOCAB: Record<string, string[]> = {
+    bold:  ["oil change", "brake service", "engine diagnostic", "transmission", "auto repair shop", "Matty"],
+    warm:  ["lawn care", "landscaping", "mulching", "irrigation", "GreenScape", "turf"],
+    clean: ["HVAC", "furnace", "AC repair", "air conditioning", "ductwork", "ProComfort", "heating and cooling"],
+  };
+  const ownStyle = demo.folder.includes("auto") ? "bold" : demo.folder.includes("green") ? "warm" : "clean";
+  for (const [otherStyle, words] of Object.entries(INDUSTRY_VOCAB)) {
+    if (otherStyle === ownStyle) continue;
+    for (const w of words) {
+      const re = new RegExp(`\\b${w.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")}\\b`, "i");
+      if (re.test(html)) {
+        console.warn(`[preview-demo-custom] LEAK: "${w}" (${otherStyle} template vocab) found in ${bizName} (${ownStyle}) HTML`);
+      }
     }
   }
 
@@ -468,9 +509,9 @@ export async function GET(request: Request) {
       {title:"We Get to Work", desc:"Our team delivers quality work efficiently and with care."},
       {title:"You Are Happy",  desc:"We stand behind everything we do, guaranteed."},
     ],
-    blogTitles: [
-      `Top Tips from ${bizName} in ${newCity}, ${newState}`,
-      `Why ${newCity} Residents Trust ${bizName}`,
+    blogPosts: [
+      { title: `Top Tips from ${bizName} in ${newCity}, ${newState}`, excerpt: `Expert insights from the ${bizName} team for ${newCity} residents and businesses. Learn what to look for and how to get the best results.` },
+      { title: `Why ${newCity} Residents Trust ${bizName}`,            excerpt: `What sets ${bizName} apart in ${newCity}, ${newState}. A look at our approach, our values, and why our customers keep coming back.` },
     ],
   };
 
@@ -592,3 +633,4 @@ export async function GET(request: Request) {
     headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" },
   });
 }
+
